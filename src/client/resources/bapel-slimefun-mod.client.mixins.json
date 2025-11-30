@@ -1,0 +1,11 @@
+{
+	"required": true,
+	"package": "com.bapel_slimefun_mod.mixin.client",
+	"compatibilityLevel": "JAVA_21",
+	"client": [
+		"ExampleClientMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}
