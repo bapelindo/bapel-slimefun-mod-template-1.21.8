@@ -1,0 +1,1050 @@
+[
+  {
+    "id": "ENHANCED_CRAFTING_TABLE",
+    "type": "MULTIBLOCK",
+    "inventoryTitle": "Dispenser",
+    "inputSlots": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "outputSlots": []
+  },
+  {
+    "id": "GRIND_STONE",
+    "type": "MULTIBLOCK",
+    "inventoryTitle": "Dispenser",
+    "inputSlots": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "outputSlots": []
+  },
+  {
+    "id": "ARMOR_FORGE",
+    "type": "MULTIBLOCK",
+    "inventoryTitle": "Dispenser",
+    "inputSlots": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "outputSlots": []
+  },
+  {
+    "id": "ORE_CRUSHER",
+    "type": "MULTIBLOCK",
+    "inventoryTitle": "Dispenser",
+    "inputSlots": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "outputSlots": []
+  },
+  {
+    "id": "COMPRESSOR",
+    "type": "MULTIBLOCK",
+    "inventoryTitle": "Dispenser",
+    "inputSlots": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "outputSlots": []
+  },
+  {
+    "id": "MAKESHIFT_SMELTERY",
+    "type": "MULTIBLOCK",
+    "inventoryTitle": "Dispenser",
+    "inputSlots": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "outputSlots": []
+  },
+  {
+    "id": "SMELTERY",
+    "type": "MULTIBLOCK",
+    "inventoryTitle": "Dispenser",
+    "inputSlots": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "outputSlots": []
+  },
+  {
+    "id": "PRESSURE_CHAMBER",
+    "type": "MULTIBLOCK",
+    "inventoryTitle": "Dispenser",
+    "inputSlots": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "outputSlots": []
+  },
+  {
+    "id": "MAGIC_WORKBENCH",
+    "type": "MULTIBLOCK",
+    "inventoryTitle": "Dispenser",
+    "inputSlots": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "outputSlots": []
+  },
+  {
+    "id": "ORE_WASHER",
+    "type": "MULTIBLOCK",
+    "inventoryTitle": "Dispenser",
+    "inputSlots": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "outputSlots": []
+  },
+  {
+    "id": "TABLE_SAW",
+    "type": "MULTIBLOCK",
+    "inventoryTitle": "Dispenser",
+    "inputSlots": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "outputSlots": []
+  },
+  {
+    "id": "AUTOMATED_PANNING_MACHINE",
+    "type": "MULTIBLOCK",
+    "inventoryTitle": "Dispenser",
+    "inputSlots": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "outputSlots": []
+  },
+  {
+    "id": "INDUSTRIAL_MINER",
+    "type": "MULTIBLOCK",
+    "inventoryTitle": "Dispenser",
+    "inputSlots": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "outputSlots": []
+  },
+  {
+    "id": "ADVANCED_INDUSTRIAL_MINER",
+    "type": "MULTIBLOCK",
+    "inventoryTitle": "Dispenser",
+    "inputSlots": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "outputSlots": []
+  },
+  {
+    "id": "JUICER",
+    "type": "MULTIBLOCK",
+    "inventoryTitle": "Dispenser",
+    "inputSlots": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "outputSlots": []
+  },
+  {
+    "id": "ANCIENT_ALTAR",
+    "type": "MULTIBLOCK",
+    "inventoryTitle": "Dispenser",
+    "inputSlots": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "outputSlots": []
+  },
+  {
+    "id": "CHARGING_BENCH",
+    "type": "CONTAINER",
+    "inventoryTitle": "§6Charging Bench",
+    "energyCapacity": 128,
+    "energyConsumption": 10,
+    "processingSpeed": 1,
+    "inputSlots": [
+      19,
+      20
+    ],
+    "outputSlots": [
+      24,
+      25
+    ]
+  },
+  {
+    "id": "ELECTRIC_FURNACE",
+    "type": "CONTAINER",
+    "inventoryTitle": "§cElectric Furnace",
+    "energyCapacity": 64,
+    "energyConsumption": 2,
+    "processingSpeed": 1,
+    "inputSlots": [
+      19,
+      20
+    ],
+    "outputSlots": [
+      24,
+      25
+    ]
+  },
+  {
+    "id": "ELECTRIC_FURNACE_2",
+    "type": "CONTAINER",
+    "inventoryTitle": "§cElectric Furnace §7- §eII",
+    "energyCapacity": 128,
+    "energyConsumption": 3,
+    "processingSpeed": 2,
+    "inputSlots": [
+      19,
+      20
+    ],
+    "outputSlots": [
+      24,
+      25
+    ]
+  },
+  {
+    "id": "ELECTRIC_FURNACE_3",
+    "type": "CONTAINER",
+    "inventoryTitle": "§cElectric Furnace §7- §eIII",
+    "energyCapacity": 128,
+    "energyConsumption": 5,
+    "processingSpeed": 4,
+    "inputSlots": [
+      19,
+      20
+    ],
+    "outputSlots": [
+      24,
+      25
+    ]
+  },
+  {
+    "id": "ELECTRIC_GOLD_PAN",
+    "type": "CONTAINER",
+    "inventoryTitle": "§6Electric Gold Pan",
+    "energyCapacity": 128,
+    "energyConsumption": 1,
+    "processingSpeed": 1,
+    "inputSlots": [
+      19,
+      20
+    ],
+    "outputSlots": [
+      24,
+      25
+    ]
+  },
+  {
+    "id": "ELECTRIC_GOLD_PAN_2",
+    "type": "CONTAINER",
+    "inventoryTitle": "§6Electric Gold Pan §7(§eII§7)",
+    "energyCapacity": 128,
+    "energyConsumption": 2,
+    "processingSpeed": 3,
+    "inputSlots": [
+      19,
+      20
+    ],
+    "outputSlots": [
+      24,
+      25
+    ]
+  },
+  {
+    "id": "ELECTRIC_GOLD_PAN_3",
+    "type": "CONTAINER",
+    "inventoryTitle": "§6Electric Gold Pan §7(§eIII§7)",
+    "energyCapacity": 512,
+    "energyConsumption": 7,
+    "processingSpeed": 10,
+    "inputSlots": [
+      19,
+      20
+    ],
+    "outputSlots": [
+      24,
+      25
+    ]
+  },
+  {
+    "id": "ELECTRIC_DUST_WASHER",
+    "type": "CONTAINER",
+    "inventoryTitle": "§3Electric Dust Washer",
+    "energyCapacity": 128,
+    "energyConsumption": 3,
+    "processingSpeed": 1,
+    "inputSlots": [
+      19,
+      20
+    ],
+    "outputSlots": [
+      24,
+      25
+    ]
+  },
+  {
+    "id": "ELECTRIC_DUST_WASHER_2",
+    "type": "CONTAINER",
+    "inventoryTitle": "§3Electric Dust Washer §7(§eII§7)",
+    "energyCapacity": 128,
+    "energyConsumption": 5,
+    "processingSpeed": 2,
+    "inputSlots": [
+      19,
+      20
+    ],
+    "outputSlots": [
+      24,
+      25
+    ]
+  },
+  {
+    "id": "ELECTRIC_DUST_WASHER_3",
+    "type": "CONTAINER",
+    "inventoryTitle": "§3Electric Dust Washer §7(§eIII§7)",
+    "energyCapacity": 512,
+    "energyConsumption": 15,
+    "processingSpeed": 10,
+    "inputSlots": [
+      19,
+      20
+    ],
+    "outputSlots": [
+      24,
+      25
+    ]
+  },
+  {
+    "id": "ELECTRIC_INGOT_FACTORY",
+    "type": "CONTAINER",
+    "inventoryTitle": "§cElectric Ingot Factory",
+    "energyCapacity": 256,
+    "energyConsumption": 4,
+    "processingSpeed": 1,
+    "inputSlots": [
+      19,
+      20
+    ],
+    "outputSlots": [
+      24,
+      25
+    ]
+  },
+  {
+    "id": "ELECTRIC_INGOT_FACTORY_2",
+    "type": "CONTAINER",
+    "inventoryTitle": "§cElectric Ingot Factory §7(§eII§7)",
+    "energyCapacity": 256,
+    "energyConsumption": 7,
+    "processingSpeed": 2,
+    "inputSlots": [
+      19,
+      20
+    ],
+    "outputSlots": [
+      24,
+      25
+    ]
+  },
+  {
+    "id": "ELECTRIC_INGOT_FACTORY_3",
+    "type": "CONTAINER",
+    "inventoryTitle": "§cElectric Ingot Factory §7(§eIII§7)",
+    "energyCapacity": 512,
+    "energyConsumption": 20,
+    "processingSpeed": 8,
+    "inputSlots": [
+      19,
+      20
+    ],
+    "outputSlots": [
+      24,
+      25
+    ]
+  },
+  {
+    "id": "ELECTRIFIED_CRUCIBLE",
+    "type": "CONTAINER",
+    "inventoryTitle": "§cElectrified Crucible",
+    "energyCapacity": 1024,
+    "energyConsumption": 24,
+    "processingSpeed": 1,
+    "inputSlots": [
+      19,
+      20
+    ],
+    "outputSlots": [
+      24,
+      25
+    ]
+  },
+  {
+    "id": "ELECTRIFIED_CRUCIBLE_2",
+    "type": "CONTAINER",
+    "inventoryTitle": "§cElectrified Crucible §7- §eII",
+    "energyCapacity": 1024,
+    "energyConsumption": 40,
+    "processingSpeed": 2,
+    "inputSlots": [
+      19,
+      20
+    ],
+    "outputSlots": [
+      24,
+      25
+    ]
+  },
+  {
+    "id": "ELECTRIFIED_CRUCIBLE_3",
+    "type": "CONTAINER",
+    "inventoryTitle": "§cElectrified Crucible §7- §eIII",
+    "energyCapacity": 1024,
+    "energyConsumption": 60,
+    "processingSpeed": 4,
+    "inputSlots": [
+      19,
+      20
+    ],
+    "outputSlots": [
+      24,
+      25
+    ]
+  },
+  {
+    "id": "ELECTRIC_ORE_GRINDER",
+    "type": "CONTAINER",
+    "inventoryTitle": "§cElectric Ore Grinder",
+    "energyCapacity": 128,
+    "energyConsumption": 6,
+    "processingSpeed": 1,
+    "inputSlots": [
+      19,
+      20
+    ],
+    "outputSlots": [
+      24,
+      25
+    ]
+  },
+  {
+    "id": "ELECTRIC_ORE_GRINDER_2",
+    "type": "CONTAINER",
+    "inventoryTitle": "§cElectric Ore Grinder §7(§eII§7)",
+    "energyCapacity": 512,
+    "energyConsumption": 15,
+    "processingSpeed": 4,
+    "inputSlots": [
+      19,
+      20
+    ],
+    "outputSlots": [
+      24,
+      25
+    ]
+  },
+  {
+    "id": "ELECTRIC_ORE_GRINDER_3",
+    "type": "CONTAINER",
+    "inventoryTitle": "§cElectric Ore Grinder §7(§eIII§7)",
+    "energyCapacity": 1024,
+    "energyConsumption": 45,
+    "processingSpeed": 10,
+    "inputSlots": [
+      19,
+      20
+    ],
+    "outputSlots": [
+      24,
+      25
+    ]
+  },
+  {
+    "id": "HEATED_PRESSURE_CHAMBER",
+    "type": "CONTAINER",
+    "inventoryTitle": "§cHeated Pressure Chamber",
+    "energyCapacity": 128,
+    "energyConsumption": 5,
+    "processingSpeed": 1,
+    "inputSlots": [
+      19,
+      20
+    ],
+    "outputSlots": [
+      24,
+      25
+    ]
+  },
+  {
+    "id": "HEATED_PRESSURE_CHAMBER_2",
+    "type": "CONTAINER",
+    "inventoryTitle": "§cHeated Pressure Chamber §7- §eII",
+    "energyCapacity": 256,
+    "energyConsumption": 22,
+    "processingSpeed": 5,
+    "inputSlots": [
+      19,
+      20
+    ],
+    "outputSlots": [
+      24,
+      25
+    ]
+  },
+  {
+    "id": "ELECTRIC_INGOT_PULVERIZER",
+    "type": "CONTAINER",
+    "inventoryTitle": "§cElectric Ingot Pulverizer",
+    "energyCapacity": 512,
+    "energyConsumption": 7,
+    "processingSpeed": 1,
+    "inputSlots": [
+      19,
+      20
+    ],
+    "outputSlots": [
+      24,
+      25
+    ]
+  },
+  {
+    "id": "AUTO_DRIER",
+    "type": "CONTAINER",
+    "inventoryTitle": "§6Auto Drier",
+    "energyCapacity": 128,
+    "energyConsumption": 5,
+    "processingSpeed": 1,
+    "inputSlots": [
+      19,
+      20
+    ],
+    "outputSlots": [
+      24,
+      25
+    ]
+  },
+  {
+    "id": "AUTO_BREWER",
+    "type": "CONTAINER",
+    "inventoryTitle": "§6Auto Brewer",
+    "energyCapacity": 128,
+    "energyConsumption": 6,
+    "processingSpeed": 1,
+    "inputSlots": [
+      19,
+      20
+    ],
+    "outputSlots": [
+      24,
+      25
+    ]
+  },
+  {
+    "id": "ELECTRIC_PRESS",
+    "type": "CONTAINER",
+    "inventoryTitle": "§eElectric Press",
+    "energyCapacity": 256,
+    "energyConsumption": 8,
+    "processingSpeed": 1,
+    "inputSlots": [
+      19,
+      20
+    ],
+    "outputSlots": [
+      24,
+      25
+    ]
+  },
+  {
+    "id": "ELECTRIC_PRESS_2",
+    "type": "CONTAINER",
+    "inventoryTitle": "§eElectric Press §7- §eII",
+    "energyCapacity": 1024,
+    "energyConsumption": 20,
+    "processingSpeed": 3,
+    "inputSlots": [
+      19,
+      20
+    ],
+    "outputSlots": [
+      24,
+      25
+    ]
+  },
+  {
+    "id": "AUTO_ENCHANTER",
+    "type": "CONTAINER",
+    "inventoryTitle": "§5Auto Enchanter",
+    "energyCapacity": 128,
+    "energyConsumption": 9,
+    "processingSpeed": 1,
+    "inputSlots": [
+      19,
+      20
+    ],
+    "outputSlots": [
+      24,
+      25
+    ]
+  },
+  {
+    "id": "AUTO_ENCHANTER_2",
+    "type": "CONTAINER",
+    "inventoryTitle": "§5Auto Enchanter §7- §eII",
+    "energyCapacity": 1024,
+    "energyConsumption": 24,
+    "processingSpeed": 3,
+    "inputSlots": [
+      19,
+      20
+    ],
+    "outputSlots": [
+      24,
+      25
+    ]
+  },
+  {
+    "id": "AUTO_DISENCHANTER",
+    "type": "CONTAINER",
+    "inventoryTitle": "§5Auto Disenchanter",
+    "energyCapacity": 128,
+    "energyConsumption": 9,
+    "processingSpeed": 1,
+    "inputSlots": [
+      19,
+      20
+    ],
+    "outputSlots": [
+      24,
+      25
+    ]
+  },
+  {
+    "id": "AUTO_DISENCHANTER_2",
+    "type": "CONTAINER",
+    "inventoryTitle": "§5Auto Disenchanter §7- §eII",
+    "energyCapacity": 1024,
+    "energyConsumption": 24,
+    "processingSpeed": 3,
+    "inputSlots": [
+      19,
+      20
+    ],
+    "outputSlots": [
+      24,
+      25
+    ]
+  },
+  {
+    "id": "AUTO_ANVIL",
+    "type": "CONTAINER",
+    "inventoryTitle": "§7Auto Anvil",
+    "energyCapacity": 128,
+    "energyConsumption": 12,
+    "processingSpeed": 1,
+    "inputSlots": [
+      19,
+      20
+    ],
+    "outputSlots": [
+      24,
+      25
+    ]
+  },
+  {
+    "id": "AUTO_ANVIL_2",
+    "type": "CONTAINER",
+    "inventoryTitle": "§7Auto Anvil §7Mk.II",
+    "energyCapacity": 256,
+    "energyConsumption": 16,
+    "processingSpeed": 1,
+    "inputSlots": [
+      19,
+      20
+    ],
+    "outputSlots": [
+      24,
+      25
+    ]
+  },
+  {
+    "id": "BOOK_BINDER",
+    "type": "CONTAINER",
+    "inventoryTitle": "§6Book Binder",
+    "energyCapacity": 256,
+    "energyConsumption": 16,
+    "processingSpeed": 1,
+    "inputSlots": [
+      19,
+      20
+    ],
+    "outputSlots": [
+      24,
+      25
+    ]
+  },
+  {
+    "id": "OIL_PUMP",
+    "type": "CONTAINER",
+    "inventoryTitle": "§4Oil Pump",
+    "energyCapacity": 256,
+    "energyConsumption": 14,
+    "processingSpeed": 1,
+    "inputSlots": [
+      19,
+      20
+    ],
+    "outputSlots": [
+      24,
+      25
+    ]
+  },
+  {
+    "id": "REFINERY",
+    "type": "CONTAINER",
+    "inventoryTitle": "§cRefinery",
+    "energyCapacity": 256,
+    "energyConsumption": 16,
+    "processingSpeed": 1,
+    "inputSlots": [
+      19,
+      20
+    ],
+    "outputSlots": [
+      24,
+      25
+    ]
+  },
+  {
+    "id": "FOOD_FABRICATOR",
+    "type": "CONTAINER",
+    "inventoryTitle": "§cFood Fabricator",
+    "energyCapacity": 256,
+    "energyConsumption": 7,
+    "processingSpeed": 1,
+    "inputSlots": [
+      19,
+      20
+    ],
+    "outputSlots": [
+      24,
+      25
+    ]
+  },
+  {
+    "id": "FOOD_FABRICATOR_2",
+    "type": "CONTAINER",
+    "inventoryTitle": "§cFood Fabricator §7(§eII§7)",
+    "energyCapacity": 512,
+    "energyConsumption": 24,
+    "processingSpeed": 6,
+    "inputSlots": [
+      19,
+      20
+    ],
+    "outputSlots": [
+      24,
+      25
+    ]
+  },
+  {
+    "id": "FOOD_COMPOSTER",
+    "type": "CONTAINER",
+    "inventoryTitle": "§cFood Composter",
+    "energyCapacity": 256,
+    "energyConsumption": 8,
+    "processingSpeed": 1,
+    "inputSlots": [
+      19,
+      20
+    ],
+    "outputSlots": [
+      24,
+      25
+    ]
+  },
+  {
+    "id": "FOOD_COMPOSTER_2",
+    "type": "CONTAINER",
+    "inventoryTitle": "§cFood Composter §7(§eII§7)",
+    "energyCapacity": 512,
+    "energyConsumption": 26,
+    "processingSpeed": 10,
+    "inputSlots": [
+      19,
+      20
+    ],
+    "outputSlots": [
+      24,
+      25
+    ]
+  },
+  {
+    "id": "FREEZER",
+    "type": "CONTAINER",
+    "inventoryTitle": "§bFreezer",
+    "energyCapacity": 256,
+    "energyConsumption": 9,
+    "processingSpeed": 1,
+    "inputSlots": [
+      19,
+      20
+    ],
+    "outputSlots": [
+      24,
+      25
+    ]
+  },
+  {
+    "id": "FREEZER_2",
+    "type": "CONTAINER",
+    "inventoryTitle": "§bFreezer §7(§eII§7)",
+    "energyCapacity": 256,
+    "energyConsumption": 15,
+    "processingSpeed": 2,
+    "inputSlots": [
+      19,
+      20
+    ],
+    "outputSlots": [
+      24,
+      25
+    ]
+  },
+  {
+    "id": "FREEZER_3",
+    "type": "CONTAINER",
+    "inventoryTitle": "§bFreezer §7(§eIII§7)",
+    "energyCapacity": 256,
+    "energyConsumption": 21,
+    "processingSpeed": 3,
+    "inputSlots": [
+      19,
+      20
+    ],
+    "outputSlots": [
+      24,
+      25
+    ]
+  },
+  {
+    "id": "CARBON_PRESS",
+    "type": "CONTAINER",
+    "inventoryTitle": "§cCarbon Press",
+    "energyCapacity": 256,
+    "energyConsumption": 10,
+    "processingSpeed": 1,
+    "inputSlots": [
+      19,
+      20
+    ],
+    "outputSlots": [
+      24,
+      25
+    ]
+  },
+  {
+    "id": "CARBON_PRESS_2",
+    "type": "CONTAINER",
+    "inventoryTitle": "§cCarbon Press §7- §eII",
+    "energyCapacity": 512,
+    "energyConsumption": 25,
+    "processingSpeed": 3,
+    "inputSlots": [
+      19,
+      20
+    ],
+    "outputSlots": [
+      24,
+      25
+    ]
+  },
+  {
+    "id": "CARBON_PRESS_3",
+    "type": "CONTAINER",
+    "inventoryTitle": "§cCarbon Press §7- §eIII",
+    "energyCapacity": 512,
+    "energyConsumption": 90,
+    "processingSpeed": 15,
+    "inputSlots": [
+      19,
+      20
+    ],
+    "outputSlots": [
+      24,
+      25
+    ]
+  },
+  {
+    "id": "ELECTRIC_SMELTERY",
+    "type": "CONTAINER",
+    "inventoryTitle": "§cElectric Smeltery",
+    "energyCapacity": 512,
+    "energyConsumption": 10,
+    "processingSpeed": 1,
+    "inputSlots": [
+      10,
+      11,
+      19,
+      20,
+      28,
+      29
+    ],
+    "outputSlots": [
+      24,
+      25
+    ]
+  },
+  {
+    "id": "ELECTRIC_SMELTERY_2",
+    "type": "CONTAINER",
+    "inventoryTitle": "§cElectric Smeltery §7- §eII",
+    "energyCapacity": 1024,
+    "energyConsumption": 20,
+    "processingSpeed": 3,
+    "inputSlots": [
+      10,
+      11,
+      19,
+      20,
+      28,
+      29
+    ],
+    "outputSlots": [
+      24,
+      25
+    ]
+  },
+  {
+    "id": "PRODUCE_COLLECTOR",
+    "type": "CONTAINER",
+    "inventoryTitle": "§bProduce Collector",
+    "energyCapacity": 256,
+    "energyConsumption": 16,
+    "processingSpeed": 1,
+    "inputSlots": [
+      19,
+      20
+    ],
+    "outputSlots": [
+      24,
+      25
+    ]
+  }
+]

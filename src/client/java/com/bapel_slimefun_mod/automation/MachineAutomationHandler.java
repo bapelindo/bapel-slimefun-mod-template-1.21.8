@@ -1,9 +1,11 @@
 package com.bapel_slimefun_mod.automation;
 
 import com.bapel_slimefun_mod.BapelSlimefunMod;
+import com.bapel_slimefun_mod.config.ModConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ClickType; // PENTING: Import ini diperlukan
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
@@ -13,7 +15,14 @@ import net.minecraft.world.item.ItemStack;
 public class MachineAutomationHandler {
     private static SlimefunMachineData currentMachine = null;
     private static long lastAutoTick = 0;
-    private static final long AUTO_DELAY_MS = 500; // 0.5 second delay between operations
+    private static ModConfig config;
+    
+    /**
+     * Initialize with config
+     */
+    public static void init(ModConfig cfg) {
+        config = cfg;
+    }
     
     /**
      * Called when player opens a container
@@ -36,6 +45,7 @@ public class MachineAutomationHandler {
      * Main automation tick - called every client tick
      */
     public static void tick() {
+        if (config == null || !config.isAutomationEnabled()) return;
         if (currentMachine == null) return;
         
         Minecraft mc = Minecraft.getInstance();
@@ -45,22 +55,22 @@ public class MachineAutomationHandler {
         AbstractContainerMenu menu = player.containerMenu;
         if (menu == null) return;
         
-        // Rate limiting
+        // Rate limiting with configurable delay
         long now = System.currentTimeMillis();
-        if (now - lastAutoTick < AUTO_DELAY_MS) return;
+        if (now - lastAutoTick < config.getAutomationDelayMs()) return;
         lastAutoTick = now;
         
         // 1. Auto-output: Move items from output slots to player inventory
-        autoOutput(menu);
+        autoOutput(menu, mc);
         
         // 2. Auto-input: Move matching items from player to input slots
-        autoInput(menu, player);
+        autoInput(menu, player, mc);
     }
     
     /**
      * Automatically move items from output slots to player inventory
      */
-    private static void autoOutput(AbstractContainerMenu menu) {
+    private static void autoOutput(AbstractContainerMenu menu, Minecraft mc) {
         if (!currentMachine.hasOutputSlots()) return;
         
         for (int slotIndex : currentMachine.getOutputSlots()) {
@@ -70,8 +80,9 @@ public class MachineAutomationHandler {
             ItemStack stack = slot.getItem();
             
             if (!stack.isEmpty()) {
-                // Simulate shift-click to move to player inventory
-                menu.quickMoveStack(Minecraft.getInstance().player, slotIndex);
+                // FIX: Gunakan gameMode.handleInventoryMouseClick agar server tahu (mencegah Ghost Item)
+                mc.gameMode.handleInventoryMouseClick(menu.containerId, slotIndex, 0, ClickType.QUICK_MOVE, mc.player);
+                
                 BapelSlimefunMod.LOGGER.debug("Auto-output: Moved {} from slot {}", 
                     stack.getItem().toString(), slotIndex);
                 break; // Only move one stack per tick to avoid lag
@@ -82,7 +93,7 @@ public class MachineAutomationHandler {
     /**
      * Automatically move matching items from player to input slots
      */
-    private static void autoInput(AbstractContainerMenu menu, LocalPlayer player) {
+    private static void autoInput(AbstractContainerMenu menu, LocalPlayer player, Minecraft mc) {
         if (!currentMachine.hasInputSlots()) return;
         if (currentMachine.getRecipe().isEmpty()) return;
         
@@ -118,7 +129,9 @@ public class MachineAutomationHandler {
                         // Move item to input slot
                         int playerSlotIndex = getPlayerSlotIndex(menu, i);
                         if (playerSlotIndex != -1) {
-                            menu.quickMoveStack(player, playerSlotIndex);
+                            // FIX: Gunakan gameMode.handleInventoryMouseClick agar server tahu (mencegah Ghost Item)
+                            mc.gameMode.handleInventoryMouseClick(menu.containerId, playerSlotIndex, 0, ClickType.QUICK_MOVE, player);
+                            
                             BapelSlimefunMod.LOGGER.debug("Auto-input: Moved {} to slot {}", 
                                 itemId, slotIndex);
                             return; // Only move one item per tick
@@ -149,6 +162,11 @@ public class MachineAutomationHandler {
             if (recipeItem.contains(":")) {
                 String[] parts = recipeItem.split(":");
                 if (parts[0].equalsIgnoreCase(itemId)) {
+                    return true;
+                }
+            } else {
+                 // Handle case where recipe item doesn't have amount (e.g. just "IRON_INGOT")
+                if (recipeItem.equalsIgnoreCase(itemId)) {
                     return true;
                 }
             }
@@ -182,5 +200,41 @@ public class MachineAutomationHandler {
      */
     public static SlimefunMachineData getCurrentMachine() {
         return currentMachine;
+    }
+    
+    /**
+     * Toggle automation on/off
+     */
+    public static void toggleAutomation() {
+        if (config != null) {
+            config.setAutomationEnabled(!config.isAutomationEnabled());
+            BapelSlimefunMod.LOGGER.info("Slimefun Automation: {}", 
+                config.isAutomationEnabled() ? "ENABLED" : "DISABLED");
+        }
+    }
+    
+    /**
+     * Set automation state
+     */
+    public static void setAutomationEnabled(boolean enabled) {
+        if (config != null) {
+            config.setAutomationEnabled(enabled);
+            BapelSlimefunMod.LOGGER.info("Slimefun Automation: {}", 
+                enabled ? "ENABLED" : "DISABLED");
+        }
+    }
+    
+    /**
+     * Check if automation is enabled
+     */
+    public static boolean isAutomationEnabled() {
+        return config != null && config.isAutomationEnabled();
+    }
+    
+    /**
+     * Get config instance
+     */
+    public static ModConfig getConfig() {
+        return config;
     }
 }

@@ -1,0 +1,2777 @@
+[
+  {
+    "id": "GRANDMAS_WALKING_STICK",
+    "name": "§7Grandmas Walking Stick",
+    "category": "slimefun:weapons"
+  },
+  {
+    "id": "GRANDPAS_WALKING_STICK",
+    "name": "§7Grandpas Walking Stick",
+    "category": "slimefun:weapons"
+  },
+  {
+    "id": "PORTABLE_CRAFTER",
+    "name": "§6Portable Crafter",
+    "category": "slimefun:items"
+  },
+  {
+    "id": "FORTUNE_COOKIE",
+    "name": "§6Fortune Cookie",
+    "category": "slimefun:food"
+  },
+  {
+    "id": "DIET_COOKIE",
+    "name": "§6Diet Cookie",
+    "category": "slimefun:food"
+  },
+  {
+    "id": "OUTPUT_CHEST",
+    "name": "§4Output Chest",
+    "category": "slimefun:basic_machines"
+  },
+  {
+    "id": "ENHANCED_CRAFTING_TABLE",
+    "name": "§eEnhanced Crafting Table",
+    "category": "slimefun:basic_machines"
+  },
+  {
+    "id": "PORTABLE_DUSTBIN",
+    "name": "§6Portable Dustbin",
+    "category": "slimefun:items"
+  },
+  {
+    "id": "BEEF_JERKY",
+    "name": "§6Beef Jerky",
+    "category": "slimefun:food"
+  },
+  {
+    "id": "PORK_JERKY",
+    "name": "§6Pork Jerky",
+    "category": "slimefun:food"
+  },
+  {
+    "id": "CHICKEN_JERKY",
+    "name": "§6Chicken Jerky",
+    "category": "slimefun:food"
+  },
+  {
+    "id": "MUTTON_JERKY",
+    "name": "§6Mutton Jerky",
+    "category": "slimefun:food"
+  },
+  {
+    "id": "RABBIT_JERKY",
+    "name": "§6Rabbit Jerky",
+    "category": "slimefun:food"
+  },
+  {
+    "id": "FISH_JERKY",
+    "name": "§6Fish Jerky",
+    "category": "slimefun:food"
+  },
+  {
+    "id": "KELP_COOKIE",
+    "name": "§2Kelp Cookie",
+    "category": "slimefun:food"
+  },
+  {
+    "id": "GRIND_STONE",
+    "name": "§bGrind Stone",
+    "category": "slimefun:basic_machines"
+  },
+  {
+    "id": "ARMOR_FORGE",
+    "name": "§6Armor Forge",
+    "category": "slimefun:basic_machines"
+  },
+  {
+    "id": "ORE_CRUSHER",
+    "name": "§bOre Crusher",
+    "category": "slimefun:basic_machines"
+  },
+  {
+    "id": "COMPRESSOR",
+    "name": "§bCompressor",
+    "category": "slimefun:basic_machines"
+  },
+  {
+    "id": "MAGIC_LUMP_1",
+    "name": "§6Magical Lump §7- §eI",
+    "category": "slimefun:magical_items"
+  },
+  {
+    "id": "MAGIC_LUMP_2",
+    "name": "§6Magical Lump §7- §eII",
+    "category": "slimefun:magical_items"
+  },
+  {
+    "id": "MAGIC_LUMP_3",
+    "name": "§6Magical Lump §7- §eIII",
+    "category": "slimefun:magical_items"
+  },
+  {
+    "id": "ENDER_LUMP_1",
+    "name": "§5Ender Lump §7- §eI",
+    "category": "slimefun:magical_items"
+  },
+  {
+    "id": "ENDER_LUMP_2",
+    "name": "§5Ender Lump §7- §eII",
+    "category": "slimefun:magical_items"
+  },
+  {
+    "id": "ENDER_LUMP_3",
+    "name": "§5Ender Lump §7- §eIII",
+    "category": "slimefun:magical_items"
+  },
+  {
+    "id": "ENDER_BACKPACK",
+    "name": "§6Ender Backpack",
+    "category": "slimefun:magical_gadgets"
+  },
+  {
+    "id": "ENDER_HELMET",
+    "name": "§5§lEnder Helmet",
+    "category": "slimefun:magical_armor"
+  },
+  {
+    "id": "ENDER_CHESTPLATE",
+    "name": "§5§lEnder Chestplate",
+    "category": "slimefun:magical_armor"
+  },
+  {
+    "id": "ENDER_LEGGINGS",
+    "name": "§5§lEnder Leggings",
+    "category": "slimefun:magical_armor"
+  },
+  {
+    "id": "ENDER_BOOTS",
+    "name": "§5§lEnder Boots",
+    "category": "slimefun:magical_armor"
+  },
+  {
+    "id": "MAGIC_EYE_OF_ENDER",
+    "name": "§6§lMagic Eye of Ender",
+    "category": "slimefun:magical_gadgets"
+  },
+  {
+    "id": "MAGIC_SUGAR",
+    "name": "§6Magic Sugar",
+    "category": "slimefun:food"
+  },
+  {
+    "id": "MONSTER_JERKY",
+    "name": "§6Monster Jerky",
+    "category": "slimefun:food"
+  },
+  {
+    "id": "SLIME_HELMET",
+    "name": "§a§lSlime Helmet",
+    "category": "slimefun:magical_armor"
+  },
+  {
+    "id": "SLIME_CHESTPLATE",
+    "name": "§a§lSlime Chestplate",
+    "category": "slimefun:magical_armor"
+  },
+  {
+    "id": "SLIME_LEGGINGS",
+    "name": "§a§lSlime Leggings",
+    "category": "slimefun:magical_armor"
+  },
+  {
+    "id": "SLIME_BOOTS",
+    "name": "§a§lSlime Boots",
+    "category": "slimefun:magical_armor"
+  },
+  {
+    "id": "SWORD_OF_BEHEADING",
+    "name": "§6Sword of Beheading",
+    "category": "slimefun:weapons"
+  },
+  {
+    "id": "MAGICAL_BOOK_COVER",
+    "name": "§6Magical Book Cover",
+    "category": "slimefun:magical_items"
+  },
+  {
+    "id": "MAGICAL_GLASS",
+    "name": "§6Magical Glass",
+    "category": "slimefun:magical_items"
+  },
+  {
+    "id": "BASIC_CIRCUIT_BOARD",
+    "name": "§bBasic Circuit Board",
+    "category": "slimefun:tech_misc"
+  },
+  {
+    "id": "ADVANCED_CIRCUIT_BOARD",
+    "name": "§bAdvanced Circuit Board",
+    "category": "slimefun:tech_misc"
+  },
+  {
+    "id": "GOLD_PAN",
+    "name": "§6Gold Pan",
+    "category": "slimefun:tools"
+  },
+  {
+    "id": "NETHER_GOLD_PAN",
+    "name": "§4Nether Gold Pan",
+    "category": "slimefun:tools"
+  },
+  {
+    "id": "SIFTED_ORE",
+    "name": "§6Sifted Ore",
+    "category": "slimefun:misc"
+  },
+  {
+    "id": "MAKESHIFT_SMELTERY",
+    "name": "§eMakeshift Smeltery",
+    "category": "slimefun:basic_machines"
+  },
+  {
+    "id": "SMELTERY",
+    "name": "§6Smeltery",
+    "category": "slimefun:basic_machines"
+  },
+  {
+    "id": "IGNITION_CHAMBER",
+    "name": "§4Automatic Ignition Chamber",
+    "category": "slimefun:basic_machines"
+  },
+  {
+    "id": "PRESSURE_CHAMBER",
+    "name": "§bPressure Chamber",
+    "category": "slimefun:basic_machines"
+  },
+  {
+    "id": "BATTERY",
+    "name": "§6Battery",
+    "category": "slimefun:tech_misc"
+  },
+  {
+    "id": "GLOWSTONE_HELMET",
+    "name": "§e§lGlowstone Helmet",
+    "category": "slimefun:magical_armor"
+  },
+  {
+    "id": "GLOWSTONE_CHESTPLATE",
+    "name": "§e§lGlowstone Chestplate",
+    "category": "slimefun:magical_armor"
+  },
+  {
+    "id": "GLOWSTONE_LEGGINGS",
+    "name": "§e§lGlowstone Leggings",
+    "category": "slimefun:magical_armor"
+  },
+  {
+    "id": "GLOWSTONE_BOOTS",
+    "name": "§e§lGlowstone Boots",
+    "category": "slimefun:magical_armor"
+  },
+  {
+    "id": "RAINBOW_HELMET",
+    "name": "§d§lRainbow Helmet",
+    "category": "slimefun:magical_armor"
+  },
+  {
+    "id": "RAINBOW_CHESTPLATE",
+    "name": "§d§lRainbow Chestplate",
+    "category": "slimefun:magical_armor"
+  },
+  {
+    "id": "RAINBOW_LEGGINGS",
+    "name": "§d§lRainbow Leggings",
+    "category": "slimefun:magical_armor"
+  },
+  {
+    "id": "RAINBOW_BOOTS",
+    "name": "§d§lRainbow Boots",
+    "category": "slimefun:magical_armor"
+  },
+  {
+    "id": "DAMASCUS_STEEL_HELMET",
+    "name": "§7Damascus Steel Helmet",
+    "category": "slimefun:armor"
+  },
+  {
+    "id": "DAMASCUS_STEEL_CHESTPLATE",
+    "name": "§7Damascus Steel Chestplate",
+    "category": "slimefun:armor"
+  },
+  {
+    "id": "DAMASCUS_STEEL_LEGGINGS",
+    "name": "§7Damascus Steel Leggings",
+    "category": "slimefun:armor"
+  },
+  {
+    "id": "DAMASCUS_STEEL_BOOTS",
+    "name": "§7Damascus Steel Boots",
+    "category": "slimefun:armor"
+  },
+  {
+    "id": "REINFORCED_ALLOY_HELMET",
+    "name": "§bReinforced Helmet",
+    "category": "slimefun:armor"
+  },
+  {
+    "id": "REINFORCED_ALLOY_CHESTPLATE",
+    "name": "§bReinforced Chestplate",
+    "category": "slimefun:armor"
+  },
+  {
+    "id": "REINFORCED_ALLOY_LEGGINGS",
+    "name": "§bReinforced Leggings",
+    "category": "slimefun:armor"
+  },
+  {
+    "id": "REINFORCED_ALLOY_BOOTS",
+    "name": "§bReinforced Boots",
+    "category": "slimefun:armor"
+  },
+  {
+    "id": "CACTUS_HELMET",
+    "name": "§2Cactus Helmet",
+    "category": "slimefun:armor"
+  },
+  {
+    "id": "CACTUS_CHESTPLATE",
+    "name": "§2Cactus Chestplate",
+    "category": "slimefun:armor"
+  },
+  {
+    "id": "CACTUS_LEGGINGS",
+    "name": "§2Cactus Leggings",
+    "category": "slimefun:armor"
+  },
+  {
+    "id": "CACTUS_BOOTS",
+    "name": "§2Cactus Boots",
+    "category": "slimefun:armor"
+  },
+  {
+    "id": "REINFORCED_ALLOY_INGOT",
+    "name": "§b§lReinforced Alloy Ingot",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "HARDENED_METAL_INGOT",
+    "name": "§b§lHardened Metal",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "DAMASCUS_STEEL_INGOT",
+    "name": "§bDamascus Steel Ingot",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "STEEL_INGOT",
+    "name": "§bSteel Ingot",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "BRONZE_INGOT",
+    "name": "§bBronze Ingot",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "DURALUMIN_INGOT",
+    "name": "§bDuralumin Ingot",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "BILLON_INGOT",
+    "name": "§bBillon Ingot",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "BRASS_INGOT",
+    "name": "§bBrass Ingot",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "ALUMINUM_BRASS_INGOT",
+    "name": "§bAluminum Brass Ingot",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "ALUMINUM_BRONZE_INGOT",
+    "name": "§bAluminum Bronze Ingot",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "CORINTHIAN_BRONZE_INGOT",
+    "name": "§bCorinthian Bronze Ingot",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "SOLDER_INGOT",
+    "name": "§bSolder Ingot",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "SYNTHETIC_SAPPHIRE",
+    "name": "§bSynthetic Sapphire",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "SYNTHETIC_DIAMOND",
+    "name": "§bSynthetic Diamond",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "RAW_CARBONADO",
+    "name": "§bRaw Carbonado",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "NICKEL_INGOT",
+    "name": "§bNickel Ingot",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "COBALT_INGOT",
+    "name": "§9Cobalt Ingot",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "CARBONADO",
+    "name": "§b§lCarbonado",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "FERROSILICON",
+    "name": "§bFerrosilicon",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "IRON_DUST",
+    "name": "§6Iron Dust",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "GOLD_DUST",
+    "name": "§6Gold Dust",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "COPPER_DUST",
+    "name": "§6Copper Dust",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "TIN_DUST",
+    "name": "§6Tin Dust",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "SILVER_DUST",
+    "name": "§6Silver Dust",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "LEAD_DUST",
+    "name": "§6Lead Dust",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "ALUMINUM_DUST",
+    "name": "§6Aluminum Dust",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "ZINC_DUST",
+    "name": "§6Zinc Dust",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "MAGNESIUM_DUST",
+    "name": "§6Magnesium",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "COPPER_INGOT",
+    "name": "§bCopper Ingot",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "TIN_INGOT",
+    "name": "§bTin Ingot",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "SILVER_INGOT",
+    "name": "§bSilver Ingot",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "LEAD_INGOT",
+    "name": "§bLead Ingot",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "ALUMINUM_INGOT",
+    "name": "§bAluminum Ingot",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "ZINC_INGOT",
+    "name": "§bZinc Ingot",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "MAGNESIUM_INGOT",
+    "name": "§bMagnesium Ingot",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "SULFATE",
+    "name": "§6Sulfate",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "CARBON",
+    "name": "§eCarbon",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "WHEAT_FLOUR",
+    "name": "§fWheat Flour",
+    "category": "slimefun:misc"
+  },
+  {
+    "id": "STEEL_PLATE",
+    "name": "§7§lSteel Plate",
+    "category": "slimefun:misc"
+  },
+  {
+    "id": "COMPRESSED_CARBON",
+    "name": "§cCompressed Carbon",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "CARBON_CHUNK",
+    "name": "§4Carbon Chunk",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "STEEL_THRUSTER",
+    "name": "§7§lSteel Thruster",
+    "category": "slimefun:tech_misc"
+  },
+  {
+    "id": "POWER_CRYSTAL",
+    "name": "§c§lPower Crystal",
+    "category": "slimefun:tech_misc"
+  },
+  {
+    "id": "DURALUMIN_JETPACK",
+    "name": "§9Electric Jetpack §7- §eI",
+    "category": "slimefun:technical_gadgets"
+  },
+  {
+    "id": "SOLDER_JETPACK",
+    "name": "§9Electric Jetpack §7- §eII",
+    "category": "slimefun:technical_gadgets"
+  },
+  {
+    "id": "BILLON_JETPACK",
+    "name": "§9Electric Jetpack §7- §eIII",
+    "category": "slimefun:technical_gadgets"
+  },
+  {
+    "id": "STEEL_JETPACK",
+    "name": "§9Electric Jetpack §7- §eIV",
+    "category": "slimefun:technical_gadgets"
+  },
+  {
+    "id": "DAMASCUS_STEEL_JETPACK",
+    "name": "§9Electric Jetpack §7- §eV",
+    "category": "slimefun:technical_gadgets"
+  },
+  {
+    "id": "REINFORCED_ALLOY_JETPACK",
+    "name": "§9Electric Jetpack §7- §eVI",
+    "category": "slimefun:technical_gadgets"
+  },
+  {
+    "id": "CARBONADO_JETPACK",
+    "name": "§9Electric Jetpack §7- §eVII",
+    "category": "slimefun:technical_gadgets"
+  },
+  {
+    "id": "ARMORED_JETPACK",
+    "name": "§9Armored Jetpack",
+    "category": "slimefun:technical_gadgets"
+  },
+  {
+    "id": "PARACHUTE",
+    "name": "§f§lParachute",
+    "category": "slimefun:technical_gadgets"
+  },
+  {
+    "id": "HOLOGRAM_PROJECTOR",
+    "name": "§bHologram Projector",
+    "category": "slimefun:technical_gadgets"
+  },
+  {
+    "id": "CHAIN",
+    "name": "§bChain",
+    "category": "slimefun:misc"
+  },
+  {
+    "id": "HOOK",
+    "name": "§bHook",
+    "category": "slimefun:misc"
+  },
+  {
+    "id": "GRAPPLING_HOOK",
+    "name": "§6Grappling Hook",
+    "category": "slimefun:tools"
+  },
+  {
+    "id": "MAGIC_WORKBENCH",
+    "name": "§6Magic Workbench",
+    "category": "slimefun:basic_machines"
+  },
+  {
+    "id": "STAFF_ELEMENTAL",
+    "name": "§6Elemental Staff",
+    "category": "slimefun:magical_gadgets"
+  },
+  {
+    "id": "STAFF_ELEMENTAL_WIND",
+    "name": "§6Elemental Staff §7- §b§oWind",
+    "category": "slimefun:magical_gadgets"
+  },
+  {
+    "id": "STAFF_ELEMENTAL_WATER",
+    "name": "§6Elemental Staff §7- §1§oWater",
+    "category": "slimefun:magical_gadgets"
+  },
+  {
+    "id": "STAFF_ELEMENTAL_FIRE",
+    "name": "§6Elemental Staff §7- §c§oFire",
+    "category": "slimefun:magical_gadgets"
+  },
+  {
+    "id": "DURALUMIN_MULTI_TOOL",
+    "name": "§9Multi Tool §7- §eI",
+    "category": "slimefun:technical_gadgets"
+  },
+  {
+    "id": "SOLDER_MULTI_TOOL",
+    "name": "§9Multi Tool §7- §eII",
+    "category": "slimefun:technical_gadgets"
+  },
+  {
+    "id": "BILLON_MULTI_TOOL",
+    "name": "§9Multi Tool §7- §eIII",
+    "category": "slimefun:technical_gadgets"
+  },
+  {
+    "id": "STEEL_MULTI_TOOL",
+    "name": "§9Multi Tool §7- §eIV",
+    "category": "slimefun:technical_gadgets"
+  },
+  {
+    "id": "DAMASCUS_STEEL_MULTI_TOOL",
+    "name": "§9Multi Tool §7- §eV",
+    "category": "slimefun:technical_gadgets"
+  },
+  {
+    "id": "REINFORCED_ALLOY_MULTI_TOOL",
+    "name": "§9Multi Tool §7- §eVI",
+    "category": "slimefun:technical_gadgets"
+  },
+  {
+    "id": "CARBONADO_MULTI_TOOL",
+    "name": "§9Multi Tool §7- §eVII",
+    "category": "slimefun:technical_gadgets"
+  },
+  {
+    "id": "ORE_WASHER",
+    "name": "§6Ore Washer",
+    "category": "slimefun:basic_machines"
+  },
+  {
+    "id": "GOLD_24K",
+    "name": "§fGold Ingot §7(24-Carat)",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "GOLD_22K",
+    "name": "§fGold Ingot §7(22-Carat)",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "GOLD_20K",
+    "name": "§fGold Ingot §7(20-Carat)",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "GOLD_18K",
+    "name": "§fGold Ingot §7(18-Carat)",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "GOLD_16K",
+    "name": "§fGold Ingot §7(16-Carat)",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "GOLD_14K",
+    "name": "§fGold Ingot §7(14-Carat)",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "GOLD_12K",
+    "name": "§fGold Ingot §7(12-Carat)",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "GOLD_10K",
+    "name": "§fGold Ingot §7(10-Carat)",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "GOLD_8K",
+    "name": "§fGold Ingot §7(8-Carat)",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "GOLD_6K",
+    "name": "§fGold Ingot §7(6-Carat)",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "GOLD_4K",
+    "name": "§fGold Ingot §7(4-Carat)",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "STONE_CHUNK",
+    "name": "§6Stone Chunk",
+    "category": "slimefun:misc"
+  },
+  {
+    "id": "SILICON",
+    "name": "§6Silicon",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "SOLAR_PANEL",
+    "name": "§9Photovoltaic Cell",
+    "category": "slimefun:tech_misc"
+  },
+  {
+    "id": "SOLAR_HELMET",
+    "name": "§bSolar Helmet",
+    "category": "slimefun:technical_gadgets"
+  },
+  {
+    "id": "LAVA_CRYSTAL",
+    "name": "§4Lava Crystal",
+    "category": "slimefun:magical_items"
+  },
+  {
+    "id": "STAFF_ELEMENTAL_STORM",
+    "name": "§6Elemental Staff §7- §8§oStorm",
+    "category": "slimefun:magical_gadgets"
+  },
+  {
+    "id": "MAGICAL_ZOMBIE_PILLS",
+    "name": "§6Magical Zombie Pills",
+    "category": "slimefun:magical_gadgets"
+  },
+  {
+    "id": "SMELTERS_PICKAXE",
+    "name": "§6Smelter's Pickaxe",
+    "category": "slimefun:tools"
+  },
+  {
+    "id": "COMMON_TALISMAN",
+    "name": "§6Common Talisman",
+    "category": "slimefun:magical_items"
+  },
+  {
+    "id": "ANVIL_TALISMAN",
+    "name": "§aTalisman of the Anvil",
+    "category": "slimefun:talismans"
+  },
+  {
+    "id": "ENDER_ANVIL_TALISMAN",
+    "name": "§5Ender Talisman of the Anvil",
+    "category": "slimefun:ender_talismans"
+  },
+  {
+    "id": "MINER_TALISMAN",
+    "name": "§aTalisman of the Miner",
+    "category": "slimefun:talismans"
+  },
+  {
+    "id": "ENDER_MINER_TALISMAN",
+    "name": "§5Ender Talisman of the Miner",
+    "category": "slimefun:ender_talismans"
+  },
+  {
+    "id": "FARMER_TALISMAN",
+    "name": "§aTalisman of the Farmer",
+    "category": "slimefun:talismans"
+  },
+  {
+    "id": "ENDER_FARMER_TALISMAN",
+    "name": "§5Ender Talisman of the Farmer",
+    "category": "slimefun:ender_talismans"
+  },
+  {
+    "id": "HUNTER_TALISMAN",
+    "name": "§aTalisman of the Hunter",
+    "category": "slimefun:talismans"
+  },
+  {
+    "id": "ENDER_HUNTER_TALISMAN",
+    "name": "§5Ender Talisman of the Hunter",
+    "category": "slimefun:ender_talismans"
+  },
+  {
+    "id": "LAVA_TALISMAN",
+    "name": "§aTalisman of the Lava Walker",
+    "category": "slimefun:talismans"
+  },
+  {
+    "id": "ENDER_LAVA_TALISMAN",
+    "name": "§5Ender Talisman of the Lava Walker",
+    "category": "slimefun:ender_talismans"
+  },
+  {
+    "id": "WATER_TALISMAN",
+    "name": "§aTalisman of the Water Breather",
+    "category": "slimefun:talismans"
+  },
+  {
+    "id": "ENDER_WATER_TALISMAN",
+    "name": "§5Ender Talisman of the Water Breather",
+    "category": "slimefun:ender_talismans"
+  },
+  {
+    "id": "ANGEL_TALISMAN",
+    "name": "§aTalisman of the Angel",
+    "category": "slimefun:talismans"
+  },
+  {
+    "id": "ENDER_ANGEL_TALISMAN",
+    "name": "§5Ender Talisman of the Angel",
+    "category": "slimefun:ender_talismans"
+  },
+  {
+    "id": "FIRE_TALISMAN",
+    "name": "§aTalisman of the Firefighter",
+    "category": "slimefun:talismans"
+  },
+  {
+    "id": "ENDER_FIRE_TALISMAN",
+    "name": "§5Ender Talisman of the Firefighter",
+    "category": "slimefun:ender_talismans"
+  },
+  {
+    "id": "MAGICIAN_TALISMAN",
+    "name": "§aTalisman of the Magician",
+    "category": "slimefun:talismans"
+  },
+  {
+    "id": "ENDER_MAGICIAN_TALISMAN",
+    "name": "§5Ender Talisman of the Magician",
+    "category": "slimefun:ender_talismans"
+  },
+  {
+    "id": "TRAVELLER_TALISMAN",
+    "name": "§aTalisman of the Traveller",
+    "category": "slimefun:talismans"
+  },
+  {
+    "id": "ENDER_TRAVELLER_TALISMAN",
+    "name": "§5Ender Talisman of the Traveller",
+    "category": "slimefun:ender_talismans"
+  },
+  {
+    "id": "WARRIOR_TALISMAN",
+    "name": "§aTalisman of the Warrior",
+    "category": "slimefun:talismans"
+  },
+  {
+    "id": "ENDER_WARRIOR_TALISMAN",
+    "name": "§5Ender Talisman of the Warrior",
+    "category": "slimefun:ender_talismans"
+  },
+  {
+    "id": "KNIGHT_TALISMAN",
+    "name": "§aTalisman of the Knight",
+    "category": "slimefun:talismans"
+  },
+  {
+    "id": "ENDER_KNIGHT_TALISMAN",
+    "name": "§5Ender Talisman of the Knight",
+    "category": "slimefun:ender_talismans"
+  },
+  {
+    "id": "CAVEMAN_TALISMAN",
+    "name": "§aTalisman of the Caveman",
+    "category": "slimefun:talismans"
+  },
+  {
+    "id": "ENDER_CAVEMAN_TALISMAN",
+    "name": "§5Ender Talisman of the Caveman",
+    "category": "slimefun:ender_talismans"
+  },
+  {
+    "id": "WISE_TALISMAN",
+    "name": "§aTalisman of the Wise",
+    "category": "slimefun:talismans"
+  },
+  {
+    "id": "ENDER_WISE_TALISMAN",
+    "name": "§5Ender Talisman of the Wise",
+    "category": "slimefun:ender_talismans"
+  },
+  {
+    "id": "GILDED_IRON",
+    "name": "§6§lGilded Iron",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "SYNTHETIC_EMERALD",
+    "name": "§bSynthetic Emerald",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "CHAIN_HELMET",
+    "name": "[Chainmail Helmet]",
+    "category": "slimefun:armor"
+  },
+  {
+    "id": "CHAIN_CHESTPLATE",
+    "name": "[Chainmail Chestplate]",
+    "category": "slimefun:armor"
+  },
+  {
+    "id": "CHAIN_LEGGINGS",
+    "name": "[Chainmail Leggings]",
+    "category": "slimefun:armor"
+  },
+  {
+    "id": "CHAIN_BOOTS",
+    "name": "[Chainmail Boots]",
+    "category": "slimefun:armor"
+  },
+  {
+    "id": "WHIRLWIND_TALISMAN",
+    "name": "§aTalisman of the Whirlwind",
+    "category": "slimefun:talismans"
+  },
+  {
+    "id": "ENDER_WHIRLWIND_TALISMAN",
+    "name": "§5Ender Talisman of the Whirlwind",
+    "category": "slimefun:ender_talismans"
+  },
+  {
+    "id": "WIZARD_TALISMAN",
+    "name": "§aTalisman of the Wizard",
+    "category": "slimefun:talismans"
+  },
+  {
+    "id": "ENDER_WIZARD_TALISMAN",
+    "name": "§5Ender Talisman of the Wizard",
+    "category": "slimefun:ender_talismans"
+  },
+  {
+    "id": "LUMBER_AXE",
+    "name": "§6Lumber Axe",
+    "category": "slimefun:tools"
+  },
+  {
+    "id": "SALT",
+    "name": "§fSalt",
+    "category": "slimefun:misc"
+  },
+  {
+    "id": "HEAVY_CREAM",
+    "name": "§fHeavy Cream",
+    "category": "slimefun:misc"
+  },
+  {
+    "id": "CHEESE",
+    "name": "§fCheese",
+    "category": "slimefun:misc"
+  },
+  {
+    "id": "BUTTER",
+    "name": "§fButter",
+    "category": "slimefun:misc"
+  },
+  {
+    "id": "GILDED_IRON_HELMET",
+    "name": "§6Gilded Iron Helmet",
+    "category": "slimefun:armor"
+  },
+  {
+    "id": "GILDED_IRON_CHESTPLATE",
+    "name": "§6Gilded Iron Chestplate",
+    "category": "slimefun:armor"
+  },
+  {
+    "id": "GILDED_IRON_LEGGINGS",
+    "name": "§6Gilded Iron Leggings",
+    "category": "slimefun:armor"
+  },
+  {
+    "id": "GILDED_IRON_BOOTS",
+    "name": "§6Gilded Iron Boots",
+    "category": "slimefun:armor"
+  },
+  {
+    "id": "REINFORCED_CLOTH",
+    "name": "§bReinforced Cloth",
+    "category": "slimefun:tech_misc"
+  },
+  {
+    "id": "SCUBA_HELMET",
+    "name": "§cScuba Helmet",
+    "category": "slimefun:armor"
+  },
+  {
+    "id": "HAZMAT_CHESTPLATE",
+    "name": "§cHazmat Suit",
+    "category": "slimefun:armor"
+  },
+  {
+    "id": "HAZMAT_LEGGINGS",
+    "name": "§cHazmat Suit Leggings",
+    "category": "slimefun:armor"
+  },
+  {
+    "id": "RUBBER_BOOTS",
+    "name": "§cHazmat Boots",
+    "category": "slimefun:armor"
+  },
+  {
+    "id": "CRUSHED_ORE",
+    "name": "§6Crushed Ore",
+    "category": "slimefun:misc"
+  },
+  {
+    "id": "PULVERIZED_ORE",
+    "name": "§6Pulverized Ore",
+    "category": "slimefun:misc"
+  },
+  {
+    "id": "PURE_ORE_CLUSTER",
+    "name": "§6Pure Ore Cluster",
+    "category": "slimefun:misc"
+  },
+  {
+    "id": "TINY_URANIUM",
+    "name": "§cTiny Pile of Uranium",
+    "category": "slimefun:misc"
+  },
+  {
+    "id": "SMALL_URANIUM",
+    "name": "§cSmall Chunk of Uranium",
+    "category": "slimefun:misc"
+  },
+  {
+    "id": "URANIUM",
+    "name": "§4Uranium",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "REDSTONE_ALLOY",
+    "name": "§cRedstone Alloy Ingot",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "GOLD_12K_HELMET",
+    "name": "§6Golden Helmet §7(12-Carat)",
+    "category": "slimefun:armor"
+  },
+  {
+    "id": "GOLD_12K_CHESTPLATE",
+    "name": "§6Golden Chestplate §7(12-Carat)",
+    "category": "slimefun:armor"
+  },
+  {
+    "id": "GOLD_12K_LEGGINGS",
+    "name": "§6Golden Leggings §7(12-Carat)",
+    "category": "slimefun:armor"
+  },
+  {
+    "id": "GOLD_12K_BOOTS",
+    "name": "§6Golden Boots §7(12-Carat)",
+    "category": "slimefun:armor"
+  },
+  {
+    "id": "CLOTH",
+    "name": "§bCloth",
+    "category": "slimefun:misc"
+  },
+  {
+    "id": "RAG",
+    "name": "§cRag",
+    "category": "slimefun:items"
+  },
+  {
+    "id": "BANDAGE",
+    "name": "§cBandage",
+    "category": "slimefun:items"
+  },
+  {
+    "id": "SPLINT",
+    "name": "§cSplint",
+    "category": "slimefun:items"
+  },
+  {
+    "id": "CAN",
+    "name": "§fTin Can",
+    "category": "slimefun:misc"
+  },
+  {
+    "id": "VITAMINS",
+    "name": "§cVitamins",
+    "category": "slimefun:items"
+  },
+  {
+    "id": "MEDICINE",
+    "name": "§cMedicine",
+    "category": "slimefun:items"
+  },
+  {
+    "id": "NIGHT_VISION_GOGGLES",
+    "name": "§aNight Vision Goggles",
+    "category": "slimefun:technical_gadgets"
+  },
+  {
+    "id": "PICKAXE_OF_CONTAINMENT",
+    "name": "§cPickaxe of Containment",
+    "category": "slimefun:tools"
+  },
+  {
+    "id": "TABLE_SAW",
+    "name": "§6Table Saw",
+    "category": "slimefun:basic_machines"
+  },
+  {
+    "id": "SLIME_STEEL_HELMET",
+    "name": "§a§lSlime Helmet",
+    "category": "slimefun:magical_armor"
+  },
+  {
+    "id": "SLIME_STEEL_CHESTPLATE",
+    "name": "§a§lSlime Chestplate",
+    "category": "slimefun:magical_armor"
+  },
+  {
+    "id": "SLIME_STEEL_LEGGINGS",
+    "name": "§a§lSlime Leggings",
+    "category": "slimefun:magical_armor"
+  },
+  {
+    "id": "SLIME_STEEL_BOOTS",
+    "name": "§a§lSlime Boots",
+    "category": "slimefun:magical_armor"
+  },
+  {
+    "id": "BLADE_OF_VAMPIRES",
+    "name": "§cBlade of Vampires",
+    "category": "slimefun:weapons"
+  },
+  {
+    "id": "GOLD_24K_BLOCK",
+    "name": "§fGold Block §7(24-Carat)",
+    "category": "slimefun:misc"
+  },
+  {
+    "id": "COMPOSTER",
+    "name": "§aComposter",
+    "category": "slimefun:basic_machines"
+  },
+  {
+    "id": "FARMER_SHOES",
+    "name": "§eFarmer Shoes",
+    "category": "slimefun:magical_armor"
+  },
+  {
+    "id": "EXPLOSIVE_PICKAXE",
+    "name": "§eExplosive Pickaxe",
+    "category": "slimefun:tools"
+  },
+  {
+    "id": "EXPLOSIVE_SHOVEL",
+    "name": "§eExplosive Shovel",
+    "category": "slimefun:tools"
+  },
+  {
+    "id": "AUTOMATED_PANNING_MACHINE",
+    "name": "§eAutomated Panning Machine",
+    "category": "slimefun:basic_machines"
+  },
+  {
+    "id": "INDUSTRIAL_MINER",
+    "name": "§bIndustrial Miner",
+    "category": "slimefun:basic_machines"
+  },
+  {
+    "id": "ADVANCED_INDUSTRIAL_MINER",
+    "name": "§cAdvanced Industrial Miner",
+    "category": "slimefun:basic_machines"
+  },
+  {
+    "id": "BOOTS_OF_THE_STOMPER",
+    "name": "§bBoots of the Stomper",
+    "category": "slimefun:magical_armor"
+  },
+  {
+    "id": "PICKAXE_OF_THE_SEEKER",
+    "name": "§aPickaxe of the Seeker",
+    "category": "slimefun:tools"
+  },
+  {
+    "id": "SMALL_BACKPACK",
+    "name": "§eSmall Backpack",
+    "category": "slimefun:items"
+  },
+  {
+    "id": "MEDIUM_BACKPACK",
+    "name": "§eBackpack",
+    "category": "slimefun:items"
+  },
+  {
+    "id": "LARGE_BACKPACK",
+    "name": "§eLarge Backpack",
+    "category": "slimefun:items"
+  },
+  {
+    "id": "WOVEN_BACKPACK",
+    "name": "§eWoven Backpack",
+    "category": "slimefun:items"
+  },
+  {
+    "id": "CRUCIBLE",
+    "name": "§cCrucible",
+    "category": "slimefun:basic_machines"
+  },
+  {
+    "id": "GILDED_BACKPACK",
+    "name": "§eGilded Backpack",
+    "category": "slimefun:items"
+  },
+  {
+    "id": "RADIANT_BACKPACK",
+    "name": "§eRadiant Backpack",
+    "category": "slimefun:items"
+  },
+  {
+    "id": "RESTORED_BACKPACK",
+    "name": "§eRestored Backpack",
+    "category": "slimefun:items"
+  },
+  {
+    "id": "MAGNET",
+    "name": "§cMagnet",
+    "category": "slimefun:tech_misc"
+  },
+  {
+    "id": "INFUSED_MAGNET",
+    "name": "§aInfused Magnet",
+    "category": "slimefun:magical_gadgets"
+  },
+  {
+    "id": "COBALT_PICKAXE",
+    "name": "§9Cobalt Pickaxe",
+    "category": "slimefun:tools"
+  },
+  {
+    "id": "NECROTIC_SKULL",
+    "name": "§cNecrotic Skull",
+    "category": "slimefun:magical_items"
+  },
+  {
+    "id": "ESSENCE_OF_AFTERLIFE",
+    "name": "§4Essence of Afterlife",
+    "category": "slimefun:magical_items"
+  },
+  {
+    "id": "SYNTHETIC_SHULKER_SHELL",
+    "name": "§dSynthetic Shulker Shell",
+    "category": "slimefun:magical_items"
+  },
+  {
+    "id": "BOUND_BACKPACK",
+    "name": "§cSoulbound Backpack",
+    "category": "slimefun:magical_gadgets"
+  },
+  {
+    "id": "DURALUMIN_JETBOOTS",
+    "name": "§9Jet Boots §7- §eI",
+    "category": "slimefun:technical_gadgets"
+  },
+  {
+    "id": "SOLDER_JETBOOTS",
+    "name": "§9Jet Boots §7- §eII",
+    "category": "slimefun:technical_gadgets"
+  },
+  {
+    "id": "BILLON_JETBOOTS",
+    "name": "§9Jet Boots §7- §eIII",
+    "category": "slimefun:technical_gadgets"
+  },
+  {
+    "id": "STEEL_JETBOOTS",
+    "name": "§9Jet Boots §7- §eIV",
+    "category": "slimefun:technical_gadgets"
+  },
+  {
+    "id": "DAMASCUS_STEEL_JETBOOTS",
+    "name": "§9Jet Boots §7- §eV",
+    "category": "slimefun:technical_gadgets"
+  },
+  {
+    "id": "REINFORCED_ALLOY_JETBOOTS",
+    "name": "§9Jet Boots §7- §eVI",
+    "category": "slimefun:technical_gadgets"
+  },
+  {
+    "id": "CARBONADO_JETBOOTS",
+    "name": "§9Jet Boots §7- §eVII",
+    "category": "slimefun:technical_gadgets"
+  },
+  {
+    "id": "ARMORED_JETBOOTS",
+    "name": "§9Armored Jet Boots",
+    "category": "slimefun:technical_gadgets"
+  },
+  {
+    "id": "SEISMIC_AXE",
+    "name": "§aSeismic Axe",
+    "category": "slimefun:weapons"
+  },
+  {
+    "id": "PICKAXE_OF_VEIN_MINING",
+    "name": "§ePickaxe of Vein Mining",
+    "category": "slimefun:tools"
+  },
+  {
+    "id": "CLIMBING_PICK",
+    "name": "§bClimbing Pick",
+    "category": "slimefun:tools"
+  },
+  {
+    "id": "SOULBOUND_SWORD",
+    "name": "§cSoulbound Sword",
+    "category": "slimefun:weapons"
+  },
+  {
+    "id": "SOULBOUND_TRIDENT",
+    "name": "§cSoulbound Trident",
+    "category": "slimefun:weapons"
+  },
+  {
+    "id": "SOULBOUND_BOW",
+    "name": "§cSoulbound Bow",
+    "category": "slimefun:weapons"
+  },
+  {
+    "id": "SOULBOUND_PICKAXE",
+    "name": "§cSoulbound Pickaxe",
+    "category": "slimefun:tools"
+  },
+  {
+    "id": "SOULBOUND_AXE",
+    "name": "§cSoulbound Axe",
+    "category": "slimefun:tools"
+  },
+  {
+    "id": "SOULBOUND_SHOVEL",
+    "name": "§cSoulbound Shovel",
+    "category": "slimefun:tools"
+  },
+  {
+    "id": "SOULBOUND_HOE",
+    "name": "§cSoulbound Hoe",
+    "category": "slimefun:tools"
+  },
+  {
+    "id": "SOULBOUND_HELMET",
+    "name": "§cSoulbound Helmet",
+    "category": "slimefun:magical_armor"
+  },
+  {
+    "id": "SOULBOUND_CHESTPLATE",
+    "name": "§cSoulbound Chestplate",
+    "category": "slimefun:magical_armor"
+  },
+  {
+    "id": "SOULBOUND_LEGGINGS",
+    "name": "§cSoulbound Leggings",
+    "category": "slimefun:magical_armor"
+  },
+  {
+    "id": "SOULBOUND_BOOTS",
+    "name": "§cSoulbound Boots",
+    "category": "slimefun:magical_armor"
+  },
+  {
+    "id": "JUICER",
+    "name": "§aJuicer",
+    "category": "slimefun:basic_machines"
+  },
+  {
+    "id": "APPLE_JUICE",
+    "name": "§cApple Juice",
+    "category": "slimefun:food"
+  },
+  {
+    "id": "CARROT_JUICE",
+    "name": "§6Carrot Juice",
+    "category": "slimefun:food"
+  },
+  {
+    "id": "MELON_JUICE",
+    "name": "§cMelon Juice",
+    "category": "slimefun:food"
+  },
+  {
+    "id": "PUMPKIN_JUICE",
+    "name": "§6Pumpkin Juice",
+    "category": "slimefun:food"
+  },
+  {
+    "id": "SWEET_BERRY_JUICE",
+    "name": "§cSweet Berry Juice",
+    "category": "slimefun:food"
+  },
+  {
+    "id": "GOLDEN_APPLE_JUICE",
+    "name": "§bGolden Apple Juice",
+    "category": "slimefun:food"
+  },
+  {
+    "id": "ENCHANTED_GOLDEN_APPLE",
+    "name": "[Enchanted Golden Apple]",
+    "category": "slimefun:food"
+  },
+  {
+    "id": "BROKEN_SPAWNER",
+    "name": "§cBroken Spawner",
+    "category": "slimefun:magical_items"
+  },
+  {
+    "id": "REINFORCED_SPAWNER",
+    "name": "§bReinforced Spawner",
+    "category": "slimefun:magical_gadgets"
+  },
+  {
+    "id": "ENHANCED_FURNACE",
+    "name": "§7Enhanced Furnace - §eI",
+    "category": "slimefun:basic_machines"
+  },
+  {
+    "id": "ENHANCED_FURNACE_2",
+    "name": "§7Enhanced Furnace - §eII",
+    "category": "slimefun:basic_machines"
+  },
+  {
+    "id": "ENHANCED_FURNACE_3",
+    "name": "§7Enhanced Furnace - §eIII",
+    "category": "slimefun:basic_machines"
+  },
+  {
+    "id": "ENHANCED_FURNACE_4",
+    "name": "§7Enhanced Furnace - §eIV",
+    "category": "slimefun:basic_machines"
+  },
+  {
+    "id": "ENHANCED_FURNACE_5",
+    "name": "§7Enhanced Furnace - §eV",
+    "category": "slimefun:basic_machines"
+  },
+  {
+    "id": "ENHANCED_FURNACE_6",
+    "name": "§7Enhanced Furnace - §eVI",
+    "category": "slimefun:basic_machines"
+  },
+  {
+    "id": "ENHANCED_FURNACE_7",
+    "name": "§7Enhanced Furnace - §eVII",
+    "category": "slimefun:basic_machines"
+  },
+  {
+    "id": "ENHANCED_FURNACE_8",
+    "name": "§7Enhanced Furnace - §eVIII",
+    "category": "slimefun:basic_machines"
+  },
+  {
+    "id": "ENHANCED_FURNACE_9",
+    "name": "§7Enhanced Furnace - §eIX",
+    "category": "slimefun:basic_machines"
+  },
+  {
+    "id": "ENHANCED_FURNACE_10",
+    "name": "§7Enhanced Furnace - §eX",
+    "category": "slimefun:basic_machines"
+  },
+  {
+    "id": "ENHANCED_FURNACE_11",
+    "name": "§7Enhanced Furnace - §eXI",
+    "category": "slimefun:basic_machines"
+  },
+  {
+    "id": "REINFORCED_FURNACE",
+    "name": "§7Reinforced Furnace",
+    "category": "slimefun:basic_machines"
+  },
+  {
+    "id": "CARBONADO_EDGED_FURNACE",
+    "name": "§7Carbonado Edged Furnace",
+    "category": "slimefun:basic_machines"
+  },
+  {
+    "id": "ELECTRO_MAGNET",
+    "name": "§cElectromagnet",
+    "category": "slimefun:tech_misc"
+  },
+  {
+    "id": "ELECTRIC_MOTOR",
+    "name": "§cElectric Motor",
+    "category": "slimefun:tech_misc"
+  },
+  {
+    "id": "HEATING_COIL",
+    "name": "§cHeating Coil",
+    "category": "slimefun:tech_misc"
+  },
+  {
+    "id": "COPPER_WIRE",
+    "name": "§6Copper Wire",
+    "category": "slimefun:tech_misc"
+  },
+  {
+    "id": "BLOCK_PLACER",
+    "name": "§aBlock Placer",
+    "category": "slimefun:basic_machines"
+  },
+  {
+    "id": "SCROLL_OF_DIMENSIONAL_TELEPOSITION",
+    "name": "§6Scroll of Dimensional Teleposition",
+    "category": "slimefun:magical_gadgets"
+  },
+  {
+    "id": "EXPLOSIVE_BOW",
+    "name": "§cExplosive Bow",
+    "category": "slimefun:weapons"
+  },
+  {
+    "id": "ICY_BOW",
+    "name": "§bIcy Bow",
+    "category": "slimefun:weapons"
+  },
+  {
+    "id": "TOME_OF_KNOWLEDGE_SHARING",
+    "name": "§6Tome of Knowledge Sharing",
+    "category": "slimefun:magical_gadgets"
+  },
+  {
+    "id": "FLASK_OF_KNOWLEDGE",
+    "name": "§cFlask of Knowledge",
+    "category": "slimefun:magical_gadgets"
+  },
+  {
+    "id": "FILLED_FLASK_OF_KNOWLEDGE",
+    "name": "§aFlask of Knowledge",
+    "category": "slimefun:magical_gadgets"
+  },
+  {
+    "id": "BIRTHDAY_CAKE",
+    "name": "§bBirthday Cake",
+    "category": "slimefun:birthday"
+  },
+  {
+    "id": "CHRISTMAS_MILK",
+    "name": "§6Glass of Milk",
+    "category": "slimefun:christmas"
+  },
+  {
+    "id": "CHRISTMAS_CHOCOLATE_MILK",
+    "name": "§6Chocolate Milk",
+    "category": "slimefun:christmas"
+  },
+  {
+    "id": "CHRISTMAS_EGG_NOG",
+    "name": "§aEgg Nog",
+    "category": "slimefun:christmas"
+  },
+  {
+    "id": "CHRISTMAS_APPLE_CIDER",
+    "name": "§cApple Cider",
+    "category": "slimefun:christmas"
+  },
+  {
+    "id": "CHRISTMAS_COOKIE",
+    "name": "§aC§ch§ar§ci§as§ct§am§ca§as§c §aC§co§ao§ck§ai§ce",
+    "category": "slimefun:christmas"
+  },
+  {
+    "id": "CHRISTMAS_FRUIT_CAKE",
+    "name": "§aF§cr§au§ci§at§c §aC§ca§ak§ce",
+    "category": "slimefun:christmas"
+  },
+  {
+    "id": "CHRISTMAS_APPLE_PIE",
+    "name": "§fApple Pie",
+    "category": "slimefun:christmas"
+  },
+  {
+    "id": "CHRISTMAS_HOT_CHOCOLATE",
+    "name": "§6Hot Chocolate",
+    "category": "slimefun:christmas"
+  },
+  {
+    "id": "CHRISTMAS_CAKE",
+    "name": "§aC§ch§ar§ci§as§ct§am§ca§as§c §aC§ca§ak§ce",
+    "category": "slimefun:christmas"
+  },
+  {
+    "id": "CHRISTMAS_CARAMEL",
+    "name": "§6Caramel",
+    "category": "slimefun:christmas"
+  },
+  {
+    "id": "CHRISTMAS_CARAMEL_APPLE",
+    "name": "§6Caramel Apple",
+    "category": "slimefun:christmas"
+  },
+  {
+    "id": "CHRISTMAS_CHOCOLATE_APPLE",
+    "name": "§6Chocolate Apple",
+    "category": "slimefun:christmas"
+  },
+  {
+    "id": "CHRISTMAS_PRESENT",
+    "name": "§aC§ch§ar§ci§as§ct§am§ca§as§c §aP§cr§ae§cs§ae§cn§at",
+    "category": "slimefun:christmas"
+  },
+  {
+    "id": "CARROT_PIE",
+    "name": "§6Carrot Pie",
+    "category": "slimefun:easter"
+  },
+  {
+    "id": "EASTER_APPLE_PIE",
+    "name": "§fApple Pie",
+    "category": "slimefun:easter"
+  },
+  {
+    "id": "EASTER_EGG",
+    "name": "§fEaster Egg",
+    "category": "slimefun:easter"
+  },
+  {
+    "id": "REINFORCED_PLATE",
+    "name": "§7Reinforced Plate",
+    "category": "slimefun:misc"
+  },
+  {
+    "id": "HARDENED_GLASS",
+    "name": "§7Hardened Glass",
+    "category": "slimefun:tech_misc"
+  },
+  {
+    "id": "COOLING_UNIT",
+    "name": "§bCooling Unit",
+    "category": "slimefun:tech_misc"
+  },
+  {
+    "id": "COOLER",
+    "name": "§bCooler",
+    "category": "slimefun:items"
+  },
+  {
+    "id": "WITHER_PROOF_OBSIDIAN",
+    "name": "§5Wither-Proof Obsidian",
+    "category": "slimefun:tech_misc"
+  },
+  {
+    "id": "ANCIENT_PEDESTAL",
+    "name": "§dAncient Pedestal",
+    "category": "slimefun:magical_gadgets"
+  },
+  {
+    "id": "ANCIENT_ALTAR",
+    "name": "§dAncient Altar",
+    "category": "slimefun:magical_gadgets"
+  },
+  {
+    "id": "ENERGY_REGULATOR",
+    "name": "§6Energy Regulator",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "ENERGY_CONNECTOR",
+    "name": "§eEnergy Connector",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "DUCT_TAPE",
+    "name": "§8Duct Tape",
+    "category": "slimefun:misc"
+  },
+  {
+    "id": "SMALL_CAPACITOR",
+    "name": "§aSmall Energy Capacitor",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "MEDIUM_CAPACITOR",
+    "name": "§aMedium Energy Capacitor",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "BIG_CAPACITOR",
+    "name": "§aBig Energy Capacitor",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "LARGE_CAPACITOR",
+    "name": "§aLarge Energy Capacitor",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "CARBONADO_EDGED_CAPACITOR",
+    "name": "§aCarbonado Edged Energy Capacitor",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "ENERGIZED_CAPACITOR",
+    "name": "§aEnergized Energy Capacitor",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "SOLAR_GENERATOR",
+    "name": "§bSolar Generator",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "SOLAR_GENERATOR_2",
+    "name": "§cAdvanced Solar Generator",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "SOLAR_GENERATOR_3",
+    "name": "§4Carbonado Solar Generator",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "SOLAR_GENERATOR_4",
+    "name": "§eEnergized Solar Generator",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "CHARGING_BENCH",
+    "name": "§6Charging Bench",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "ELECTRIC_FURNACE",
+    "name": "§cElectric Furnace",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "ELECTRIC_FURNACE_2",
+    "name": "§cElectric Furnace §7- §eII",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "ELECTRIC_FURNACE_3",
+    "name": "§cElectric Furnace §7- §eIII",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "ELECTRIC_GOLD_PAN",
+    "name": "§6Electric Gold Pan",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "ELECTRIC_GOLD_PAN_2",
+    "name": "§6Electric Gold Pan §7(§eII§7)",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "ELECTRIC_GOLD_PAN_3",
+    "name": "§6Electric Gold Pan §7(§eIII§7)",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "ELECTRIC_DUST_WASHER",
+    "name": "§3Electric Dust Washer",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "ELECTRIC_DUST_WASHER_2",
+    "name": "§3Electric Dust Washer §7(§eII§7)",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "ELECTRIC_DUST_WASHER_3",
+    "name": "§3Electric Dust Washer §7(§eIII§7)",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "ELECTRIC_INGOT_FACTORY",
+    "name": "§cElectric Ingot Factory",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "ELECTRIC_INGOT_FACTORY_2",
+    "name": "§cElectric Ingot Factory §7(§eII§7)",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "ELECTRIC_INGOT_FACTORY_3",
+    "name": "§cElectric Ingot Factory §7(§eIII§7)",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "ELECTRIFIED_CRUCIBLE",
+    "name": "§cElectrified Crucible",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "ELECTRIFIED_CRUCIBLE_2",
+    "name": "§cElectrified Crucible §7- §eII",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "ELECTRIFIED_CRUCIBLE_3",
+    "name": "§cElectrified Crucible §7- §eIII",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "ELECTRIC_ORE_GRINDER",
+    "name": "§cElectric Ore Grinder",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "ELECTRIC_ORE_GRINDER_2",
+    "name": "§cElectric Ore Grinder §7(§eII§7)",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "ELECTRIC_ORE_GRINDER_3",
+    "name": "§cElectric Ore Grinder §7(§eIII§7)",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "HEATED_PRESSURE_CHAMBER",
+    "name": "§cHeated Pressure Chamber",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "HEATED_PRESSURE_CHAMBER_2",
+    "name": "§cHeated Pressure Chamber §7- §eII",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "ELECTRIC_INGOT_PULVERIZER",
+    "name": "§cElectric Ingot Pulverizer",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "COAL_GENERATOR",
+    "name": "§cCoal Generator",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "COAL_GENERATOR_2",
+    "name": "§cCoal Generator §7(§eII§7)",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "BIO_REACTOR",
+    "name": "§2Bio Reactor",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "AUTO_DRIER",
+    "name": "§6Auto Drier",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "AUTO_BREWER",
+    "name": "§6Auto Brewer",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "ELECTRIC_PRESS",
+    "name": "§eElectric Press",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "ELECTRIC_PRESS_2",
+    "name": "§eElectric Press §7- §eII",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "MAGNESIUM_SALT",
+    "name": "§cMagnesium Salt",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "MAGNESIUM_GENERATOR",
+    "name": "§cMagnesium-powered Generator",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "AUTO_ENCHANTER",
+    "name": "§5Auto Enchanter",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "AUTO_ENCHANTER_2",
+    "name": "§5Auto Enchanter §7- §eII",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "AUTO_DISENCHANTER",
+    "name": "§5Auto Disenchanter",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "AUTO_DISENCHANTER_2",
+    "name": "§5Auto Disenchanter §7- §eII",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "AUTO_ANVIL",
+    "name": "§7Auto Anvil",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "AUTO_ANVIL_2",
+    "name": "§7Auto Anvil §7Mk.II",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "BOOK_BINDER",
+    "name": "§6Book Binder",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "MULTIMETER",
+    "name": "§eMultimeter",
+    "category": "slimefun:technical_gadgets"
+  },
+  {
+    "id": "PLASTIC_SHEET",
+    "name": "§fPlastic Sheet",
+    "category": "slimefun:tech_misc"
+  },
+  {
+    "id": "ANDROID_MEMORY_CORE",
+    "name": "§bAndroid Memory Core",
+    "category": "slimefun:tech_misc"
+  },
+  {
+    "id": "GPS_TRANSMITTER",
+    "name": "§bGPS Transmitter",
+    "category": "slimefun:gps"
+  },
+  {
+    "id": "GPS_TRANSMITTER_2",
+    "name": "§cAdvanced GPS Transmitter",
+    "category": "slimefun:gps"
+  },
+  {
+    "id": "GPS_TRANSMITTER_3",
+    "name": "§4Carbonado GPS Transmitter",
+    "category": "slimefun:gps"
+  },
+  {
+    "id": "GPS_TRANSMITTER_4",
+    "name": "§eEnergized GPS Transmitter",
+    "category": "slimefun:gps"
+  },
+  {
+    "id": "GPS_CONTROL_PANEL",
+    "name": "§bGPS Control Panel",
+    "category": "slimefun:gps"
+  },
+  {
+    "id": "GPS_MARKER_TOOL",
+    "name": "§bGPS Marker Tool",
+    "category": "slimefun:gps"
+  },
+  {
+    "id": "GPS_EMERGENCY_TRANSMITTER",
+    "name": "§cGPS Emergency Transmitter",
+    "category": "slimefun:gps"
+  },
+  {
+    "id": "ANDROID_INTERFACE_ITEMS",
+    "name": "§7Android Interface §9(Items)",
+    "category": "slimefun:androids"
+  },
+  {
+    "id": "ANDROID_INTERFACE_FUEL",
+    "name": "§7Android Interface §c(Fuel)",
+    "category": "slimefun:androids"
+  },
+  {
+    "id": "PROGRAMMABLE_ANDROID",
+    "name": "§cProgrammable Android §7(Normal)",
+    "category": "slimefun:androids"
+  },
+  {
+    "id": "PROGRAMMABLE_ANDROID_MINER",
+    "name": "§cProgrammable Android §7(Miner)",
+    "category": "slimefun:androids"
+  },
+  {
+    "id": "PROGRAMMABLE_ANDROID_FARMER",
+    "name": "§cProgrammable Android §7(Farmer)",
+    "category": "slimefun:androids"
+  },
+  {
+    "id": "PROGRAMMABLE_ANDROID_WOODCUTTER",
+    "name": "§cProgrammable Android §7(Woodcutter)",
+    "category": "slimefun:androids"
+  },
+  {
+    "id": "PROGRAMMABLE_ANDROID_FISHERMAN",
+    "name": "§cProgrammable Android §7(Fisherman)",
+    "category": "slimefun:androids"
+  },
+  {
+    "id": "PROGRAMMABLE_ANDROID_BUTCHER",
+    "name": "§cProgrammable Android §7(Butcher)",
+    "category": "slimefun:androids"
+  },
+  {
+    "id": "PROGRAMMABLE_ANDROID_2",
+    "name": "§cAdvanced Programmable Android §7(Normal)",
+    "category": "slimefun:androids"
+  },
+  {
+    "id": "PROGRAMMABLE_ANDROID_2_FISHERMAN",
+    "name": "§cAdvanced Programmable Android §7(Fisherman)",
+    "category": "slimefun:androids"
+  },
+  {
+    "id": "PROGRAMMABLE_ANDROID_2_BUTCHER",
+    "name": "§cAdvanced Programmable Android §7(Butcher)",
+    "category": "slimefun:androids"
+  },
+  {
+    "id": "PROGRAMMABLE_ANDROID_2_FARMER",
+    "name": "§cAdvanced Programmable Android §7(Farmer)",
+    "category": "slimefun:androids"
+  },
+  {
+    "id": "PROGRAMMABLE_ANDROID_3",
+    "name": "§eEmpowered Programmable Android §7(Normal)",
+    "category": "slimefun:androids"
+  },
+  {
+    "id": "PROGRAMMABLE_ANDROID_3_FISHERMAN",
+    "name": "§eEmpowered Programmable Android §7(Fisherman)",
+    "category": "slimefun:androids"
+  },
+  {
+    "id": "PROGRAMMABLE_ANDROID_3_BUTCHER",
+    "name": "§eEmpowered Programmable Android §7(Butcher)",
+    "category": "slimefun:androids"
+  },
+  {
+    "id": "BLANK_RUNE",
+    "name": "§8Blank Rune",
+    "category": "slimefun:magical_items"
+  },
+  {
+    "id": "ANCIENT_RUNE_AIR",
+    "name": "§7Ancient Rune §8§l[§b§lAir§8§l]",
+    "category": "slimefun:magical_items"
+  },
+  {
+    "id": "ANCIENT_RUNE_EARTH",
+    "name": "§7Ancient Rune §8§l[§c§lEarth§8§l]",
+    "category": "slimefun:magical_items"
+  },
+  {
+    "id": "ANCIENT_RUNE_FIRE",
+    "name": "§7Ancient Rune §8§l[§4§lFire§8§l]",
+    "category": "slimefun:magical_items"
+  },
+  {
+    "id": "ANCIENT_RUNE_WATER",
+    "name": "§7Ancient Rune §8§l[§1§lWater§8§l]",
+    "category": "slimefun:magical_items"
+  },
+  {
+    "id": "ANCIENT_RUNE_ENDER",
+    "name": "§7Ancient Rune §8§l[§5§lEnder§8§l]",
+    "category": "slimefun:magical_items"
+  },
+  {
+    "id": "ANCIENT_RUNE_LIGHTNING",
+    "name": "§7Ancient Rune §8§l[§e§lLightning§8§l]",
+    "category": "slimefun:magical_items"
+  },
+  {
+    "id": "ANCIENT_RUNE_RAINBOW",
+    "name": "§7Ancient Rune §8§l[§d§lRainbow§8§l]",
+    "category": "slimefun:magical_items"
+  },
+  {
+    "id": "ANCIENT_RUNE_SOULBOUND",
+    "name": "§7Ancient Rune §8§l[§5§lSoulbound§8§l]",
+    "category": "slimefun:magical_items"
+  },
+  {
+    "id": "ANCIENT_RUNE_ENCHANTMENT",
+    "name": "§7Ancient Rune §8§l[§6§lEnchantment§8§l]",
+    "category": "slimefun:magical_items"
+  },
+  {
+    "id": "INFERNAL_BONEMEAL",
+    "name": "§4Infernal Bonemeal",
+    "category": "slimefun:magical_gadgets"
+  },
+  {
+    "id": "ELYTRA_SCALE",
+    "name": "§bElytra Scale",
+    "category": "slimefun:magical_gadgets"
+  },
+  {
+    "id": "ELYTRA",
+    "name": "[Elytra]",
+    "category": "slimefun:magical_gadgets"
+  },
+  {
+    "id": "INFUSED_ELYTRA",
+    "name": "§5Infused Elytra",
+    "category": "slimefun:magical_gadgets"
+  },
+  {
+    "id": "SOULBOUND_ELYTRA",
+    "name": "§cSoulbound Elytra",
+    "category": "slimefun:magical_gadgets"
+  },
+  {
+    "id": "TRIDENT",
+    "name": "[Trident]",
+    "category": "slimefun:magical_gadgets"
+  },
+  {
+    "id": "TOTEM_OF_UNDYING",
+    "name": "[Totem of Undying]",
+    "category": "slimefun:magical_gadgets"
+  },
+  {
+    "id": "RAINBOW_WOOL",
+    "name": "§5Rainbow Wool",
+    "category": "slimefun:magical_gadgets"
+  },
+  {
+    "id": "RAINBOW_GLASS",
+    "name": "§5Rainbow Glass",
+    "category": "slimefun:magical_gadgets"
+  },
+  {
+    "id": "RAINBOW_GLASS_PANE",
+    "name": "§5Rainbow Glass Pane",
+    "category": "slimefun:magical_gadgets"
+  },
+  {
+    "id": "RAINBOW_CLAY",
+    "name": "§5Rainbow Clay",
+    "category": "slimefun:magical_gadgets"
+  },
+  {
+    "id": "RAINBOW_CONCRETE",
+    "name": "§5Rainbow Concrete",
+    "category": "slimefun:magical_gadgets"
+  },
+  {
+    "id": "RAINBOW_GLAZED_TERRACOTTA",
+    "name": "§5Rainbow Glazed Terracotta",
+    "category": "slimefun:magical_gadgets"
+  },
+  {
+    "id": "RAINBOW_WOOL_XMAS",
+    "name": "§5Rainbow Wool §7(Christmas)",
+    "category": "slimefun:christmas"
+  },
+  {
+    "id": "RAINBOW_GLASS_XMAS",
+    "name": "§5Rainbow Glass §7(Christmas)",
+    "category": "slimefun:christmas"
+  },
+  {
+    "id": "RAINBOW_GLASS_PANE_XMAS",
+    "name": "§5Rainbow Glass Pane §7(Christmas)",
+    "category": "slimefun:christmas"
+  },
+  {
+    "id": "RAINBOW_CLAY_XMAS",
+    "name": "§5Rainbow Clay §7(Christmas)",
+    "category": "slimefun:christmas"
+  },
+  {
+    "id": "RAINBOW_CONCRETE_XMAS",
+    "name": "§5Rainbow Concrete §7(Christmas)",
+    "category": "slimefun:christmas"
+  },
+  {
+    "id": "RAINBOW_GLAZED_TERRACOTTA_XMAS",
+    "name": "§5Rainbow Glazed Terracotta §7(Christmas)",
+    "category": "slimefun:christmas"
+  },
+  {
+    "id": "RAINBOW_WOOL_VALENTINE",
+    "name": "§5Rainbow Wool §7(Valentine's Day)",
+    "category": "slimefun:valentines_day"
+  },
+  {
+    "id": "RAINBOW_GLASS_VALENTINE",
+    "name": "§5Rainbow Glass §7(Valentine's Day)",
+    "category": "slimefun:valentines_day"
+  },
+  {
+    "id": "RAINBOW_GLASS_PANE_VALENTINE",
+    "name": "§5Rainbow Glass Pane §7(Valentine's Day)",
+    "category": "slimefun:valentines_day"
+  },
+  {
+    "id": "RAINBOW_CLAY_VALENTINE",
+    "name": "§5Rainbow Clay §7(Valentine's Day)",
+    "category": "slimefun:valentines_day"
+  },
+  {
+    "id": "RAINBOW_CONCRETE_VALENTINE",
+    "name": "§5Rainbow Concrete §7(Valentine's Day)",
+    "category": "slimefun:valentines_day"
+  },
+  {
+    "id": "RAINBOW_GLAZED_TERRACOTTA_VALENTINE",
+    "name": "§5Rainbow Glazed Terracotta §7(Valentine's Day)",
+    "category": "slimefun:valentines_day"
+  },
+  {
+    "id": "RAINBOW_WOOL_HALLOWEEN",
+    "name": "§5Rainbow Wool §7(Halloween)",
+    "category": "slimefun:halloween"
+  },
+  {
+    "id": "RAINBOW_GLASS_HALLOWEEN",
+    "name": "§5Rainbow Glass §7(Halloween)",
+    "category": "slimefun:halloween"
+  },
+  {
+    "id": "RAINBOW_GLASS_PANE_HALLOWEEN",
+    "name": "§5Rainbow Glass Pane §7(Halloween)",
+    "category": "slimefun:halloween"
+  },
+  {
+    "id": "RAINBOW_CLAY_HALLOWEEN",
+    "name": "§5Rainbow Clay §7(Halloween)",
+    "category": "slimefun:halloween"
+  },
+  {
+    "id": "RAINBOW_CONCRETE_HALLOWEEN",
+    "name": "§5Rainbow Concrete §7(Halloween)",
+    "category": "slimefun:halloween"
+  },
+  {
+    "id": "RAINBOW_GLAZED_TERRACOTTA_HALLOWEEN",
+    "name": "§5Rainbow Glazed Terracotta §7(Halloween)",
+    "category": "slimefun:halloween"
+  },
+  {
+    "id": "WITHER_PROOF_GLASS",
+    "name": "§5Wither-Proof Glass",
+    "category": "slimefun:tech_misc"
+  },
+  {
+    "id": "GPS_GEO_SCANNER",
+    "name": "§bGPS Geo-Scanner",
+    "category": "slimefun:gps"
+  },
+  {
+    "id": "PORTABLE_GEO_SCANNER",
+    "name": "§bPortable Geo-Scanner",
+    "category": "slimefun:gps"
+  },
+  {
+    "id": "OIL_PUMP",
+    "name": "§4Oil Pump",
+    "category": "slimefun:gps"
+  },
+  {
+    "id": "GEO_MINER",
+    "name": "§6GEO Miner",
+    "category": "slimefun:gps"
+  },
+  {
+    "id": "BUCKET_OF_OIL",
+    "name": "§fBucket of Oil",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "BUCKET_OF_FUEL",
+    "name": "§fBucket of Fuel",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "NETHER_ICE",
+    "name": "§eNether Ice",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "REFINERY",
+    "name": "§cRefinery",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "LAVA_GENERATOR",
+    "name": "§4Lava Generator",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "LAVA_GENERATOR_2",
+    "name": "§4Lava Generator §7(§eII§7)",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "COMBUSTION_REACTOR",
+    "name": "§cCombustion Reactor",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "GPS_TELEPORTER_PYLON",
+    "name": "§5GPS Teleporter Pylon",
+    "category": "slimefun:gps"
+  },
+  {
+    "id": "GPS_TELEPORTATION_MATRIX",
+    "name": "§bGPS Teleporter Matrix",
+    "category": "slimefun:gps"
+  },
+  {
+    "id": "PORTABLE_TELEPORTER",
+    "name": "§bPortable Teleporter",
+    "category": "slimefun:gps"
+  },
+  {
+    "id": "GPS_ACTIVATION_DEVICE_SHARED",
+    "name": "§fGPS Activation Device §3(Shared)",
+    "category": "slimefun:gps"
+  },
+  {
+    "id": "GPS_ACTIVATION_DEVICE_PERSONAL",
+    "name": "§fGPS Activation Device §a(Personal)",
+    "category": "slimefun:gps"
+  },
+  {
+    "id": "INFUSED_HOPPER",
+    "name": "§5Infused Hopper",
+    "category": "slimefun:magical_gadgets"
+  },
+  {
+    "id": "BLISTERING_INGOT",
+    "name": "§6Blistering Ingot §7(33%)",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "BLISTERING_INGOT_2",
+    "name": "§6Blistering Ingot §7(66%)",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "BLISTERING_INGOT_3",
+    "name": "§6Blistering Ingot",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "ENRICHED_NETHER_ICE",
+    "name": "§eEnriched Nether Ice",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "ELEVATOR_PLATE",
+    "name": "§bElevator Plate",
+    "category": "slimefun:gps"
+  },
+  {
+    "id": "FOOD_FABRICATOR",
+    "name": "§cFood Fabricator",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "FOOD_FABRICATOR_2",
+    "name": "§cFood Fabricator §7(§eII§7)",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "ORGANIC_FOOD_WHEAT",
+    "name": "§aOrganic Food",
+    "category": "slimefun:misc"
+  },
+  {
+    "id": "ORGANIC_FOOD_CARROT",
+    "name": "§aOrganic Food",
+    "category": "slimefun:misc"
+  },
+  {
+    "id": "ORGANIC_FOOD_POTATO",
+    "name": "§aOrganic Food",
+    "category": "slimefun:misc"
+  },
+  {
+    "id": "ORGANIC_FOOD_SEEDS",
+    "name": "§aOrganic Food",
+    "category": "slimefun:misc"
+  },
+  {
+    "id": "ORGANIC_FOOD_BEETROOT",
+    "name": "§aOrganic Food",
+    "category": "slimefun:misc"
+  },
+  {
+    "id": "ORGANIC_FOOD_MELON",
+    "name": "§aOrganic Food",
+    "category": "slimefun:misc"
+  },
+  {
+    "id": "ORGANIC_FOOD_APPLE",
+    "name": "§aOrganic Food",
+    "category": "slimefun:misc"
+  },
+  {
+    "id": "ORGANIC_FOOD_SWEET_BERRIES",
+    "name": "§aOrganic Food",
+    "category": "slimefun:misc"
+  },
+  {
+    "id": "ORGANIC_FOOD_KELP",
+    "name": "§aOrganic Food",
+    "category": "slimefun:misc"
+  },
+  {
+    "id": "ORGANIC_FOOD_COCOA",
+    "name": "§aOrganic Food",
+    "category": "slimefun:misc"
+  },
+  {
+    "id": "ORGANIC_FOOD_SEAGRASS",
+    "name": "§aOrganic Food",
+    "category": "slimefun:misc"
+  },
+  {
+    "id": "AUTO_BREEDER",
+    "name": "§eAuto-Breeder",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "ANIMAL_GROWTH_ACCELERATOR",
+    "name": "§bAnimal Growth Accelerator",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "TREE_GROWTH_ACCELERATOR",
+    "name": "§aTree Growth Accelerator",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "XP_COLLECTOR",
+    "name": "§aEXP Collector",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "FOOD_COMPOSTER",
+    "name": "§cFood Composter",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "FOOD_COMPOSTER_2",
+    "name": "§cFood Composter §7(§eII§7)",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "FERTILIZER_WHEAT",
+    "name": "§aOrganic Fertilizer",
+    "category": "slimefun:misc"
+  },
+  {
+    "id": "FERTILIZER_CARROT",
+    "name": "§aOrganic Fertilizer",
+    "category": "slimefun:misc"
+  },
+  {
+    "id": "FERTILIZER_POTATO",
+    "name": "§aOrganic Fertilizer",
+    "category": "slimefun:misc"
+  },
+  {
+    "id": "FERTILIZER_SEEDS",
+    "name": "§aOrganic Fertilizer",
+    "category": "slimefun:misc"
+  },
+  {
+    "id": "FERTILIZER_BEETROOT",
+    "name": "§aOrganic Fertilizer",
+    "category": "slimefun:misc"
+  },
+  {
+    "id": "FERTILIZER_MELON",
+    "name": "§aOrganic Fertilizer",
+    "category": "slimefun:misc"
+  },
+  {
+    "id": "FERTILIZER_APPLE",
+    "name": "§aOrganic Fertilizer",
+    "category": "slimefun:misc"
+  },
+  {
+    "id": "FERTILIZER_SWEET_BERRIES",
+    "name": "§aOrganic Fertilizer",
+    "category": "slimefun:misc"
+  },
+  {
+    "id": "FERTILIZER_KELP",
+    "name": "§aOrganic Fertilizer",
+    "category": "slimefun:misc"
+  },
+  {
+    "id": "FERTILIZER_COCOA",
+    "name": "§aOrganic Fertilizer",
+    "category": "slimefun:misc"
+  },
+  {
+    "id": "FERTILIZER_SEAGRASS",
+    "name": "§aOrganic Fertilizer",
+    "category": "slimefun:misc"
+  },
+  {
+    "id": "CROP_GROWTH_ACCELERATOR",
+    "name": "§aCrop Growth Accelerator",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "CROP_GROWTH_ACCELERATOR_2",
+    "name": "§aCrop Growth Accelerator §7(§eII§7)",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "FREEZER",
+    "name": "§bFreezer",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "FREEZER_2",
+    "name": "§bFreezer §7(§eII§7)",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "FREEZER_3",
+    "name": "§bFreezer §7(§eIII§7)",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "REACTOR_COLLANT_CELL",
+    "name": "§bReactor Coolant Cell",
+    "category": "slimefun:tech_misc"
+  },
+  {
+    "id": "NETHER_ICE_COOLANT_CELL",
+    "name": "§6Nether Ice Coolant Cell",
+    "category": "slimefun:tech_misc"
+  },
+  {
+    "id": "NEPTUNIUM",
+    "name": "§aNeptunium",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "PLUTONIUM",
+    "name": "§7Plutonium",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "BOOSTED_URANIUM",
+    "name": "§2Boosted Uranium",
+    "category": "slimefun:resources"
+  },
+  {
+    "id": "NUCLEAR_REACTOR",
+    "name": "§2Nuclear Reactor",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "NETHERSTAR_REACTOR",
+    "name": "§fNether Star Reactor",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "CARGO_MOTOR",
+    "name": "§3Cargo Motor",
+    "category": "slimefun:cargo"
+  },
+  {
+    "id": "CARGO_MANAGER",
+    "name": "§6Cargo Manager",
+    "category": "slimefun:cargo"
+  },
+  {
+    "id": "CARGO_NODE",
+    "name": "§7Cargo Node §c(Connector)",
+    "category": "slimefun:cargo"
+  },
+  {
+    "id": "CARGO_NODE_INPUT",
+    "name": "§7Cargo Node §c(Input)",
+    "category": "slimefun:cargo"
+  },
+  {
+    "id": "CARGO_NODE_OUTPUT",
+    "name": "§7Cargo Node §c(Output)",
+    "category": "slimefun:cargo"
+  },
+  {
+    "id": "CARGO_NODE_OUTPUT_ADVANCED",
+    "name": "§6Advanced Cargo Node §c(Output)",
+    "category": "slimefun:cargo"
+  },
+  {
+    "id": "REACTOR_ACCESS_PORT",
+    "name": "§2Reactor Access Port",
+    "category": "slimefun:cargo"
+  },
+  {
+    "id": "FLUID_PUMP",
+    "name": "§9Fluid Pump",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "TRASH_CAN_BLOCK",
+    "name": "§3Trash Can",
+    "category": "slimefun:cargo"
+  },
+  {
+    "id": "CARBON_PRESS",
+    "name": "§cCarbon Press",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "CARBON_PRESS_2",
+    "name": "§cCarbon Press §7- §eII",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "CARBON_PRESS_3",
+    "name": "§cCarbon Press §7- §eIII",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "ELECTRIC_SMELTERY",
+    "name": "§cElectric Smeltery",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "ELECTRIC_SMELTERY_2",
+    "name": "§cElectric Smeltery §7- §eII",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "IRON_GOLEM_ASSEMBLER",
+    "name": "§6Iron Golem Assembler",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "WITHER_ASSEMBLER",
+    "name": "§5Wither Assembler",
+    "category": "slimefun:electricity"
+  },
+  {
+    "id": "TAPE_MEASURE",
+    "name": "§6Tape Measure",
+    "category": "slimefun:items"
+  },
+  {
+    "id": "BEE_HELMET",
+    "name": "§e§lBee Helmet",
+    "category": "slimefun:magical_armor"
+  },
+  {
+    "id": "BEE_WINGS",
+    "name": "§e§lBee Wings",
+    "category": "slimefun:magical_armor"
+  },
+  {
+    "id": "BEE_LEGGINGS",
+    "name": "§e§lBee Leggings",
+    "category": "slimefun:magical_armor"
+  },
+  {
+    "id": "BEE_BOOTS",
+    "name": "§e§lBee Boots",
+    "category": "slimefun:magical_armor"
+  },
+  {
+    "id": "ANCIENT_RUNE_VILLAGERS",
+    "name": "§7Ancient Rune §8§l[§4§lVillagers§8§l]",
+    "category": "slimefun:magical_items"
+  },
+  {
+    "id": "STRANGE_NETHER_GOO",
+    "name": "§5Strange Nether Goo",
+    "category": "slimefun:magical_items"
+  },
+  {
+    "id": "GLOW_BERRY_JUICE",
+    "name": "§6Glow Berry Juice",
+    "category": "slimefun:food"
+  },
+  {
+    "id": "ELYTRA_CAP",
+    "name": "§5Elytra Cap",
+    "category": "slimefun:magical_armor"
+  },
+  {
+    "id": "RAINBOW_LEATHER",
+    "name": "§dRainbow Leather",
+    "category": "slimefun:magical_items"
+  },
+  {
+    "id": "CRAFTING_MOTOR",
+    "name": "§6Crafting Motor",
+    "category": "slimefun:cargo"
+  },
+  {
+    "id": "VANILLA_AUTO_CRAFTER",
+    "name": "§2Auto-Crafter §8(Vanilla)",
+    "category": "slimefun:cargo"
+  },
+  {
+    "id": "ENHANCED_AUTO_CRAFTER",
+    "name": "§2Auto-Crafter §8(Enhanced)",
+    "category": "slimefun:cargo"
+  },
+  {
+    "id": "ARMOR_AUTO_CRAFTER",
+    "name": "§2Auto-Crafter §8(Armor Forge)",
+    "category": "slimefun:cargo"
+  },
+  {
+    "id": "PRODUCE_COLLECTOR",
+    "name": "§bProduce Collector",
+    "category": "slimefun:electricity"
+  }
+]
