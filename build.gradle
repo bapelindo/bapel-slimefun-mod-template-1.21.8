@@ -28,6 +28,17 @@ loom {
 		}
 	}
 
+    // TAMBAHKAN BAGIAN INI
+    runs {
+        client {
+            client()
+            setConfigName("Minecraft Client")
+            ideConfigGenerated(true)
+            runDir("run")
+            // Ganti "NamaPemainAnda" dengan nama yang Anda inginkan
+            programArgs "--username", "bapel" 
+        }
+    }
 }
 
 fabricApi {
