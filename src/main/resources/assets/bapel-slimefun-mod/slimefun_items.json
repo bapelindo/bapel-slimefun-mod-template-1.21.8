@@ -946,22 +946,22 @@
   },
   {
     "id": "CHAIN_HELMET",
-    "name": "[Chainmail Helmet]",
+    "name": "CHAINMAIL_HELMET",
     "category": "slimefun:armor"
   },
   {
     "id": "CHAIN_CHESTPLATE",
-    "name": "[Chainmail Chestplate]",
+    "name": "CHAINMAIL_CHESTPLATE",
     "category": "slimefun:armor"
   },
   {
     "id": "CHAIN_LEGGINGS",
-    "name": "[Chainmail Leggings]",
+    "name": "CHAINMAIL_LEGGINGS",
     "category": "slimefun:armor"
   },
   {
     "id": "CHAIN_BOOTS",
-    "name": "[Chainmail Boots]",
+    "name": "CHAINMAIL_BOOTS",
     "category": "slimefun:armor"
   },
   {
@@ -1456,7 +1456,7 @@
   },
   {
     "id": "ENCHANTED_GOLDEN_APPLE",
-    "name": "[Enchanted Golden Apple]",
+    "name": "ENCHANTED_GOLDEN_APPLE",
     "category": "slimefun:food"
   },
   {
@@ -2151,7 +2151,7 @@
   },
   {
     "id": "ELYTRA",
-    "name": "[Elytra]",
+    "name": "ELYTRA",
     "category": "slimefun:magical_gadgets"
   },
   {
@@ -2166,12 +2166,12 @@
   },
   {
     "id": "TRIDENT",
-    "name": "[Trident]",
+    "name": "TRIDENT",
     "category": "slimefun:magical_gadgets"
   },
   {
     "id": "TOTEM_OF_UNDYING",
-    "name": "[Totem of Undying]",
+    "name": "TOTEM_OF_UNDYING",
     "category": "slimefun:magical_gadgets"
   },
   {

@@ -285,7 +285,8 @@
     "outputSlots": [
       24,
       25
-    ]
+    ],
+    "processingRecipes": []
   },
   {
     "id": "ELECTRIC_FURNACE",
@@ -301,6 +302,1268 @@
     "outputSlots": [
       24,
       25
+    ],
+    "processingRecipes": [
+      {
+        "inputs": [
+          "LAPIS_ORE:1"
+        ],
+        "outputs": [
+          "LAPIS_LAZULI:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "EMERALD_ORE:1"
+        ],
+        "outputs": [
+          "EMERALD:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "KELP:1"
+        ],
+        "outputs": [
+          "DRIED_KELP:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "GREEN_TERRACOTTA:1"
+        ],
+        "outputs": [
+          "GREEN_GLAZED_TERRACOTTA:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "COPPER_ORE:1"
+        ],
+        "outputs": [
+          "COPPER_INGOT:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "SANDSTONE:1"
+        ],
+        "outputs": [
+          "SMOOTH_SANDSTONE:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "REDSTONE_ORE:1"
+        ],
+        "outputs": [
+          "REDSTONE:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "GOLDEN_PICKAXE:1"
+        ],
+        "outputs": [
+          "GOLD_NUGGET:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "GOLDEN_SHOVEL:1"
+        ],
+        "outputs": [
+          "GOLD_NUGGET:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "GOLDEN_AXE:1"
+        ],
+        "outputs": [
+          "GOLD_NUGGET:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "GOLDEN_HOE:1"
+        ],
+        "outputs": [
+          "GOLD_NUGGET:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "GOLDEN_SWORD:1"
+        ],
+        "outputs": [
+          "GOLD_NUGGET:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "GOLDEN_HELMET:1"
+        ],
+        "outputs": [
+          "GOLD_NUGGET:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "GOLDEN_CHESTPLATE:1"
+        ],
+        "outputs": [
+          "GOLD_NUGGET:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "GOLDEN_LEGGINGS:1"
+        ],
+        "outputs": [
+          "GOLD_NUGGET:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "GOLDEN_BOOTS:1"
+        ],
+        "outputs": [
+          "GOLD_NUGGET:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "GOLDEN_HORSE_ARMOR:1"
+        ],
+        "outputs": [
+          "GOLD_NUGGET:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "NETHER_QUARTZ_ORE:1"
+        ],
+        "outputs": [
+          "QUARTZ:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "DEEPSLATE_GOLD_ORE:1"
+        ],
+        "outputs": [
+          "GOLD_INGOT:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "WHITE_TERRACOTTA:1"
+        ],
+        "outputs": [
+          "WHITE_GLAZED_TERRACOTTA:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "COBBLESTONE:1"
+        ],
+        "outputs": [
+          "STONE:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "YELLOW_TERRACOTTA:1"
+        ],
+        "outputs": [
+          "YELLOW_GLAZED_TERRACOTTA:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "DEEPSLATE_LAPIS_ORE:1"
+        ],
+        "outputs": [
+          "LAPIS_LAZULI:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "CLAY:1"
+        ],
+        "outputs": [
+          "TERRACOTTA:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "SAND:1"
+        ],
+        "outputs": [
+          "GLASS:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "RED_SAND:1"
+        ],
+        "outputs": [
+          "GLASS:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "PINK_TERRACOTTA:1"
+        ],
+        "outputs": [
+          "PINK_GLAZED_TERRACOTTA:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "RED_SANDSTONE:1"
+        ],
+        "outputs": [
+          "SMOOTH_RED_SANDSTONE:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "SALMON:1"
+        ],
+        "outputs": [
+          "COOKED_SALMON:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "DEEPSLATE_DIAMOND_ORE:1"
+        ],
+        "outputs": [
+          "DIAMOND:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "MAGENTA_TERRACOTTA:1"
+        ],
+        "outputs": [
+          "MAGENTA_GLAZED_TERRACOTTA:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "CLAY_BALL:1"
+        ],
+        "outputs": [
+          "BRICK:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "BROWN_TERRACOTTA:1"
+        ],
+        "outputs": [
+          "BROWN_GLAZED_TERRACOTTA:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "DEEPSLATE_EMERALD_ORE:1"
+        ],
+        "outputs": [
+          "EMERALD:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "BEEF:1"
+        ],
+        "outputs": [
+          "COOKED_BEEF:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "DEEPSLATE_COPPER_ORE:1"
+        ],
+        "outputs": [
+          "COPPER_INGOT:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "LIME_TERRACOTTA:1"
+        ],
+        "outputs": [
+          "LIME_GLAZED_TERRACOTTA:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "WET_SPONGE:1"
+        ],
+        "outputs": [
+          "SPONGE:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "RAW_COPPER:1"
+        ],
+        "outputs": [
+          "COPPER_INGOT:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "CYAN_TERRACOTTA:1"
+        ],
+        "outputs": [
+          "CYAN_GLAZED_TERRACOTTA:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "BLACK_TERRACOTTA:1"
+        ],
+        "outputs": [
+          "BLACK_GLAZED_TERRACOTTA:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "GOLD_ORE:1"
+        ],
+        "outputs": [
+          "GOLD_INGOT:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "PORKCHOP:1"
+        ],
+        "outputs": [
+          "COOKED_PORKCHOP:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "CHORUS_FRUIT:1"
+        ],
+        "outputs": [
+          "POPPED_CHORUS_FRUIT:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "DEEPSLATE_COAL_ORE:1"
+        ],
+        "outputs": [
+          "COAL:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "STONE_BRICKS:1"
+        ],
+        "outputs": [
+          "CRACKED_STONE_BRICKS:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "DEEPSLATE_IRON_ORE:1"
+        ],
+        "outputs": [
+          "IRON_INGOT:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "COBBLED_DEEPSLATE:1"
+        ],
+        "outputs": [
+          "DEEPSLATE:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "RED_TERRACOTTA:1"
+        ],
+        "outputs": [
+          "RED_GLAZED_TERRACOTTA:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "POTATO:1"
+        ],
+        "outputs": [
+          "BAKED_POTATO:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "MUTTON:1"
+        ],
+        "outputs": [
+          "COOKED_MUTTON:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "GRAY_TERRACOTTA:1"
+        ],
+        "outputs": [
+          "GRAY_GLAZED_TERRACOTTA:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "DEEPSLATE_TILES:1"
+        ],
+        "outputs": [
+          "CRACKED_DEEPSLATE_TILES:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "IRON_ORE:1"
+        ],
+        "outputs": [
+          "IRON_INGOT:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "DIAMOND_ORE:1"
+        ],
+        "outputs": [
+          "DIAMOND:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "NETHER_BRICKS:1"
+        ],
+        "outputs": [
+          "CRACKED_NETHER_BRICKS:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "PURPLE_TERRACOTTA:1"
+        ],
+        "outputs": [
+          "PURPLE_GLAZED_TERRACOTTA:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "SEA_PICKLE:1"
+        ],
+        "outputs": [
+          "LIME_DYE:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "IRON_PICKAXE:1"
+        ],
+        "outputs": [
+          "IRON_NUGGET:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "IRON_SHOVEL:1"
+        ],
+        "outputs": [
+          "IRON_NUGGET:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "IRON_AXE:1"
+        ],
+        "outputs": [
+          "IRON_NUGGET:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "IRON_HOE:1"
+        ],
+        "outputs": [
+          "IRON_NUGGET:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "IRON_SWORD:1"
+        ],
+        "outputs": [
+          "IRON_NUGGET:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "IRON_HELMET:1"
+        ],
+        "outputs": [
+          "IRON_NUGGET:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "IRON_CHESTPLATE:1"
+        ],
+        "outputs": [
+          "IRON_NUGGET:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "IRON_LEGGINGS:1"
+        ],
+        "outputs": [
+          "IRON_NUGGET:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "IRON_BOOTS:1"
+        ],
+        "outputs": [
+          "IRON_NUGGET:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "IRON_HORSE_ARMOR:1"
+        ],
+        "outputs": [
+          "IRON_NUGGET:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "CHAINMAIL_HELMET:1"
+        ],
+        "outputs": [
+          "IRON_NUGGET:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "CHAINMAIL_CHESTPLATE:1"
+        ],
+        "outputs": [
+          "IRON_NUGGET:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "CHAINMAIL_LEGGINGS:1"
+        ],
+        "outputs": [
+          "IRON_NUGGET:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "CHAINMAIL_BOOTS:1"
+        ],
+        "outputs": [
+          "IRON_NUGGET:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "DARK_OAK_LOG:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "DARK_OAK_WOOD:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "STRIPPED_DARK_OAK_LOG:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "STRIPPED_DARK_OAK_WOOD:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "PALE_OAK_LOG:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "PALE_OAK_WOOD:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "STRIPPED_PALE_OAK_LOG:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "STRIPPED_PALE_OAK_WOOD:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "OAK_LOG:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "OAK_WOOD:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "STRIPPED_OAK_LOG:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "STRIPPED_OAK_WOOD:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "ACACIA_LOG:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "ACACIA_WOOD:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "STRIPPED_ACACIA_LOG:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "STRIPPED_ACACIA_WOOD:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "BIRCH_LOG:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "BIRCH_WOOD:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "STRIPPED_BIRCH_LOG:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "STRIPPED_BIRCH_WOOD:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "JUNGLE_LOG:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "JUNGLE_WOOD:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "STRIPPED_JUNGLE_LOG:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "STRIPPED_JUNGLE_WOOD:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "SPRUCE_LOG:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "SPRUCE_WOOD:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "STRIPPED_SPRUCE_LOG:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "STRIPPED_SPRUCE_WOOD:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "MANGROVE_LOG:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "MANGROVE_WOOD:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "STRIPPED_MANGROVE_LOG:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "STRIPPED_MANGROVE_WOOD:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "CHERRY_LOG:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "CHERRY_WOOD:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "STRIPPED_CHERRY_LOG:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "STRIPPED_CHERRY_WOOD:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "CACTUS:1"
+        ],
+        "outputs": [
+          "GREEN_DYE:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "QUARTZ_BLOCK:1"
+        ],
+        "outputs": [
+          "SMOOTH_QUARTZ:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "BLUE_TERRACOTTA:1"
+        ],
+        "outputs": [
+          "BLUE_GLAZED_TERRACOTTA:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "ORANGE_TERRACOTTA:1"
+        ],
+        "outputs": [
+          "ORANGE_GLAZED_TERRACOTTA:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "BASALT:1"
+        ],
+        "outputs": [
+          "SMOOTH_BASALT:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "STONE:1"
+        ],
+        "outputs": [
+          "SMOOTH_STONE:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "CHICKEN:1"
+        ],
+        "outputs": [
+          "COOKED_CHICKEN:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "LIGHT_BLUE_TERRACOTTA:1"
+        ],
+        "outputs": [
+          "LIGHT_BLUE_GLAZED_TERRACOTTA:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "DEEPSLATE_BRICKS:1"
+        ],
+        "outputs": [
+          "CRACKED_DEEPSLATE_BRICKS:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "LIGHT_GRAY_TERRACOTTA:1"
+        ],
+        "outputs": [
+          "LIGHT_GRAY_GLAZED_TERRACOTTA:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "ANCIENT_DEBRIS:1"
+        ],
+        "outputs": [
+          "NETHERITE_SCRAP:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "RABBIT:1"
+        ],
+        "outputs": [
+          "COOKED_RABBIT:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "RAW_IRON:1"
+        ],
+        "outputs": [
+          "IRON_INGOT:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "COD:1"
+        ],
+        "outputs": [
+          "COOKED_COD:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "JUNGLE_LEAVES:1"
+        ],
+        "outputs": [
+          "LEAF_LITTER:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "OAK_LEAVES:1"
+        ],
+        "outputs": [
+          "LEAF_LITTER:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "SPRUCE_LEAVES:1"
+        ],
+        "outputs": [
+          "LEAF_LITTER:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "PALE_OAK_LEAVES:1"
+        ],
+        "outputs": [
+          "LEAF_LITTER:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "DARK_OAK_LEAVES:1"
+        ],
+        "outputs": [
+          "LEAF_LITTER:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "ACACIA_LEAVES:1"
+        ],
+        "outputs": [
+          "LEAF_LITTER:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "BIRCH_LEAVES:1"
+        ],
+        "outputs": [
+          "LEAF_LITTER:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "AZALEA_LEAVES:1"
+        ],
+        "outputs": [
+          "LEAF_LITTER:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "FLOWERING_AZALEA_LEAVES:1"
+        ],
+        "outputs": [
+          "LEAF_LITTER:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "MANGROVE_LEAVES:1"
+        ],
+        "outputs": [
+          "LEAF_LITTER:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "CHERRY_LEAVES:1"
+        ],
+        "outputs": [
+          "LEAF_LITTER:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "NETHERRACK:1"
+        ],
+        "outputs": [
+          "NETHER_BRICK:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "COAL_ORE:1"
+        ],
+        "outputs": [
+          "COAL:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "NETHER_GOLD_ORE:1"
+        ],
+        "outputs": [
+          "GOLD_INGOT:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "POLISHED_BLACKSTONE_BRICKS:1"
+        ],
+        "outputs": [
+          "CRACKED_POLISHED_BLACKSTONE_BRICKS:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "DEEPSLATE_REDSTONE_ORE:1"
+        ],
+        "outputs": [
+          "REDSTONE:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "RAW_GOLD:1"
+        ],
+        "outputs": [
+          "GOLD_INGOT:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "RESIN_CLUMP:1"
+        ],
+        "outputs": [
+          "RESIN_BRICK:1"
+        ],
+        "ticks": 8
+      }
     ]
   },
   {
@@ -317,6 +1580,1268 @@
     "outputSlots": [
       24,
       25
+    ],
+    "processingRecipes": [
+      {
+        "inputs": [
+          "LAPIS_ORE:1"
+        ],
+        "outputs": [
+          "LAPIS_LAZULI:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "EMERALD_ORE:1"
+        ],
+        "outputs": [
+          "EMERALD:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "KELP:1"
+        ],
+        "outputs": [
+          "DRIED_KELP:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "GREEN_TERRACOTTA:1"
+        ],
+        "outputs": [
+          "GREEN_GLAZED_TERRACOTTA:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "COPPER_ORE:1"
+        ],
+        "outputs": [
+          "COPPER_INGOT:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "SANDSTONE:1"
+        ],
+        "outputs": [
+          "SMOOTH_SANDSTONE:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "REDSTONE_ORE:1"
+        ],
+        "outputs": [
+          "REDSTONE:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "GOLDEN_PICKAXE:1"
+        ],
+        "outputs": [
+          "GOLD_NUGGET:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "GOLDEN_SHOVEL:1"
+        ],
+        "outputs": [
+          "GOLD_NUGGET:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "GOLDEN_AXE:1"
+        ],
+        "outputs": [
+          "GOLD_NUGGET:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "GOLDEN_HOE:1"
+        ],
+        "outputs": [
+          "GOLD_NUGGET:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "GOLDEN_SWORD:1"
+        ],
+        "outputs": [
+          "GOLD_NUGGET:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "GOLDEN_HELMET:1"
+        ],
+        "outputs": [
+          "GOLD_NUGGET:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "GOLDEN_CHESTPLATE:1"
+        ],
+        "outputs": [
+          "GOLD_NUGGET:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "GOLDEN_LEGGINGS:1"
+        ],
+        "outputs": [
+          "GOLD_NUGGET:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "GOLDEN_BOOTS:1"
+        ],
+        "outputs": [
+          "GOLD_NUGGET:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "GOLDEN_HORSE_ARMOR:1"
+        ],
+        "outputs": [
+          "GOLD_NUGGET:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "NETHER_QUARTZ_ORE:1"
+        ],
+        "outputs": [
+          "QUARTZ:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "DEEPSLATE_GOLD_ORE:1"
+        ],
+        "outputs": [
+          "GOLD_INGOT:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "WHITE_TERRACOTTA:1"
+        ],
+        "outputs": [
+          "WHITE_GLAZED_TERRACOTTA:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "COBBLESTONE:1"
+        ],
+        "outputs": [
+          "STONE:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "YELLOW_TERRACOTTA:1"
+        ],
+        "outputs": [
+          "YELLOW_GLAZED_TERRACOTTA:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "DEEPSLATE_LAPIS_ORE:1"
+        ],
+        "outputs": [
+          "LAPIS_LAZULI:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "CLAY:1"
+        ],
+        "outputs": [
+          "TERRACOTTA:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "SAND:1"
+        ],
+        "outputs": [
+          "GLASS:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "RED_SAND:1"
+        ],
+        "outputs": [
+          "GLASS:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "PINK_TERRACOTTA:1"
+        ],
+        "outputs": [
+          "PINK_GLAZED_TERRACOTTA:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "RED_SANDSTONE:1"
+        ],
+        "outputs": [
+          "SMOOTH_RED_SANDSTONE:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "SALMON:1"
+        ],
+        "outputs": [
+          "COOKED_SALMON:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "DEEPSLATE_DIAMOND_ORE:1"
+        ],
+        "outputs": [
+          "DIAMOND:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "MAGENTA_TERRACOTTA:1"
+        ],
+        "outputs": [
+          "MAGENTA_GLAZED_TERRACOTTA:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "CLAY_BALL:1"
+        ],
+        "outputs": [
+          "BRICK:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "BROWN_TERRACOTTA:1"
+        ],
+        "outputs": [
+          "BROWN_GLAZED_TERRACOTTA:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "DEEPSLATE_EMERALD_ORE:1"
+        ],
+        "outputs": [
+          "EMERALD:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "BEEF:1"
+        ],
+        "outputs": [
+          "COOKED_BEEF:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "DEEPSLATE_COPPER_ORE:1"
+        ],
+        "outputs": [
+          "COPPER_INGOT:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "LIME_TERRACOTTA:1"
+        ],
+        "outputs": [
+          "LIME_GLAZED_TERRACOTTA:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "WET_SPONGE:1"
+        ],
+        "outputs": [
+          "SPONGE:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "RAW_COPPER:1"
+        ],
+        "outputs": [
+          "COPPER_INGOT:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "CYAN_TERRACOTTA:1"
+        ],
+        "outputs": [
+          "CYAN_GLAZED_TERRACOTTA:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "BLACK_TERRACOTTA:1"
+        ],
+        "outputs": [
+          "BLACK_GLAZED_TERRACOTTA:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "GOLD_ORE:1"
+        ],
+        "outputs": [
+          "GOLD_INGOT:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "PORKCHOP:1"
+        ],
+        "outputs": [
+          "COOKED_PORKCHOP:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "CHORUS_FRUIT:1"
+        ],
+        "outputs": [
+          "POPPED_CHORUS_FRUIT:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "DEEPSLATE_COAL_ORE:1"
+        ],
+        "outputs": [
+          "COAL:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "STONE_BRICKS:1"
+        ],
+        "outputs": [
+          "CRACKED_STONE_BRICKS:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "DEEPSLATE_IRON_ORE:1"
+        ],
+        "outputs": [
+          "IRON_INGOT:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "COBBLED_DEEPSLATE:1"
+        ],
+        "outputs": [
+          "DEEPSLATE:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "RED_TERRACOTTA:1"
+        ],
+        "outputs": [
+          "RED_GLAZED_TERRACOTTA:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "POTATO:1"
+        ],
+        "outputs": [
+          "BAKED_POTATO:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "MUTTON:1"
+        ],
+        "outputs": [
+          "COOKED_MUTTON:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "GRAY_TERRACOTTA:1"
+        ],
+        "outputs": [
+          "GRAY_GLAZED_TERRACOTTA:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "DEEPSLATE_TILES:1"
+        ],
+        "outputs": [
+          "CRACKED_DEEPSLATE_TILES:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "IRON_ORE:1"
+        ],
+        "outputs": [
+          "IRON_INGOT:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "DIAMOND_ORE:1"
+        ],
+        "outputs": [
+          "DIAMOND:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "NETHER_BRICKS:1"
+        ],
+        "outputs": [
+          "CRACKED_NETHER_BRICKS:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "PURPLE_TERRACOTTA:1"
+        ],
+        "outputs": [
+          "PURPLE_GLAZED_TERRACOTTA:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "SEA_PICKLE:1"
+        ],
+        "outputs": [
+          "LIME_DYE:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "IRON_PICKAXE:1"
+        ],
+        "outputs": [
+          "IRON_NUGGET:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "IRON_SHOVEL:1"
+        ],
+        "outputs": [
+          "IRON_NUGGET:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "IRON_AXE:1"
+        ],
+        "outputs": [
+          "IRON_NUGGET:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "IRON_HOE:1"
+        ],
+        "outputs": [
+          "IRON_NUGGET:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "IRON_SWORD:1"
+        ],
+        "outputs": [
+          "IRON_NUGGET:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "IRON_HELMET:1"
+        ],
+        "outputs": [
+          "IRON_NUGGET:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "IRON_CHESTPLATE:1"
+        ],
+        "outputs": [
+          "IRON_NUGGET:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "IRON_LEGGINGS:1"
+        ],
+        "outputs": [
+          "IRON_NUGGET:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "IRON_BOOTS:1"
+        ],
+        "outputs": [
+          "IRON_NUGGET:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "IRON_HORSE_ARMOR:1"
+        ],
+        "outputs": [
+          "IRON_NUGGET:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "CHAINMAIL_HELMET:1"
+        ],
+        "outputs": [
+          "IRON_NUGGET:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "CHAINMAIL_CHESTPLATE:1"
+        ],
+        "outputs": [
+          "IRON_NUGGET:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "CHAINMAIL_LEGGINGS:1"
+        ],
+        "outputs": [
+          "IRON_NUGGET:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "CHAINMAIL_BOOTS:1"
+        ],
+        "outputs": [
+          "IRON_NUGGET:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "DARK_OAK_LOG:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "DARK_OAK_WOOD:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "STRIPPED_DARK_OAK_LOG:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "STRIPPED_DARK_OAK_WOOD:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "PALE_OAK_LOG:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "PALE_OAK_WOOD:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "STRIPPED_PALE_OAK_LOG:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "STRIPPED_PALE_OAK_WOOD:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "OAK_LOG:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "OAK_WOOD:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "STRIPPED_OAK_LOG:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "STRIPPED_OAK_WOOD:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "ACACIA_LOG:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "ACACIA_WOOD:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "STRIPPED_ACACIA_LOG:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "STRIPPED_ACACIA_WOOD:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "BIRCH_LOG:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "BIRCH_WOOD:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "STRIPPED_BIRCH_LOG:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "STRIPPED_BIRCH_WOOD:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "JUNGLE_LOG:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "JUNGLE_WOOD:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "STRIPPED_JUNGLE_LOG:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "STRIPPED_JUNGLE_WOOD:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "SPRUCE_LOG:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "SPRUCE_WOOD:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "STRIPPED_SPRUCE_LOG:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "STRIPPED_SPRUCE_WOOD:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "MANGROVE_LOG:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "MANGROVE_WOOD:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "STRIPPED_MANGROVE_LOG:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "STRIPPED_MANGROVE_WOOD:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "CHERRY_LOG:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "CHERRY_WOOD:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "STRIPPED_CHERRY_LOG:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "STRIPPED_CHERRY_WOOD:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "CACTUS:1"
+        ],
+        "outputs": [
+          "GREEN_DYE:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "QUARTZ_BLOCK:1"
+        ],
+        "outputs": [
+          "SMOOTH_QUARTZ:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "BLUE_TERRACOTTA:1"
+        ],
+        "outputs": [
+          "BLUE_GLAZED_TERRACOTTA:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "ORANGE_TERRACOTTA:1"
+        ],
+        "outputs": [
+          "ORANGE_GLAZED_TERRACOTTA:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "BASALT:1"
+        ],
+        "outputs": [
+          "SMOOTH_BASALT:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "STONE:1"
+        ],
+        "outputs": [
+          "SMOOTH_STONE:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "CHICKEN:1"
+        ],
+        "outputs": [
+          "COOKED_CHICKEN:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "LIGHT_BLUE_TERRACOTTA:1"
+        ],
+        "outputs": [
+          "LIGHT_BLUE_GLAZED_TERRACOTTA:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "DEEPSLATE_BRICKS:1"
+        ],
+        "outputs": [
+          "CRACKED_DEEPSLATE_BRICKS:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "LIGHT_GRAY_TERRACOTTA:1"
+        ],
+        "outputs": [
+          "LIGHT_GRAY_GLAZED_TERRACOTTA:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "ANCIENT_DEBRIS:1"
+        ],
+        "outputs": [
+          "NETHERITE_SCRAP:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "RABBIT:1"
+        ],
+        "outputs": [
+          "COOKED_RABBIT:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "RAW_IRON:1"
+        ],
+        "outputs": [
+          "IRON_INGOT:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "COD:1"
+        ],
+        "outputs": [
+          "COOKED_COD:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "JUNGLE_LEAVES:1"
+        ],
+        "outputs": [
+          "LEAF_LITTER:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "OAK_LEAVES:1"
+        ],
+        "outputs": [
+          "LEAF_LITTER:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "SPRUCE_LEAVES:1"
+        ],
+        "outputs": [
+          "LEAF_LITTER:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "PALE_OAK_LEAVES:1"
+        ],
+        "outputs": [
+          "LEAF_LITTER:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "DARK_OAK_LEAVES:1"
+        ],
+        "outputs": [
+          "LEAF_LITTER:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "ACACIA_LEAVES:1"
+        ],
+        "outputs": [
+          "LEAF_LITTER:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "BIRCH_LEAVES:1"
+        ],
+        "outputs": [
+          "LEAF_LITTER:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "AZALEA_LEAVES:1"
+        ],
+        "outputs": [
+          "LEAF_LITTER:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "FLOWERING_AZALEA_LEAVES:1"
+        ],
+        "outputs": [
+          "LEAF_LITTER:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "MANGROVE_LEAVES:1"
+        ],
+        "outputs": [
+          "LEAF_LITTER:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "CHERRY_LEAVES:1"
+        ],
+        "outputs": [
+          "LEAF_LITTER:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "NETHERRACK:1"
+        ],
+        "outputs": [
+          "NETHER_BRICK:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "COAL_ORE:1"
+        ],
+        "outputs": [
+          "COAL:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "NETHER_GOLD_ORE:1"
+        ],
+        "outputs": [
+          "GOLD_INGOT:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "POLISHED_BLACKSTONE_BRICKS:1"
+        ],
+        "outputs": [
+          "CRACKED_POLISHED_BLACKSTONE_BRICKS:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "DEEPSLATE_REDSTONE_ORE:1"
+        ],
+        "outputs": [
+          "REDSTONE:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "RAW_GOLD:1"
+        ],
+        "outputs": [
+          "GOLD_INGOT:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "RESIN_CLUMP:1"
+        ],
+        "outputs": [
+          "RESIN_BRICK:1"
+        ],
+        "ticks": 4
+      }
     ]
   },
   {
@@ -333,6 +2858,1268 @@
     "outputSlots": [
       24,
       25
+    ],
+    "processingRecipes": [
+      {
+        "inputs": [
+          "LAPIS_ORE:1"
+        ],
+        "outputs": [
+          "LAPIS_LAZULI:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "EMERALD_ORE:1"
+        ],
+        "outputs": [
+          "EMERALD:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "KELP:1"
+        ],
+        "outputs": [
+          "DRIED_KELP:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "GREEN_TERRACOTTA:1"
+        ],
+        "outputs": [
+          "GREEN_GLAZED_TERRACOTTA:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "COPPER_ORE:1"
+        ],
+        "outputs": [
+          "COPPER_INGOT:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "SANDSTONE:1"
+        ],
+        "outputs": [
+          "SMOOTH_SANDSTONE:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "REDSTONE_ORE:1"
+        ],
+        "outputs": [
+          "REDSTONE:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "GOLDEN_PICKAXE:1"
+        ],
+        "outputs": [
+          "GOLD_NUGGET:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "GOLDEN_SHOVEL:1"
+        ],
+        "outputs": [
+          "GOLD_NUGGET:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "GOLDEN_AXE:1"
+        ],
+        "outputs": [
+          "GOLD_NUGGET:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "GOLDEN_HOE:1"
+        ],
+        "outputs": [
+          "GOLD_NUGGET:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "GOLDEN_SWORD:1"
+        ],
+        "outputs": [
+          "GOLD_NUGGET:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "GOLDEN_HELMET:1"
+        ],
+        "outputs": [
+          "GOLD_NUGGET:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "GOLDEN_CHESTPLATE:1"
+        ],
+        "outputs": [
+          "GOLD_NUGGET:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "GOLDEN_LEGGINGS:1"
+        ],
+        "outputs": [
+          "GOLD_NUGGET:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "GOLDEN_BOOTS:1"
+        ],
+        "outputs": [
+          "GOLD_NUGGET:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "GOLDEN_HORSE_ARMOR:1"
+        ],
+        "outputs": [
+          "GOLD_NUGGET:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "NETHER_QUARTZ_ORE:1"
+        ],
+        "outputs": [
+          "QUARTZ:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "DEEPSLATE_GOLD_ORE:1"
+        ],
+        "outputs": [
+          "GOLD_INGOT:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "WHITE_TERRACOTTA:1"
+        ],
+        "outputs": [
+          "WHITE_GLAZED_TERRACOTTA:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "COBBLESTONE:1"
+        ],
+        "outputs": [
+          "STONE:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "YELLOW_TERRACOTTA:1"
+        ],
+        "outputs": [
+          "YELLOW_GLAZED_TERRACOTTA:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "DEEPSLATE_LAPIS_ORE:1"
+        ],
+        "outputs": [
+          "LAPIS_LAZULI:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "CLAY:1"
+        ],
+        "outputs": [
+          "TERRACOTTA:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "SAND:1"
+        ],
+        "outputs": [
+          "GLASS:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "RED_SAND:1"
+        ],
+        "outputs": [
+          "GLASS:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "PINK_TERRACOTTA:1"
+        ],
+        "outputs": [
+          "PINK_GLAZED_TERRACOTTA:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "RED_SANDSTONE:1"
+        ],
+        "outputs": [
+          "SMOOTH_RED_SANDSTONE:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "SALMON:1"
+        ],
+        "outputs": [
+          "COOKED_SALMON:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "DEEPSLATE_DIAMOND_ORE:1"
+        ],
+        "outputs": [
+          "DIAMOND:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "MAGENTA_TERRACOTTA:1"
+        ],
+        "outputs": [
+          "MAGENTA_GLAZED_TERRACOTTA:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "CLAY_BALL:1"
+        ],
+        "outputs": [
+          "BRICK:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "BROWN_TERRACOTTA:1"
+        ],
+        "outputs": [
+          "BROWN_GLAZED_TERRACOTTA:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "DEEPSLATE_EMERALD_ORE:1"
+        ],
+        "outputs": [
+          "EMERALD:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "BEEF:1"
+        ],
+        "outputs": [
+          "COOKED_BEEF:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "DEEPSLATE_COPPER_ORE:1"
+        ],
+        "outputs": [
+          "COPPER_INGOT:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "LIME_TERRACOTTA:1"
+        ],
+        "outputs": [
+          "LIME_GLAZED_TERRACOTTA:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "WET_SPONGE:1"
+        ],
+        "outputs": [
+          "SPONGE:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "RAW_COPPER:1"
+        ],
+        "outputs": [
+          "COPPER_INGOT:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "CYAN_TERRACOTTA:1"
+        ],
+        "outputs": [
+          "CYAN_GLAZED_TERRACOTTA:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "BLACK_TERRACOTTA:1"
+        ],
+        "outputs": [
+          "BLACK_GLAZED_TERRACOTTA:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "GOLD_ORE:1"
+        ],
+        "outputs": [
+          "GOLD_INGOT:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "PORKCHOP:1"
+        ],
+        "outputs": [
+          "COOKED_PORKCHOP:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "CHORUS_FRUIT:1"
+        ],
+        "outputs": [
+          "POPPED_CHORUS_FRUIT:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "DEEPSLATE_COAL_ORE:1"
+        ],
+        "outputs": [
+          "COAL:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "STONE_BRICKS:1"
+        ],
+        "outputs": [
+          "CRACKED_STONE_BRICKS:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "DEEPSLATE_IRON_ORE:1"
+        ],
+        "outputs": [
+          "IRON_INGOT:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "COBBLED_DEEPSLATE:1"
+        ],
+        "outputs": [
+          "DEEPSLATE:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "RED_TERRACOTTA:1"
+        ],
+        "outputs": [
+          "RED_GLAZED_TERRACOTTA:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "POTATO:1"
+        ],
+        "outputs": [
+          "BAKED_POTATO:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "MUTTON:1"
+        ],
+        "outputs": [
+          "COOKED_MUTTON:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "GRAY_TERRACOTTA:1"
+        ],
+        "outputs": [
+          "GRAY_GLAZED_TERRACOTTA:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "DEEPSLATE_TILES:1"
+        ],
+        "outputs": [
+          "CRACKED_DEEPSLATE_TILES:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "IRON_ORE:1"
+        ],
+        "outputs": [
+          "IRON_INGOT:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "DIAMOND_ORE:1"
+        ],
+        "outputs": [
+          "DIAMOND:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "NETHER_BRICKS:1"
+        ],
+        "outputs": [
+          "CRACKED_NETHER_BRICKS:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "PURPLE_TERRACOTTA:1"
+        ],
+        "outputs": [
+          "PURPLE_GLAZED_TERRACOTTA:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "SEA_PICKLE:1"
+        ],
+        "outputs": [
+          "LIME_DYE:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "IRON_PICKAXE:1"
+        ],
+        "outputs": [
+          "IRON_NUGGET:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "IRON_SHOVEL:1"
+        ],
+        "outputs": [
+          "IRON_NUGGET:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "IRON_AXE:1"
+        ],
+        "outputs": [
+          "IRON_NUGGET:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "IRON_HOE:1"
+        ],
+        "outputs": [
+          "IRON_NUGGET:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "IRON_SWORD:1"
+        ],
+        "outputs": [
+          "IRON_NUGGET:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "IRON_HELMET:1"
+        ],
+        "outputs": [
+          "IRON_NUGGET:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "IRON_CHESTPLATE:1"
+        ],
+        "outputs": [
+          "IRON_NUGGET:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "IRON_LEGGINGS:1"
+        ],
+        "outputs": [
+          "IRON_NUGGET:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "IRON_BOOTS:1"
+        ],
+        "outputs": [
+          "IRON_NUGGET:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "IRON_HORSE_ARMOR:1"
+        ],
+        "outputs": [
+          "IRON_NUGGET:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "CHAINMAIL_HELMET:1"
+        ],
+        "outputs": [
+          "IRON_NUGGET:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "CHAINMAIL_CHESTPLATE:1"
+        ],
+        "outputs": [
+          "IRON_NUGGET:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "CHAINMAIL_LEGGINGS:1"
+        ],
+        "outputs": [
+          "IRON_NUGGET:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "CHAINMAIL_BOOTS:1"
+        ],
+        "outputs": [
+          "IRON_NUGGET:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "DARK_OAK_LOG:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "DARK_OAK_WOOD:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "STRIPPED_DARK_OAK_LOG:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "STRIPPED_DARK_OAK_WOOD:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "PALE_OAK_LOG:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "PALE_OAK_WOOD:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "STRIPPED_PALE_OAK_LOG:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "STRIPPED_PALE_OAK_WOOD:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "OAK_LOG:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "OAK_WOOD:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "STRIPPED_OAK_LOG:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "STRIPPED_OAK_WOOD:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "ACACIA_LOG:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "ACACIA_WOOD:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "STRIPPED_ACACIA_LOG:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "STRIPPED_ACACIA_WOOD:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "BIRCH_LOG:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "BIRCH_WOOD:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "STRIPPED_BIRCH_LOG:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "STRIPPED_BIRCH_WOOD:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "JUNGLE_LOG:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "JUNGLE_WOOD:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "STRIPPED_JUNGLE_LOG:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "STRIPPED_JUNGLE_WOOD:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "SPRUCE_LOG:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "SPRUCE_WOOD:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "STRIPPED_SPRUCE_LOG:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "STRIPPED_SPRUCE_WOOD:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "MANGROVE_LOG:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "MANGROVE_WOOD:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "STRIPPED_MANGROVE_LOG:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "STRIPPED_MANGROVE_WOOD:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "CHERRY_LOG:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "CHERRY_WOOD:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "STRIPPED_CHERRY_LOG:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "STRIPPED_CHERRY_WOOD:1"
+        ],
+        "outputs": [
+          "CHARCOAL:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "CACTUS:1"
+        ],
+        "outputs": [
+          "GREEN_DYE:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "QUARTZ_BLOCK:1"
+        ],
+        "outputs": [
+          "SMOOTH_QUARTZ:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "BLUE_TERRACOTTA:1"
+        ],
+        "outputs": [
+          "BLUE_GLAZED_TERRACOTTA:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "ORANGE_TERRACOTTA:1"
+        ],
+        "outputs": [
+          "ORANGE_GLAZED_TERRACOTTA:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "BASALT:1"
+        ],
+        "outputs": [
+          "SMOOTH_BASALT:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "STONE:1"
+        ],
+        "outputs": [
+          "SMOOTH_STONE:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "CHICKEN:1"
+        ],
+        "outputs": [
+          "COOKED_CHICKEN:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "LIGHT_BLUE_TERRACOTTA:1"
+        ],
+        "outputs": [
+          "LIGHT_BLUE_GLAZED_TERRACOTTA:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "DEEPSLATE_BRICKS:1"
+        ],
+        "outputs": [
+          "CRACKED_DEEPSLATE_BRICKS:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "LIGHT_GRAY_TERRACOTTA:1"
+        ],
+        "outputs": [
+          "LIGHT_GRAY_GLAZED_TERRACOTTA:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "ANCIENT_DEBRIS:1"
+        ],
+        "outputs": [
+          "NETHERITE_SCRAP:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "RABBIT:1"
+        ],
+        "outputs": [
+          "COOKED_RABBIT:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "RAW_IRON:1"
+        ],
+        "outputs": [
+          "IRON_INGOT:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "COD:1"
+        ],
+        "outputs": [
+          "COOKED_COD:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "JUNGLE_LEAVES:1"
+        ],
+        "outputs": [
+          "LEAF_LITTER:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "OAK_LEAVES:1"
+        ],
+        "outputs": [
+          "LEAF_LITTER:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "SPRUCE_LEAVES:1"
+        ],
+        "outputs": [
+          "LEAF_LITTER:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "PALE_OAK_LEAVES:1"
+        ],
+        "outputs": [
+          "LEAF_LITTER:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "DARK_OAK_LEAVES:1"
+        ],
+        "outputs": [
+          "LEAF_LITTER:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "ACACIA_LEAVES:1"
+        ],
+        "outputs": [
+          "LEAF_LITTER:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "BIRCH_LEAVES:1"
+        ],
+        "outputs": [
+          "LEAF_LITTER:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "AZALEA_LEAVES:1"
+        ],
+        "outputs": [
+          "LEAF_LITTER:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "FLOWERING_AZALEA_LEAVES:1"
+        ],
+        "outputs": [
+          "LEAF_LITTER:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "MANGROVE_LEAVES:1"
+        ],
+        "outputs": [
+          "LEAF_LITTER:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "CHERRY_LEAVES:1"
+        ],
+        "outputs": [
+          "LEAF_LITTER:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "NETHERRACK:1"
+        ],
+        "outputs": [
+          "NETHER_BRICK:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "COAL_ORE:1"
+        ],
+        "outputs": [
+          "COAL:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "NETHER_GOLD_ORE:1"
+        ],
+        "outputs": [
+          "GOLD_INGOT:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "POLISHED_BLACKSTONE_BRICKS:1"
+        ],
+        "outputs": [
+          "CRACKED_POLISHED_BLACKSTONE_BRICKS:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "DEEPSLATE_REDSTONE_ORE:1"
+        ],
+        "outputs": [
+          "REDSTONE:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "RAW_GOLD:1"
+        ],
+        "outputs": [
+          "GOLD_INGOT:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "RESIN_CLUMP:1"
+        ],
+        "outputs": [
+          "RESIN_BRICK:1"
+        ],
+        "ticks": 2
+      }
     ]
   },
   {
@@ -349,7 +4136,8 @@
     "outputSlots": [
       24,
       25
-    ]
+    ],
+    "processingRecipes": []
   },
   {
     "id": "ELECTRIC_GOLD_PAN_2",
@@ -365,7 +4153,8 @@
     "outputSlots": [
       24,
       25
-    ]
+    ],
+    "processingRecipes": []
   },
   {
     "id": "ELECTRIC_GOLD_PAN_3",
@@ -381,7 +4170,8 @@
     "outputSlots": [
       24,
       25
-    ]
+    ],
+    "processingRecipes": []
   },
   {
     "id": "ELECTRIC_DUST_WASHER",
@@ -397,7 +4187,8 @@
     "outputSlots": [
       24,
       25
-    ]
+    ],
+    "processingRecipes": []
   },
   {
     "id": "ELECTRIC_DUST_WASHER_2",
@@ -413,7 +4204,8 @@
     "outputSlots": [
       24,
       25
-    ]
+    ],
+    "processingRecipes": []
   },
   {
     "id": "ELECTRIC_DUST_WASHER_3",
@@ -429,7 +4221,8 @@
     "outputSlots": [
       24,
       25
-    ]
+    ],
+    "processingRecipes": []
   },
   {
     "id": "ELECTRIC_INGOT_FACTORY",
@@ -445,7 +4238,8 @@
     "outputSlots": [
       24,
       25
-    ]
+    ],
+    "processingRecipes": []
   },
   {
     "id": "ELECTRIC_INGOT_FACTORY_2",
@@ -461,7 +4255,8 @@
     "outputSlots": [
       24,
       25
-    ]
+    ],
+    "processingRecipes": []
   },
   {
     "id": "ELECTRIC_INGOT_FACTORY_3",
@@ -477,7 +4272,8 @@
     "outputSlots": [
       24,
       25
-    ]
+    ],
+    "processingRecipes": []
   },
   {
     "id": "ELECTRIFIED_CRUCIBLE",
@@ -493,6 +4289,388 @@
     "outputSlots": [
       24,
       25
+    ],
+    "processingRecipes": [
+      {
+        "inputs": [
+          "BUCKET:1",
+          "COBBLESTONE:16"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 20
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "NETHERRACK:16"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 16
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "STONE:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 16
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "TERRACOTTA:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 16
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "OBSIDIAN:1"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 20
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "MAGENTA_TERRACOTTA:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 16
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "PURPLE_TERRACOTTA:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 16
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "LIME_TERRACOTTA:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 16
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "YELLOW_TERRACOTTA:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 16
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "BROWN_TERRACOTTA:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 16
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "WHITE_TERRACOTTA:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 16
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "LIGHT_BLUE_TERRACOTTA:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 16
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "GRAY_TERRACOTTA:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 16
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "TERRACOTTA:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 16
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "GREEN_TERRACOTTA:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 16
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "BLACK_TERRACOTTA:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 16
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "RED_TERRACOTTA:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 16
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "LIGHT_GRAY_TERRACOTTA:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 16
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "CYAN_TERRACOTTA:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 16
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "PINK_TERRACOTTA:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 16
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "BLUE_TERRACOTTA:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 16
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "ORANGE_TERRACOTTA:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 16
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "OAK_LEAVES:16"
+        ],
+        "outputs": [
+          "WATER_BUCKET:1"
+        ],
+        "ticks": 20
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "ACACIA_LEAVES:16"
+        ],
+        "outputs": [
+          "WATER_BUCKET:1"
+        ],
+        "ticks": 20
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "AZALEA_LEAVES:16"
+        ],
+        "outputs": [
+          "WATER_BUCKET:1"
+        ],
+        "ticks": 20
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "FLOWERING_AZALEA_LEAVES:16"
+        ],
+        "outputs": [
+          "WATER_BUCKET:1"
+        ],
+        "ticks": 20
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "JUNGLE_LEAVES:16"
+        ],
+        "outputs": [
+          "WATER_BUCKET:1"
+        ],
+        "ticks": 20
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "CHERRY_LEAVES:16"
+        ],
+        "outputs": [
+          "WATER_BUCKET:1"
+        ],
+        "ticks": 20
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "DARK_OAK_LEAVES:16"
+        ],
+        "outputs": [
+          "WATER_BUCKET:1"
+        ],
+        "ticks": 20
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "PALE_OAK_LEAVES:16"
+        ],
+        "outputs": [
+          "WATER_BUCKET:1"
+        ],
+        "ticks": 20
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "MANGROVE_LEAVES:16"
+        ],
+        "outputs": [
+          "WATER_BUCKET:1"
+        ],
+        "ticks": 20
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "SPRUCE_LEAVES:16"
+        ],
+        "outputs": [
+          "WATER_BUCKET:1"
+        ],
+        "ticks": 20
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "BIRCH_LEAVES:16"
+        ],
+        "outputs": [
+          "WATER_BUCKET:1"
+        ],
+        "ticks": 20
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "BLACKSTONE:8"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 20
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "BASALT:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 20
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "COBBLED_DEEPSLATE:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 20
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "DEEPSLATE:10"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 20
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "TUFF:8"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 20
+      }
     ]
   },
   {
@@ -509,6 +4687,388 @@
     "outputSlots": [
       24,
       25
+    ],
+    "processingRecipes": [
+      {
+        "inputs": [
+          "BUCKET:1",
+          "COBBLESTONE:16"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 10
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "NETHERRACK:16"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "STONE:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "TERRACOTTA:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "OBSIDIAN:1"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 10
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "MAGENTA_TERRACOTTA:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "PURPLE_TERRACOTTA:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "LIME_TERRACOTTA:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "YELLOW_TERRACOTTA:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "BROWN_TERRACOTTA:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "WHITE_TERRACOTTA:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "LIGHT_BLUE_TERRACOTTA:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "GRAY_TERRACOTTA:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "TERRACOTTA:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "GREEN_TERRACOTTA:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "BLACK_TERRACOTTA:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "RED_TERRACOTTA:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "LIGHT_GRAY_TERRACOTTA:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "CYAN_TERRACOTTA:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "PINK_TERRACOTTA:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "BLUE_TERRACOTTA:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "ORANGE_TERRACOTTA:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "OAK_LEAVES:16"
+        ],
+        "outputs": [
+          "WATER_BUCKET:1"
+        ],
+        "ticks": 10
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "ACACIA_LEAVES:16"
+        ],
+        "outputs": [
+          "WATER_BUCKET:1"
+        ],
+        "ticks": 10
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "AZALEA_LEAVES:16"
+        ],
+        "outputs": [
+          "WATER_BUCKET:1"
+        ],
+        "ticks": 10
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "FLOWERING_AZALEA_LEAVES:16"
+        ],
+        "outputs": [
+          "WATER_BUCKET:1"
+        ],
+        "ticks": 10
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "JUNGLE_LEAVES:16"
+        ],
+        "outputs": [
+          "WATER_BUCKET:1"
+        ],
+        "ticks": 10
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "CHERRY_LEAVES:16"
+        ],
+        "outputs": [
+          "WATER_BUCKET:1"
+        ],
+        "ticks": 10
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "DARK_OAK_LEAVES:16"
+        ],
+        "outputs": [
+          "WATER_BUCKET:1"
+        ],
+        "ticks": 10
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "PALE_OAK_LEAVES:16"
+        ],
+        "outputs": [
+          "WATER_BUCKET:1"
+        ],
+        "ticks": 10
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "MANGROVE_LEAVES:16"
+        ],
+        "outputs": [
+          "WATER_BUCKET:1"
+        ],
+        "ticks": 10
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "SPRUCE_LEAVES:16"
+        ],
+        "outputs": [
+          "WATER_BUCKET:1"
+        ],
+        "ticks": 10
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "BIRCH_LEAVES:16"
+        ],
+        "outputs": [
+          "WATER_BUCKET:1"
+        ],
+        "ticks": 10
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "BLACKSTONE:8"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 10
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "BASALT:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 10
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "COBBLED_DEEPSLATE:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 10
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "DEEPSLATE:10"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 10
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "TUFF:8"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 10
+      }
     ]
   },
   {
@@ -525,6 +5085,388 @@
     "outputSlots": [
       24,
       25
+    ],
+    "processingRecipes": [
+      {
+        "inputs": [
+          "BUCKET:1",
+          "COBBLESTONE:16"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 5
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "NETHERRACK:16"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "STONE:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "TERRACOTTA:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "OBSIDIAN:1"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 5
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "MAGENTA_TERRACOTTA:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "PURPLE_TERRACOTTA:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "LIME_TERRACOTTA:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "YELLOW_TERRACOTTA:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "BROWN_TERRACOTTA:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "WHITE_TERRACOTTA:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "LIGHT_BLUE_TERRACOTTA:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "GRAY_TERRACOTTA:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "TERRACOTTA:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "GREEN_TERRACOTTA:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "BLACK_TERRACOTTA:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "RED_TERRACOTTA:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "LIGHT_GRAY_TERRACOTTA:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "CYAN_TERRACOTTA:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "PINK_TERRACOTTA:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "BLUE_TERRACOTTA:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "ORANGE_TERRACOTTA:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "OAK_LEAVES:16"
+        ],
+        "outputs": [
+          "WATER_BUCKET:1"
+        ],
+        "ticks": 5
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "ACACIA_LEAVES:16"
+        ],
+        "outputs": [
+          "WATER_BUCKET:1"
+        ],
+        "ticks": 5
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "AZALEA_LEAVES:16"
+        ],
+        "outputs": [
+          "WATER_BUCKET:1"
+        ],
+        "ticks": 5
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "FLOWERING_AZALEA_LEAVES:16"
+        ],
+        "outputs": [
+          "WATER_BUCKET:1"
+        ],
+        "ticks": 5
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "JUNGLE_LEAVES:16"
+        ],
+        "outputs": [
+          "WATER_BUCKET:1"
+        ],
+        "ticks": 5
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "CHERRY_LEAVES:16"
+        ],
+        "outputs": [
+          "WATER_BUCKET:1"
+        ],
+        "ticks": 5
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "DARK_OAK_LEAVES:16"
+        ],
+        "outputs": [
+          "WATER_BUCKET:1"
+        ],
+        "ticks": 5
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "PALE_OAK_LEAVES:16"
+        ],
+        "outputs": [
+          "WATER_BUCKET:1"
+        ],
+        "ticks": 5
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "MANGROVE_LEAVES:16"
+        ],
+        "outputs": [
+          "WATER_BUCKET:1"
+        ],
+        "ticks": 5
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "SPRUCE_LEAVES:16"
+        ],
+        "outputs": [
+          "WATER_BUCKET:1"
+        ],
+        "ticks": 5
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "BIRCH_LEAVES:16"
+        ],
+        "outputs": [
+          "WATER_BUCKET:1"
+        ],
+        "ticks": 5
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "BLACKSTONE:8"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 5
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "BASALT:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 5
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "COBBLED_DEEPSLATE:12"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 5
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "DEEPSLATE:10"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 5
+      },
+      {
+        "inputs": [
+          "BUCKET:1",
+          "TUFF:8"
+        ],
+        "outputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "ticks": 5
+      }
     ]
   },
   {
@@ -541,7 +5483,8 @@
     "outputSlots": [
       24,
       25
-    ]
+    ],
+    "processingRecipes": []
   },
   {
     "id": "ELECTRIC_ORE_GRINDER_2",
@@ -557,7 +5500,8 @@
     "outputSlots": [
       24,
       25
-    ]
+    ],
+    "processingRecipes": []
   },
   {
     "id": "ELECTRIC_ORE_GRINDER_3",
@@ -573,7 +5517,8 @@
     "outputSlots": [
       24,
       25
-    ]
+    ],
+    "processingRecipes": []
   },
   {
     "id": "HEATED_PRESSURE_CHAMBER",
@@ -589,6 +5534,86 @@
     "outputSlots": [
       24,
       25
+    ],
+    "processingRecipes": [
+      {
+        "inputs": [
+          "BUCKET_OF_OIL:1"
+        ],
+        "outputs": [
+          "PLASTIC_SHEET:8"
+        ],
+        "ticks": 90
+      },
+      {
+        "inputs": [
+          "GOLD_24K:1",
+          "URANIUM:1"
+        ],
+        "outputs": [
+          "BLISTERING_INGOT:1"
+        ],
+        "ticks": 60
+      },
+      {
+        "inputs": [
+          "BLISTERING_INGOT:1",
+          "CARBONADO:1"
+        ],
+        "outputs": [
+          "BLISTERING_INGOT_2:1"
+        ],
+        "ticks": 60
+      },
+      {
+        "inputs": [
+          "BLISTERING_INGOT_2:1",
+          "NETHER_STAR:1"
+        ],
+        "outputs": [
+          "BLISTERING_INGOT_3:1"
+        ],
+        "ticks": 120
+      },
+      {
+        "inputs": [
+          "PLUTONIUM:1",
+          "URANIUM:1"
+        ],
+        "outputs": [
+          "BOOSTED_URANIUM:1"
+        ],
+        "ticks": 180
+      },
+      {
+        "inputs": [
+          "NETHER_ICE:1",
+          "PLUTONIUM:1"
+        ],
+        "outputs": [
+          "ENRICHED_NETHER_ICE:4"
+        ],
+        "ticks": 120
+      },
+      {
+        "inputs": [
+          "ENRICHED_NETHER_ICE:1"
+        ],
+        "outputs": [
+          "NETHER_ICE_COOLANT_CELL:8"
+        ],
+        "ticks": 90
+      },
+      {
+        "inputs": [
+          "MAGNESIUM_DUST:1",
+          "SALT:1"
+        ],
+        "outputs": [
+          "MAGNESIUM_SALT:1"
+        ],
+        "ticks": 16
+      }
     ]
   },
   {
@@ -605,6 +5630,86 @@
     "outputSlots": [
       24,
       25
+    ],
+    "processingRecipes": [
+      {
+        "inputs": [
+          "BUCKET_OF_OIL:1"
+        ],
+        "outputs": [
+          "PLASTIC_SHEET:8"
+        ],
+        "ticks": 18
+      },
+      {
+        "inputs": [
+          "GOLD_24K:1",
+          "URANIUM:1"
+        ],
+        "outputs": [
+          "BLISTERING_INGOT:1"
+        ],
+        "ticks": 12
+      },
+      {
+        "inputs": [
+          "BLISTERING_INGOT:1",
+          "CARBONADO:1"
+        ],
+        "outputs": [
+          "BLISTERING_INGOT_2:1"
+        ],
+        "ticks": 12
+      },
+      {
+        "inputs": [
+          "BLISTERING_INGOT_2:1",
+          "NETHER_STAR:1"
+        ],
+        "outputs": [
+          "BLISTERING_INGOT_3:1"
+        ],
+        "ticks": 24
+      },
+      {
+        "inputs": [
+          "PLUTONIUM:1",
+          "URANIUM:1"
+        ],
+        "outputs": [
+          "BOOSTED_URANIUM:1"
+        ],
+        "ticks": 36
+      },
+      {
+        "inputs": [
+          "NETHER_ICE:1",
+          "PLUTONIUM:1"
+        ],
+        "outputs": [
+          "ENRICHED_NETHER_ICE:4"
+        ],
+        "ticks": 24
+      },
+      {
+        "inputs": [
+          "ENRICHED_NETHER_ICE:1"
+        ],
+        "outputs": [
+          "NETHER_ICE_COOLANT_CELL:8"
+        ],
+        "ticks": 18
+      },
+      {
+        "inputs": [
+          "MAGNESIUM_DUST:1",
+          "SALT:1"
+        ],
+        "outputs": [
+          "MAGNESIUM_SALT:1"
+        ],
+        "ticks": 3
+      }
     ]
   },
   {
@@ -621,6 +5726,26 @@
     "outputSlots": [
       24,
       25
+    ],
+    "processingRecipes": [
+      {
+        "inputs": [
+          "GOLD_INGOT:1"
+        ],
+        "outputs": [
+          "GOLD_DUST:1"
+        ],
+        "ticks": 6
+      },
+      {
+        "inputs": [
+          "COPPER_INGOT:1"
+        ],
+        "outputs": [
+          "COPPER_DUST:1"
+        ],
+        "ticks": 6
+      }
     ]
   },
   {
@@ -637,6 +5762,341 @@
     "outputSlots": [
       24,
       25
+    ],
+    "processingRecipes": [
+      {
+        "inputs": [
+          "ROTTEN_FLESH:1"
+        ],
+        "outputs": [
+          "LEATHER:1"
+        ],
+        "ticks": 12
+      },
+      {
+        "inputs": [
+          "WET_SPONGE:1"
+        ],
+        "outputs": [
+          "SPONGE:1"
+        ],
+        "ticks": 12
+      },
+      {
+        "inputs": [
+          "KELP:1"
+        ],
+        "outputs": [
+          "DRIED_KELP:1"
+        ],
+        "ticks": 12
+      },
+      {
+        "inputs": [
+          "POTION:1"
+        ],
+        "outputs": [
+          "GLASS_BOTTLE:1"
+        ],
+        "ticks": 12
+      },
+      {
+        "inputs": [
+          "SPLASH_POTION:1"
+        ],
+        "outputs": [
+          "GLASS_BOTTLE:1"
+        ],
+        "ticks": 12
+      },
+      {
+        "inputs": [
+          "LINGERING_POTION:1"
+        ],
+        "outputs": [
+          "GLASS_BOTTLE:1"
+        ],
+        "ticks": 12
+      },
+      {
+        "inputs": [
+          "WATER_BUCKET:1"
+        ],
+        "outputs": [
+          "BUCKET:1"
+        ],
+        "ticks": 12
+      },
+      {
+        "inputs": [
+          "COOKED_BEEF:1"
+        ],
+        "outputs": [
+          "BEEF_JERKY:1"
+        ],
+        "ticks": 12
+      },
+      {
+        "inputs": [
+          "COOKED_PORKCHOP:1"
+        ],
+        "outputs": [
+          "PORK_JERKY:1"
+        ],
+        "ticks": 12
+      },
+      {
+        "inputs": [
+          "COOKED_CHICKEN:1"
+        ],
+        "outputs": [
+          "CHICKEN_JERKY:1"
+        ],
+        "ticks": 12
+      },
+      {
+        "inputs": [
+          "COOKED_MUTTON:1"
+        ],
+        "outputs": [
+          "MUTTON_JERKY:1"
+        ],
+        "ticks": 12
+      },
+      {
+        "inputs": [
+          "COOKED_RABBIT:1"
+        ],
+        "outputs": [
+          "RABBIT_JERKY:1"
+        ],
+        "ticks": 12
+      },
+      {
+        "inputs": [
+          "COOKED_COD:1"
+        ],
+        "outputs": [
+          "FISH_JERKY:1"
+        ],
+        "ticks": 12
+      },
+      {
+        "inputs": [
+          "COOKED_SALMON:1"
+        ],
+        "outputs": [
+          "FISH_JERKY:1"
+        ],
+        "ticks": 12
+      },
+      {
+        "inputs": [
+          "MUD:1"
+        ],
+        "outputs": [
+          "CLAY:1"
+        ],
+        "ticks": 12
+      },
+      {
+        "inputs": [
+          "FLOWERING_AZALEA:1"
+        ],
+        "outputs": [
+          "STICK:2"
+        ],
+        "ticks": 12
+      },
+      {
+        "inputs": [
+          "ACACIA_SAPLING:1"
+        ],
+        "outputs": [
+          "STICK:2"
+        ],
+        "ticks": 12
+      },
+      {
+        "inputs": [
+          "OAK_SAPLING:1"
+        ],
+        "outputs": [
+          "STICK:2"
+        ],
+        "ticks": 12
+      },
+      {
+        "inputs": [
+          "BIRCH_SAPLING:1"
+        ],
+        "outputs": [
+          "STICK:2"
+        ],
+        "ticks": 12
+      },
+      {
+        "inputs": [
+          "DARK_OAK_SAPLING:1"
+        ],
+        "outputs": [
+          "STICK:2"
+        ],
+        "ticks": 12
+      },
+      {
+        "inputs": [
+          "SPRUCE_SAPLING:1"
+        ],
+        "outputs": [
+          "STICK:2"
+        ],
+        "ticks": 12
+      },
+      {
+        "inputs": [
+          "PALE_OAK_SAPLING:1"
+        ],
+        "outputs": [
+          "STICK:2"
+        ],
+        "ticks": 12
+      },
+      {
+        "inputs": [
+          "AZALEA:1"
+        ],
+        "outputs": [
+          "STICK:2"
+        ],
+        "ticks": 12
+      },
+      {
+        "inputs": [
+          "CHERRY_SAPLING:1"
+        ],
+        "outputs": [
+          "STICK:2"
+        ],
+        "ticks": 12
+      },
+      {
+        "inputs": [
+          "MANGROVE_PROPAGULE:1"
+        ],
+        "outputs": [
+          "STICK:2"
+        ],
+        "ticks": 12
+      },
+      {
+        "inputs": [
+          "JUNGLE_SAPLING:1"
+        ],
+        "outputs": [
+          "STICK:2"
+        ],
+        "ticks": 12
+      },
+      {
+        "inputs": [
+          "OAK_LEAVES:1"
+        ],
+        "outputs": [
+          "STICK:1"
+        ],
+        "ticks": 12
+      },
+      {
+        "inputs": [
+          "ACACIA_LEAVES:1"
+        ],
+        "outputs": [
+          "STICK:1"
+        ],
+        "ticks": 12
+      },
+      {
+        "inputs": [
+          "AZALEA_LEAVES:1"
+        ],
+        "outputs": [
+          "STICK:1"
+        ],
+        "ticks": 12
+      },
+      {
+        "inputs": [
+          "FLOWERING_AZALEA_LEAVES:1"
+        ],
+        "outputs": [
+          "STICK:1"
+        ],
+        "ticks": 12
+      },
+      {
+        "inputs": [
+          "JUNGLE_LEAVES:1"
+        ],
+        "outputs": [
+          "STICK:1"
+        ],
+        "ticks": 12
+      },
+      {
+        "inputs": [
+          "CHERRY_LEAVES:1"
+        ],
+        "outputs": [
+          "STICK:1"
+        ],
+        "ticks": 12
+      },
+      {
+        "inputs": [
+          "DARK_OAK_LEAVES:1"
+        ],
+        "outputs": [
+          "STICK:1"
+        ],
+        "ticks": 12
+      },
+      {
+        "inputs": [
+          "PALE_OAK_LEAVES:1"
+        ],
+        "outputs": [
+          "STICK:1"
+        ],
+        "ticks": 12
+      },
+      {
+        "inputs": [
+          "MANGROVE_LEAVES:1"
+        ],
+        "outputs": [
+          "STICK:1"
+        ],
+        "ticks": 12
+      },
+      {
+        "inputs": [
+          "SPRUCE_LEAVES:1"
+        ],
+        "outputs": [
+          "STICK:1"
+        ],
+        "ticks": 12
+      },
+      {
+        "inputs": [
+          "BIRCH_LEAVES:1"
+        ],
+        "outputs": [
+          "STICK:1"
+        ],
+        "ticks": 12
+      }
     ]
   },
   {
@@ -653,7 +6113,8 @@
     "outputSlots": [
       24,
       25
-    ]
+    ],
+    "processingRecipes": []
   },
   {
     "id": "ELECTRIC_PRESS",
@@ -669,6 +6130,359 @@
     "outputSlots": [
       24,
       25
+    ],
+    "processingRecipes": [
+      {
+        "inputs": [
+          "STONE_CHUNK:3"
+        ],
+        "outputs": [
+          "COBBLESTONE:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "FLINT:6"
+        ],
+        "outputs": [
+          "COBBLESTONE:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "GLASS:1"
+        ],
+        "outputs": [
+          "GLASS_PANE:3"
+        ],
+        "ticks": 10
+      },
+      {
+        "inputs": [
+          "SNOWBALL:4"
+        ],
+        "outputs": [
+          "SNOW_BLOCK:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "MAGMA_CREAM:4"
+        ],
+        "outputs": [
+          "MAGMA_BLOCK:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "SLIME_BALL:9"
+        ],
+        "outputs": [
+          "SLIME_BLOCK:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "DRIED_KELP:9"
+        ],
+        "outputs": [
+          "DRIED_KELP_BLOCK:1"
+        ],
+        "ticks": 6
+      },
+      {
+        "inputs": [
+          "BONE_MEAL:9"
+        ],
+        "outputs": [
+          "BONE_BLOCK:1"
+        ],
+        "ticks": 6
+      },
+      {
+        "inputs": [
+          "CLAY_BALL:4"
+        ],
+        "outputs": [
+          "CLAY:1"
+        ],
+        "ticks": 6
+      },
+      {
+        "inputs": [
+          "BRICK:4"
+        ],
+        "outputs": [
+          "BRICKS:1"
+        ],
+        "ticks": 6
+      },
+      {
+        "inputs": [
+          "COPPER_INGOT:1"
+        ],
+        "outputs": [
+          "COPPER_WIRE:3"
+        ],
+        "ticks": 12
+      },
+      {
+        "inputs": [
+          "STEEL_INGOT:8"
+        ],
+        "outputs": [
+          "STEEL_PLATE:1"
+        ],
+        "ticks": 32
+      },
+      {
+        "inputs": [
+          "REINFORCED_ALLOY_INGOT:8"
+        ],
+        "outputs": [
+          "REINFORCED_PLATE:1"
+        ],
+        "ticks": 36
+      },
+      {
+        "inputs": [
+          "NETHER_WART:1"
+        ],
+        "outputs": [
+          "MAGIC_LUMP_1:2"
+        ],
+        "ticks": 16
+      },
+      {
+        "inputs": [
+          "MAGIC_LUMP_1:4"
+        ],
+        "outputs": [
+          "MAGIC_LUMP_2:1"
+        ],
+        "ticks": 20
+      },
+      {
+        "inputs": [
+          "MAGIC_LUMP_2:4"
+        ],
+        "outputs": [
+          "MAGIC_LUMP_3:1"
+        ],
+        "ticks": 24
+      },
+      {
+        "inputs": [
+          "ENDER_EYE:1"
+        ],
+        "outputs": [
+          "ENDER_LUMP_1:2"
+        ],
+        "ticks": 20
+      },
+      {
+        "inputs": [
+          "ENDER_LUMP_1:4"
+        ],
+        "outputs": [
+          "ENDER_LUMP_2:1"
+        ],
+        "ticks": 24
+      },
+      {
+        "inputs": [
+          "ENDER_LUMP_2:4"
+        ],
+        "outputs": [
+          "ENDER_LUMP_3:1"
+        ],
+        "ticks": 28
+      },
+      {
+        "inputs": [
+          "TINY_URANIUM:9"
+        ],
+        "outputs": [
+          "SMALL_URANIUM:1"
+        ],
+        "ticks": 36
+      },
+      {
+        "inputs": [
+          "SMALL_URANIUM:4"
+        ],
+        "outputs": [
+          "URANIUM:1"
+        ],
+        "ticks": 48
+      },
+      {
+        "inputs": [
+          "QUARTZ:4"
+        ],
+        "outputs": [
+          "QUARTZ_BLOCK:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "IRON_NUGGET:9"
+        ],
+        "outputs": [
+          "IRON_INGOT:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "GOLD_NUGGET:9"
+        ],
+        "outputs": [
+          "GOLD_INGOT:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "COAL:9"
+        ],
+        "outputs": [
+          "COAL_BLOCK:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "SAND:4"
+        ],
+        "outputs": [
+          "SANDSTONE:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "RED_SAND:4"
+        ],
+        "outputs": [
+          "RED_SANDSTONE:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "IRON_INGOT:9"
+        ],
+        "outputs": [
+          "IRON_BLOCK:1"
+        ],
+        "ticks": 10
+      },
+      {
+        "inputs": [
+          "GOLD_INGOT:9"
+        ],
+        "outputs": [
+          "GOLD_BLOCK:1"
+        ],
+        "ticks": 10
+      },
+      {
+        "inputs": [
+          "REDSTONE:9"
+        ],
+        "outputs": [
+          "REDSTONE_BLOCK:1"
+        ],
+        "ticks": 12
+      },
+      {
+        "inputs": [
+          "LAPIS_LAZULI:9"
+        ],
+        "outputs": [
+          "LAPIS_BLOCK:1"
+        ],
+        "ticks": 12
+      },
+      {
+        "inputs": [
+          "EMERALD:9"
+        ],
+        "outputs": [
+          "EMERALD_BLOCK:1"
+        ],
+        "ticks": 16
+      },
+      {
+        "inputs": [
+          "DIAMOND:9"
+        ],
+        "outputs": [
+          "DIAMOND_BLOCK:1"
+        ],
+        "ticks": 16
+      },
+      {
+        "inputs": [
+          "NETHERITE_INGOT:9"
+        ],
+        "outputs": [
+          "NETHERITE_BLOCK:1"
+        ],
+        "ticks": 32
+      },
+      {
+        "inputs": [
+          "AMETHYST_SHARD:4"
+        ],
+        "outputs": [
+          "AMETHYST_BLOCK:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "COPPER_INGOT:9"
+        ],
+        "outputs": [
+          "COPPER_BLOCK:1"
+        ],
+        "ticks": 10
+      },
+      {
+        "inputs": [
+          "RAW_IRON:9"
+        ],
+        "outputs": [
+          "RAW_IRON_BLOCK:1"
+        ],
+        "ticks": 10
+      },
+      {
+        "inputs": [
+          "RAW_GOLD:9"
+        ],
+        "outputs": [
+          "RAW_GOLD_BLOCK:1"
+        ],
+        "ticks": 10
+      },
+      {
+        "inputs": [
+          "RAW_COPPER:9"
+        ],
+        "outputs": [
+          "RAW_COPPER_BLOCK:1"
+        ],
+        "ticks": 10
+      }
     ]
   },
   {
@@ -685,6 +6499,359 @@
     "outputSlots": [
       24,
       25
+    ],
+    "processingRecipes": [
+      {
+        "inputs": [
+          "STONE_CHUNK:3"
+        ],
+        "outputs": [
+          "COBBLESTONE:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "FLINT:6"
+        ],
+        "outputs": [
+          "COBBLESTONE:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "GLASS:1"
+        ],
+        "outputs": [
+          "GLASS_PANE:3"
+        ],
+        "ticks": 3
+      },
+      {
+        "inputs": [
+          "SNOWBALL:4"
+        ],
+        "outputs": [
+          "SNOW_BLOCK:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "MAGMA_CREAM:4"
+        ],
+        "outputs": [
+          "MAGMA_BLOCK:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "SLIME_BALL:9"
+        ],
+        "outputs": [
+          "SLIME_BLOCK:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "DRIED_KELP:9"
+        ],
+        "outputs": [
+          "DRIED_KELP_BLOCK:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "BONE_MEAL:9"
+        ],
+        "outputs": [
+          "BONE_BLOCK:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "CLAY_BALL:4"
+        ],
+        "outputs": [
+          "CLAY:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "BRICK:4"
+        ],
+        "outputs": [
+          "BRICKS:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "COPPER_INGOT:1"
+        ],
+        "outputs": [
+          "COPPER_WIRE:3"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "STEEL_INGOT:8"
+        ],
+        "outputs": [
+          "STEEL_PLATE:1"
+        ],
+        "ticks": 10
+      },
+      {
+        "inputs": [
+          "REINFORCED_ALLOY_INGOT:8"
+        ],
+        "outputs": [
+          "REINFORCED_PLATE:1"
+        ],
+        "ticks": 12
+      },
+      {
+        "inputs": [
+          "NETHER_WART:1"
+        ],
+        "outputs": [
+          "MAGIC_LUMP_1:2"
+        ],
+        "ticks": 5
+      },
+      {
+        "inputs": [
+          "MAGIC_LUMP_1:4"
+        ],
+        "outputs": [
+          "MAGIC_LUMP_2:1"
+        ],
+        "ticks": 6
+      },
+      {
+        "inputs": [
+          "MAGIC_LUMP_2:4"
+        ],
+        "outputs": [
+          "MAGIC_LUMP_3:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "ENDER_EYE:1"
+        ],
+        "outputs": [
+          "ENDER_LUMP_1:2"
+        ],
+        "ticks": 6
+      },
+      {
+        "inputs": [
+          "ENDER_LUMP_1:4"
+        ],
+        "outputs": [
+          "ENDER_LUMP_2:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "ENDER_LUMP_2:4"
+        ],
+        "outputs": [
+          "ENDER_LUMP_3:1"
+        ],
+        "ticks": 9
+      },
+      {
+        "inputs": [
+          "TINY_URANIUM:9"
+        ],
+        "outputs": [
+          "SMALL_URANIUM:1"
+        ],
+        "ticks": 12
+      },
+      {
+        "inputs": [
+          "SMALL_URANIUM:4"
+        ],
+        "outputs": [
+          "URANIUM:1"
+        ],
+        "ticks": 16
+      },
+      {
+        "inputs": [
+          "QUARTZ:4"
+        ],
+        "outputs": [
+          "QUARTZ_BLOCK:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "IRON_NUGGET:9"
+        ],
+        "outputs": [
+          "IRON_INGOT:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "GOLD_NUGGET:9"
+        ],
+        "outputs": [
+          "GOLD_INGOT:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "COAL:9"
+        ],
+        "outputs": [
+          "COAL_BLOCK:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "SAND:4"
+        ],
+        "outputs": [
+          "SANDSTONE:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "RED_SAND:4"
+        ],
+        "outputs": [
+          "RED_SANDSTONE:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "IRON_INGOT:9"
+        ],
+        "outputs": [
+          "IRON_BLOCK:1"
+        ],
+        "ticks": 3
+      },
+      {
+        "inputs": [
+          "GOLD_INGOT:9"
+        ],
+        "outputs": [
+          "GOLD_BLOCK:1"
+        ],
+        "ticks": 3
+      },
+      {
+        "inputs": [
+          "REDSTONE:9"
+        ],
+        "outputs": [
+          "REDSTONE_BLOCK:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "LAPIS_LAZULI:9"
+        ],
+        "outputs": [
+          "LAPIS_BLOCK:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "EMERALD:9"
+        ],
+        "outputs": [
+          "EMERALD_BLOCK:1"
+        ],
+        "ticks": 5
+      },
+      {
+        "inputs": [
+          "DIAMOND:9"
+        ],
+        "outputs": [
+          "DIAMOND_BLOCK:1"
+        ],
+        "ticks": 5
+      },
+      {
+        "inputs": [
+          "NETHERITE_INGOT:9"
+        ],
+        "outputs": [
+          "NETHERITE_BLOCK:1"
+        ],
+        "ticks": 10
+      },
+      {
+        "inputs": [
+          "AMETHYST_SHARD:4"
+        ],
+        "outputs": [
+          "AMETHYST_BLOCK:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "COPPER_INGOT:9"
+        ],
+        "outputs": [
+          "COPPER_BLOCK:1"
+        ],
+        "ticks": 3
+      },
+      {
+        "inputs": [
+          "RAW_IRON:9"
+        ],
+        "outputs": [
+          "RAW_IRON_BLOCK:1"
+        ],
+        "ticks": 3
+      },
+      {
+        "inputs": [
+          "RAW_GOLD:9"
+        ],
+        "outputs": [
+          "RAW_GOLD_BLOCK:1"
+        ],
+        "ticks": 3
+      },
+      {
+        "inputs": [
+          "RAW_COPPER:9"
+        ],
+        "outputs": [
+          "RAW_COPPER_BLOCK:1"
+        ],
+        "ticks": 3
+      }
     ]
   },
   {
@@ -701,7 +6868,8 @@
     "outputSlots": [
       24,
       25
-    ]
+    ],
+    "processingRecipes": []
   },
   {
     "id": "AUTO_ENCHANTER_2",
@@ -717,7 +6885,8 @@
     "outputSlots": [
       24,
       25
-    ]
+    ],
+    "processingRecipes": []
   },
   {
     "id": "AUTO_DISENCHANTER",
@@ -733,7 +6902,8 @@
     "outputSlots": [
       24,
       25
-    ]
+    ],
+    "processingRecipes": []
   },
   {
     "id": "AUTO_DISENCHANTER_2",
@@ -749,7 +6919,8 @@
     "outputSlots": [
       24,
       25
-    ]
+    ],
+    "processingRecipes": []
   },
   {
     "id": "AUTO_ANVIL",
@@ -765,7 +6936,8 @@
     "outputSlots": [
       24,
       25
-    ]
+    ],
+    "processingRecipes": []
   },
   {
     "id": "AUTO_ANVIL_2",
@@ -781,7 +6953,8 @@
     "outputSlots": [
       24,
       25
-    ]
+    ],
+    "processingRecipes": []
   },
   {
     "id": "BOOK_BINDER",
@@ -797,7 +6970,8 @@
     "outputSlots": [
       24,
       25
-    ]
+    ],
+    "processingRecipes": []
   },
   {
     "id": "OIL_PUMP",
@@ -813,7 +6987,8 @@
     "outputSlots": [
       24,
       25
-    ]
+    ],
+    "processingRecipes": []
   },
   {
     "id": "REFINERY",
@@ -829,6 +7004,17 @@
     "outputSlots": [
       24,
       25
+    ],
+    "processingRecipes": [
+      {
+        "inputs": [
+          "BUCKET_OF_OIL:1"
+        ],
+        "outputs": [
+          "BUCKET_OF_FUEL:1"
+        ],
+        "ticks": 80
+      }
     ]
   },
   {
@@ -845,6 +7031,118 @@
     "outputSlots": [
       24,
       25
+    ],
+    "processingRecipes": [
+      {
+        "inputs": [
+          "CAN:1",
+          "WHEAT:1"
+        ],
+        "outputs": [
+          "ORGANIC_FOOD_WHEAT:2"
+        ],
+        "ticks": 24
+      },
+      {
+        "inputs": [
+          "CAN:1",
+          "CARROT:1"
+        ],
+        "outputs": [
+          "ORGANIC_FOOD_CARROT:2"
+        ],
+        "ticks": 24
+      },
+      {
+        "inputs": [
+          "CAN:1",
+          "POTATO:1"
+        ],
+        "outputs": [
+          "ORGANIC_FOOD_POTATO:2"
+        ],
+        "ticks": 24
+      },
+      {
+        "inputs": [
+          "CAN:1",
+          "WHEAT_SEEDS:1"
+        ],
+        "outputs": [
+          "ORGANIC_FOOD_SEEDS:2"
+        ],
+        "ticks": 24
+      },
+      {
+        "inputs": [
+          "CAN:1",
+          "BEETROOT:1"
+        ],
+        "outputs": [
+          "ORGANIC_FOOD_BEETROOT:2"
+        ],
+        "ticks": 24
+      },
+      {
+        "inputs": [
+          "CAN:1",
+          "MELON_SLICE:1"
+        ],
+        "outputs": [
+          "ORGANIC_FOOD_MELON:2"
+        ],
+        "ticks": 24
+      },
+      {
+        "inputs": [
+          "CAN:1",
+          "APPLE:1"
+        ],
+        "outputs": [
+          "ORGANIC_FOOD_APPLE:2"
+        ],
+        "ticks": 24
+      },
+      {
+        "inputs": [
+          "CAN:1",
+          "DRIED_KELP:1"
+        ],
+        "outputs": [
+          "ORGANIC_FOOD_KELP:2"
+        ],
+        "ticks": 24
+      },
+      {
+        "inputs": [
+          "CAN:1",
+          "COCOA_BEANS:1"
+        ],
+        "outputs": [
+          "ORGANIC_FOOD_COCOA:2"
+        ],
+        "ticks": 24
+      },
+      {
+        "inputs": [
+          "CAN:1",
+          "SWEET_BERRIES:1"
+        ],
+        "outputs": [
+          "ORGANIC_FOOD_SWEET_BERRIES:2"
+        ],
+        "ticks": 24
+      },
+      {
+        "inputs": [
+          "CAN:1",
+          "SEAGRASS:1"
+        ],
+        "outputs": [
+          "ORGANIC_FOOD_SEAGRASS:2"
+        ],
+        "ticks": 24
+      }
     ]
   },
   {
@@ -861,6 +7159,118 @@
     "outputSlots": [
       24,
       25
+    ],
+    "processingRecipes": [
+      {
+        "inputs": [
+          "CAN:1",
+          "WHEAT:1"
+        ],
+        "outputs": [
+          "ORGANIC_FOOD_WHEAT:2"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "CAN:1",
+          "CARROT:1"
+        ],
+        "outputs": [
+          "ORGANIC_FOOD_CARROT:2"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "CAN:1",
+          "POTATO:1"
+        ],
+        "outputs": [
+          "ORGANIC_FOOD_POTATO:2"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "CAN:1",
+          "WHEAT_SEEDS:1"
+        ],
+        "outputs": [
+          "ORGANIC_FOOD_SEEDS:2"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "CAN:1",
+          "BEETROOT:1"
+        ],
+        "outputs": [
+          "ORGANIC_FOOD_BEETROOT:2"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "CAN:1",
+          "MELON_SLICE:1"
+        ],
+        "outputs": [
+          "ORGANIC_FOOD_MELON:2"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "CAN:1",
+          "APPLE:1"
+        ],
+        "outputs": [
+          "ORGANIC_FOOD_APPLE:2"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "CAN:1",
+          "DRIED_KELP:1"
+        ],
+        "outputs": [
+          "ORGANIC_FOOD_KELP:2"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "CAN:1",
+          "COCOA_BEANS:1"
+        ],
+        "outputs": [
+          "ORGANIC_FOOD_COCOA:2"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "CAN:1",
+          "SWEET_BERRIES:1"
+        ],
+        "outputs": [
+          "ORGANIC_FOOD_SWEET_BERRIES:2"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "CAN:1",
+          "SEAGRASS:1"
+        ],
+        "outputs": [
+          "ORGANIC_FOOD_SEAGRASS:2"
+        ],
+        "ticks": 4
+      }
     ]
   },
   {
@@ -877,6 +7287,107 @@
     "outputSlots": [
       24,
       25
+    ],
+    "processingRecipes": [
+      {
+        "inputs": [
+          "ORGANIC_FOOD_WHEAT:1"
+        ],
+        "outputs": [
+          "FERTILIZER_WHEAT:2"
+        ],
+        "ticks": 60
+      },
+      {
+        "inputs": [
+          "ORGANIC_FOOD_CARROT:1"
+        ],
+        "outputs": [
+          "FERTILIZER_CARROT:2"
+        ],
+        "ticks": 60
+      },
+      {
+        "inputs": [
+          "ORGANIC_FOOD_POTATO:1"
+        ],
+        "outputs": [
+          "FERTILIZER_POTATO:2"
+        ],
+        "ticks": 60
+      },
+      {
+        "inputs": [
+          "ORGANIC_FOOD_SEEDS:1"
+        ],
+        "outputs": [
+          "FERTILIZER_SEEDS:2"
+        ],
+        "ticks": 60
+      },
+      {
+        "inputs": [
+          "ORGANIC_FOOD_BEETROOT:1"
+        ],
+        "outputs": [
+          "FERTILIZER_BEETROOT:2"
+        ],
+        "ticks": 60
+      },
+      {
+        "inputs": [
+          "ORGANIC_FOOD_MELON:1"
+        ],
+        "outputs": [
+          "FERTILIZER_MELON:2"
+        ],
+        "ticks": 60
+      },
+      {
+        "inputs": [
+          "ORGANIC_FOOD_APPLE:1"
+        ],
+        "outputs": [
+          "FERTILIZER_APPLE:2"
+        ],
+        "ticks": 60
+      },
+      {
+        "inputs": [
+          "ORGANIC_FOOD_KELP:1"
+        ],
+        "outputs": [
+          "FERTILIZER_KELP:2"
+        ],
+        "ticks": 60
+      },
+      {
+        "inputs": [
+          "ORGANIC_FOOD_COCOA:1"
+        ],
+        "outputs": [
+          "FERTILIZER_COCOA:2"
+        ],
+        "ticks": 60
+      },
+      {
+        "inputs": [
+          "ORGANIC_FOOD_SWEET_BERRIES:1"
+        ],
+        "outputs": [
+          "FERTILIZER_SWEET_BERRIES:2"
+        ],
+        "ticks": 60
+      },
+      {
+        "inputs": [
+          "ORGANIC_FOOD_SEAGRASS:1"
+        ],
+        "outputs": [
+          "FERTILIZER_SEAGRASS:2"
+        ],
+        "ticks": 60
+      }
     ]
   },
   {
@@ -893,6 +7404,107 @@
     "outputSlots": [
       24,
       25
+    ],
+    "processingRecipes": [
+      {
+        "inputs": [
+          "ORGANIC_FOOD_WHEAT:1"
+        ],
+        "outputs": [
+          "FERTILIZER_WHEAT:2"
+        ],
+        "ticks": 6
+      },
+      {
+        "inputs": [
+          "ORGANIC_FOOD_CARROT:1"
+        ],
+        "outputs": [
+          "FERTILIZER_CARROT:2"
+        ],
+        "ticks": 6
+      },
+      {
+        "inputs": [
+          "ORGANIC_FOOD_POTATO:1"
+        ],
+        "outputs": [
+          "FERTILIZER_POTATO:2"
+        ],
+        "ticks": 6
+      },
+      {
+        "inputs": [
+          "ORGANIC_FOOD_SEEDS:1"
+        ],
+        "outputs": [
+          "FERTILIZER_SEEDS:2"
+        ],
+        "ticks": 6
+      },
+      {
+        "inputs": [
+          "ORGANIC_FOOD_BEETROOT:1"
+        ],
+        "outputs": [
+          "FERTILIZER_BEETROOT:2"
+        ],
+        "ticks": 6
+      },
+      {
+        "inputs": [
+          "ORGANIC_FOOD_MELON:1"
+        ],
+        "outputs": [
+          "FERTILIZER_MELON:2"
+        ],
+        "ticks": 6
+      },
+      {
+        "inputs": [
+          "ORGANIC_FOOD_APPLE:1"
+        ],
+        "outputs": [
+          "FERTILIZER_APPLE:2"
+        ],
+        "ticks": 6
+      },
+      {
+        "inputs": [
+          "ORGANIC_FOOD_KELP:1"
+        ],
+        "outputs": [
+          "FERTILIZER_KELP:2"
+        ],
+        "ticks": 6
+      },
+      {
+        "inputs": [
+          "ORGANIC_FOOD_COCOA:1"
+        ],
+        "outputs": [
+          "FERTILIZER_COCOA:2"
+        ],
+        "ticks": 6
+      },
+      {
+        "inputs": [
+          "ORGANIC_FOOD_SWEET_BERRIES:1"
+        ],
+        "outputs": [
+          "FERTILIZER_SWEET_BERRIES:2"
+        ],
+        "ticks": 6
+      },
+      {
+        "inputs": [
+          "ORGANIC_FOOD_SEAGRASS:1"
+        ],
+        "outputs": [
+          "FERTILIZER_SEAGRASS:2"
+        ],
+        "ticks": 6
+      }
     ]
   },
   {
@@ -909,6 +7521,82 @@
     "outputSlots": [
       24,
       25
+    ],
+    "processingRecipes": [
+      {
+        "inputs": [
+          "ICE:1"
+        ],
+        "outputs": [
+          "PACKED_ICE:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "PACKED_ICE:1"
+        ],
+        "outputs": [
+          "BLUE_ICE:1"
+        ],
+        "ticks": 12
+      },
+      {
+        "inputs": [
+          "WATER_BUCKET:1"
+        ],
+        "outputs": [
+          "BUCKET:1",
+          "ICE:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "outputs": [
+          "BUCKET:1",
+          "OBSIDIAN:1"
+        ],
+        "ticks": 16
+      },
+      {
+        "inputs": [
+          "BLUE_ICE:1"
+        ],
+        "outputs": [
+          "REACTOR_COLLANT_CELL:1"
+        ],
+        "ticks": 16
+      },
+      {
+        "inputs": [
+          "SNOW_BLOCK:2"
+        ],
+        "outputs": [
+          "ICE:1"
+        ],
+        "ticks": 12
+      },
+      {
+        "inputs": [
+          "MAGMA_CREAM:1"
+        ],
+        "outputs": [
+          "SLIME_BALL:1"
+        ],
+        "ticks": 12
+      },
+      {
+        "inputs": [
+          "MAGMA_BLOCK:2"
+        ],
+        "outputs": [
+          "SLIME_BLOCK:1"
+        ],
+        "ticks": 12
+      }
     ]
   },
   {
@@ -925,6 +7613,82 @@
     "outputSlots": [
       24,
       25
+    ],
+    "processingRecipes": [
+      {
+        "inputs": [
+          "ICE:1"
+        ],
+        "outputs": [
+          "PACKED_ICE:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "PACKED_ICE:1"
+        ],
+        "outputs": [
+          "BLUE_ICE:1"
+        ],
+        "ticks": 6
+      },
+      {
+        "inputs": [
+          "WATER_BUCKET:1"
+        ],
+        "outputs": [
+          "BUCKET:1",
+          "ICE:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "outputs": [
+          "BUCKET:1",
+          "OBSIDIAN:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "BLUE_ICE:1"
+        ],
+        "outputs": [
+          "REACTOR_COLLANT_CELL:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "SNOW_BLOCK:2"
+        ],
+        "outputs": [
+          "ICE:1"
+        ],
+        "ticks": 6
+      },
+      {
+        "inputs": [
+          "MAGMA_CREAM:1"
+        ],
+        "outputs": [
+          "SLIME_BALL:1"
+        ],
+        "ticks": 6
+      },
+      {
+        "inputs": [
+          "MAGMA_BLOCK:2"
+        ],
+        "outputs": [
+          "SLIME_BLOCK:1"
+        ],
+        "ticks": 6
+      }
     ]
   },
   {
@@ -941,6 +7705,82 @@
     "outputSlots": [
       24,
       25
+    ],
+    "processingRecipes": [
+      {
+        "inputs": [
+          "ICE:1"
+        ],
+        "outputs": [
+          "PACKED_ICE:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "PACKED_ICE:1"
+        ],
+        "outputs": [
+          "BLUE_ICE:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "WATER_BUCKET:1"
+        ],
+        "outputs": [
+          "BUCKET:1",
+          "ICE:1"
+        ],
+        "ticks": 1
+      },
+      {
+        "inputs": [
+          "LAVA_BUCKET:1"
+        ],
+        "outputs": [
+          "BUCKET:1",
+          "OBSIDIAN:1"
+        ],
+        "ticks": 5
+      },
+      {
+        "inputs": [
+          "BLUE_ICE:1"
+        ],
+        "outputs": [
+          "REACTOR_COLLANT_CELL:1"
+        ],
+        "ticks": 5
+      },
+      {
+        "inputs": [
+          "SNOW_BLOCK:2"
+        ],
+        "outputs": [
+          "ICE:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "MAGMA_CREAM:1"
+        ],
+        "outputs": [
+          "SLIME_BALL:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "MAGMA_BLOCK:2"
+        ],
+        "outputs": [
+          "SLIME_BLOCK:1"
+        ],
+        "ticks": 4
+      }
     ]
   },
   {
@@ -957,6 +7797,72 @@
     "outputSlots": [
       24,
       25
+    ],
+    "processingRecipes": [
+      {
+        "inputs": [
+          "CHARCOAL:4"
+        ],
+        "outputs": [
+          "COAL:1"
+        ],
+        "ticks": 30
+      },
+      {
+        "inputs": [
+          "COAL:8"
+        ],
+        "outputs": [
+          "CARBON:1"
+        ],
+        "ticks": 40
+      },
+      {
+        "inputs": [
+          "COAL_BLOCK:8"
+        ],
+        "outputs": [
+          "CARBON:9"
+        ],
+        "ticks": 360
+      },
+      {
+        "inputs": [
+          "CARBON:4"
+        ],
+        "outputs": [
+          "COMPRESSED_CARBON:1"
+        ],
+        "ticks": 60
+      },
+      {
+        "inputs": [
+          "CARBON_CHUNK:1",
+          "SYNTHETIC_DIAMOND:1"
+        ],
+        "outputs": [
+          "RAW_CARBONADO:1"
+        ],
+        "ticks": 120
+      },
+      {
+        "inputs": [
+          "CARBON_CHUNK:1"
+        ],
+        "outputs": [
+          "SYNTHETIC_DIAMOND:1"
+        ],
+        "ticks": 120
+      },
+      {
+        "inputs": [
+          "RAW_CARBONADO:1"
+        ],
+        "outputs": [
+          "CARBONADO:1"
+        ],
+        "ticks": 180
+      }
     ]
   },
   {
@@ -973,6 +7879,72 @@
     "outputSlots": [
       24,
       25
+    ],
+    "processingRecipes": [
+      {
+        "inputs": [
+          "CHARCOAL:4"
+        ],
+        "outputs": [
+          "COAL:1"
+        ],
+        "ticks": 10
+      },
+      {
+        "inputs": [
+          "COAL:8"
+        ],
+        "outputs": [
+          "CARBON:1"
+        ],
+        "ticks": 13
+      },
+      {
+        "inputs": [
+          "COAL_BLOCK:8"
+        ],
+        "outputs": [
+          "CARBON:9"
+        ],
+        "ticks": 120
+      },
+      {
+        "inputs": [
+          "CARBON:4"
+        ],
+        "outputs": [
+          "COMPRESSED_CARBON:1"
+        ],
+        "ticks": 20
+      },
+      {
+        "inputs": [
+          "CARBON_CHUNK:1",
+          "SYNTHETIC_DIAMOND:1"
+        ],
+        "outputs": [
+          "RAW_CARBONADO:1"
+        ],
+        "ticks": 40
+      },
+      {
+        "inputs": [
+          "CARBON_CHUNK:1"
+        ],
+        "outputs": [
+          "SYNTHETIC_DIAMOND:1"
+        ],
+        "ticks": 40
+      },
+      {
+        "inputs": [
+          "RAW_CARBONADO:1"
+        ],
+        "outputs": [
+          "CARBONADO:1"
+        ],
+        "ticks": 60
+      }
     ]
   },
   {
@@ -989,6 +7961,72 @@
     "outputSlots": [
       24,
       25
+    ],
+    "processingRecipes": [
+      {
+        "inputs": [
+          "CHARCOAL:4"
+        ],
+        "outputs": [
+          "COAL:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "COAL:8"
+        ],
+        "outputs": [
+          "CARBON:1"
+        ],
+        "ticks": 2
+      },
+      {
+        "inputs": [
+          "COAL_BLOCK:8"
+        ],
+        "outputs": [
+          "CARBON:9"
+        ],
+        "ticks": 24
+      },
+      {
+        "inputs": [
+          "CARBON:4"
+        ],
+        "outputs": [
+          "COMPRESSED_CARBON:1"
+        ],
+        "ticks": 4
+      },
+      {
+        "inputs": [
+          "CARBON_CHUNK:1",
+          "SYNTHETIC_DIAMOND:1"
+        ],
+        "outputs": [
+          "RAW_CARBONADO:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "CARBON_CHUNK:1"
+        ],
+        "outputs": [
+          "SYNTHETIC_DIAMOND:1"
+        ],
+        "ticks": 8
+      },
+      {
+        "inputs": [
+          "RAW_CARBONADO:1"
+        ],
+        "outputs": [
+          "CARBONADO:1"
+        ],
+        "ticks": 12
+      }
     ]
   },
   {
@@ -1009,7 +8047,8 @@
     "outputSlots": [
       24,
       25
-    ]
+    ],
+    "processingRecipes": []
   },
   {
     "id": "ELECTRIC_SMELTERY_2",
@@ -1029,7 +8068,8 @@
     "outputSlots": [
       24,
       25
-    ]
+    ],
+    "processingRecipes": []
   },
   {
     "id": "PRODUCE_COLLECTOR",
@@ -1045,6 +8085,7 @@
     "outputSlots": [
       24,
       25
-    ]
+    ],
+    "processingRecipes": []
   }
 ]
