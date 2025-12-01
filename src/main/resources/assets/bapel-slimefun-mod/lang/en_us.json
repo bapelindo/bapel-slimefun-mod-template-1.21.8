@@ -1,6 +1,7 @@
 {
   "key.bapel-slimefun-mod.toggle_automation": "Toggle Slimefun Automation",
   "key.bapel-slimefun-mod.debug_info": "Show Debug Info",
+  "key.bapel-slimefun-mod.open_recipe_gui": "Open Recipe Selection",
   "category.bapel-slimefun-mod.automation": "Slimefun Automation",
   
   "message.bapel-slimefun-mod.automation_enabled": "§a§lAutomation Enabled",
@@ -9,5 +10,9 @@
   "message.bapel-slimefun-mod.auto_output": "§aAuto-Output: §f%s x%d",
   "message.bapel-slimefun-mod.auto_input": "§bAuto-Input: §f%s x%d",
   "message.bapel-slimefun-mod.debug_printed": "§6Debug info printed to log",
-  "message.bapel-slimefun-mod.debug_disabled": "§cDebug mode is disabled"
+  "message.bapel-slimefun-mod.debug_disabled": "§cDebug mode is disabled",
+  
+  "gui.bapel-slimefun-mod.recipe_selection": "Select Recipe",
+  "gui.bapel-slimefun-mod.recipe_info": "Click to select a recipe to craft",
+  "gui.bapel-slimefun-mod.recipe_confirm": "Press ENTER to confirm or ESC to cancel"
 }
