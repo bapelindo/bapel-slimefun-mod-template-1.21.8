@@ -1,6 +1,7 @@
 package com.bapel_slimefun_mod;
 
 import com.bapel_slimefun_mod.automation.*;
+import com.bapel_slimefun_mod.client.DebugOverlay;
 import com.bapel_slimefun_mod.config.ModConfig;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -13,7 +14,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Main mod class for Bapel Slimefun Mod
- * COMPLETE VERSION - Replace your entire BapelSlimefunMod.java with this file
+ * UPDATED VERSION with Debug Overlay Integration
  */
 public class BapelSlimefunMod implements ClientModInitializer {
     public static final String MOD_ID = "bapel-slimefun-mod";
@@ -25,7 +26,7 @@ public class BapelSlimefunMod implements ClientModInitializer {
     // Keybindings
     private static KeyMapping toggleAutomationKey;
     private static KeyMapping debugInfoKey;
-    private static KeyMapping toggleRecipeOverlayKey; // NEW
+    private static KeyMapping toggleRecipeOverlayKey;
     
     @Override
     public void onInitializeClient() {
@@ -53,20 +54,24 @@ public class BapelSlimefunMod implements ClientModInitializer {
     private void initializeSystems() {
         try {
             // Initialize item registry
-            //ItemRegistry.initialize();
+            ItemRegistry.initialize();
             LOGGER.info("✓ Item Registry initialized");
             
             // Initialize Slimefun data loader
             SlimefunDataLoader.loadData();
             LOGGER.info("✓ Slimefun data loaded");
             
-            // Initialize recipe database (NEW)
+            // Initialize recipe database
             RecipeDatabase.initialize();
             LOGGER.info("✓ Recipe Database initialized");
             
-            // Initialize recipe overlay renderer (NEW)
+            // Initialize recipe overlay renderer
             RecipeOverlayRenderer.initialize();
             LOGGER.info("✓ Recipe Overlay Renderer initialized");
+            
+            // Register Debug Overlay (BARU)
+            DebugOverlay.register();
+            LOGGER.info("✓ Debug Overlay registered");
             
             // Initialize machine automation handler
             MachineAutomationHandler.init(config);
@@ -83,21 +88,21 @@ public class BapelSlimefunMod implements ClientModInitializer {
      */
     private void registerKeybindings() {
         try {
-            // Existing keybinding: Toggle automation
+            // Toggle automation (G)
             toggleAutomationKey = KeyBindingHelper.registerKeyBinding(new KeyMapping(
                 "key.bapel-slimefun-mod.toggle_automation",
                 GLFW.GLFW_KEY_G,
                 "category.bapel-slimefun-mod.automation"
             ));
             
-            // Existing keybinding: Debug info
+            // Debug info / Overlay (F3)
             debugInfoKey = KeyBindingHelper.registerKeyBinding(new KeyMapping(
                 "key.bapel-slimefun-mod.debug_info",
                 GLFW.GLFW_KEY_F3,
                 "category.bapel-slimefun-mod.automation"
             ));
             
-            // NEW: Recipe overlay keybinding
+            // Recipe overlay (R)
             toggleRecipeOverlayKey = KeyBindingHelper.registerKeyBinding(new KeyMapping(
                 "key.bapel-slimefun-mod.toggle_recipe_overlay",
                 GLFW.GLFW_KEY_R,
@@ -115,7 +120,7 @@ public class BapelSlimefunMod implements ClientModInitializer {
      */
     private void registerEventHandlers() {
         try {
-            // NEW: Register HUD render callback for overlay
+            // Register HUD render callback for recipe overlay
             HudRenderCallback.EVENT.register((context, tickDelta) -> {
                 try {
                     RecipeOverlayRenderer.render(context, tickDelta.getGameTimeDeltaPartialTick(true));
@@ -132,16 +137,39 @@ public class BapelSlimefunMod implements ClientModInitializer {
                         MachineAutomationHandler.toggleAutomation();
                     }
                     
-                    // Handle debug info
+                    // Handle debug info (F3) - UPDATED
                     while (debugInfoKey.consumeClick()) {
                         if (config.isDebugMode()) {
+                            // Toggle Visual Overlay
+                            DebugOverlay.toggle();
+                            
+                            // Tetap jalankan diagnostic log sebagai backup
                             DebugHelper.runFullDiagnostic();
+                            
+                            // Feedback message ke player
+                            if (client.player != null) {
+                                String status = DebugOverlay.isVisible() ? "§aSHOWN" : "§cHIDDEN";
+                                client.player.displayClientMessage(
+                                    net.minecraft.network.chat.Component.literal(
+                                        "§6[Slimefun] §fDebug Overlay: " + status
+                                    ), 
+                                    true
+                                );
+                            }
                         } else {
+                            if (client.player != null) {
+                                client.player.displayClientMessage(
+                                    net.minecraft.network.chat.Component.literal(
+                                        "§cDebug mode is disabled in config"
+                                    ), 
+                                    true
+                                );
+                            }
                             LOGGER.info("Debug mode is disabled. Enable in config to use.");
                         }
                     }
                     
-                    // NEW: Handle recipe overlay toggle
+                    // Handle recipe overlay toggle
                     while (toggleRecipeOverlayKey.consumeClick()) {
                         RecipeOverlayRenderer.toggle();
                     }
