@@ -3,6 +3,7 @@ package com.bapel_slimefun_mod.automation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.core.component.DataComponents; // Penting untuk cek nama di 1.21
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,31 +49,39 @@ public class AutomationUtils {
         String[] parts = recipeItem.split(":");
         if (parts.length < 1) return false;
         
+        String targetId = parts[0];
         String itemId = getItemId(stack);
-        return parts[0].equalsIgnoreCase(itemId);
+        
+        // Debug logic (bisa dihapus nanti)
+        // System.out.println("Comparing " + itemId + " with target " + targetId);
+        
+        return targetId.equalsIgnoreCase(itemId);
     }
     
     /**
      * Extract item ID from ItemStack
+     * FIXED: Now detects Slimefun items based on Display Name
      */
     public static String getItemId(ItemStack stack) {
-        String fullId = stack.getItem().toString();
-        
-        // Try to extract registry name
-        if (fullId.contains("'")) {
-            int start = fullId.indexOf("'") + 1;
-            int end = fullId.lastIndexOf("'");
-            if (start > 0 && end > start) {
-                String registryName = fullId.substring(start, end);
-                if (registryName.contains(":")) {
-                    return registryName.split(":")[1].toUpperCase();
-                }
-                return registryName.toUpperCase();
-            }
+        // 1. Cek apakah item punya nama custom (ciri khas item Slimefun)
+        if (stack.has(DataComponents.CUSTOM_NAME)) {
+            // Ambil nama, bersihkan kode warna
+            String displayName = stack.getHoverName().getString();
+            String cleanName = stripColorCodes(displayName);
+            
+            // Ubah jadi format ID: "Gold Dust" -> "GOLD_DUST"
+            return cleanName.toUpperCase().replace(" ", "_");
         }
         
-        // Fallback: use class name
-        return stack.getItem().getClass().getSimpleName().toUpperCase();
+        // 2. Fallback: Gunakan ID vanilla jika tidak ada nama khusus
+        String fullId = stack.getItem().toString(); // Output contoh: "gold_nugget"
+        
+        // Di 1.21 toString() biasanya sudah bersih, tapi kita pastikan
+        if (fullId.contains(":")) {
+            fullId = fullId.split(":")[1];
+        }
+        
+        return fullId.toUpperCase();
     }
     
     /**
@@ -89,7 +98,8 @@ public class AutomationUtils {
      * Check if slot is in player inventory
      */
     public static boolean isPlayerSlot(Slot slot, AbstractContainerMenu menu) {
-        return slot.container == menu.slots.get(0).container;
+        // Slot inventory player biasanya ada di indeks container terakhir atau memiliki inventory instance yang sama
+        return slot.container == menu.slots.get(menu.slots.size() - 1).container;
     }
     
     /**

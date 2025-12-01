@@ -15,11 +15,8 @@
 	"icon": "assets/bapel-slimefun-mod/icon.png",
 	"environment": "*",
 	"entrypoints": {
-		"main": [
-			"com.bapel_slimefun_mod.BapelSlimefunMod"
-		],
 		"client": [
-			"com.bapel_slimefun_mod.BapelSlimefunModClient"
+			"com.bapel_slimefun_mod.BapelSlimefunMod"
 		],
 		"fabric-datagen": [
 			"com.bapel_slimefun_mod.BapelSlimefunModDataGenerator"

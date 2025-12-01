@@ -49,8 +49,7 @@ public class AutomationOverlay {
     private static void renderOverlay(GuiGraphics graphics, Minecraft mc) {
         // Check if overlay should be shown
         if (MachineAutomationHandler.getConfig() != null && 
-            !MachineAutomationHandler.getConfig().isShowOverlay()) {
-            return;
+            !MachineAutomationHandler.getConfig().isAutoShowOverlay()) {            return;
         }
         
         int screenWidth = mc.getWindow().getGuiScaledWidth();

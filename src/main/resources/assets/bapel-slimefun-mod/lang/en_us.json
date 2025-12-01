@@ -2,6 +2,7 @@
   "key.bapel-slimefun-mod.toggle_automation": "Toggle Slimefun Automation",
   "key.bapel-slimefun-mod.debug_info": "Show Debug Info",
   "key.bapel-slimefun-mod.open_recipe_gui": "Open Recipe Selection",
+  "key.bapel-slimefun-mod.toggle_recipe_overlay": "Toggle Recipe Overlay",
   "category.bapel-slimefun-mod.automation": "Slimefun Automation",
   
   "message.bapel-slimefun-mod.automation_enabled": "§a§lAutomation Enabled",
@@ -11,8 +12,38 @@
   "message.bapel-slimefun-mod.auto_input": "§bAuto-Input: §f%s x%d",
   "message.bapel-slimefun-mod.debug_printed": "§6Debug info printed to log",
   "message.bapel-slimefun-mod.debug_disabled": "§cDebug mode is disabled",
+  "message.bapel-slimefun-mod.overlay_opened": "§6Recipe Overlay Opened",
+  "message.bapel-slimefun-mod.overlay_closed": "§7Recipe Overlay Closed",
+  "message.bapel-slimefun-mod.recipe_selected": "§aSelected Recipe: §f%s",
+  "message.bapel-slimefun-mod.no_machine_active": "§cNo machine active",
+  "message.bapel-slimefun-mod.no_recipes_available": "§cNo recipes available for this machine",
   
   "gui.bapel-slimefun-mod.recipe_selection": "Select Recipe",
   "gui.bapel-slimefun-mod.recipe_info": "Click to select a recipe to craft",
-  "gui.bapel-slimefun-mod.recipe_confirm": "Press ENTER to confirm or ESC to cancel"
+  "gui.bapel-slimefun-mod.recipe_confirm": "Press ENTER to confirm or ESC to cancel",
+  
+  "overlay.bapel-slimefun-mod.title": "§e§l%s - Recipes",
+  "overlay.bapel-slimefun-mod.recipe_format": "§f%d. §a%s §7x%d",
+  "overlay.bapel-slimefun-mod.inputs": "§7Inputs: §f%d types",
+  "overlay.bapel-slimefun-mod.completion": "§7[%d%%]",
+  "overlay.bapel-slimefun-mod.completion_full": "§a[100%%]",
+  "overlay.bapel-slimefun-mod.keybind_hints": "§8[↑↓] §7Navigate  §8[Enter] §7Select  §8[Esc] §7Close",
+  "overlay.bapel-slimefun-mod.selected_marker": "§l> %s <",
+  "overlay.bapel-slimefun-mod.multiple_outputs": "§7+ %d more",
+  "overlay.bapel-slimefun-mod.no_recipes": "§cNo recipes available",
+  "overlay.bapel-slimefun-mod.loading": "§7Loading recipes...",
+  
+  "tooltip.bapel-slimefun-mod.recipe_ingredient": "§7• §f%s §7x%d",
+  "tooltip.bapel-slimefun-mod.available": "§a✓ Available",
+  "tooltip.bapel-slimefun-mod.missing": "§c✗ Missing §7(%d needed)",
+  
+  "item.bapel-slimefun-mod.nano_bow": "Nano Bow",
+  "item.bapel-slimefun-mod.advanced_nano_sword": "Advanced Nano Sword",
+  "item.bapel-slimefun-mod.quantum_dust": "Quantum Dust",
+  "item.bapel-slimefun-mod.quantum_ingot": "Quantum Ingot",
+  "item.bapel-slimefun-mod.slime_steel_helmet": "Slime Steel Helmet",
+  "item.bapel-slimefun-mod.slime_steel_chestplate": "Slime Steel Chestplate",
+  "item.bapel-slimefun-mod.slime_steel_leggings": "Slime Steel Leggings",
+  "item.bapel-slimefun-mod.slime_steel_boots": "Slime Steel Boots",
+  "item.bapel-slimefun-mod.enhanced_auto_disenchanter": "Auto Disenchanter - III"
 }

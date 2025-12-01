@@ -1,48 +1,88 @@
 package com.bapel_slimefun_mod.mixin.client;
 
 import com.bapel_slimefun_mod.automation.MachineAutomationHandler;
-import com.bapel_slimefun_mod.automation.SlimefunDataLoader;
+import com.bapel_slimefun_mod.automation.RecipeOverlayInputHandler;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
- * Fixed mixin to detect container screens without duplicates
+ * Mixin to intercept container screen events
  */
 @Mixin(AbstractContainerScreen.class)
-public class ContainerScreenMixin {
+public abstract class ContainerScreenMixin {
     
-    @Unique
-    private boolean bapelSlimefunMod$detected = false;
-    
-    @Inject(method = "init", at = @At("TAIL"))
-    private void onScreenInit(CallbackInfo ci) {
-        // Prevent duplicate detection
-        if (bapelSlimefunMod$detected) {
-            return;
-        }
-        
+    /**
+     * Called when container screen is opened
+     */
+    @Inject(method = "init", at = @At("RETURN"))
+    private void onInit(CallbackInfo ci) {
         AbstractContainerScreen<?> screen = (AbstractContainerScreen<?>) (Object) this;
         Component title = screen.getTitle();
-        String titleText = title.getString();
         
-        // Check if this is a Slimefun machine
-        if (SlimefunDataLoader.isMachine(titleText)) {
-            MachineAutomationHandler.onContainerOpen(titleText);
-            bapelSlimefunMod$detected = true;
+        if (title != null) {
+            String titleString = title.getString();
+            MachineAutomationHandler.onContainerOpen(titleString);
         }
     }
     
+    /**
+     * Called when container screen is closed
+     */
     @Inject(method = "removed", at = @At("HEAD"))
-    private void onScreenRemoved(CallbackInfo ci) {
-        // Only call close if we detected this screen
-        if (bapelSlimefunMod$detected) {
-            MachineAutomationHandler.onContainerClose();
-            bapelSlimefunMod$detected = false;
+    private void onRemoved(CallbackInfo ci) {
+        MachineAutomationHandler.onContainerClose();
+    }
+    
+    /**
+     * Intercept key presses in container screens (NEW)
+     */
+    @Inject(method = "keyPressed", at = @At("HEAD"), cancellable = true)
+    private void onKeyPressed(int keyCode, int scanCode, int modifiers, 
+                             CallbackInfoReturnable<Boolean> cir) {
+        // Let the overlay input handler process the key
+        boolean handled = RecipeOverlayInputHandler.handleKeyPress(
+            keyCode, scanCode, 1, modifiers  // action = 1 for PRESS
+        );
+        
+        if (handled) {
+            cir.setReturnValue(true);
+            cir.cancel();
+        }
+    }
+    
+    /**
+     * Intercept mouse scroll in container screens (NEW)
+     */
+@Inject(method = "mouseScrolled", at = @At("HEAD"), cancellable = true)
+    private void onMouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount,
+                                CallbackInfoReturnable<Boolean> cir) {
+        // Pass the vertical scroll amount as the "delta"
+        boolean handled = RecipeOverlayInputHandler.handleMouseScroll(verticalAmount);
+        
+        if (handled) {
+            cir.setReturnValue(true);
+            cir.cancel();
+        }
+    }
+    
+    /**
+     * Intercept mouse clicks in container screens (NEW)
+     */
+    @Inject(method = "mouseClicked", at = @At("HEAD"), cancellable = true)
+    private void onMouseClicked(double mouseX, double mouseY, int button,
+                               CallbackInfoReturnable<Boolean> cir) {
+        boolean handled = RecipeOverlayInputHandler.handleMouseClick(
+            mouseX, mouseY, button
+        );
+        
+        if (handled) {
+            cir.setReturnValue(true);
+            cir.cancel();
         }
     }
 }

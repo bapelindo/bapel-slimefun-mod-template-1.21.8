@@ -12,7 +12,8 @@ import net.minecraft.world.item.ItemStack;
 import java.util.*;
 
 /**
- * Enhanced automation handler with multi-item recipe support (FIXED VERSION)
+ * Enhanced automation handler with multi-item recipe support and overlay integration
+ * COMPLETE VERSION - Replace your entire MachineAutomationHandler.java with this file
  */
 public class MachineAutomationHandler {
     private static SlimefunMachineData currentMachine = null;
@@ -29,7 +30,7 @@ public class MachineAutomationHandler {
     }
     
     /**
-     * Set the selected recipe to craft
+     * Set the selected recipe to craft (NEW)
      */
     public static void setSelectedRecipe(String recipeId) {
         selectedRecipeId = recipeId;
@@ -37,14 +38,14 @@ public class MachineAutomationHandler {
     }
     
     /**
-     * Get the currently selected recipe
+     * Get the currently selected recipe (NEW)
      */
     public static String getSelectedRecipe() {
         return selectedRecipeId;
     }
     
     /**
-     * Called when player opens a container
+     * Called when player opens a container (MODIFIED - added overlay integration)
      */
     public static void onContainerOpen(String title) {
         currentMachine = SlimefunDataLoader.getMachineByTitle(title);
@@ -54,6 +55,15 @@ public class MachineAutomationHandler {
             // Cache recipe requirements for performance
             cacheRecipeRequirements();
             
+            // NEW: Auto-show overlay if enabled in config
+            if (config != null && config.isAutoShowOverlay()) {
+                try {
+                    RecipeOverlayRenderer.show(currentMachine);
+                } catch (Exception e) {
+                    BapelSlimefunMod.LOGGER.error("Failed to auto-show overlay", e);
+                }
+            }
+            
             // Log recipe info
             if (config != null && config.isDebugMode()) {
                 logRecipeInfo();
@@ -62,11 +72,12 @@ public class MachineAutomationHandler {
     }
     
     /**
-     * Called when player closes a container
+     * Called when player closes a container (MODIFIED - clear selected recipe)
      */
     public static void onContainerClose() {
         currentMachine = null;
         cachedRecipeRequirements.clear();
+        selectedRecipeId = null; // NEW: Clear selected recipe
     }
     
     /**
@@ -112,7 +123,7 @@ public class MachineAutomationHandler {
     }
     
     /**
-     * Main automation tick - called every client tick (FIXED)
+     * Main automation tick - called every client tick
      */
     public static void tick() {
         if (config == null || !config.isAutomationEnabled()) return;
@@ -142,7 +153,7 @@ public class MachineAutomationHandler {
     }
     
     /**
-     * Automatically move items from output slots to player inventory (FIXED)
+     * Automatically move items from output slots to player inventory
      */
     private static void autoOutput(AbstractContainerMenu menu, Minecraft mc) {
         if (!currentMachine.hasOutputSlots()) return;
@@ -174,7 +185,7 @@ public class MachineAutomationHandler {
     }
     
     /**
-     * Automatically move matching items from player to input slots (FIXED)
+     * Automatically move matching items from player to input slots
      */
     private static void autoInput(AbstractContainerMenu menu, LocalPlayer player, Minecraft mc) {
         if (!currentMachine.hasInputSlots()) return;
@@ -213,7 +224,7 @@ public class MachineAutomationHandler {
     }
     
     /**
-     * Check if there's at least one empty input slot (FIXED)
+     * Check if there's at least one empty input slot
      */
     private static boolean hasEmptyInputSlot(AbstractContainerMenu menu) {
         try {
@@ -232,7 +243,7 @@ public class MachineAutomationHandler {
     }
     
     /**
-     * Get all items from player inventory (FIXED)
+     * Get all items from player inventory
      */
     private static List<ItemStack> getPlayerInventoryStacks(LocalPlayer player) {
         List<ItemStack> stacks = new ArrayList<>();
@@ -252,7 +263,7 @@ public class MachineAutomationHandler {
     }
     
     /**
-     * Move a specific item from player inventory to input slot (FIXED)
+     * Move a specific item from player inventory to input slot
      */
     private static boolean moveItemToInput(AbstractContainerMenu menu, LocalPlayer player, 
                                           Minecraft mc, String itemId) {
@@ -283,7 +294,7 @@ public class MachineAutomationHandler {
     }
     
     /**
-     * Find item in player inventory section of container (FIXED)
+     * Find item in player inventory section of container
      */
     private static int findItemInPlayerInventory(AbstractContainerMenu menu, 
                                                  LocalPlayer player, String itemId) {
@@ -311,7 +322,7 @@ public class MachineAutomationHandler {
     }
     
     /**
-     * Find first empty input slot (FIXED)
+     * Find first empty input slot
      */
     private static int findEmptyInputSlot(AbstractContainerMenu menu) {
         try {

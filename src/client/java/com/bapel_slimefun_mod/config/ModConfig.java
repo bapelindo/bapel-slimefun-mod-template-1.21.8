@@ -1,109 +1,215 @@
 package com.bapel_slimefun_mod.config;
 
-import com.bapel_slimefun_mod.BapelSlimefunMod;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
- * Configuration manager for mod settings
+ * Configuration class for mod settings
+ * COMPLETE VERSION - Replace your entire ModConfig.java with this file
  */
 public class ModConfig {
-    
+    private static final Logger LOGGER = LoggerFactory.getLogger("bapel-slimefun-mod");
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-    private static final File CONFIG_FILE = new File("config/bapel-slimefun-mod.json");
+    private static final String CONFIG_FILE = "bapel-slimefun-mod.json";
     
-    // Config values with defaults
+    // Automation settings
     private boolean automationEnabled = true;
-    private boolean showOverlay = true;
-    private int automationDelayMs = 500;
+    private int automationDelayMs = 200;
     private boolean debugMode = false;
-    private boolean soundEnabled = true;
+    
+    // Overlay settings (NEW)
+    private boolean autoShowOverlay = false;
+    private boolean enableOverlayAnimations = true;
+    private int overlayPositionX = 10;
+    private int overlayPositionY = 60;
     
     /**
-     * Load config from file
+     * Private constructor for singleton-like usage
+     */
+    private ModConfig() {}
+    
+    /**
+     * Load configuration from file
      */
     public static ModConfig load() {
-        // Create config directory if it doesn't exist
-        CONFIG_FILE.getParentFile().mkdirs();
+        Path configPath = getConfigPath();
         
-        // Load existing config or create default
-        if (CONFIG_FILE.exists()) {
-            try (FileReader reader = new FileReader(CONFIG_FILE)) {
+        if (Files.exists(configPath)) {
+            try (Reader reader = Files.newBufferedReader(configPath)) {
                 ModConfig config = GSON.fromJson(reader, ModConfig.class);
-                BapelSlimefunMod.LOGGER.info("Loaded config from file");
+                LOGGER.info("Configuration loaded from {}", configPath);
                 return config;
-            } catch (IOException e) {
-                BapelSlimefunMod.LOGGER.error("Failed to load config, using defaults", e);
+            } catch (Exception e) {
+                LOGGER.error("Failed to load configuration, using defaults", e);
             }
         }
         
-        // Return default config
+        // Create default config
         ModConfig config = new ModConfig();
         config.save(); // Save default config
         return config;
     }
     
     /**
-     * Save config to file
+     * Save configuration to file
      */
     public void save() {
-        try (FileWriter writer = new FileWriter(CONFIG_FILE)) {
-            GSON.toJson(this, writer);
-            BapelSlimefunMod.LOGGER.info("Saved config to file");
-        } catch (IOException e) {
-            BapelSlimefunMod.LOGGER.error("Failed to save config", e);
+        Path configPath = getConfigPath();
+        
+        try {
+            // Create parent directories if they don't exist
+            Files.createDirectories(configPath.getParent());
+            
+            // Write config to file
+            try (Writer writer = Files.newBufferedWriter(configPath)) {
+                GSON.toJson(this, writer);
+                LOGGER.info("Configuration saved to {}", configPath);
+            }
+        } catch (Exception e) {
+            LOGGER.error("Failed to save configuration", e);
         }
     }
     
-    // Getters and setters
+    /**
+     * Get config file path
+     */
+    private static Path getConfigPath() {
+        return Paths.get("config", CONFIG_FILE);
+    }
     
+    // ========================================
+    // AUTOMATION SETTINGS - Getters/Setters
+    // ========================================
+    
+    /**
+     * Check if automation is enabled
+     */
     public boolean isAutomationEnabled() {
         return automationEnabled;
     }
     
-    public void setAutomationEnabled(boolean enabled) {
-        this.automationEnabled = enabled;
+    /**
+     * Set automation enabled state
+     */
+    public void setAutomationEnabled(boolean automationEnabled) {
+        this.automationEnabled = automationEnabled;
         save();
     }
     
-    public boolean isShowOverlay() {
-        return showOverlay;
-    }
-    
-    public void setShowOverlay(boolean show) {
-        this.showOverlay = show;
-        save();
-    }
-    
+    /**
+     * Get automation delay in milliseconds
+     */
     public int getAutomationDelayMs() {
         return automationDelayMs;
     }
     
-    public void setAutomationDelayMs(int delay) {
-        this.automationDelayMs = Math.max(100, Math.min(2000, delay)); // Clamp 100-2000ms
+    /**
+     * Set automation delay in milliseconds
+     */
+    public void setAutomationDelayMs(int automationDelayMs) {
+        this.automationDelayMs = Math.max(50, Math.min(1000, automationDelayMs));
         save();
     }
     
+    /**
+     * Check if debug mode is enabled
+     */
     public boolean isDebugMode() {
         return debugMode;
     }
     
-    public void setDebugMode(boolean debug) {
-        this.debugMode = debug;
+    /**
+     * Set debug mode enabled state
+     */
+    public void setDebugMode(boolean debugMode) {
+        this.debugMode = debugMode;
         save();
     }
     
-    public boolean isSoundEnabled() {
-        return soundEnabled;
+    // ========================================
+    // OVERLAY SETTINGS - Getters/Setters (NEW)
+    // ========================================
+    
+    /**
+     * Check if overlay should auto-show when opening machine
+     */
+    public boolean isAutoShowOverlay() {
+        return autoShowOverlay;
     }
     
-    public void setSoundEnabled(boolean enabled) {
-        this.soundEnabled = enabled;
+    /**
+     * Set auto-show overlay setting
+     */
+    public void setAutoShowOverlay(boolean autoShowOverlay) {
+        this.autoShowOverlay = autoShowOverlay;
         save();
+    }
+    
+    /**
+     * Check if overlay animations are enabled
+     */
+    public boolean isEnableOverlayAnimations() {
+        return enableOverlayAnimations;
+    }
+    
+    /**
+     * Set overlay animations enabled
+     */
+    public void setEnableOverlayAnimations(boolean enableOverlayAnimations) {
+        this.enableOverlayAnimations = enableOverlayAnimations;
+        save();
+    }
+    
+    /**
+     * Get overlay X position
+     */
+    public int getOverlayPositionX() {
+        return overlayPositionX;
+    }
+    
+    /**
+     * Set overlay X position
+     */
+    public void setOverlayPositionX(int overlayPositionX) {
+        this.overlayPositionX = Math.max(0, overlayPositionX);
+        save();
+    }
+    
+    /**
+     * Get overlay Y position
+     */
+    public int getOverlayPositionY() {
+        return overlayPositionY;
+    }
+    
+    /**
+     * Set overlay Y position
+     */
+    public void setOverlayPositionY(int overlayPositionY) {
+        this.overlayPositionY = Math.max(0, overlayPositionY);
+        save();
+    }
+    
+    /**
+     * String representation of config
+     */
+    @Override
+    public String toString() {
+        return "ModConfig{" +
+                "automationEnabled=" + automationEnabled +
+                ", automationDelayMs=" + automationDelayMs +
+                ", debugMode=" + debugMode +
+                ", autoShowOverlay=" + autoShowOverlay +
+                ", enableOverlayAnimations=" + enableOverlayAnimations +
+                ", overlayPositionX=" + overlayPositionX +
+                ", overlayPositionY=" + overlayPositionY +
+                '}';
     }
 }
