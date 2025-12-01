@@ -1,10 +1,13 @@
 {
   "key.bapel-slimefun-mod.toggle_automation": "Toggle Slimefun Automation",
+  "key.bapel-slimefun-mod.debug_info": "Show Debug Info",
   "category.bapel-slimefun-mod.automation": "Slimefun Automation",
   
   "message.bapel-slimefun-mod.automation_enabled": "§a§lAutomation Enabled",
   "message.bapel-slimefun-mod.automation_disabled": "§c§lAutomation Disabled",
   "message.bapel-slimefun-mod.machine_detected": "§6Detected: §f%s",
   "message.bapel-slimefun-mod.auto_output": "§aAuto-Output: §f%s x%d",
-  "message.bapel-slimefun-mod.auto_input": "§bAuto-Input: §f%s x%d"
+  "message.bapel-slimefun-mod.auto_input": "§bAuto-Input: §f%s x%d",
+  "message.bapel-slimefun-mod.debug_printed": "§6Debug info printed to log",
+  "message.bapel-slimefun-mod.debug_disabled": "§cDebug mode is disabled"
 }

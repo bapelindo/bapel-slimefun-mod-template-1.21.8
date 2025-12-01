@@ -15,25 +15,52 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Loads and manages Slimefun machine data from JSON
+ * Loads and manages Slimefun machine data from JSON files
  */
 public class SlimefunDataLoader {
     private static final Gson GSON = new Gson();
     private static final Map<String, SlimefunMachineData> MACHINES = new HashMap<>();
+    private static final Map<String, List<String>> RECIPES = new HashMap<>();
     private static boolean loaded = false;
     
     /**
-     * Load machine data from slimefun_full_export.json
+     * Load all Slimefun data from multiple JSON files
      */
     public static void loadData() {
         if (loaded) return;
         
         try {
+            BapelSlimefunMod.LOGGER.info("Starting to load Slimefun data...");
+            
+            // Load items data (contains basic item info)
+            loadItemsData();
+            
+            // Load recipes data (contains crafting recipes) - this also loads machines
+            loadRecipesData();
+            
+            // Merge recipes into machine data
+            mergeRecipesIntoMachines();
+            
+            loaded = true;
+            BapelSlimefunMod.LOGGER.info("Successfully loaded {} Slimefun machines with recipes", MACHINES.size());
+            
+        } catch (Exception e) {
+            BapelSlimefunMod.LOGGER.error("Failed to load Slimefun data", e);
+            // Set loaded to true anyway to prevent infinite retry
+            loaded = true;
+        }
+    }
+    
+    /**
+     * Load items data from slimefun_items.json
+     */
+    private static void loadItemsData() {
+        try {
             InputStream stream = SlimefunDataLoader.class
-                .getResourceAsStream("/assets/bapel-slimefun-mod/slimefun_full_export.json");
+                .getResourceAsStream("/assets/bapel-slimefun-mod/slimefun_items.json");
             
             if (stream == null) {
-                BapelSlimefunMod.LOGGER.error("Could not find slimefun_full_export.json!");
+                BapelSlimefunMod.LOGGER.warn("Could not find slimefun_items.json - skipping items data");
                 return;
             }
             
@@ -42,42 +69,55 @@ public class SlimefunDataLoader {
                 JsonArray.class
             );
             
+            BapelSlimefunMod.LOGGER.info("Loaded {} items from slimefun_items.json", items.size());
+            
+        } catch (Exception e) {
+            BapelSlimefunMod.LOGGER.error("Failed to load items data", e);
+        }
+    }
+    
+    /**
+     * Load machine configurations from slimefun_machines.json
+     */
+    private static void loadMachinesData() {
+        try {
+            InputStream stream = SlimefunDataLoader.class
+                .getResourceAsStream("/assets/bapel-slimefun-mod/slimefun_machines.json");
+            
+            if (stream == null) {
+                BapelSlimefunMod.LOGGER.error("Could not find slimefun_machines.json!");
+                return;
+            }
+            
+            JsonArray machines = GSON.fromJson(
+                new InputStreamReader(stream, StandardCharsets.UTF_8),
+                JsonArray.class
+            );
+            
             int count = 0;
-            for (JsonElement element : items) {
+            for (JsonElement element : machines) {
                 JsonObject obj = element.getAsJsonObject();
                 
-                // Only process items with machineData
-                if (!obj.has("machineData")) continue;
-                
-                JsonObject machineData = obj.getAsJsonObject("machineData");
-                
                 String id = obj.get("id").getAsString();
-                String name = obj.has("name") ? obj.get("name").getAsString() : id;
-                String inventoryTitle = machineData.get("inventoryTitle").getAsString();
+                String inventoryTitle = obj.get("inventoryTitle").getAsString();
                 
                 // Parse input slots
-                int[] inputSlots = parseSlotArray(machineData.get("inputSlots"));
+                int[] inputSlots = parseSlotArray(obj.get("inputSlots"));
                 
                 // Parse output slots
-                int[] outputSlots = parseSlotArray(machineData.get("outputSlots"));
-                
-                // Parse recipe
-                List<String> recipe = new ArrayList<>();
-                if (obj.has("recipe")) {
-                    JsonArray recipeArray = obj.getAsJsonArray("recipe");
-                    for (JsonElement recipeElement : recipeArray) {
-                        recipe.add(recipeElement.getAsString());
-                    }
-                }
+                int[] outputSlots = parseSlotArray(obj.get("outputSlots"));
                 
                 // Parse energy data
-                int energyCapacity = machineData.has("energyCapacity") 
-                    ? machineData.get("energyCapacity").getAsInt() : 0;
-                int energyConsumption = machineData.has("energyConsumption") 
-                    ? machineData.get("energyConsumption").getAsInt() : 0;
+                int energyCapacity = obj.has("energyCapacity") 
+                    ? obj.get("energyCapacity").getAsInt() : 0;
+                int energyConsumption = obj.has("energyConsumption") 
+                    ? obj.get("energyConsumption").getAsInt() : 0;
+                
+                // Get recipe from RECIPES map (will be merged later)
+                List<String> recipe = RECIPES.getOrDefault(id, new ArrayList<>());
                 
                 SlimefunMachineData data = new SlimefunMachineData(
-                    id, name, inventoryTitle, inputSlots, outputSlots, 
+                    id, id, inventoryTitle, inputSlots, outputSlots, 
                     recipe, energyCapacity, energyConsumption
                 );
                 
@@ -86,12 +126,94 @@ public class SlimefunDataLoader {
                 count++;
             }
             
-            loaded = true;
-            BapelSlimefunMod.LOGGER.info("Loaded {} Slimefun machines", count);
+            BapelSlimefunMod.LOGGER.info("Loaded {} machines from slimefun_machines.json", count);
             
         } catch (Exception e) {
-            BapelSlimefunMod.LOGGER.error("Failed to load Slimefun data", e);
+            BapelSlimefunMod.LOGGER.error("Failed to load machines data", e);
         }
+    }
+    
+    /**
+     * Load recipes from slimefun_recipes.json
+     */
+    private static void loadRecipesData() {
+        try {
+            InputStream stream = SlimefunDataLoader.class
+                .getResourceAsStream("/assets/bapel-slimefun-mod/slimefun_recipes.json");
+            
+            if (stream == null) {
+                BapelSlimefunMod.LOGGER.warn("Could not find slimefun_recipes.json - machines will have no recipes");
+                loadMachinesData(); // Still load machines without recipes
+                return;
+            }
+            
+            JsonArray recipes = GSON.fromJson(
+                new InputStreamReader(stream, StandardCharsets.UTF_8),
+                JsonArray.class
+            );
+            
+            int count = 0;
+            for (JsonElement element : recipes) {
+                JsonObject obj = element.getAsJsonObject();
+                
+                String id = obj.get("id").getAsString();
+                
+                // Parse recipe inputs
+                List<String> recipe = new ArrayList<>();
+                if (obj.has("inputs")) {
+                    JsonArray inputs = obj.getAsJsonArray("inputs");
+                    for (JsonElement input : inputs) {
+                        recipe.add(input.getAsString());
+                    }
+                }
+                
+                RECIPES.put(id, recipe);
+                count++;
+            }
+            
+            BapelSlimefunMod.LOGGER.info("Loaded {} recipes from slimefun_recipes.json", count);
+            
+            // Now load machines after recipes are loaded
+            loadMachinesData();
+            
+        } catch (Exception e) {
+            BapelSlimefunMod.LOGGER.error("Failed to load recipes data", e);
+        }
+    }
+    
+    /**
+     * Merge loaded recipes into machine data
+     */
+    private static void mergeRecipesIntoMachines() {
+        int mergedCount = 0;
+        
+        for (Map.Entry<String, SlimefunMachineData> entry : MACHINES.entrySet()) {
+            SlimefunMachineData machine = entry.getValue();
+            String machineId = machine.getId();
+            
+            // Get recipe from RECIPES map
+            List<String> recipe = RECIPES.get(machineId);
+            
+            if (recipe != null && !recipe.isEmpty()) {
+                // Create new machine data with recipe
+                SlimefunMachineData updatedMachine = new SlimefunMachineData(
+                    machine.getId(),
+                    machine.getName(),
+                    machine.getInventoryTitle(),
+                    machine.getInputSlots(),
+                    machine.getOutputSlots(),
+                    recipe,
+                    machine.getEnergyCapacity(),
+                    machine.getEnergyConsumption()
+                );
+                
+                // Update the machine in the map
+                entry.setValue(updatedMachine);
+                mergedCount++;
+            }
+        }
+        
+        BapelSlimefunMod.LOGGER.info("Merged recipes into {} machines", mergedCount);
     }
     
     /**
@@ -134,5 +256,12 @@ public class SlimefunDataLoader {
      */
     public static Map<String, SlimefunMachineData> getAllMachines() {
         return new HashMap<>(MACHINES);
+    }
+    
+    /**
+     * Get recipe for a specific item ID
+     */
+    public static List<String> getRecipe(String itemId) {
+        return RECIPES.getOrDefault(itemId, new ArrayList<>());
     }
 }

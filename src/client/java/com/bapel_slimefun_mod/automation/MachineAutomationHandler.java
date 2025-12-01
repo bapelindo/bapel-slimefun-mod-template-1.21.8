@@ -5,17 +5,20 @@ import com.bapel_slimefun_mod.config.ModConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ClickType; // PENTING: Import ini diperlukan
+import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.*;
+
 /**
- * Handles automation logic for Slimefun machines
+ * Enhanced automation handler with multi-item recipe support
  */
 public class MachineAutomationHandler {
     private static SlimefunMachineData currentMachine = null;
     private static long lastAutoTick = 0;
     private static ModConfig config;
+    private static Map<String, Integer> cachedRecipeRequirements = new HashMap<>();
     
     /**
      * Initialize with config
@@ -31,6 +34,14 @@ public class MachineAutomationHandler {
         currentMachine = SlimefunDataLoader.getMachineByTitle(title);
         if (currentMachine != null) {
             BapelSlimefunMod.LOGGER.info("Detected machine: {}", currentMachine.getName());
+            
+            // Cache recipe requirements for performance
+            cacheRecipeRequirements();
+            
+            // Log recipe info
+            if (config.isDebugMode()) {
+                logRecipeInfo();
+            }
         }
     }
     
@@ -39,6 +50,49 @@ public class MachineAutomationHandler {
      */
     public static void onContainerClose() {
         currentMachine = null;
+        cachedRecipeRequirements.clear();
+    }
+    
+    /**
+     * Cache recipe requirements for quick lookup
+     */
+    private static void cacheRecipeRequirements() {
+        if (currentMachine == null || currentMachine.getRecipe().isEmpty()) {
+            cachedRecipeRequirements.clear();
+            return;
+        }
+        
+        List<RecipeHandler.RecipeIngredient> ingredients = 
+            RecipeHandler.parseRecipe(currentMachine.getRecipe());
+        
+        cachedRecipeRequirements = RecipeHandler.groupRecipeIngredients(ingredients);
+        
+        if (config.isDebugMode()) {
+            BapelSlimefunMod.LOGGER.info("Recipe requirements: {}", cachedRecipeRequirements);
+        }
+    }
+    
+    /**
+     * Log detailed recipe information
+     */
+    private static void logRecipeInfo() {
+        if (currentMachine == null) return;
+        
+        List<String> recipe = currentMachine.getRecipe();
+        if (recipe.isEmpty()) {
+            BapelSlimefunMod.LOGGER.debug("Machine has no recipe");
+            return;
+        }
+        
+        List<RecipeHandler.RecipeIngredient> ingredients = RecipeHandler.parseRecipe(recipe);
+        boolean isMultiItem = RecipeHandler.isMultiItemRecipe(ingredients);
+        Set<String> uniqueItems = RecipeHandler.getUniqueItems(ingredients);
+        
+        BapelSlimefunMod.LOGGER.debug("Recipe Info:");
+        BapelSlimefunMod.LOGGER.debug("  Total ingredients: {}", ingredients.size());
+        BapelSlimefunMod.LOGGER.debug("  Unique items: {}", uniqueItems.size());
+        BapelSlimefunMod.LOGGER.debug("  Multi-item recipe: {}", isMultiItem);
+        BapelSlimefunMod.LOGGER.debug("  Requirements: {}", cachedRecipeRequirements);
     }
     
     /**
@@ -80,93 +134,62 @@ public class MachineAutomationHandler {
             ItemStack stack = slot.getItem();
             
             if (!stack.isEmpty()) {
-                // FIX: Gunakan gameMode.handleInventoryMouseClick agar server tahu (mencegah Ghost Item)
-                mc.gameMode.handleInventoryMouseClick(menu.containerId, slotIndex, 0, ClickType.QUICK_MOVE, mc.player);
+                mc.gameMode.handleInventoryMouseClick(
+                    menu.containerId, slotIndex, 0, ClickType.QUICK_MOVE, mc.player
+                );
                 
-                BapelSlimefunMod.LOGGER.debug("Auto-output: Moved {} from slot {}", 
-                    stack.getItem().toString(), slotIndex);
-                break; // Only move one stack per tick to avoid lag
+                if (config.isDebugMode()) {
+                    BapelSlimefunMod.LOGGER.debug("Auto-output: Moved {} x{} from slot {}", 
+                        AutomationUtils.getItemId(stack), stack.getCount(), slotIndex);
+                }
+                break; // Only move one stack per tick
             }
         }
     }
     
     /**
-     * Automatically move matching items from player to input slots
+     * Automatically move matching items from player to input slots (Enhanced)
      */
     private static void autoInput(AbstractContainerMenu menu, LocalPlayer player, Minecraft mc) {
         if (!currentMachine.hasInputSlots()) return;
-        if (currentMachine.getRecipe().isEmpty()) return;
+        if (cachedRecipeRequirements.isEmpty()) return;
         
-        // Check if input slots are empty (don't overfill)
-        boolean hasEmptySlot = false;
+        // Check if any input slot is empty
+        if (!hasEmptyInputSlot(menu)) return;
+        
+        // Get player inventory items
+        List<ItemStack> playerInventory = getPlayerInventoryStacks(player);
+        
+        // Calculate what we need
+        RecipeHandler.RecipeSummary summary = new RecipeHandler.RecipeSummary(
+            playerInventory, 
+            RecipeHandler.parseRecipe(currentMachine.getRecipe())
+        );
+        
+        if (config.isDebugMode() && summary.getCompletionPercentage() > 0) {
+            BapelSlimefunMod.LOGGER.debug("Recipe completion: {:.1f}%", 
+                summary.getCompletionPercentage() * 100);
+        }
+        
+        // Find and move one item that's needed
+        for (Map.Entry<String, Integer> required : cachedRecipeRequirements.entrySet()) {
+            String itemId = required.getKey();
+            
+            // Try to move this item to input
+            if (moveItemToInput(menu, player, mc, itemId)) {
+                break; // Only move one item per tick
+            }
+        }
+    }
+    
+    /**
+     * Check if there's at least one empty input slot
+     */
+    private static boolean hasEmptyInputSlot(AbstractContainerMenu menu) {
         for (int slotIndex : currentMachine.getInputSlots()) {
             if (slotIndex < menu.slots.size()) {
                 Slot slot = menu.slots.get(slotIndex);
                 if (slot.getItem().isEmpty()) {
-                    hasEmptySlot = true;
-                    break;
-                }
-            }
-        }
-        
-        if (!hasEmptySlot) return;
-        
-        // Find matching items in player inventory
-        for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
-            ItemStack stack = player.getInventory().getItem(i);
-            if (stack.isEmpty()) continue;
-            
-            String itemId = getItemId(stack);
-            
-            // Check if this item is in the recipe
-            if (isInRecipe(itemId)) {
-                // Find empty input slot
-                for (int slotIndex : currentMachine.getInputSlots()) {
-                    if (slotIndex >= menu.slots.size()) continue;
-                    
-                    Slot slot = menu.slots.get(slotIndex);
-                    if (slot.getItem().isEmpty()) {
-                        // Move item to input slot
-                        int playerSlotIndex = getPlayerSlotIndex(menu, i);
-                        if (playerSlotIndex != -1) {
-                            // FIX: Gunakan gameMode.handleInventoryMouseClick agar server tahu (mencegah Ghost Item)
-                            mc.gameMode.handleInventoryMouseClick(menu.containerId, playerSlotIndex, 0, ClickType.QUICK_MOVE, player);
-                            
-                            BapelSlimefunMod.LOGGER.debug("Auto-input: Moved {} to slot {}", 
-                                itemId, slotIndex);
-                            return; // Only move one item per tick
-                        }
-                    }
-                }
-            }
-        }
-    }
-    
-    /**
-     * Get item ID from ItemStack
-     */
-    private static String getItemId(ItemStack stack) {
-        String fullId = stack.getItem().toString();
-        // Extract just the item name (e.g., "minecraft:iron_ingot" from full string)
-        if (fullId.contains(":")) {
-            return fullId.substring(fullId.lastIndexOf(":") + 1).toUpperCase();
-        }
-        return fullId.toUpperCase();
-    }
-    
-    /**
-     * Check if item ID is in the machine's recipe
-     */
-    private static boolean isInRecipe(String itemId) {
-        for (String recipeItem : currentMachine.getRecipe()) {
-            if (recipeItem.contains(":")) {
-                String[] parts = recipeItem.split(":");
-                if (parts[0].equalsIgnoreCase(itemId)) {
-                    return true;
-                }
-            } else {
-                 // Handle case where recipe item doesn't have amount (e.g. just "IRON_INGOT")
-                if (recipeItem.equalsIgnoreCase(itemId)) {
                     return true;
                 }
             }
@@ -175,17 +198,107 @@ public class MachineAutomationHandler {
     }
     
     /**
-     * Get player slot index in container menu
+     * Get all items from player inventory
      */
-    private static int getPlayerSlotIndex(AbstractContainerMenu menu, int inventoryIndex) {
+    private static List<ItemStack> getPlayerInventoryStacks(LocalPlayer player) {
+        List<ItemStack> stacks = new ArrayList<>();
+        
+        for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+            ItemStack stack = player.getInventory().getItem(i);
+            if (!stack.isEmpty()) {
+                stacks.add(stack);
+            }
+        }
+        
+        return stacks;
+    }
+    
+    /**
+     * Move a specific item from player inventory to input slot
+     */
+    private static boolean moveItemToInput(AbstractContainerMenu menu, LocalPlayer player, 
+                                          Minecraft mc, String itemId) {
+        // Find item in player inventory
+        int playerSlotIndex = findItemInPlayerInventory(menu, player, itemId);
+        if (playerSlotIndex == -1) return false;
+        
+        // Find empty input slot
+        int emptyInputSlot = findEmptyInputSlot(menu);
+        if (emptyInputSlot == -1) return false;
+        
+        // Move item
+        mc.gameMode.handleInventoryMouseClick(
+            menu.containerId, playerSlotIndex, 0, ClickType.QUICK_MOVE, player
+        );
+        
+        if (config.isDebugMode()) {
+            BapelSlimefunMod.LOGGER.debug("Auto-input: Moved {} to slot {}", 
+                itemId, emptyInputSlot);
+        }
+        
+        return true;
+    }
+    
+    /**
+     * Find item in player inventory section of container
+     */
+    private static int findItemInPlayerInventory(AbstractContainerMenu menu, 
+                                                 LocalPlayer player, String itemId) {
         for (int i = 0; i < menu.slots.size(); i++) {
             Slot slot = menu.slots.get(i);
-            if (slot.container == Minecraft.getInstance().player.getInventory() 
-                && slot.getContainerSlot() == inventoryIndex) {
+            
+            // Check if this is a player inventory slot
+            if (slot.container != player.getInventory()) continue;
+            
+            ItemStack stack = slot.getItem();
+            if (stack.isEmpty()) continue;
+            
+            String stackItemId = AutomationUtils.getItemId(stack);
+            if (stackItemId.equalsIgnoreCase(itemId)) {
                 return i;
             }
         }
+        
         return -1;
+    }
+    
+    /**
+     * Find first empty input slot
+     */
+    private static int findEmptyInputSlot(AbstractContainerMenu menu) {
+        for (int slotIndex : currentMachine.getInputSlots()) {
+            if (slotIndex >= menu.slots.size()) continue;
+            
+            Slot slot = menu.slots.get(slotIndex);
+            if (slot.getItem().isEmpty()) {
+                return slotIndex;
+            }
+        }
+        
+        return -1;
+    }
+    
+    /**
+     * Count specific item in input slots
+     */
+    private static int countItemInInputSlots(AbstractContainerMenu menu, String itemId) {
+        int total = 0;
+        
+        for (int slotIndex : currentMachine.getInputSlots()) {
+            if (slotIndex >= menu.slots.size()) continue;
+            
+            Slot slot = menu.slots.get(slotIndex);
+            ItemStack stack = slot.getItem();
+            
+            if (!stack.isEmpty()) {
+                String stackItemId = AutomationUtils.getItemId(stack);
+                if (stackItemId.equalsIgnoreCase(itemId)) {
+                    total += stack.getCount();
+                }
+            }
+        }
+        
+        return total;
     }
     
     /**
@@ -200,6 +313,30 @@ public class MachineAutomationHandler {
      */
     public static SlimefunMachineData getCurrentMachine() {
         return currentMachine;
+    }
+    
+    /**
+     * Get cached recipe requirements
+     */
+    public static Map<String, Integer> getCachedRecipeRequirements() {
+        return new HashMap<>(cachedRecipeRequirements);
+    }
+    
+    /**
+     * Get recipe summary for current machine
+     */
+    public static RecipeHandler.RecipeSummary getRecipeSummary() {
+        if (currentMachine == null) return null;
+        
+        Minecraft mc = Minecraft.getInstance();
+        LocalPlayer player = mc.player;
+        if (player == null) return null;
+        
+        List<ItemStack> inventory = getPlayerInventoryStacks(player);
+        List<RecipeHandler.RecipeIngredient> recipe = 
+            RecipeHandler.parseRecipe(currentMachine.getRecipe());
+        
+        return new RecipeHandler.RecipeSummary(inventory, recipe);
     }
     
     /**
