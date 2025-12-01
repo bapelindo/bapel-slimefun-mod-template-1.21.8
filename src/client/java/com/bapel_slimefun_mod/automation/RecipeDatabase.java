@@ -82,8 +82,15 @@ public class RecipeDatabase {
      */
     private static RecipeData parseRecipeFromJson(JsonObject json) {
         String id = json.get("id").getAsString();
-        String machineType = json.has("machineType") ? 
-            json.get("machineType").getAsString() : "UNKNOWN";
+        String machineType = "UNKNOWN";
+
+        // PERBAIKAN 1 & 2: Handle 'recipeType' dan normalisasi ID (hapus 'slimefun:' dan uppercase)
+        if (json.has("recipeType")) {
+            String rawType = json.get("recipeType").getAsString();
+            machineType = rawType.replace("slimefun:", "").toUpperCase();
+        } else if (json.has("machineType")) {
+            machineType = json.get("machineType").getAsString();
+        }
         
         // Parse inputs
         List<RecipeHandler.RecipeIngredient> inputs = new ArrayList<>();
@@ -103,6 +110,7 @@ public class RecipeDatabase {
         
         // Parse outputs
         List<RecipeData.RecipeOutput> outputs = new ArrayList<>();
+        
         if (json.has("outputs")) {
             JsonArray outputsArray = json.getAsJsonArray("outputs");
             for (JsonElement outputElement : outputsArray) {
@@ -119,10 +127,15 @@ public class RecipeDatabase {
                 RecipeData.RecipeOutput.parse(outputString);
             outputs.add(output);
         }
+        // PERBAIKAN 3: Jika tidak ada field output, gunakan ID sebagai output item (Format standar JSON Slimefun)
+        else {
+            int amount = json.has("outputAmount") ? json.get("outputAmount").getAsInt() : 1;
+            // Kita gunakan ID sebagai itemId dan displayName sementara
+            outputs.add(new RecipeData.RecipeOutput(id, id, amount));
+        }
         
-        // Validate recipe has both inputs and outputs
-        if (inputs.isEmpty() || outputs.isEmpty()) {
-            BapelSlimefunMod.LOGGER.warn("Recipe {} has no inputs or outputs, skipping", id);
+        // Validate recipe has inputs (outputs dijamin ada oleh Perbaikan 3)
+        if (inputs.isEmpty()) {
             return null;
         }
         
