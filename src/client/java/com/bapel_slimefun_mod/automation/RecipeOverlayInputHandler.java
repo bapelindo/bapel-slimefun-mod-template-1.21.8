@@ -6,11 +6,14 @@ import org.lwjgl.glfw.GLFW;
 
 /**
  * Handles keyboard input for the recipe overlay
+ * FIXED: Consistent toggle behavior and proper event consumption
  */
 public class RecipeOverlayInputHandler {
     
     private static long lastInputTime = 0;
     private static final long INPUT_COOLDOWN = 150; // milliseconds
+    private static long lastToggleTime = 0;
+    private static final long TOGGLE_COOLDOWN = 200; // milliseconds - prevent double toggle
     
     /**
      * Handle key press event
@@ -22,13 +25,13 @@ public class RecipeOverlayInputHandler {
             return false;
         }
         
-        // Check if overlay is visible
+        // Handle R key for toggle - ALWAYS handle this in container screens
+        if (key == GLFW.GLFW_KEY_R) {
+            return handleToggleKey();
+        }
+        
+        // For other keys, only handle if overlay is visible
         if (!RecipeOverlayRenderer.isVisible()) {
-            // Check if toggle key was pressed
-            if (key == GLFW.GLFW_KEY_R) {
-                RecipeOverlayRenderer.toggle();
-                return true;
-            }
             return false;
         }
         
@@ -61,7 +64,6 @@ public class RecipeOverlayInputHandler {
                 break;
                 
             case GLFW.GLFW_KEY_ESCAPE:
-            case GLFW.GLFW_KEY_R:
                 RecipeOverlayRenderer.hide();
                 handled = true;
                 break;
@@ -107,6 +109,36 @@ public class RecipeOverlayInputHandler {
         }
         
         return handled;
+    }
+    
+    /**
+     * Handle the R key toggle with debounce
+     */
+    private static boolean handleToggleKey() {
+        long now = System.currentTimeMillis();
+        
+        // Prevent double toggle from multiple handlers
+        if (now - lastToggleTime < TOGGLE_COOLDOWN) {
+            BapelSlimefunMod.LOGGER.debug("Toggle cooldown active, ignoring R press");
+            return true; // Consume but don't process
+        }
+        
+        lastToggleTime = now;
+        
+        // Use toggle for consistent behavior
+        RecipeOverlayRenderer.toggle();
+        
+        BapelSlimefunMod.LOGGER.debug("Recipe overlay toggled via R key, visible: {}", 
+            RecipeOverlayRenderer.isVisible());
+        
+        return true; // Always consume R key in container screens
+    }
+    
+    /**
+     * Check if toggle is on cooldown (for external handlers to check)
+     */
+    public static boolean isToggleOnCooldown() {
+        return System.currentTimeMillis() - lastToggleTime < TOGGLE_COOLDOWN;
     }
     
     /**
@@ -224,5 +256,6 @@ public class RecipeOverlayInputHandler {
      */
     public static void reset() {
         lastInputTime = 0;
+        lastToggleTime = 0;
     }
 }

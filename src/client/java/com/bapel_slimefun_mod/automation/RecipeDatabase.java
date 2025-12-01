@@ -13,7 +13,8 @@ import java.util.*;
 
 /**
  * Database for managing multiple recipes per machine
- * Loads recipes from JSON and provides query methods
+ * UPDATED: Now supports both slimefun_recipes.json and slimefun_machines.json
+ * Loads recipes automatically from Slimefun official JSON files
  */
 public class RecipeDatabase {
     private static final Gson GSON = new Gson();
@@ -23,31 +24,48 @@ public class RecipeDatabase {
     
     /**
      * Initialize the recipe database
+     * Loads from both slimefun_recipes.json and slimefun_machines.json
      */
     public static void initialize() {
         if (initialized) return;
         
         try {
-            loadRecipes();
+            long startTime = System.currentTimeMillis();
+            BapelSlimefunMod.LOGGER.info("Initializing Recipe Database...");
+            
+            // Load external recipes from slimefun_recipes.json
+            int externalCount = loadExternalRecipes();
+            
+            // Load processing recipes from slimefun_machines.json
+            int processingCount = loadProcessingRecipes();
+            
+            long duration = System.currentTimeMillis() - startTime;
             initialized = true;
-            BapelSlimefunMod.LOGGER.info("Recipe Database initialized with {} recipes for {} machines", 
-                RECIPES_BY_ID.size(), RECIPES_BY_MACHINE.size());
+            
+            BapelSlimefunMod.LOGGER.info("Recipe Database initialized with {} recipes for {} machines in {}ms", 
+                RECIPES_BY_ID.size(), RECIPES_BY_MACHINE.size(), duration);
+            BapelSlimefunMod.LOGGER.info("  - External recipes: {}", externalCount);
+            BapelSlimefunMod.LOGGER.info("  - Processing recipes: {}", processingCount);
+            
         } catch (Exception e) {
             BapelSlimefunMod.LOGGER.error("Failed to initialize Recipe Database", e);
         }
     }
     
     /**
-     * Load recipes from slimefun_recipes.json
+     * Load external recipes from slimefun_recipes.json
+     * These are recipes like Enhanced Crafting Table, Magic Workbench, etc.
      */
-    private static void loadRecipes() {
+    private static int loadExternalRecipes() {
+        int loaded = 0;
+        
         try {
             InputStream stream = RecipeDatabase.class
                 .getResourceAsStream("/assets/bapel-slimefun-mod/slimefun_recipes.json");
             
             if (stream == null) {
-                BapelSlimefunMod.LOGGER.warn("Could not find slimefun_recipes.json");
-                return;
+                BapelSlimefunMod.LOGGER.warn("Could not find slimefun_recipes.json - skipping external recipes");
+                return 0;
             }
             
             JsonArray recipesArray = GSON.fromJson(
@@ -55,36 +73,103 @@ public class RecipeDatabase {
                 JsonArray.class
             );
             
-            int loaded = 0;
             for (JsonElement element : recipesArray) {
                 JsonObject recipeObj = element.getAsJsonObject();
                 
                 try {
-                    RecipeData recipe = parseRecipeFromJson(recipeObj);
+                    RecipeData recipe = parseExternalRecipe(recipeObj);
                     if (recipe != null) {
                         registerRecipe(recipe);
                         loaded++;
                     }
                 } catch (Exception e) {
-                    BapelSlimefunMod.LOGGER.error("Failed to parse recipe: {}", recipeObj, e);
+                    BapelSlimefunMod.LOGGER.debug("Failed to parse external recipe: {}", recipeObj, e);
                 }
             }
             
-            BapelSlimefunMod.LOGGER.info("Loaded {} recipes from JSON", loaded);
+            BapelSlimefunMod.LOGGER.info("Loaded {} external recipes from slimefun_recipes.json", loaded);
             
         } catch (Exception e) {
-            BapelSlimefunMod.LOGGER.error("Failed to load recipes", e);
+            BapelSlimefunMod.LOGGER.error("Failed to load external recipes", e);
         }
+        
+        return loaded;
     }
     
     /**
-     * Parse a recipe from JSON object
+     * Load processing recipes from slimefun_machines.json
+     * These are recipes for electric machines like ELECTRIC_PRESS, CARBON_PRESS, etc.
      */
-    private static RecipeData parseRecipeFromJson(JsonObject json) {
-        String id = json.get("id").getAsString();
+    private static int loadProcessingRecipes() {
+        int loaded = 0;
+        
+        try {
+            InputStream stream = RecipeDatabase.class
+                .getResourceAsStream("/assets/bapel-slimefun-mod/slimefun_machines.json");
+            
+            if (stream == null) {
+                BapelSlimefunMod.LOGGER.warn("Could not find slimefun_machines.json - skipping processing recipes");
+                return 0;
+            }
+            
+            JsonArray machinesArray = GSON.fromJson(
+                new InputStreamReader(stream, StandardCharsets.UTF_8),
+                JsonArray.class
+            );
+            
+            int machineCount = 0;
+            
+            for (JsonElement element : machinesArray) {
+                JsonObject machineObj = element.getAsJsonObject();
+                
+                if (!machineObj.has("id") || !machineObj.has("processingRecipes")) {
+                    continue;
+                }
+                
+                String machineId = machineObj.get("id").getAsString();
+                JsonArray recipes = machineObj.getAsJsonArray("processingRecipes");
+                
+                if (recipes.size() == 0) {
+                    continue;
+                }
+                
+                machineCount++;
+                
+                for (JsonElement recipeElement : recipes) {
+                    JsonObject recipeObj = recipeElement.getAsJsonObject();
+                    
+                    try {
+                        RecipeData recipe = parseProcessingRecipe(machineId, recipeObj);
+                        if (recipe != null) {
+                            registerRecipe(recipe);
+                            loaded++;
+                        }
+                    } catch (Exception e) {
+                        BapelSlimefunMod.LOGGER.debug("Failed to parse processing recipe for {}: {}", 
+                            machineId, recipeObj, e);
+                    }
+                }
+            }
+            
+            BapelSlimefunMod.LOGGER.info("Loaded {} processing recipes from {} machines in slimefun_machines.json", 
+                loaded, machineCount);
+            
+        } catch (Exception e) {
+            BapelSlimefunMod.LOGGER.error("Failed to load processing recipes", e);
+        }
+        
+        return loaded;
+    }
+    
+    /**
+     * Parse external recipe from slimefun_recipes.json format
+     * Format: { "itemId": "...", "recipeType": "...", "inputs": [...], "outputAmount": 1 }
+     */
+    private static RecipeData parseExternalRecipe(JsonObject json) {
+        String itemId = json.get("itemId").getAsString();
         String machineType = "UNKNOWN";
 
-        // PERBAIKAN 1 & 2: Handle 'recipeType' dan normalisasi ID (hapus 'slimefun:' dan uppercase)
+        // Handle 'recipeType' and normalize ID (remove 'slimefun:' and uppercase)
         if (json.has("recipeType")) {
             String rawType = json.get("recipeType").getAsString();
             machineType = rawType.replace("slimefun:", "").toUpperCase();
@@ -127,19 +212,62 @@ public class RecipeDatabase {
                 RecipeData.RecipeOutput.parse(outputString);
             outputs.add(output);
         }
-        // PERBAIKAN 3: Jika tidak ada field output, gunakan ID sebagai output item (Format standar JSON Slimefun)
+        // If no output field, use itemId as output (standard Slimefun format)
         else {
             int amount = json.has("outputAmount") ? json.get("outputAmount").getAsInt() : 1;
-            // Kita gunakan ID sebagai itemId dan displayName sementara
-            outputs.add(new RecipeData.RecipeOutput(id, id, amount));
+            outputs.add(new RecipeData.RecipeOutput(itemId, itemId, amount));
         }
         
-        // Validate recipe has inputs (outputs dijamin ada oleh Perbaikan 3)
+        // Validate recipe has inputs
         if (inputs.isEmpty()) {
             return null;
         }
         
-        return new RecipeData(id, machineType, inputs, outputs);
+        return new RecipeData(itemId, machineType, inputs, outputs);
+    }
+    
+    /**
+     * Parse processing recipe from slimefun_machines.json format
+     * Format: { "inputs": [...], "outputs": [...], "ticks": 8, "seconds": 0.4 }
+     */
+    private static RecipeData parseProcessingRecipe(String machineId, JsonObject json) {
+        // Create unique recipe ID from machine and hash
+        String recipeId = machineId + "_recipe_" + Math.abs(json.hashCode());
+        
+        // Parse inputs
+        List<RecipeHandler.RecipeIngredient> inputs = new ArrayList<>();
+        if (json.has("inputs")) {
+            JsonArray inputsArray = json.getAsJsonArray("inputs");
+            for (JsonElement inputElement : inputsArray) {
+                String inputString = inputElement.getAsString();
+                RecipeHandler.RecipeIngredient ingredient = 
+                    RecipeHandler.RecipeIngredient.parse(inputString);
+                
+                if (ingredient.getAmount() > 0 && 
+                    !ingredient.getItemId().equalsIgnoreCase("AIR")) {
+                    inputs.add(ingredient);
+                }
+            }
+        }
+        
+        // Parse outputs
+        List<RecipeData.RecipeOutput> outputs = new ArrayList<>();
+        if (json.has("outputs")) {
+            JsonArray outputsArray = json.getAsJsonArray("outputs");
+            for (JsonElement outputElement : outputsArray) {
+                String outputString = outputElement.getAsString();
+                RecipeData.RecipeOutput output = 
+                    RecipeData.RecipeOutput.parse(outputString);
+                outputs.add(output);
+            }
+        }
+        
+        // Validate recipe has inputs and outputs
+        if (inputs.isEmpty() || outputs.isEmpty()) {
+            return null;
+        }
+        
+        return new RecipeData(recipeId, machineId, inputs, outputs);
     }
     
     /**
@@ -188,6 +316,13 @@ public class RecipeDatabase {
      */
     public static int getTotalMachines() {
         return RECIPES_BY_MACHINE.size();
+    }
+    
+    /**
+     * Get all machine IDs that have recipes
+     */
+    public static Set<String> getAllMachineIds() {
+        return new HashSet<>(RECIPES_BY_MACHINE.keySet());
     }
     
     /**
@@ -344,7 +479,7 @@ public class RecipeDatabase {
         entries.sort((a, b) -> Integer.compare(b.getValue().size(), a.getValue().size()));
         
         BapelSlimefunMod.LOGGER.info("Top Machines by Recipe Count:");
-        for (int i = 0; i < Math.min(5, entries.size()); i++) {
+        for (int i = 0; i < Math.min(10, entries.size()); i++) {
             Map.Entry<String, List<RecipeData>> entry = entries.get(i);
             BapelSlimefunMod.LOGGER.info("  {}: {} recipes", 
                 entry.getKey(), entry.getValue().size());

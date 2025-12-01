@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 import java.io.InputStream;
@@ -15,6 +16,7 @@ import java.util.*;
 
 /**
  * Renders an in-game overlay for recipe selection without opening a screen
+ * FIXED VERSION - Better toggle handling and user feedback
  */
 public class RecipeOverlayRenderer {
     private static final Gson GSON = new Gson();
@@ -126,21 +128,40 @@ public class RecipeOverlayRenderer {
      * Show the overlay for a specific machine
      */
     public static void show(SlimefunMachineData machine) {
+        if (machine == null) {
+            BapelSlimefunMod.LOGGER.warn("Cannot show overlay - machine is null");
+            sendPlayerMessage("§c[Slimefun] No machine detected");
+            return;
+        }
+        
         currentMachine = machine;
         loadRecipesForMachine(machine);
+        
+        if (availableRecipes.isEmpty()) {
+            BapelSlimefunMod.LOGGER.warn("No recipes available for machine: {}", machine.getName());
+            sendPlayerMessage("§c[Slimefun] No recipes for: " + machine.getName());
+            return;
+        }
+        
         overlayVisible = true;
         selectedIndex = 0;
         scrollOffset = 0;
         fadeStartTime = System.currentTimeMillis();
         fadingIn = true;
         
-        BapelSlimefunMod.LOGGER.info("Showing recipe overlay for: {}", machine.getName());
+        BapelSlimefunMod.LOGGER.info("Showing recipe overlay for: {} ({} recipes)", 
+            machine.getName(), availableRecipes.size());
+        sendPlayerMessage("§a[Slimefun] Recipe Overlay: §f" + machine.getName());
     }
     
     /**
      * Hide the overlay
      */
     public static void hide() {
+        if (!overlayVisible) {
+            return; // Already hidden
+        }
+        
         overlayVisible = false;
         currentMachine = null;
         availableRecipes.clear();
@@ -150,6 +171,7 @@ public class RecipeOverlayRenderer {
     
     /**
      * Toggle overlay visibility
+     * FIXED: Better handling and user feedback
      */
     public static void toggle() {
         if (overlayVisible) {
@@ -161,7 +183,18 @@ public class RecipeOverlayRenderer {
                 show(machine);
             } else {
                 BapelSlimefunMod.LOGGER.info("No machine detected, cannot show recipe overlay");
+                sendPlayerMessage("§e[Slimefun] Open a Slimefun machine first!");
             }
+        }
+    }
+    
+    /**
+     * Send a message to the player (action bar)
+     */
+    private static void sendPlayerMessage(String message) {
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.player != null) {
+            mc.player.displayClientMessage(Component.literal(message), true);
         }
     }
     
@@ -256,39 +289,41 @@ public class RecipeOverlayRenderer {
             
             float progress = (float) elapsed / duration;
             return (int) (fadingIn ? progress * 255 : (1 - progress) * 255);
+            
         } catch (Exception e) {
             return 255;
         }
     }
     
     /**
-     * Render background panel
+     * Render background box
      */
     private static void renderBackground(GuiGraphics graphics, int yPos, int alpha) {
-        int height = calculateTotalHeight();
-        
-        // Get colors from config
+        int totalHeight = calculateTotalHeight();
         int bgColor = getColor("background", alpha);
         int borderColor = getColor("border", alpha);
         
-        // Draw background
-        graphics.fill(posX, yPos, posX + width, yPos + height, bgColor);
+        // Main background
+        graphics.fill(posX, yPos, posX + width, yPos + totalHeight, bgColor);
         
-        // Draw border
+        // Border
         graphics.fill(posX, yPos, posX + width, yPos + 1, borderColor); // Top
-        graphics.fill(posX, yPos + height - 1, posX + width, yPos + height, borderColor); // Bottom
-        graphics.fill(posX, yPos, posX + 1, yPos + height, borderColor); // Left
-        graphics.fill(posX + width - 1, yPos, posX + width, yPos + height, borderColor); // Right
+        graphics.fill(posX, yPos + totalHeight - 1, posX + width, yPos + totalHeight, borderColor); // Bottom
+        graphics.fill(posX, yPos, posX + 1, yPos + totalHeight, borderColor); // Left
+        graphics.fill(posX + width - 1, yPos, posX + width, yPos + totalHeight, borderColor); // Right
     }
     
     /**
-     * Render title text
+     * Render title
      */
     private static int renderTitle(GuiGraphics graphics, int yPos, int alpha) {
         Minecraft mc = Minecraft.getInstance();
-        String title = currentMachine.getName() + " - Recipes";
-        
         int textColor = getColor("titleText", alpha);
+        
+        String title = currentMachine != null ? 
+            currentMachine.getName() + " - Recipes" : 
+            "Recipe Overlay";
+        
         int centerX = posX + width / 2;
         
         graphics.drawCenteredString(mc.font, title, centerX, yPos, textColor);
@@ -389,7 +424,7 @@ public class RecipeOverlayRenderer {
         Minecraft mc = Minecraft.getInstance();
         int textColor = getColor("normalText", alpha / 2);
         
-        String hints = "[↑↓] Navigate  [Enter] Select  [Esc] Close";
+        String hints = "[↑↓] Navigate  [Enter] Select  [R/Esc] Close";
         graphics.drawCenteredString(mc.font, hints, posX + width / 2, yPos, textColor);
     }
     
@@ -507,6 +542,7 @@ public class RecipeOverlayRenderer {
         MachineAutomationHandler.setSelectedRecipe(selected.getRecipeId());
         
         BapelSlimefunMod.LOGGER.info("Selected recipe: {}", selected.getDisplayString());
+        sendPlayerMessage("§a[Slimefun] Selected: §f" + selected.getDisplayString());
         hide();
     }
     
@@ -529,5 +565,12 @@ public class RecipeOverlayRenderer {
      */
     public static List<RecipeData> getAvailableRecipes() {
         return new ArrayList<>(availableRecipes);
+    }
+    
+    /**
+     * Get current machine
+     */
+    public static SlimefunMachineData getCurrentMachine() {
+        return currentMachine;
     }
 }
