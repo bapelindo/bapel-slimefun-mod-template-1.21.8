@@ -2,14 +2,11 @@ package com.bapel_slimefun_mod;
 
 import com.bapel_slimefun_mod.automation.*;
 import com.bapel_slimefun_mod.client.DebugOverlay;
+import com.bapel_slimefun_mod.client.ModKeybinds;
 import com.bapel_slimefun_mod.config.ModConfig;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
-import net.minecraft.client.KeyMapping;
-import net.minecraft.client.Minecraft;
-import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,8 +15,6 @@ public class BapelSlimefunMod implements ClientModInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     
     private static ModConfig config;
-    private static KeyMapping toggleAutomationKey;
-    private static KeyMapping debugInfoKey;
     
     @Override
     public void onInitializeClient() {
@@ -29,7 +24,7 @@ public class BapelSlimefunMod implements ClientModInitializer {
         LOGGER.info("Configuration loaded: {}", config);
         
         initializeSystems();
-        registerKeybindings();
+        ModKeybinds.register();
         registerEventHandlers();
         
         LOGGER.info("Bapel Slimefun Mod initialized successfully");
@@ -46,12 +41,7 @@ public class BapelSlimefunMod implements ClientModInitializer {
             RecipeDatabase.initialize();
             LOGGER.info("✓ Recipe Database initialized");
 
-            // DEBUG: Print all machines with recipes
-            LOGGER.info("════════ RECIPE DATABASE DEBUG ════════");
             RecipeDatabase.printAllMachineRecipes();
-
-            // DEBUG: Check specific machine
-            LOGGER.info("════════ CHECKING ELECTRIC_INGOT_FACTORY_3 ════════");
             RecipeDatabase.debugMachineRecipes("ELECTRIC_INGOT_FACTORY_3");
             
             RecipeOverlayRenderer.initialize();
@@ -69,26 +59,6 @@ public class BapelSlimefunMod implements ClientModInitializer {
         }
     }
     
-    private void registerKeybindings() {
-        try {
-            toggleAutomationKey = KeyBindingHelper.registerKeyBinding(new KeyMapping(
-                "key.bapel-slimefun-mod.toggle_automation",
-                GLFW.GLFW_KEY_G,
-                "category.bapel-slimefun-mod.automation"
-            ));
-            
-            debugInfoKey = KeyBindingHelper.registerKeyBinding(new KeyMapping(
-                "key.bapel-slimefun-mod.debug_info",
-                GLFW.GLFW_KEY_F3,
-                "category.bapel-slimefun-mod.automation"
-            ));
-            
-            LOGGER.info("✓ Keybindings registered (R key handled by mixin)");
-        } catch (Exception e) {
-            LOGGER.error("Error registering keybindings", e);
-        }
-    }
-    
     private void registerEventHandlers() {
         try {
             HudRenderCallback.EVENT.register((context, tickDelta) -> {
@@ -101,38 +71,7 @@ public class BapelSlimefunMod implements ClientModInitializer {
             
             ClientTickEvents.END_CLIENT_TICK.register(client -> {
                 try {
-                    while (toggleAutomationKey.consumeClick()) {
-                        MachineAutomationHandler.toggleAutomation();
-                    }
-                    
-                    while (debugInfoKey.consumeClick()) {
-                        if (config.isDebugMode()) {
-                            DebugOverlay.toggle();
-                            DebugHelper.runFullDiagnostic();
-                            
-                            if (client.player != null) {
-                                String status = DebugOverlay.isVisible() ? "§aSHOWN" : "§cHIDDEN";
-                                client.player.displayClientMessage(
-                                    net.minecraft.network.chat.Component.literal(
-                                        "§6[Slimefun] §fDebug Overlay: " + status
-                                    ), 
-                                    true
-                                );
-                            }
-                        } else {
-                            if (client.player != null) {
-                                client.player.displayClientMessage(
-                                    net.minecraft.network.chat.Component.literal(
-                                        "§cDebug mode is disabled in config"
-                                    ), 
-                                    true
-                                );
-                            }
-                        }
-                    }
-                    
                     MachineAutomationHandler.tick();
-                    
                 } catch (Exception e) {
                     LOGGER.error("Error in client tick handler", e);
                 }

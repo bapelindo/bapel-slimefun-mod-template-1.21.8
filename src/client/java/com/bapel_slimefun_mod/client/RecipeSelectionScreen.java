@@ -1,5 +1,6 @@
 package com.bapel_slimefun_mod.client;
 
+import com.bapel_slimefun_mod.automation.MachineAutomationHandler;
 import com.bapel_slimefun_mod.automation.SlimefunDataLoader;
 import com.bapel_slimefun_mod.automation.SlimefunMachineData;
 import net.minecraft.client.gui.GuiGraphics;
@@ -14,6 +15,7 @@ import java.util.Map;
 
 /**
  * GUI untuk memilih recipe/item yang akan dibuat
+ * UPDATED: Sekarang langsung menjalankan automation setelah memilih resep
  */
 public class RecipeSelectionScreen extends Screen {
     
@@ -25,9 +27,19 @@ public class RecipeSelectionScreen extends Screen {
     private int scrollOffset = 0;
     private int maxScroll = 0;
     private int selectedIndex = -1;
+    private boolean autoStartAutomation = true; // Opsi untuk auto-start automation
     
     public RecipeSelectionScreen() {
         super(Component.literal("§6§lSelect Recipe"));
+        loadRecipes();
+    }
+    
+    /**
+     * Constructor dengan opsi auto-start automation
+     */
+    public RecipeSelectionScreen(boolean autoStart) {
+        super(Component.literal("§6§lSelect Recipe"));
+        this.autoStartAutomation = autoStart;
         loadRecipes();
     }
     
@@ -70,7 +82,9 @@ public class RecipeSelectionScreen extends Screen {
         graphics.drawCenteredString(font, title, width / 2, 20, 0xFFFFFF);
         
         // Info text
-        String info = "§7Click to select a recipe to craft";
+        String info = autoStartAutomation ? 
+            "§7Click to select and §aAUTO-START§7 automation" :
+            "§7Click to select a recipe to craft";
         graphics.drawCenteredString(font, Component.literal(info), width / 2, 32, 0xFFFFFF);
         
         // Render recipe slots
@@ -108,7 +122,7 @@ public class RecipeSelectionScreen extends Screen {
                 recipe.name.substring(0, 17) + "..." : recipe.name;
             
             // Draw item representation
-            graphics.drawString(font, "§e⬛", x + 3, y + 5, 0xFFFFFF);
+            graphics.drawString(font, "§e■", x + 3, y + 5, 0xFFFFFF);
         }
         
         // Scroll indicator
@@ -127,9 +141,15 @@ public class RecipeSelectionScreen extends Screen {
                 Component.literal("§6Selected: §f" + selected.name), 
                 width / 2, infoY, 0xFFFFFF);
             
-            graphics.drawCenteredString(font, 
-                Component.literal("§7Press ENTER to confirm or ESC to cancel"), 
-                width / 2, infoY + 12, 0xFFFFFF);
+            if (autoStartAutomation) {
+                graphics.drawCenteredString(font, 
+                    Component.literal("§7Click again to confirm and §aSTART AUTOMATION"), 
+                    width / 2, infoY + 12, 0xFFFFFF);
+            } else {
+                graphics.drawCenteredString(font, 
+                    Component.literal("§7Press ENTER to confirm or ESC to cancel"), 
+                    width / 2, infoY + 12, 0xFFFFFF);
+            }
         }
         
         super.render(graphics, mouseX, mouseY, delta);
@@ -153,7 +173,13 @@ public class RecipeSelectionScreen extends Screen {
                 int y = startY + (row * SLOT_SIZE);
                 
                 if (isMouseOver((int)mouseX, (int)mouseY, x, y, SLOT_SIZE, SLOT_SIZE)) {
-                    selectedIndex = i;
+                    if (selectedIndex == i) {
+                        // Double click atau click lagi pada item yang sama - konfirmasi pilihan
+                        confirmSelection();
+                    } else {
+                        // First click - select item
+                        selectedIndex = i;
+                    }
                     return true;
                 }
             }
@@ -179,19 +205,49 @@ public class RecipeSelectionScreen extends Screen {
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         // Enter key - confirm selection
         if (keyCode == 257 && selectedIndex >= 0) { // GLFW.GLFW_KEY_ENTER
-            RecipeEntry selected = recipes.get(selectedIndex);
-            // TODO: Set selected recipe untuk automation
-            if (minecraft != null && minecraft.player != null) {
+            confirmSelection();
+            return true;
+        }
+        
+        return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+    
+    /**
+     * Konfirmasi pilihan resep dan mulai automation
+     */
+    private void confirmSelection() {
+        if (selectedIndex < 0 || selectedIndex >= recipes.size()) return;
+        
+        RecipeEntry selected = recipes.get(selectedIndex);
+        
+        // Set selected recipe di automation handler
+        MachineAutomationHandler.setSelectedRecipe(selected.id);
+        
+        if (minecraft != null && minecraft.player != null) {
+            if (autoStartAutomation) {
+                // Aktifkan automation jika belum aktif
+                if (!MachineAutomationHandler.isAutomationEnabled()) {
+                    MachineAutomationHandler.setAutomationEnabled(true);
+                }
+                
+                minecraft.player.displayClientMessage(
+                    Component.literal("§a✓ Recipe selected: " + selected.name + " - §6AUTOMATION STARTED!"), 
+                    false
+                );
+                
+                minecraft.player.displayClientMessage(
+                    Component.literal("§7Automation akan menaruh item ke input slot dan mengambil dari output slot"), 
+                    false
+                );
+            } else {
                 minecraft.player.displayClientMessage(
                     Component.literal("§a✓ Selected: " + selected.name), 
                     true
                 );
             }
-            onClose();
-            return true;
         }
         
-        return super.keyPressed(keyCode, scanCode, modifiers);
+        onClose();
     }
     
     @Override

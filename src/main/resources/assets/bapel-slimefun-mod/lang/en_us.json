@@ -1,5 +1,8 @@
 {
   "key.bapel-slimefun-mod.toggle_automation": "Toggle Slimefun Automation",
+  "key.bapel-slimefun-mod.quick_start": "Quick Start Automation",
+  "key.bapel-slimefun-mod.recipe_selection": "Open Recipe Selection",
+  "key.bapel-slimefun-mod.stop_automation": "Stop Automation",
   "key.bapel-slimefun-mod.debug_info": "Show Debug Info",
   "key.bapel-slimefun-mod.open_recipe_gui": "Open Recipe Selection",
   "key.bapel-slimefun-mod.toggle_recipe_overlay": "Toggle Recipe Overlay",
@@ -7,6 +10,8 @@
   
   "message.bapel-slimefun-mod.automation_enabled": "§a§lAutomation Enabled",
   "message.bapel-slimefun-mod.automation_disabled": "§c§lAutomation Disabled",
+  "message.bapel-slimefun-mod.automation_started": "§a✓ Automation Started!",
+  "message.bapel-slimefun-mod.automation_stopped": "§e⏸ Automation Stopped",
   "message.bapel-slimefun-mod.machine_detected": "§6Detected: §f%s",
   "message.bapel-slimefun-mod.auto_output": "§aAuto-Output: §f%s x%d",
   "message.bapel-slimefun-mod.auto_input": "§bAuto-Input: §f%s x%d",
@@ -17,10 +22,14 @@
   "message.bapel-slimefun-mod.recipe_selected": "§aSelected Recipe: §f%s",
   "message.bapel-slimefun-mod.no_machine_active": "§cNo machine active",
   "message.bapel-slimefun-mod.no_recipes_available": "§cNo recipes available for this machine",
+  "message.bapel-slimefun-mod.select_recipe_first": "§eSelect a recipe first...",
+  "message.bapel-slimefun-mod.open_machine_first": "§cBuka machine terlebih dahulu!",
   
   "gui.bapel-slimefun-mod.recipe_selection": "Select Recipe",
   "gui.bapel-slimefun-mod.recipe_info": "Click to select a recipe to craft",
+  "gui.bapel-slimefun-mod.recipe_info_auto": "Click to select and AUTO-START automation",
   "gui.bapel-slimefun-mod.recipe_confirm": "Press ENTER to confirm or ESC to cancel",
+  "gui.bapel-slimefun-mod.recipe_confirm_auto": "Click again to confirm and START AUTOMATION",
   
   "overlay.bapel-slimefun-mod.title": "§e§l%s - Recipes",
   "overlay.bapel-slimefun-mod.recipe_format": "§f%d. §a%s §7x%d",

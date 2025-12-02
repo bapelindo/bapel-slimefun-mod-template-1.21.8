@@ -2,7 +2,7 @@
   {
     "itemId": "GRANDMAS_WALKING_STICK",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "OAK_LOG:1",
@@ -19,7 +19,7 @@
   {
     "itemId": "GRANDPAS_WALKING_STICK",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "LEATHER:1",
       "OAK_LOG:1",
@@ -36,7 +36,7 @@
   {
     "itemId": "PORTABLE_CRAFTER",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "BOOK:1",
       "CRAFTING_TABLE:1",
@@ -53,7 +53,7 @@
   {
     "itemId": "FORTUNE_COOKIE",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "COOKIE:1",
       "PAPER:1",
@@ -70,7 +70,7 @@
   {
     "itemId": "DIET_COOKIE",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "COOKIE:1",
       "ELYTRA_SCALE:1",
@@ -87,7 +87,7 @@
   {
     "itemId": "OUTPUT_CHEST",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "LEAD_INGOT:1",
       "HOPPER:1",
@@ -104,7 +104,7 @@
   {
     "itemId": "ENHANCED_CRAFTING_TABLE",
     "recipeType": "slimefun:multiblock",
-    "recipeBlock": "MultiBlock",
+    "recipeBlock": "§bMultiBlock",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -121,7 +121,7 @@
   {
     "itemId": "PORTABLE_DUSTBIN",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "IRON_INGOT:1",
       "IRON_INGOT:1",
@@ -138,7 +138,7 @@
   {
     "itemId": "BEEF_JERKY",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "SALT:1",
       "COOKED_BEEF:1",
@@ -155,7 +155,7 @@
   {
     "itemId": "PORK_JERKY",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "SALT:1",
       "COOKED_PORKCHOP:1",
@@ -172,7 +172,7 @@
   {
     "itemId": "CHICKEN_JERKY",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "SALT:1",
       "COOKED_CHICKEN:1",
@@ -189,7 +189,7 @@
   {
     "itemId": "MUTTON_JERKY",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "SALT:1",
       "COOKED_MUTTON:1",
@@ -206,7 +206,7 @@
   {
     "itemId": "RABBIT_JERKY",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "SALT:1",
       "COOKED_RABBIT:1",
@@ -223,7 +223,7 @@
   {
     "itemId": "FISH_JERKY",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "SALT:1",
       "COOKED_COD:1",
@@ -240,7 +240,7 @@
   {
     "itemId": "KELP_COOKIE",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "DRIED_KELP:1",
@@ -257,7 +257,7 @@
   {
     "itemId": "GRIND_STONE",
     "recipeType": "slimefun:multiblock",
-    "recipeBlock": "MultiBlock",
+    "recipeBlock": "§bMultiBlock",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -274,7 +274,7 @@
   {
     "itemId": "ARMOR_FORGE",
     "recipeType": "slimefun:multiblock",
-    "recipeBlock": "MultiBlock",
+    "recipeBlock": "§bMultiBlock",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -291,7 +291,7 @@
   {
     "itemId": "ORE_CRUSHER",
     "recipeType": "slimefun:multiblock",
-    "recipeBlock": "MultiBlock",
+    "recipeBlock": "§bMultiBlock",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -308,7 +308,7 @@
   {
     "itemId": "COMPRESSOR",
     "recipeType": "slimefun:multiblock",
-    "recipeBlock": "MultiBlock",
+    "recipeBlock": "§bMultiBlock",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -325,7 +325,7 @@
   {
     "itemId": "MAGIC_LUMP_1",
     "recipeType": "slimefun:grind_stone",
-    "recipeBlock": "Grind Stone",
+    "recipeBlock": "§bGrind Stone",
     "inputs": [
       "NETHER_WART:1",
       "AIR:0",
@@ -342,7 +342,7 @@
   {
     "itemId": "MAGIC_LUMP_2",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "MAGIC_LUMP_1:1",
       "MAGIC_LUMP_1:1",
@@ -359,7 +359,7 @@
   {
     "itemId": "MAGIC_LUMP_3",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "MAGIC_LUMP_2:1",
       "MAGIC_LUMP_2:1",
@@ -376,7 +376,7 @@
   {
     "itemId": "ENDER_LUMP_1",
     "recipeType": "slimefun:grind_stone",
-    "recipeBlock": "Grind Stone",
+    "recipeBlock": "§bGrind Stone",
     "inputs": [
       "ENDER_EYE:1",
       "AIR:0",
@@ -393,7 +393,7 @@
   {
     "itemId": "ENDER_LUMP_2",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "ENDER_LUMP_1:1",
       "ENDER_LUMP_1:1",
@@ -410,7 +410,7 @@
   {
     "itemId": "ENDER_LUMP_3",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "ENDER_LUMP_2:1",
       "ENDER_LUMP_2:1",
@@ -427,7 +427,7 @@
   {
     "itemId": "ENDER_BACKPACK",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "ENDER_LUMP_2:1",
       "LEATHER:1",
@@ -444,7 +444,7 @@
   {
     "itemId": "ENDER_HELMET",
     "recipeType": "slimefun:armor_forge",
-    "recipeBlock": "Armor Forge",
+    "recipeBlock": "§6Armor Forge",
     "inputs": [
       "ENDER_LUMP_1:1",
       "ENDER_EYE:1",
@@ -461,7 +461,7 @@
   {
     "itemId": "ENDER_CHESTPLATE",
     "recipeType": "slimefun:armor_forge",
-    "recipeBlock": "Armor Forge",
+    "recipeBlock": "§6Armor Forge",
     "inputs": [
       "ENDER_LUMP_1:1",
       "AIR:0",
@@ -478,7 +478,7 @@
   {
     "itemId": "ENDER_LEGGINGS",
     "recipeType": "slimefun:armor_forge",
-    "recipeBlock": "Armor Forge",
+    "recipeBlock": "§6Armor Forge",
     "inputs": [
       "ENDER_LUMP_1:1",
       "ENDER_EYE:1",
@@ -495,7 +495,7 @@
   {
     "itemId": "ENDER_BOOTS",
     "recipeType": "slimefun:armor_forge",
-    "recipeBlock": "Armor Forge",
+    "recipeBlock": "§6Armor Forge",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -512,7 +512,7 @@
   {
     "itemId": "MAGIC_EYE_OF_ENDER",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "ENDER_LUMP_2:1",
       "ENDER_PEARL:1",
@@ -529,7 +529,7 @@
   {
     "itemId": "MAGIC_SUGAR",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "SUGAR:1",
       "REDSTONE:1",
@@ -546,7 +546,7 @@
   {
     "itemId": "MONSTER_JERKY",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "SALT:1",
       "ROTTEN_FLESH:1",
@@ -563,7 +563,7 @@
   {
     "itemId": "SLIME_HELMET",
     "recipeType": "slimefun:armor_forge",
-    "recipeBlock": "Armor Forge",
+    "recipeBlock": "§6Armor Forge",
     "inputs": [
       "SLIME_BALL:1",
       "IRON_INGOT:1",
@@ -580,7 +580,7 @@
   {
     "itemId": "SLIME_CHESTPLATE",
     "recipeType": "slimefun:armor_forge",
-    "recipeBlock": "Armor Forge",
+    "recipeBlock": "§6Armor Forge",
     "inputs": [
       "SLIME_BALL:1",
       "AIR:0",
@@ -597,7 +597,7 @@
   {
     "itemId": "SLIME_LEGGINGS",
     "recipeType": "slimefun:armor_forge",
-    "recipeBlock": "Armor Forge",
+    "recipeBlock": "§6Armor Forge",
     "inputs": [
       "SLIME_BALL:1",
       "IRON_INGOT:1",
@@ -614,7 +614,7 @@
   {
     "itemId": "SLIME_BOOTS",
     "recipeType": "slimefun:armor_forge",
-    "recipeBlock": "Armor Forge",
+    "recipeBlock": "§6Armor Forge",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -631,7 +631,7 @@
   {
     "itemId": "SWORD_OF_BEHEADING",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "EMERALD:1",
@@ -648,7 +648,7 @@
   {
     "itemId": "MAGICAL_BOOK_COVER",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "MAGIC_LUMP_2:1",
@@ -665,7 +665,7 @@
   {
     "itemId": "MAGICAL_GLASS",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "MAGIC_LUMP_2:1",
       "GOLD_DUST:1",
@@ -682,7 +682,7 @@
   {
     "itemId": "BASIC_CIRCUIT_BOARD",
     "recipeType": "slimefun:mob_drop",
-    "recipeBlock": "Mob Drop",
+    "recipeBlock": "§bMob Drop",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -699,7 +699,7 @@
   {
     "itemId": "ADVANCED_CIRCUIT_BOARD",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "LAPIS_BLOCK:1",
       "LAPIS_BLOCK:1",
@@ -716,7 +716,7 @@
   {
     "itemId": "GOLD_PAN",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -733,7 +733,7 @@
   {
     "itemId": "NETHER_GOLD_PAN",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -750,7 +750,7 @@
   {
     "itemId": "SIFTED_ORE",
     "recipeType": "slimefun:gold_pan",
-    "recipeBlock": "Gold Pan",
+    "recipeBlock": "§6Gold Pan",
     "inputs": [
       "GRAVEL:1",
       "AIR:0",
@@ -767,7 +767,7 @@
   {
     "itemId": "MAKESHIFT_SMELTERY",
     "recipeType": "slimefun:multiblock",
-    "recipeBlock": "MultiBlock",
+    "recipeBlock": "§bMultiBlock",
     "inputs": [
       "AIR:0",
       "OAK_FENCE:1",
@@ -784,7 +784,7 @@
   {
     "itemId": "SMELTERY",
     "recipeType": "slimefun:multiblock",
-    "recipeBlock": "MultiBlock",
+    "recipeBlock": "§bMultiBlock",
     "inputs": [
       "AIR:0",
       "NETHER_BRICK_FENCE:1",
@@ -801,7 +801,7 @@
   {
     "itemId": "IGNITION_CHAMBER",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "IRON_INGOT:1",
       "FLINT_AND_STEEL:1",
@@ -818,7 +818,7 @@
   {
     "itemId": "PRESSURE_CHAMBER",
     "recipeType": "slimefun:multiblock",
-    "recipeBlock": "MultiBlock",
+    "recipeBlock": "§bMultiBlock",
     "inputs": [
       "SMOOTH_STONE_SLAB:1",
       "DISPENSER:1",
@@ -835,7 +835,7 @@
   {
     "itemId": "BATTERY",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "REDSTONE:1",
@@ -852,7 +852,7 @@
   {
     "itemId": "GLOWSTONE_HELMET",
     "recipeType": "slimefun:armor_forge",
-    "recipeBlock": "Armor Forge",
+    "recipeBlock": "§6Armor Forge",
     "inputs": [
       "GLOWSTONE:1",
       "GLOWSTONE:1",
@@ -869,7 +869,7 @@
   {
     "itemId": "GLOWSTONE_CHESTPLATE",
     "recipeType": "slimefun:armor_forge",
-    "recipeBlock": "Armor Forge",
+    "recipeBlock": "§6Armor Forge",
     "inputs": [
       "GLOWSTONE:1",
       "AIR:0",
@@ -886,7 +886,7 @@
   {
     "itemId": "GLOWSTONE_LEGGINGS",
     "recipeType": "slimefun:armor_forge",
-    "recipeBlock": "Armor Forge",
+    "recipeBlock": "§6Armor Forge",
     "inputs": [
       "GLOWSTONE:1",
       "GLOWSTONE:1",
@@ -903,7 +903,7 @@
   {
     "itemId": "GLOWSTONE_BOOTS",
     "recipeType": "slimefun:armor_forge",
-    "recipeBlock": "Armor Forge",
+    "recipeBlock": "§6Armor Forge",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -920,7 +920,7 @@
   {
     "itemId": "RAINBOW_HELMET",
     "recipeType": "slimefun:armor_forge",
-    "recipeBlock": "Armor Forge",
+    "recipeBlock": "§6Armor Forge",
     "inputs": [
       "RAINBOW_LEATHER:1",
       "RAINBOW_LEATHER:1",
@@ -937,7 +937,7 @@
   {
     "itemId": "RAINBOW_CHESTPLATE",
     "recipeType": "slimefun:armor_forge",
-    "recipeBlock": "Armor Forge",
+    "recipeBlock": "§6Armor Forge",
     "inputs": [
       "RAINBOW_LEATHER:1",
       "AIR:0",
@@ -954,7 +954,7 @@
   {
     "itemId": "RAINBOW_LEGGINGS",
     "recipeType": "slimefun:armor_forge",
-    "recipeBlock": "Armor Forge",
+    "recipeBlock": "§6Armor Forge",
     "inputs": [
       "RAINBOW_LEATHER:1",
       "RAINBOW_LEATHER:1",
@@ -971,7 +971,7 @@
   {
     "itemId": "RAINBOW_BOOTS",
     "recipeType": "slimefun:armor_forge",
-    "recipeBlock": "Armor Forge",
+    "recipeBlock": "§6Armor Forge",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -988,7 +988,7 @@
   {
     "itemId": "DAMASCUS_STEEL_HELMET",
     "recipeType": "slimefun:armor_forge",
-    "recipeBlock": "Armor Forge",
+    "recipeBlock": "§6Armor Forge",
     "inputs": [
       "DAMASCUS_STEEL_INGOT:1",
       "DAMASCUS_STEEL_INGOT:1",
@@ -1005,7 +1005,7 @@
   {
     "itemId": "DAMASCUS_STEEL_CHESTPLATE",
     "recipeType": "slimefun:armor_forge",
-    "recipeBlock": "Armor Forge",
+    "recipeBlock": "§6Armor Forge",
     "inputs": [
       "DAMASCUS_STEEL_INGOT:1",
       "AIR:0",
@@ -1022,7 +1022,7 @@
   {
     "itemId": "DAMASCUS_STEEL_LEGGINGS",
     "recipeType": "slimefun:armor_forge",
-    "recipeBlock": "Armor Forge",
+    "recipeBlock": "§6Armor Forge",
     "inputs": [
       "DAMASCUS_STEEL_INGOT:1",
       "DAMASCUS_STEEL_INGOT:1",
@@ -1039,7 +1039,7 @@
   {
     "itemId": "DAMASCUS_STEEL_BOOTS",
     "recipeType": "slimefun:armor_forge",
-    "recipeBlock": "Armor Forge",
+    "recipeBlock": "§6Armor Forge",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -1056,7 +1056,7 @@
   {
     "itemId": "REINFORCED_ALLOY_HELMET",
     "recipeType": "slimefun:armor_forge",
-    "recipeBlock": "Armor Forge",
+    "recipeBlock": "§6Armor Forge",
     "inputs": [
       "REINFORCED_ALLOY_INGOT:1",
       "REINFORCED_ALLOY_INGOT:1",
@@ -1073,7 +1073,7 @@
   {
     "itemId": "REINFORCED_ALLOY_CHESTPLATE",
     "recipeType": "slimefun:armor_forge",
-    "recipeBlock": "Armor Forge",
+    "recipeBlock": "§6Armor Forge",
     "inputs": [
       "REINFORCED_ALLOY_INGOT:1",
       "AIR:0",
@@ -1090,7 +1090,7 @@
   {
     "itemId": "REINFORCED_ALLOY_LEGGINGS",
     "recipeType": "slimefun:armor_forge",
-    "recipeBlock": "Armor Forge",
+    "recipeBlock": "§6Armor Forge",
     "inputs": [
       "REINFORCED_ALLOY_INGOT:1",
       "REINFORCED_ALLOY_INGOT:1",
@@ -1107,7 +1107,7 @@
   {
     "itemId": "REINFORCED_ALLOY_BOOTS",
     "recipeType": "slimefun:armor_forge",
-    "recipeBlock": "Armor Forge",
+    "recipeBlock": "§6Armor Forge",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -1124,7 +1124,7 @@
   {
     "itemId": "CACTUS_HELMET",
     "recipeType": "slimefun:armor_forge",
-    "recipeBlock": "Armor Forge",
+    "recipeBlock": "§6Armor Forge",
     "inputs": [
       "CACTUS:1",
       "CACTUS:1",
@@ -1141,7 +1141,7 @@
   {
     "itemId": "CACTUS_CHESTPLATE",
     "recipeType": "slimefun:armor_forge",
-    "recipeBlock": "Armor Forge",
+    "recipeBlock": "§6Armor Forge",
     "inputs": [
       "CACTUS:1",
       "AIR:0",
@@ -1158,7 +1158,7 @@
   {
     "itemId": "CACTUS_LEGGINGS",
     "recipeType": "slimefun:armor_forge",
-    "recipeBlock": "Armor Forge",
+    "recipeBlock": "§6Armor Forge",
     "inputs": [
       "CACTUS:1",
       "CACTUS:1",
@@ -1175,7 +1175,7 @@
   {
     "itemId": "CACTUS_BOOTS",
     "recipeType": "slimefun:armor_forge",
-    "recipeBlock": "Armor Forge",
+    "recipeBlock": "§6Armor Forge",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -1192,7 +1192,7 @@
   {
     "itemId": "REINFORCED_ALLOY_INGOT",
     "recipeType": "slimefun:smeltery",
-    "recipeBlock": "Smeltery",
+    "recipeBlock": "§6Smeltery",
     "inputs": [
       "DAMASCUS_STEEL_INGOT:1",
       "HARDENED_METAL_INGOT:1",
@@ -1209,7 +1209,7 @@
   {
     "itemId": "HARDENED_METAL_INGOT",
     "recipeType": "slimefun:smeltery",
-    "recipeBlock": "Smeltery",
+    "recipeBlock": "§6Smeltery",
     "inputs": [
       "DAMASCUS_STEEL_INGOT:1",
       "DURALUMIN_INGOT:1",
@@ -1226,7 +1226,7 @@
   {
     "itemId": "DAMASCUS_STEEL_INGOT",
     "recipeType": "slimefun:smeltery",
-    "recipeBlock": "Smeltery",
+    "recipeBlock": "§6Smeltery",
     "inputs": [
       "STEEL_INGOT:1",
       "IRON_DUST:1",
@@ -1243,7 +1243,7 @@
   {
     "itemId": "STEEL_INGOT",
     "recipeType": "slimefun:smeltery",
-    "recipeBlock": "Smeltery",
+    "recipeBlock": "§6Smeltery",
     "inputs": [
       "IRON_DUST:1",
       "CARBON:1",
@@ -1260,7 +1260,7 @@
   {
     "itemId": "BRONZE_INGOT",
     "recipeType": "slimefun:smeltery",
-    "recipeBlock": "Smeltery",
+    "recipeBlock": "§6Smeltery",
     "inputs": [
       "COPPER_DUST:1",
       "TIN_DUST:1",
@@ -1277,7 +1277,7 @@
   {
     "itemId": "DURALUMIN_INGOT",
     "recipeType": "slimefun:smeltery",
-    "recipeBlock": "Smeltery",
+    "recipeBlock": "§6Smeltery",
     "inputs": [
       "ALUMINUM_DUST:1",
       "COPPER_DUST:1",
@@ -1294,7 +1294,7 @@
   {
     "itemId": "BILLON_INGOT",
     "recipeType": "slimefun:smeltery",
-    "recipeBlock": "Smeltery",
+    "recipeBlock": "§6Smeltery",
     "inputs": [
       "SILVER_DUST:1",
       "COPPER_DUST:1",
@@ -1311,7 +1311,7 @@
   {
     "itemId": "BRASS_INGOT",
     "recipeType": "slimefun:smeltery",
-    "recipeBlock": "Smeltery",
+    "recipeBlock": "§6Smeltery",
     "inputs": [
       "COPPER_DUST:1",
       "ZINC_DUST:1",
@@ -1328,7 +1328,7 @@
   {
     "itemId": "ALUMINUM_BRASS_INGOT",
     "recipeType": "slimefun:smeltery",
-    "recipeBlock": "Smeltery",
+    "recipeBlock": "§6Smeltery",
     "inputs": [
       "ALUMINUM_DUST:1",
       "BRASS_INGOT:1",
@@ -1345,7 +1345,7 @@
   {
     "itemId": "ALUMINUM_BRONZE_INGOT",
     "recipeType": "slimefun:smeltery",
-    "recipeBlock": "Smeltery",
+    "recipeBlock": "§6Smeltery",
     "inputs": [
       "ALUMINUM_DUST:1",
       "BRONZE_INGOT:1",
@@ -1362,7 +1362,7 @@
   {
     "itemId": "CORINTHIAN_BRONZE_INGOT",
     "recipeType": "slimefun:smeltery",
-    "recipeBlock": "Smeltery",
+    "recipeBlock": "§6Smeltery",
     "inputs": [
       "SILVER_DUST:1",
       "GOLD_DUST:1",
@@ -1379,7 +1379,7 @@
   {
     "itemId": "SOLDER_INGOT",
     "recipeType": "slimefun:smeltery",
-    "recipeBlock": "Smeltery",
+    "recipeBlock": "§6Smeltery",
     "inputs": [
       "LEAD_DUST:1",
       "TIN_DUST:1",
@@ -1396,7 +1396,7 @@
   {
     "itemId": "SYNTHETIC_SAPPHIRE",
     "recipeType": "slimefun:smeltery",
-    "recipeBlock": "Smeltery",
+    "recipeBlock": "§6Smeltery",
     "inputs": [
       "ALUMINUM_DUST:1",
       "GLASS:1",
@@ -1413,7 +1413,7 @@
   {
     "itemId": "SYNTHETIC_DIAMOND",
     "recipeType": "slimefun:pressure_chamber",
-    "recipeBlock": "Pressure Chamber",
+    "recipeBlock": "§bPressure Chamber",
     "inputs": [
       "CARBON_CHUNK:1",
       "AIR:0",
@@ -1430,7 +1430,7 @@
   {
     "itemId": "RAW_CARBONADO",
     "recipeType": "slimefun:smeltery",
-    "recipeBlock": "Smeltery",
+    "recipeBlock": "§6Smeltery",
     "inputs": [
       "SYNTHETIC_DIAMOND:1",
       "CARBON_CHUNK:1",
@@ -1447,7 +1447,7 @@
   {
     "itemId": "NICKEL_INGOT",
     "recipeType": "slimefun:smeltery",
-    "recipeBlock": "Smeltery",
+    "recipeBlock": "§6Smeltery",
     "inputs": [
       "IRON_DUST:1",
       "IRON_INGOT:1",
@@ -1464,7 +1464,7 @@
   {
     "itemId": "COBALT_INGOT",
     "recipeType": "slimefun:smeltery",
-    "recipeBlock": "Smeltery",
+    "recipeBlock": "§6Smeltery",
     "inputs": [
       "IRON_DUST:1",
       "COPPER_DUST:1",
@@ -1481,7 +1481,7 @@
   {
     "itemId": "CARBONADO",
     "recipeType": "slimefun:pressure_chamber",
-    "recipeBlock": "Pressure Chamber",
+    "recipeBlock": "§bPressure Chamber",
     "inputs": [
       "RAW_CARBONADO:1",
       "AIR:0",
@@ -1498,7 +1498,7 @@
   {
     "itemId": "FERROSILICON",
     "recipeType": "slimefun:smeltery",
-    "recipeBlock": "Smeltery",
+    "recipeBlock": "§6Smeltery",
     "inputs": [
       "IRON_INGOT:1",
       "IRON_DUST:1",
@@ -1515,7 +1515,7 @@
   {
     "itemId": "IRON_DUST",
     "recipeType": "slimefun:ore_crusher",
-    "recipeBlock": "Ore Crusher",
+    "recipeBlock": "§bOre Crusher",
     "inputs": [
       "IRON_ORE:1",
       "AIR:0",
@@ -1532,7 +1532,7 @@
   {
     "itemId": "GOLD_DUST",
     "recipeType": "slimefun:ore_crusher",
-    "recipeBlock": "Ore Crusher",
+    "recipeBlock": "§bOre Crusher",
     "inputs": [
       "GOLD_ORE:1",
       "AIR:0",
@@ -1549,7 +1549,7 @@
   {
     "itemId": "COPPER_DUST",
     "recipeType": "slimefun:ore_washer",
-    "recipeBlock": "Ore Washer",
+    "recipeBlock": "§6Ore Washer",
     "inputs": [
       "SIFTED_ORE:1",
       "AIR:0",
@@ -1566,7 +1566,7 @@
   {
     "itemId": "TIN_DUST",
     "recipeType": "slimefun:ore_washer",
-    "recipeBlock": "Ore Washer",
+    "recipeBlock": "§6Ore Washer",
     "inputs": [
       "SIFTED_ORE:1",
       "AIR:0",
@@ -1583,7 +1583,7 @@
   {
     "itemId": "SILVER_DUST",
     "recipeType": "slimefun:ore_washer",
-    "recipeBlock": "Ore Washer",
+    "recipeBlock": "§6Ore Washer",
     "inputs": [
       "SIFTED_ORE:1",
       "AIR:0",
@@ -1600,7 +1600,7 @@
   {
     "itemId": "LEAD_DUST",
     "recipeType": "slimefun:ore_washer",
-    "recipeBlock": "Ore Washer",
+    "recipeBlock": "§6Ore Washer",
     "inputs": [
       "SIFTED_ORE:1",
       "AIR:0",
@@ -1617,7 +1617,7 @@
   {
     "itemId": "ALUMINUM_DUST",
     "recipeType": "slimefun:ore_washer",
-    "recipeBlock": "Ore Washer",
+    "recipeBlock": "§6Ore Washer",
     "inputs": [
       "SIFTED_ORE:1",
       "AIR:0",
@@ -1634,7 +1634,7 @@
   {
     "itemId": "ZINC_DUST",
     "recipeType": "slimefun:ore_washer",
-    "recipeBlock": "Ore Washer",
+    "recipeBlock": "§6Ore Washer",
     "inputs": [
       "SIFTED_ORE:1",
       "AIR:0",
@@ -1651,7 +1651,7 @@
   {
     "itemId": "MAGNESIUM_DUST",
     "recipeType": "slimefun:ore_washer",
-    "recipeBlock": "Ore Washer",
+    "recipeBlock": "§6Ore Washer",
     "inputs": [
       "SIFTED_ORE:1",
       "AIR:0",
@@ -1668,7 +1668,7 @@
   {
     "itemId": "COPPER_INGOT",
     "recipeType": "slimefun:smeltery",
-    "recipeBlock": "Smeltery",
+    "recipeBlock": "§6Smeltery",
     "inputs": [
       "COPPER_DUST:1",
       "AIR:0",
@@ -1685,7 +1685,7 @@
   {
     "itemId": "TIN_INGOT",
     "recipeType": "slimefun:smeltery",
-    "recipeBlock": "Smeltery",
+    "recipeBlock": "§6Smeltery",
     "inputs": [
       "TIN_DUST:1",
       "AIR:0",
@@ -1702,7 +1702,7 @@
   {
     "itemId": "SILVER_INGOT",
     "recipeType": "slimefun:smeltery",
-    "recipeBlock": "Smeltery",
+    "recipeBlock": "§6Smeltery",
     "inputs": [
       "SILVER_DUST:1",
       "AIR:0",
@@ -1719,7 +1719,7 @@
   {
     "itemId": "LEAD_INGOT",
     "recipeType": "slimefun:smeltery",
-    "recipeBlock": "Smeltery",
+    "recipeBlock": "§6Smeltery",
     "inputs": [
       "LEAD_DUST:1",
       "AIR:0",
@@ -1736,7 +1736,7 @@
   {
     "itemId": "ALUMINUM_INGOT",
     "recipeType": "slimefun:smeltery",
-    "recipeBlock": "Smeltery",
+    "recipeBlock": "§6Smeltery",
     "inputs": [
       "ALUMINUM_DUST:1",
       "AIR:0",
@@ -1753,7 +1753,7 @@
   {
     "itemId": "ZINC_INGOT",
     "recipeType": "slimefun:smeltery",
-    "recipeBlock": "Smeltery",
+    "recipeBlock": "§6Smeltery",
     "inputs": [
       "ZINC_DUST:1",
       "AIR:0",
@@ -1770,7 +1770,7 @@
   {
     "itemId": "MAGNESIUM_INGOT",
     "recipeType": "slimefun:smeltery",
-    "recipeBlock": "Smeltery",
+    "recipeBlock": "§6Smeltery",
     "inputs": [
       "MAGNESIUM_DUST:1",
       "AIR:0",
@@ -1787,7 +1787,7 @@
   {
     "itemId": "SULFATE",
     "recipeType": "slimefun:ore_crusher",
-    "recipeBlock": "Ore Crusher",
+    "recipeBlock": "§bOre Crusher",
     "inputs": [
       "NETHERRACK:16",
       "AIR:0",
@@ -1804,7 +1804,7 @@
   {
     "itemId": "CARBON",
     "recipeType": "slimefun:compressor",
-    "recipeBlock": "Compressor",
+    "recipeBlock": "§bCompressor",
     "inputs": [
       "COAL:8",
       "AIR:0",
@@ -1821,7 +1821,7 @@
   {
     "itemId": "WHEAT_FLOUR",
     "recipeType": "slimefun:grind_stone",
-    "recipeBlock": "Grind Stone",
+    "recipeBlock": "§bGrind Stone",
     "inputs": [
       "WHEAT:1",
       "AIR:0",
@@ -1838,7 +1838,7 @@
   {
     "itemId": "STEEL_PLATE",
     "recipeType": "slimefun:compressor",
-    "recipeBlock": "Compressor",
+    "recipeBlock": "§bCompressor",
     "inputs": [
       "STEEL_INGOT:8",
       "AIR:0",
@@ -1855,7 +1855,7 @@
   {
     "itemId": "COMPRESSED_CARBON",
     "recipeType": "slimefun:compressor",
-    "recipeBlock": "Compressor",
+    "recipeBlock": "§bCompressor",
     "inputs": [
       "CARBON:4",
       "AIR:0",
@@ -1872,7 +1872,7 @@
   {
     "itemId": "CARBON_CHUNK",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "COMPRESSED_CARBON:1",
       "COMPRESSED_CARBON:1",
@@ -1889,7 +1889,7 @@
   {
     "itemId": "STEEL_THRUSTER",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "REDSTONE:1",
@@ -1906,7 +1906,7 @@
   {
     "itemId": "POWER_CRYSTAL",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "REDSTONE:1",
       "SYNTHETIC_SAPPHIRE:1",
@@ -1923,7 +1923,7 @@
   {
     "itemId": "DURALUMIN_JETPACK",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "DURALUMIN_INGOT:1",
       "AIR:0",
@@ -1940,7 +1940,7 @@
   {
     "itemId": "SOLDER_JETPACK",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "SOLDER_INGOT:1",
       "AIR:0",
@@ -1957,7 +1957,7 @@
   {
     "itemId": "BILLON_JETPACK",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "BILLON_INGOT:1",
       "AIR:0",
@@ -1974,7 +1974,7 @@
   {
     "itemId": "STEEL_JETPACK",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "STEEL_INGOT:1",
       "AIR:0",
@@ -1991,7 +1991,7 @@
   {
     "itemId": "DAMASCUS_STEEL_JETPACK",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "DAMASCUS_STEEL_INGOT:1",
       "AIR:0",
@@ -2008,7 +2008,7 @@
   {
     "itemId": "REINFORCED_ALLOY_JETPACK",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "REINFORCED_ALLOY_INGOT:1",
       "AIR:0",
@@ -2025,7 +2025,7 @@
   {
     "itemId": "CARBONADO_JETPACK",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "CARBON_CHUNK:1",
       "AIR:0",
@@ -2042,7 +2042,7 @@
   {
     "itemId": "ARMORED_JETPACK",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "STEEL_PLATE:1",
       "AIR:0",
@@ -2059,7 +2059,7 @@
   {
     "itemId": "PARACHUTE",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "CLOTH:1",
       "CLOTH:1",
@@ -2076,7 +2076,7 @@
   {
     "itemId": "HOLOGRAM_PROJECTOR",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "POWER_CRYSTAL:1",
@@ -2093,7 +2093,7 @@
   {
     "itemId": "CHAIN",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -2110,7 +2110,7 @@
   {
     "itemId": "HOOK",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "STEEL_INGOT:1",
@@ -2127,7 +2127,7 @@
   {
     "itemId": "GRAPPLING_HOOK",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -2144,7 +2144,7 @@
   {
     "itemId": "MAGIC_WORKBENCH",
     "recipeType": "slimefun:multiblock",
-    "recipeBlock": "MultiBlock",
+    "recipeBlock": "§bMultiBlock",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -2161,7 +2161,7 @@
   {
     "itemId": "STAFF_ELEMENTAL",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "AIR:0",
       "MAGICAL_BOOK_COVER:1",
@@ -2178,7 +2178,7 @@
   {
     "itemId": "STAFF_ELEMENTAL_WIND",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "AIR:0",
       "FEATHER:1",
@@ -2195,7 +2195,7 @@
   {
     "itemId": "STAFF_ELEMENTAL_WATER",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "AIR:0",
       "LILY_PAD:1",
@@ -2212,7 +2212,7 @@
   {
     "itemId": "STAFF_ELEMENTAL_FIRE",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -2229,7 +2229,7 @@
   {
     "itemId": "DURALUMIN_MULTI_TOOL",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "DURALUMIN_INGOT:1",
       "AIR:0",
@@ -2246,7 +2246,7 @@
   {
     "itemId": "SOLDER_MULTI_TOOL",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "SOLDER_INGOT:1",
       "AIR:0",
@@ -2263,7 +2263,7 @@
   {
     "itemId": "BILLON_MULTI_TOOL",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "BILLON_INGOT:1",
       "AIR:0",
@@ -2280,7 +2280,7 @@
   {
     "itemId": "STEEL_MULTI_TOOL",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "STEEL_INGOT:1",
       "AIR:0",
@@ -2297,7 +2297,7 @@
   {
     "itemId": "DAMASCUS_STEEL_MULTI_TOOL",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "DAMASCUS_STEEL_INGOT:1",
       "AIR:0",
@@ -2314,7 +2314,7 @@
   {
     "itemId": "REINFORCED_ALLOY_MULTI_TOOL",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "REINFORCED_ALLOY_INGOT:1",
       "AIR:0",
@@ -2331,7 +2331,7 @@
   {
     "itemId": "CARBONADO_MULTI_TOOL",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "CARBONADO:1",
       "AIR:0",
@@ -2348,7 +2348,7 @@
   {
     "itemId": "ORE_WASHER",
     "recipeType": "slimefun:multiblock",
-    "recipeBlock": "MultiBlock",
+    "recipeBlock": "§bMultiBlock",
     "inputs": [
       "AIR:0",
       "DISPENSER:1",
@@ -2365,7 +2365,7 @@
   {
     "itemId": "GOLD_24K",
     "recipeType": "slimefun:smeltery",
-    "recipeBlock": "Smeltery",
+    "recipeBlock": "§6Smeltery",
     "inputs": [
       "GOLD_DUST:1",
       "GOLD_22K:1",
@@ -2382,7 +2382,7 @@
   {
     "itemId": "GOLD_22K",
     "recipeType": "slimefun:smeltery",
-    "recipeBlock": "Smeltery",
+    "recipeBlock": "§6Smeltery",
     "inputs": [
       "GOLD_DUST:1",
       "GOLD_20K:1",
@@ -2399,7 +2399,7 @@
   {
     "itemId": "GOLD_20K",
     "recipeType": "slimefun:smeltery",
-    "recipeBlock": "Smeltery",
+    "recipeBlock": "§6Smeltery",
     "inputs": [
       "GOLD_DUST:1",
       "GOLD_18K:1",
@@ -2416,7 +2416,7 @@
   {
     "itemId": "GOLD_18K",
     "recipeType": "slimefun:smeltery",
-    "recipeBlock": "Smeltery",
+    "recipeBlock": "§6Smeltery",
     "inputs": [
       "GOLD_DUST:1",
       "GOLD_16K:1",
@@ -2433,7 +2433,7 @@
   {
     "itemId": "GOLD_16K",
     "recipeType": "slimefun:smeltery",
-    "recipeBlock": "Smeltery",
+    "recipeBlock": "§6Smeltery",
     "inputs": [
       "GOLD_DUST:1",
       "GOLD_14K:1",
@@ -2450,7 +2450,7 @@
   {
     "itemId": "GOLD_14K",
     "recipeType": "slimefun:smeltery",
-    "recipeBlock": "Smeltery",
+    "recipeBlock": "§6Smeltery",
     "inputs": [
       "GOLD_DUST:1",
       "GOLD_12K:1",
@@ -2467,7 +2467,7 @@
   {
     "itemId": "GOLD_12K",
     "recipeType": "slimefun:smeltery",
-    "recipeBlock": "Smeltery",
+    "recipeBlock": "§6Smeltery",
     "inputs": [
       "GOLD_DUST:1",
       "GOLD_10K:1",
@@ -2484,7 +2484,7 @@
   {
     "itemId": "GOLD_10K",
     "recipeType": "slimefun:smeltery",
-    "recipeBlock": "Smeltery",
+    "recipeBlock": "§6Smeltery",
     "inputs": [
       "GOLD_DUST:1",
       "GOLD_8K:1",
@@ -2501,7 +2501,7 @@
   {
     "itemId": "GOLD_8K",
     "recipeType": "slimefun:smeltery",
-    "recipeBlock": "Smeltery",
+    "recipeBlock": "§6Smeltery",
     "inputs": [
       "GOLD_DUST:1",
       "GOLD_6K:1",
@@ -2518,7 +2518,7 @@
   {
     "itemId": "GOLD_6K",
     "recipeType": "slimefun:smeltery",
-    "recipeBlock": "Smeltery",
+    "recipeBlock": "§6Smeltery",
     "inputs": [
       "GOLD_DUST:1",
       "GOLD_4K:1",
@@ -2535,7 +2535,7 @@
   {
     "itemId": "GOLD_4K",
     "recipeType": "slimefun:smeltery",
-    "recipeBlock": "Smeltery",
+    "recipeBlock": "§6Smeltery",
     "inputs": [
       "GOLD_DUST:1",
       "AIR:0",
@@ -2552,7 +2552,7 @@
   {
     "itemId": "STONE_CHUNK",
     "recipeType": "slimefun:ore_washer",
-    "recipeBlock": "Ore Washer",
+    "recipeBlock": "§6Ore Washer",
     "inputs": [
       "SIFTED_ORE:1",
       "AIR:0",
@@ -2569,7 +2569,7 @@
   {
     "itemId": "SILICON",
     "recipeType": "slimefun:smeltery",
-    "recipeBlock": "Smeltery",
+    "recipeBlock": "§6Smeltery",
     "inputs": [
       "QUARTZ_BLOCK:1",
       "AIR:0",
@@ -2586,7 +2586,7 @@
   {
     "itemId": "SOLAR_PANEL",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "GLASS:1",
       "GLASS:1",
@@ -2603,7 +2603,7 @@
   {
     "itemId": "SOLAR_HELMET",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "REINFORCED_ALLOY_INGOT:1",
       "SOLAR_PANEL:1",
@@ -2620,7 +2620,7 @@
   {
     "itemId": "LAVA_CRYSTAL",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "MAGIC_LUMP_1:1",
       "BLAZE_POWDER:1",
@@ -2637,7 +2637,7 @@
   {
     "itemId": "STAFF_ELEMENTAL_STORM",
     "recipeType": "slimefun:ancient_altar",
-    "recipeBlock": "Ancient Altar",
+    "recipeBlock": "§dAncient Altar",
     "inputs": [
       "ANCIENT_RUNE_LIGHTNING:1",
       "ENDER_LUMP_3:1",
@@ -2654,7 +2654,7 @@
   {
     "itemId": "MAGICAL_ZOMBIE_PILLS",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "GOLD_INGOT:1",
       "MAGIC_LUMP_2:1",
@@ -2671,7 +2671,7 @@
   {
     "itemId": "SMELTERS_PICKAXE",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "LAVA_CRYSTAL:1",
       "LAVA_CRYSTAL:1",
@@ -2688,7 +2688,7 @@
   {
     "itemId": "COMMON_TALISMAN",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "MAGIC_LUMP_2:1",
       "GOLD_8K:1",
@@ -2705,7 +2705,7 @@
   {
     "itemId": "ANVIL_TALISMAN",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "MAGIC_LUMP_3:1",
       "AIR:0",
@@ -2722,7 +2722,7 @@
   {
     "itemId": "ENDER_ANVIL_TALISMAN",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "ENDER_LUMP_3:1",
       "AIR:0",
@@ -2739,7 +2739,7 @@
   {
     "itemId": "MINER_TALISMAN",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "MAGIC_LUMP_3:1",
       "AIR:0",
@@ -2756,7 +2756,7 @@
   {
     "itemId": "ENDER_MINER_TALISMAN",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "ENDER_LUMP_3:1",
       "AIR:0",
@@ -2773,7 +2773,7 @@
   {
     "itemId": "FARMER_TALISMAN",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "MAGIC_LUMP_3:1",
       "AIR:0",
@@ -2790,7 +2790,7 @@
   {
     "itemId": "ENDER_FARMER_TALISMAN",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "ENDER_LUMP_3:1",
       "AIR:0",
@@ -2807,7 +2807,7 @@
   {
     "itemId": "HUNTER_TALISMAN",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "MAGIC_LUMP_3:1",
       "AIR:0",
@@ -2824,7 +2824,7 @@
   {
     "itemId": "ENDER_HUNTER_TALISMAN",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "ENDER_LUMP_3:1",
       "AIR:0",
@@ -2841,7 +2841,7 @@
   {
     "itemId": "LAVA_TALISMAN",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "MAGIC_LUMP_3:1",
       "AIR:0",
@@ -2858,7 +2858,7 @@
   {
     "itemId": "ENDER_LAVA_TALISMAN",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "ENDER_LUMP_3:1",
       "AIR:0",
@@ -2875,7 +2875,7 @@
   {
     "itemId": "WATER_TALISMAN",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "MAGIC_LUMP_3:1",
       "AIR:0",
@@ -2892,7 +2892,7 @@
   {
     "itemId": "ENDER_WATER_TALISMAN",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "ENDER_LUMP_3:1",
       "AIR:0",
@@ -2909,7 +2909,7 @@
   {
     "itemId": "ANGEL_TALISMAN",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "MAGIC_LUMP_3:1",
       "AIR:0",
@@ -2926,7 +2926,7 @@
   {
     "itemId": "ENDER_ANGEL_TALISMAN",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "ENDER_LUMP_3:1",
       "AIR:0",
@@ -2943,7 +2943,7 @@
   {
     "itemId": "FIRE_TALISMAN",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "MAGIC_LUMP_3:1",
       "AIR:0",
@@ -2960,7 +2960,7 @@
   {
     "itemId": "ENDER_FIRE_TALISMAN",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "ENDER_LUMP_3:1",
       "AIR:0",
@@ -2977,7 +2977,7 @@
   {
     "itemId": "MAGICIAN_TALISMAN",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "ENDER_LUMP_3:1",
       "AIR:0",
@@ -2994,7 +2994,7 @@
   {
     "itemId": "ENDER_MAGICIAN_TALISMAN",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "ENDER_LUMP_3:1",
       "AIR:0",
@@ -3011,7 +3011,7 @@
   {
     "itemId": "TRAVELLER_TALISMAN",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "MAGIC_LUMP_3:1",
       "AIR:0",
@@ -3028,7 +3028,7 @@
   {
     "itemId": "ENDER_TRAVELLER_TALISMAN",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "ENDER_LUMP_3:1",
       "AIR:0",
@@ -3045,7 +3045,7 @@
   {
     "itemId": "WARRIOR_TALISMAN",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "MAGIC_LUMP_3:1",
       "AIR:0",
@@ -3062,7 +3062,7 @@
   {
     "itemId": "ENDER_WARRIOR_TALISMAN",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "ENDER_LUMP_3:1",
       "AIR:0",
@@ -3079,7 +3079,7 @@
   {
     "itemId": "KNIGHT_TALISMAN",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "MAGIC_LUMP_3:1",
       "AIR:0",
@@ -3096,7 +3096,7 @@
   {
     "itemId": "ENDER_KNIGHT_TALISMAN",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "ENDER_LUMP_3:1",
       "AIR:0",
@@ -3113,7 +3113,7 @@
   {
     "itemId": "CAVEMAN_TALISMAN",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "MAGIC_LUMP_3:1",
       "AIR:0",
@@ -3130,7 +3130,7 @@
   {
     "itemId": "ENDER_CAVEMAN_TALISMAN",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "ENDER_LUMP_3:1",
       "AIR:0",
@@ -3147,7 +3147,7 @@
   {
     "itemId": "WISE_TALISMAN",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "MAGIC_LUMP_3:1",
       "MAGICAL_GLASS:1",
@@ -3164,7 +3164,7 @@
   {
     "itemId": "ENDER_WISE_TALISMAN",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "ENDER_LUMP_3:1",
       "AIR:0",
@@ -3181,7 +3181,7 @@
   {
     "itemId": "GILDED_IRON",
     "recipeType": "slimefun:smeltery",
-    "recipeBlock": "Smeltery",
+    "recipeBlock": "§6Smeltery",
     "inputs": [
       "GOLD_24K:1",
       "IRON_DUST:1",
@@ -3198,7 +3198,7 @@
   {
     "itemId": "SYNTHETIC_EMERALD",
     "recipeType": "slimefun:smeltery",
-    "recipeBlock": "Smeltery",
+    "recipeBlock": "§6Smeltery",
     "inputs": [
       "SYNTHETIC_SAPPHIRE:1",
       "ALUMINUM_DUST:1",
@@ -3215,7 +3215,7 @@
   {
     "itemId": "CHAIN_HELMET",
     "recipeType": "slimefun:armor_forge",
-    "recipeBlock": "Armor Forge",
+    "recipeBlock": "§6Armor Forge",
     "inputs": [
       "CHAIN:1",
       "CHAIN:1",
@@ -3232,7 +3232,7 @@
   {
     "itemId": "CHAIN_CHESTPLATE",
     "recipeType": "slimefun:armor_forge",
-    "recipeBlock": "Armor Forge",
+    "recipeBlock": "§6Armor Forge",
     "inputs": [
       "CHAIN:1",
       "AIR:0",
@@ -3249,7 +3249,7 @@
   {
     "itemId": "CHAIN_LEGGINGS",
     "recipeType": "slimefun:armor_forge",
-    "recipeBlock": "Armor Forge",
+    "recipeBlock": "§6Armor Forge",
     "inputs": [
       "CHAIN:1",
       "CHAIN:1",
@@ -3266,7 +3266,7 @@
   {
     "itemId": "CHAIN_BOOTS",
     "recipeType": "slimefun:armor_forge",
-    "recipeBlock": "Armor Forge",
+    "recipeBlock": "§6Armor Forge",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -3283,7 +3283,7 @@
   {
     "itemId": "WHIRLWIND_TALISMAN",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "MAGIC_LUMP_3:1",
       "AIR:0",
@@ -3300,7 +3300,7 @@
   {
     "itemId": "ENDER_WHIRLWIND_TALISMAN",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "ENDER_LUMP_3:1",
       "AIR:0",
@@ -3317,7 +3317,7 @@
   {
     "itemId": "WIZARD_TALISMAN",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "ENDER_LUMP_3:1",
       "AIR:0",
@@ -3334,7 +3334,7 @@
   {
     "itemId": "ENDER_WIZARD_TALISMAN",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "ENDER_LUMP_3:1",
       "AIR:0",
@@ -3351,7 +3351,7 @@
   {
     "itemId": "LUMBER_AXE",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "SYNTHETIC_DIAMOND:1",
       "SYNTHETIC_DIAMOND:1",
@@ -3368,7 +3368,7 @@
   {
     "itemId": "SALT",
     "recipeType": "slimefun:ore_washer",
-    "recipeBlock": "Ore Washer",
+    "recipeBlock": "§6Ore Washer",
     "inputs": [
       "SAND:2",
       "AIR:0",
@@ -3385,7 +3385,7 @@
   {
     "itemId": "HEAVY_CREAM",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "MILK_BUCKET:1",
       "AIR:0",
@@ -3402,7 +3402,7 @@
   {
     "itemId": "CHEESE",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "MILK_BUCKET:1",
       "SALT:1",
@@ -3419,7 +3419,7 @@
   {
     "itemId": "BUTTER",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "HEAVY_CREAM:1",
       "SALT:1",
@@ -3436,7 +3436,7 @@
   {
     "itemId": "GILDED_IRON_HELMET",
     "recipeType": "slimefun:armor_forge",
-    "recipeBlock": "Armor Forge",
+    "recipeBlock": "§6Armor Forge",
     "inputs": [
       "GILDED_IRON:1",
       "GILDED_IRON:1",
@@ -3453,7 +3453,7 @@
   {
     "itemId": "GILDED_IRON_CHESTPLATE",
     "recipeType": "slimefun:armor_forge",
-    "recipeBlock": "Armor Forge",
+    "recipeBlock": "§6Armor Forge",
     "inputs": [
       "GILDED_IRON:1",
       "AIR:0",
@@ -3470,7 +3470,7 @@
   {
     "itemId": "GILDED_IRON_LEGGINGS",
     "recipeType": "slimefun:armor_forge",
-    "recipeBlock": "Armor Forge",
+    "recipeBlock": "§6Armor Forge",
     "inputs": [
       "GILDED_IRON:1",
       "GILDED_IRON:1",
@@ -3487,7 +3487,7 @@
   {
     "itemId": "GILDED_IRON_BOOTS",
     "recipeType": "slimefun:armor_forge",
-    "recipeBlock": "Armor Forge",
+    "recipeBlock": "§6Armor Forge",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -3504,7 +3504,7 @@
   {
     "itemId": "REINFORCED_CLOTH",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "CLOTH:1",
@@ -3521,7 +3521,7 @@
   {
     "itemId": "SCUBA_HELMET",
     "recipeType": "slimefun:armor_forge",
-    "recipeBlock": "Armor Forge",
+    "recipeBlock": "§6Armor Forge",
     "inputs": [
       "ORANGE_WOOL:1",
       "REINFORCED_CLOTH:1",
@@ -3538,7 +3538,7 @@
   {
     "itemId": "HAZMAT_CHESTPLATE",
     "recipeType": "slimefun:armor_forge",
-    "recipeBlock": "Armor Forge",
+    "recipeBlock": "§6Armor Forge",
     "inputs": [
       "ORANGE_WOOL:1",
       "AIR:0",
@@ -3555,7 +3555,7 @@
   {
     "itemId": "HAZMAT_LEGGINGS",
     "recipeType": "slimefun:armor_forge",
-    "recipeBlock": "Armor Forge",
+    "recipeBlock": "§6Armor Forge",
     "inputs": [
       "BLACK_WOOL:1",
       "REINFORCED_CLOTH:1",
@@ -3572,7 +3572,7 @@
   {
     "itemId": "RUBBER_BOOTS",
     "recipeType": "slimefun:armor_forge",
-    "recipeBlock": "Armor Forge",
+    "recipeBlock": "§6Armor Forge",
     "inputs": [
       "REINFORCED_CLOTH:1",
       "AIR:0",
@@ -3589,7 +3589,7 @@
   {
     "itemId": "CRUSHED_ORE",
     "recipeType": "slimefun:ore_crusher",
-    "recipeBlock": "Ore Crusher",
+    "recipeBlock": "§bOre Crusher",
     "inputs": [
       "SIFTED_ORE:1",
       "AIR:0",
@@ -3606,7 +3606,7 @@
   {
     "itemId": "PULVERIZED_ORE",
     "recipeType": "slimefun:ore_crusher",
-    "recipeBlock": "Ore Crusher",
+    "recipeBlock": "§bOre Crusher",
     "inputs": [
       "CRUSHED_ORE:1",
       "AIR:0",
@@ -3623,7 +3623,7 @@
   {
     "itemId": "PURE_ORE_CLUSTER",
     "recipeType": "slimefun:ore_washer",
-    "recipeBlock": "Ore Washer",
+    "recipeBlock": "§6Ore Washer",
     "inputs": [
       "PULVERIZED_ORE:1",
       "AIR:0",
@@ -3640,7 +3640,7 @@
   {
     "itemId": "TINY_URANIUM",
     "recipeType": "slimefun:ore_crusher",
-    "recipeBlock": "Ore Crusher",
+    "recipeBlock": "§bOre Crusher",
     "inputs": [
       "PURE_ORE_CLUSTER:1",
       "AIR:0",
@@ -3657,7 +3657,7 @@
   {
     "itemId": "SMALL_URANIUM",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "TINY_URANIUM:1",
       "TINY_URANIUM:1",
@@ -3674,7 +3674,7 @@
   {
     "itemId": "URANIUM",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "SMALL_URANIUM:1",
       "SMALL_URANIUM:1",
@@ -3691,7 +3691,7 @@
   {
     "itemId": "REDSTONE_ALLOY",
     "recipeType": "slimefun:smeltery",
-    "recipeBlock": "Smeltery",
+    "recipeBlock": "§6Smeltery",
     "inputs": [
       "REDSTONE:1",
       "REDSTONE_BLOCK:1",
@@ -3708,7 +3708,7 @@
   {
     "itemId": "GOLD_12K_HELMET",
     "recipeType": "slimefun:armor_forge",
-    "recipeBlock": "Armor Forge",
+    "recipeBlock": "§6Armor Forge",
     "inputs": [
       "GOLD_12K:1",
       "GOLD_12K:1",
@@ -3725,7 +3725,7 @@
   {
     "itemId": "GOLD_12K_CHESTPLATE",
     "recipeType": "slimefun:armor_forge",
-    "recipeBlock": "Armor Forge",
+    "recipeBlock": "§6Armor Forge",
     "inputs": [
       "GOLD_12K:1",
       "AIR:0",
@@ -3742,7 +3742,7 @@
   {
     "itemId": "GOLD_12K_LEGGINGS",
     "recipeType": "slimefun:armor_forge",
-    "recipeBlock": "Armor Forge",
+    "recipeBlock": "§6Armor Forge",
     "inputs": [
       "GOLD_12K:1",
       "GOLD_12K:1",
@@ -3759,7 +3759,7 @@
   {
     "itemId": "GOLD_12K_BOOTS",
     "recipeType": "slimefun:armor_forge",
-    "recipeBlock": "Armor Forge",
+    "recipeBlock": "§6Armor Forge",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -3776,7 +3776,7 @@
   {
     "itemId": "CLOTH",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "WHITE_WOOL:1",
       "AIR:0",
@@ -3793,7 +3793,7 @@
   {
     "itemId": "RAG",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "CLOTH:1",
       "CLOTH:1",
@@ -3810,7 +3810,7 @@
   {
     "itemId": "BANDAGE",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "RAG:1",
       "STRING:1",
@@ -3827,7 +3827,7 @@
   {
     "itemId": "SPLINT",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "IRON_INGOT:1",
@@ -3844,7 +3844,7 @@
   {
     "itemId": "CAN",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "TIN_INGOT:1",
       "TIN_INGOT:1",
@@ -3861,7 +3861,7 @@
   {
     "itemId": "VITAMINS",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "CAN:1",
       "APPLE:1",
@@ -3878,7 +3878,7 @@
   {
     "itemId": "MEDICINE",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "VITAMINS:1",
       "GLASS_BOTTLE:1",
@@ -3895,7 +3895,7 @@
   {
     "itemId": "NIGHT_VISION_GOGGLES",
     "recipeType": "slimefun:armor_forge",
-    "recipeBlock": "Armor Forge",
+    "recipeBlock": "§6Armor Forge",
     "inputs": [
       "COAL_BLOCK:1",
       "COAL_BLOCK:1",
@@ -3912,7 +3912,7 @@
   {
     "itemId": "PICKAXE_OF_CONTAINMENT",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "FERROSILICON:1",
       "FERROSILICON:1",
@@ -3929,7 +3929,7 @@
   {
     "itemId": "TABLE_SAW",
     "recipeType": "slimefun:multiblock",
-    "recipeBlock": "MultiBlock",
+    "recipeBlock": "§bMultiBlock",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -3946,7 +3946,7 @@
   {
     "itemId": "SLIME_STEEL_HELMET",
     "recipeType": "slimefun:armor_forge",
-    "recipeBlock": "Armor Forge",
+    "recipeBlock": "§6Armor Forge",
     "inputs": [
       "SLIME_BALL:1",
       "STEEL_PLATE:1",
@@ -3963,7 +3963,7 @@
   {
     "itemId": "SLIME_STEEL_CHESTPLATE",
     "recipeType": "slimefun:armor_forge",
-    "recipeBlock": "Armor Forge",
+    "recipeBlock": "§6Armor Forge",
     "inputs": [
       "SLIME_BALL:1",
       "AIR:0",
@@ -3980,7 +3980,7 @@
   {
     "itemId": "SLIME_STEEL_LEGGINGS",
     "recipeType": "slimefun:armor_forge",
-    "recipeBlock": "Armor Forge",
+    "recipeBlock": "§6Armor Forge",
     "inputs": [
       "SLIME_BALL:1",
       "STEEL_PLATE:1",
@@ -3997,7 +3997,7 @@
   {
     "itemId": "SLIME_STEEL_BOOTS",
     "recipeType": "slimefun:armor_forge",
-    "recipeBlock": "Armor Forge",
+    "recipeBlock": "§6Armor Forge",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -4014,7 +4014,7 @@
   {
     "itemId": "BLADE_OF_VAMPIRES",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "AIR:0",
       "WITHER_SKELETON_SKULL:1",
@@ -4031,7 +4031,7 @@
   {
     "itemId": "GOLD_24K_BLOCK",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "GOLD_24K:1",
       "GOLD_24K:1",
@@ -4048,7 +4048,7 @@
   {
     "itemId": "COMPOSTER",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "OAK_SLAB:1",
       "AIR:0",
@@ -4065,7 +4065,7 @@
   {
     "itemId": "FARMER_SHOES",
     "recipeType": "slimefun:armor_forge",
-    "recipeBlock": "Armor Forge",
+    "recipeBlock": "§6Armor Forge",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -4082,7 +4082,7 @@
   {
     "itemId": "EXPLOSIVE_PICKAXE",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "TNT:1",
       "SYNTHETIC_DIAMOND:1",
@@ -4099,7 +4099,7 @@
   {
     "itemId": "EXPLOSIVE_SHOVEL",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "AIR:0",
       "SYNTHETIC_DIAMOND:1",
@@ -4116,7 +4116,7 @@
   {
     "itemId": "AUTOMATED_PANNING_MACHINE",
     "recipeType": "slimefun:multiblock",
-    "recipeBlock": "MultiBlock",
+    "recipeBlock": "§bMultiBlock",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -4133,7 +4133,7 @@
   {
     "itemId": "INDUSTRIAL_MINER",
     "recipeType": "slimefun:multiblock",
-    "recipeBlock": "MultiBlock",
+    "recipeBlock": "§bMultiBlock",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -4150,7 +4150,7 @@
   {
     "itemId": "ADVANCED_INDUSTRIAL_MINER",
     "recipeType": "slimefun:multiblock",
-    "recipeBlock": "MultiBlock",
+    "recipeBlock": "§bMultiBlock",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -4167,7 +4167,7 @@
   {
     "itemId": "BOOTS_OF_THE_STOMPER",
     "recipeType": "slimefun:armor_forge",
-    "recipeBlock": "Armor Forge",
+    "recipeBlock": "§6Armor Forge",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -4184,7 +4184,7 @@
   {
     "itemId": "PICKAXE_OF_THE_SEEKER",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "COMPASS:1",
       "SYNTHETIC_DIAMOND:1",
@@ -4201,7 +4201,7 @@
   {
     "itemId": "SMALL_BACKPACK",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "LEATHER:1",
       "AIR:0",
@@ -4218,7 +4218,7 @@
   {
     "itemId": "MEDIUM_BACKPACK",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "LEATHER:1",
       "AIR:0",
@@ -4235,7 +4235,7 @@
   {
     "itemId": "LARGE_BACKPACK",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "LEATHER:1",
       "AIR:0",
@@ -4252,7 +4252,7 @@
   {
     "itemId": "WOVEN_BACKPACK",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "CLOTH:1",
       "AIR:0",
@@ -4269,7 +4269,7 @@
   {
     "itemId": "CRUCIBLE",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "TERRACOTTA:1",
       "AIR:0",
@@ -4286,7 +4286,7 @@
   {
     "itemId": "GILDED_BACKPACK",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "GOLD_22K:1",
       "AIR:0",
@@ -4303,7 +4303,7 @@
   {
     "itemId": "RADIANT_BACKPACK",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "GOLD_24K:1",
       "AIR:0",
@@ -4337,7 +4337,7 @@
   {
     "itemId": "MAGNET",
     "recipeType": "slimefun:smeltery",
-    "recipeBlock": "Smeltery",
+    "recipeBlock": "§6Smeltery",
     "inputs": [
       "NICKEL_INGOT:1",
       "ALUMINUM_DUST:1",
@@ -4354,7 +4354,7 @@
   {
     "itemId": "INFUSED_MAGNET",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "MAGIC_LUMP_3:1",
       "AIR:0",
@@ -4371,7 +4371,7 @@
   {
     "itemId": "COBALT_PICKAXE",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "COBALT_INGOT:1",
       "COBALT_INGOT:1",
@@ -4388,7 +4388,7 @@
   {
     "itemId": "NECROTIC_SKULL",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "MAGIC_LUMP_3:1",
       "AIR:0",
@@ -4405,7 +4405,7 @@
   {
     "itemId": "ESSENCE_OF_AFTERLIFE",
     "recipeType": "slimefun:ancient_altar",
-    "recipeBlock": "Ancient Altar",
+    "recipeBlock": "§dAncient Altar",
     "inputs": [
       "ENDER_LUMP_3:1",
       "ANCIENT_RUNE_AIR:1",
@@ -4422,7 +4422,7 @@
   {
     "itemId": "SYNTHETIC_SHULKER_SHELL",
     "recipeType": "slimefun:ancient_altar",
-    "recipeBlock": "Ancient Altar",
+    "recipeBlock": "§dAncient Altar",
     "inputs": [
       "ENDER_LUMP_3:1",
       "ANCIENT_RUNE_ENDER:1",
@@ -4439,7 +4439,7 @@
   {
     "itemId": "BOUND_BACKPACK",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "ENDER_LUMP_2:1",
       "AIR:0",
@@ -4456,7 +4456,7 @@
   {
     "itemId": "DURALUMIN_JETBOOTS",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -4473,7 +4473,7 @@
   {
     "itemId": "SOLDER_JETBOOTS",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -4490,7 +4490,7 @@
   {
     "itemId": "BILLON_JETBOOTS",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -4507,7 +4507,7 @@
   {
     "itemId": "STEEL_JETBOOTS",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -4524,7 +4524,7 @@
   {
     "itemId": "DAMASCUS_STEEL_JETBOOTS",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -4541,7 +4541,7 @@
   {
     "itemId": "REINFORCED_ALLOY_JETBOOTS",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -4558,7 +4558,7 @@
   {
     "itemId": "CARBONADO_JETBOOTS",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -4575,7 +4575,7 @@
   {
     "itemId": "ARMORED_JETBOOTS",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -4592,7 +4592,7 @@
   {
     "itemId": "SEISMIC_AXE",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "HARDENED_METAL_INGOT:1",
       "HARDENED_METAL_INGOT:1",
@@ -4609,7 +4609,7 @@
   {
     "itemId": "PICKAXE_OF_VEIN_MINING",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "EMERALD_ORE:1",
       "SYNTHETIC_DIAMOND:1",
@@ -4626,7 +4626,7 @@
   {
     "itemId": "CLIMBING_PICK",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "STEEL_INGOT:1",
       "HARDENED_METAL_INGOT:1",
@@ -4643,7 +4643,7 @@
   {
     "itemId": "SOULBOUND_SWORD",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "AIR:0",
       "ESSENCE_OF_AFTERLIFE:1",
@@ -4660,7 +4660,7 @@
   {
     "itemId": "SOULBOUND_TRIDENT",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "AIR:0",
       "ESSENCE_OF_AFTERLIFE:1",
@@ -4677,7 +4677,7 @@
   {
     "itemId": "SOULBOUND_BOW",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "AIR:0",
       "ESSENCE_OF_AFTERLIFE:1",
@@ -4694,7 +4694,7 @@
   {
     "itemId": "SOULBOUND_PICKAXE",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "AIR:0",
       "ESSENCE_OF_AFTERLIFE:1",
@@ -4711,7 +4711,7 @@
   {
     "itemId": "SOULBOUND_AXE",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "AIR:0",
       "ESSENCE_OF_AFTERLIFE:1",
@@ -4728,7 +4728,7 @@
   {
     "itemId": "SOULBOUND_SHOVEL",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "AIR:0",
       "ESSENCE_OF_AFTERLIFE:1",
@@ -4745,7 +4745,7 @@
   {
     "itemId": "SOULBOUND_HOE",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "AIR:0",
       "ESSENCE_OF_AFTERLIFE:1",
@@ -4762,7 +4762,7 @@
   {
     "itemId": "SOULBOUND_HELMET",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "AIR:0",
       "ESSENCE_OF_AFTERLIFE:1",
@@ -4779,7 +4779,7 @@
   {
     "itemId": "SOULBOUND_CHESTPLATE",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "AIR:0",
       "ESSENCE_OF_AFTERLIFE:1",
@@ -4796,7 +4796,7 @@
   {
     "itemId": "SOULBOUND_LEGGINGS",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "AIR:0",
       "ESSENCE_OF_AFTERLIFE:1",
@@ -4813,7 +4813,7 @@
   {
     "itemId": "SOULBOUND_BOOTS",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "AIR:0",
       "ESSENCE_OF_AFTERLIFE:1",
@@ -4830,7 +4830,7 @@
   {
     "itemId": "JUICER",
     "recipeType": "slimefun:multiblock",
-    "recipeBlock": "MultiBlock",
+    "recipeBlock": "§bMultiBlock",
     "inputs": [
       "AIR:0",
       "GLASS:1",
@@ -4847,7 +4847,7 @@
   {
     "itemId": "APPLE_JUICE",
     "recipeType": "slimefun:juicer",
-    "recipeBlock": "Juicer",
+    "recipeBlock": "§aJuicer",
     "inputs": [
       "APPLE:1",
       "AIR:0",
@@ -4864,7 +4864,7 @@
   {
     "itemId": "CARROT_JUICE",
     "recipeType": "slimefun:juicer",
-    "recipeBlock": "Juicer",
+    "recipeBlock": "§aJuicer",
     "inputs": [
       "CARROT:1",
       "AIR:0",
@@ -4881,7 +4881,7 @@
   {
     "itemId": "MELON_JUICE",
     "recipeType": "slimefun:juicer",
-    "recipeBlock": "Juicer",
+    "recipeBlock": "§aJuicer",
     "inputs": [
       "MELON_SLICE:1",
       "AIR:0",
@@ -4898,7 +4898,7 @@
   {
     "itemId": "PUMPKIN_JUICE",
     "recipeType": "slimefun:juicer",
-    "recipeBlock": "Juicer",
+    "recipeBlock": "§aJuicer",
     "inputs": [
       "PUMPKIN:1",
       "AIR:0",
@@ -4915,7 +4915,7 @@
   {
     "itemId": "SWEET_BERRY_JUICE",
     "recipeType": "slimefun:juicer",
-    "recipeBlock": "Juicer",
+    "recipeBlock": "§aJuicer",
     "inputs": [
       "SWEET_BERRIES:1",
       "AIR:0",
@@ -4932,7 +4932,7 @@
   {
     "itemId": "GOLDEN_APPLE_JUICE",
     "recipeType": "slimefun:juicer",
-    "recipeBlock": "Juicer",
+    "recipeBlock": "§aJuicer",
     "inputs": [
       "GOLDEN_APPLE:1",
       "AIR:0",
@@ -4949,7 +4949,7 @@
   {
     "itemId": "ENCHANTED_GOLDEN_APPLE",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "GOLD_24K_BLOCK:1",
       "GOLD_24K_BLOCK:1",
@@ -4966,7 +4966,7 @@
   {
     "itemId": "BROKEN_SPAWNER",
     "recipeType": "slimefun:pickaxe_of_containment",
-    "recipeBlock": "Pickaxe of Containment",
+    "recipeBlock": "§cPickaxe of Containment",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -4983,7 +4983,7 @@
   {
     "itemId": "REINFORCED_SPAWNER",
     "recipeType": "slimefun:ancient_altar",
-    "recipeBlock": "Ancient Altar",
+    "recipeBlock": "§dAncient Altar",
     "inputs": [
       "ANCIENT_RUNE_ENDER:1",
       "FILLED_FLASK_OF_KNOWLEDGE:1",
@@ -5000,7 +5000,7 @@
   {
     "itemId": "ENHANCED_FURNACE",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "STEEL_INGOT:1",
@@ -5017,7 +5017,7 @@
   {
     "itemId": "ENHANCED_FURNACE_2",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "STEEL_INGOT:1",
@@ -5034,7 +5034,7 @@
   {
     "itemId": "ENHANCED_FURNACE_3",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "STEEL_INGOT:1",
@@ -5051,7 +5051,7 @@
   {
     "itemId": "ENHANCED_FURNACE_4",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "STEEL_INGOT:1",
@@ -5068,7 +5068,7 @@
   {
     "itemId": "ENHANCED_FURNACE_5",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "STEEL_INGOT:1",
@@ -5085,7 +5085,7 @@
   {
     "itemId": "ENHANCED_FURNACE_6",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "STEEL_INGOT:1",
@@ -5102,7 +5102,7 @@
   {
     "itemId": "ENHANCED_FURNACE_7",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "STEEL_INGOT:1",
@@ -5119,7 +5119,7 @@
   {
     "itemId": "ENHANCED_FURNACE_8",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "STEEL_INGOT:1",
@@ -5136,7 +5136,7 @@
   {
     "itemId": "ENHANCED_FURNACE_9",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "STEEL_INGOT:1",
@@ -5153,7 +5153,7 @@
   {
     "itemId": "ENHANCED_FURNACE_10",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "STEEL_INGOT:1",
@@ -5170,7 +5170,7 @@
   {
     "itemId": "ENHANCED_FURNACE_11",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "STEEL_INGOT:1",
@@ -5187,7 +5187,7 @@
   {
     "itemId": "REINFORCED_FURNACE",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "REINFORCED_ALLOY_INGOT:1",
       "BASIC_CIRCUIT_BOARD:1",
@@ -5204,7 +5204,7 @@
   {
     "itemId": "CARBONADO_EDGED_FURNACE",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "CARBONADO:1",
       "BASIC_CIRCUIT_BOARD:1",
@@ -5221,7 +5221,7 @@
   {
     "itemId": "ELECTRO_MAGNET",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "NICKEL_INGOT:1",
       "MAGNET:1",
@@ -5238,7 +5238,7 @@
   {
     "itemId": "ELECTRIC_MOTOR",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "COPPER_WIRE:1",
       "COPPER_WIRE:1",
@@ -5255,7 +5255,7 @@
   {
     "itemId": "HEATING_COIL",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "COPPER_WIRE:1",
       "COPPER_WIRE:1",
@@ -5272,7 +5272,7 @@
   {
     "itemId": "COPPER_WIRE",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -5289,7 +5289,7 @@
   {
     "itemId": "BLOCK_PLACER",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "GOLD_4K:1",
       "PISTON:1",
@@ -5306,7 +5306,7 @@
   {
     "itemId": "SCROLL_OF_DIMENSIONAL_TELEPOSITION",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "AIR:0",
       "ENDER_LUMP_3:1",
@@ -5323,7 +5323,7 @@
   {
     "itemId": "EXPLOSIVE_BOW",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "AIR:0",
       "STICK:1",
@@ -5340,7 +5340,7 @@
   {
     "itemId": "ICY_BOW",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "AIR:0",
       "STICK:1",
@@ -5357,7 +5357,7 @@
   {
     "itemId": "TOME_OF_KNOWLEDGE_SHARING",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "AIR:0",
       "FEATHER:1",
@@ -5374,7 +5374,7 @@
   {
     "itemId": "FLASK_OF_KNOWLEDGE",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -5391,7 +5391,7 @@
   {
     "itemId": "FILLED_FLASK_OF_KNOWLEDGE",
     "recipeType": "slimefun:interact",
-    "recipeBlock": "Interact",
+    "recipeBlock": "§bInteract",
     "inputs": [
       "FLASK_OF_KNOWLEDGE:1",
       "AIR:0",
@@ -5408,7 +5408,7 @@
   {
     "itemId": "BIRTHDAY_CAKE",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "TORCH:1",
@@ -5425,7 +5425,7 @@
   {
     "itemId": "CHRISTMAS_MILK",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "MILK_BUCKET:1",
       "GLASS_BOTTLE:1",
@@ -5442,7 +5442,7 @@
   {
     "itemId": "CHRISTMAS_CHOCOLATE_MILK",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "CHRISTMAS_MILK:1",
       "COCOA_BEANS:1",
@@ -5459,7 +5459,7 @@
   {
     "itemId": "CHRISTMAS_EGG_NOG",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "CHRISTMAS_MILK:1",
       "EGG:1",
@@ -5476,7 +5476,7 @@
   {
     "itemId": "CHRISTMAS_APPLE_CIDER",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "APPLE_JUICE:1",
       "SUGAR:1",
@@ -5493,7 +5493,7 @@
   {
     "itemId": "CHRISTMAS_COOKIE",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "COOKIE:1",
       "SUGAR:1",
@@ -5510,7 +5510,7 @@
   {
     "itemId": "CHRISTMAS_FRUIT_CAKE",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "EGG:1",
       "APPLE:1",
@@ -5527,7 +5527,7 @@
   {
     "itemId": "CHRISTMAS_APPLE_PIE",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "SUGAR:1",
       "APPLE:1",
@@ -5544,7 +5544,7 @@
   {
     "itemId": "CHRISTMAS_HOT_CHOCOLATE",
     "recipeType": "slimefun:smeltery",
-    "recipeBlock": "Smeltery",
+    "recipeBlock": "§6Smeltery",
     "inputs": [
       "CHRISTMAS_CHOCOLATE_MILK:1",
       "AIR:0",
@@ -5561,7 +5561,7 @@
   {
     "itemId": "CHRISTMAS_CAKE",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "EGG:1",
       "SUGAR:1",
@@ -5578,7 +5578,7 @@
   {
     "itemId": "CHRISTMAS_CARAMEL",
     "recipeType": "slimefun:smeltery",
-    "recipeBlock": "Smeltery",
+    "recipeBlock": "§6Smeltery",
     "inputs": [
       "SUGAR:1",
       "SUGAR:1",
@@ -5595,7 +5595,7 @@
   {
     "itemId": "CHRISTMAS_CARAMEL_APPLE",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "CHRISTMAS_CARAMEL:1",
@@ -5612,7 +5612,7 @@
   {
     "itemId": "CHRISTMAS_CHOCOLATE_APPLE",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "COCOA_BEANS:1",
@@ -5629,7 +5629,7 @@
   {
     "itemId": "CHRISTMAS_PRESENT",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "AIR:0",
       "NAME_TAG:1",
@@ -5646,7 +5646,7 @@
   {
     "itemId": "CARROT_PIE",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "SUGAR:1",
       "CARROT:1",
@@ -5663,7 +5663,7 @@
   {
     "itemId": "EASTER_APPLE_PIE",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "SUGAR:1",
       "APPLE:1",
@@ -5680,7 +5680,7 @@
   {
     "itemId": "EASTER_EGG",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -5697,7 +5697,7 @@
   {
     "itemId": "REINFORCED_PLATE",
     "recipeType": "slimefun:compressor",
-    "recipeBlock": "Compressor",
+    "recipeBlock": "§bCompressor",
     "inputs": [
       "REINFORCED_ALLOY_INGOT:8",
       "AIR:0",
@@ -5714,7 +5714,7 @@
   {
     "itemId": "HARDENED_GLASS",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "GLASS:1",
       "GLASS:1",
@@ -5731,7 +5731,7 @@
   {
     "itemId": "COOLING_UNIT",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "ICE:1",
       "ICE:1",
@@ -5748,7 +5748,7 @@
   {
     "itemId": "COOLER",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "CLOTH:1",
       "CLOTH:1",
@@ -5765,7 +5765,7 @@
   {
     "itemId": "WITHER_PROOF_OBSIDIAN",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "LEAD_INGOT:1",
       "OBSIDIAN:1",
@@ -5782,7 +5782,7 @@
   {
     "itemId": "ANCIENT_PEDESTAL",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "OBSIDIAN:1",
       "GOLD_8K:1",
@@ -5799,7 +5799,7 @@
   {
     "itemId": "ANCIENT_ALTAR",
     "recipeType": "slimefun:magic_workbench",
-    "recipeBlock": "Magic Workbench",
+    "recipeBlock": "§6Magic Workbench",
     "inputs": [
       "AIR:0",
       "ENCHANTING_TABLE:1",
@@ -5816,7 +5816,7 @@
   {
     "itemId": "ENERGY_REGULATOR",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "SILVER_INGOT:1",
       "DAMASCUS_STEEL_INGOT:1",
@@ -5833,7 +5833,7 @@
   {
     "itemId": "ENERGY_CONNECTOR",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "CARBON:1",
       "COPPER_WIRE:1",
@@ -5850,7 +5850,7 @@
   {
     "itemId": "DUCT_TAPE",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "ALUMINUM_DUST:1",
       "ALUMINUM_DUST:1",
@@ -5867,7 +5867,7 @@
   {
     "itemId": "SMALL_CAPACITOR",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "DURALUMIN_INGOT:1",
       "SULFATE:1",
@@ -5884,7 +5884,7 @@
   {
     "itemId": "MEDIUM_CAPACITOR",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "BILLON_INGOT:1",
       "REDSTONE_ALLOY:1",
@@ -5901,7 +5901,7 @@
   {
     "itemId": "BIG_CAPACITOR",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "STEEL_INGOT:1",
       "REDSTONE_ALLOY:1",
@@ -5918,7 +5918,7 @@
   {
     "itemId": "LARGE_CAPACITOR",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "REINFORCED_ALLOY_INGOT:1",
       "REDSTONE_ALLOY:1",
@@ -5935,7 +5935,7 @@
   {
     "itemId": "CARBONADO_EDGED_CAPACITOR",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "CARBONADO:1",
       "REDSTONE_ALLOY:1",
@@ -5952,7 +5952,7 @@
   {
     "itemId": "ENERGIZED_CAPACITOR",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "CARBONADO:1",
       "REDSTONE_ALLOY:1",
@@ -5969,7 +5969,7 @@
   {
     "itemId": "SOLAR_GENERATOR",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "SOLAR_PANEL:1",
       "SOLAR_PANEL:1",
@@ -5986,7 +5986,7 @@
   {
     "itemId": "SOLAR_GENERATOR_2",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "SOLAR_GENERATOR:1",
       "ALUMINUM_INGOT:1",
@@ -6003,7 +6003,7 @@
   {
     "itemId": "SOLAR_GENERATOR_3",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "SOLAR_GENERATOR_2:1",
       "ALUMINUM_INGOT:1",
@@ -6020,7 +6020,7 @@
   {
     "itemId": "SOLAR_GENERATOR_4",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "SOLAR_GENERATOR_3:1",
       "BLISTERING_INGOT_3:1",
@@ -6037,7 +6037,7 @@
   {
     "itemId": "CHARGING_BENCH",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "ELECTRO_MAGNET:1",
@@ -6054,7 +6054,7 @@
   {
     "itemId": "ELECTRIC_FURNACE",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "FURNACE:1",
@@ -6071,7 +6071,7 @@
   {
     "itemId": "ELECTRIC_FURNACE_2",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "ELECTRIC_MOTOR:1",
@@ -6088,7 +6088,7 @@
   {
     "itemId": "ELECTRIC_FURNACE_3",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "ELECTRIC_MOTOR:1",
@@ -6105,7 +6105,7 @@
   {
     "itemId": "ELECTRIC_GOLD_PAN",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "GOLD_PAN:1",
@@ -6122,7 +6122,7 @@
   {
     "itemId": "ELECTRIC_GOLD_PAN_2",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "GOLD_PAN:1",
@@ -6139,7 +6139,7 @@
   {
     "itemId": "ELECTRIC_GOLD_PAN_3",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "GOLD_PAN:1",
@@ -6156,7 +6156,7 @@
   {
     "itemId": "ELECTRIC_DUST_WASHER",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "WATER_BUCKET:1",
@@ -6173,7 +6173,7 @@
   {
     "itemId": "ELECTRIC_DUST_WASHER_2",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "WATER_BUCKET:1",
@@ -6190,7 +6190,7 @@
   {
     "itemId": "ELECTRIC_DUST_WASHER_3",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "WATER_BUCKET:1",
@@ -6207,7 +6207,7 @@
   {
     "itemId": "ELECTRIC_INGOT_FACTORY",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "FLINT_AND_STEEL:1",
@@ -6224,7 +6224,7 @@
   {
     "itemId": "ELECTRIC_INGOT_FACTORY_2",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "GILDED_IRON:1",
       "FLINT_AND_STEEL:1",
@@ -6241,7 +6241,7 @@
   {
     "itemId": "ELECTRIC_INGOT_FACTORY_3",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "GILDED_IRON:1",
       "FLINT_AND_STEEL:1",
@@ -6258,7 +6258,7 @@
   {
     "itemId": "ELECTRIFIED_CRUCIBLE",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "LEAD_INGOT:1",
       "CRUCIBLE:1",
@@ -6275,7 +6275,7 @@
   {
     "itemId": "ELECTRIFIED_CRUCIBLE_2",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "CORINTHIAN_BRONZE_INGOT:1",
       "ELECTRIFIED_CRUCIBLE:1",
@@ -6292,7 +6292,7 @@
   {
     "itemId": "ELECTRIFIED_CRUCIBLE_3",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "CORINTHIAN_BRONZE_INGOT:1",
       "ELECTRIFIED_CRUCIBLE_2:1",
@@ -6309,7 +6309,7 @@
   {
     "itemId": "ELECTRIC_ORE_GRINDER",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "DIAMOND_PICKAXE:1",
@@ -6326,7 +6326,7 @@
   {
     "itemId": "ELECTRIC_ORE_GRINDER_2",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "DIAMOND_PICKAXE:1",
@@ -6343,7 +6343,7 @@
   {
     "itemId": "ELECTRIC_ORE_GRINDER_3",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "REINFORCED_PLATE:1",
       "HEATING_COIL:1",
@@ -6360,7 +6360,7 @@
   {
     "itemId": "HEATED_PRESSURE_CHAMBER",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "LEAD_INGOT:1",
       "ELECTRIC_MOTOR:1",
@@ -6377,7 +6377,7 @@
   {
     "itemId": "HEATED_PRESSURE_CHAMBER_2",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "LEAD_INGOT:1",
       "ELECTRIC_MOTOR:1",
@@ -6394,7 +6394,7 @@
   {
     "itemId": "ELECTRIC_INGOT_PULVERIZER",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "ELECTRIC_ORE_GRINDER:1",
@@ -6411,7 +6411,7 @@
   {
     "itemId": "COAL_GENERATOR",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "HEATING_COIL:1",
       "FURNACE:1",
@@ -6428,7 +6428,7 @@
   {
     "itemId": "COAL_GENERATOR_2",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "MAGMA_BLOCK:1",
       "HEATING_COIL:1",
@@ -6445,7 +6445,7 @@
   {
     "itemId": "BIO_REACTOR",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "HEATING_COIL:1",
       "COMPOSTER:1",
@@ -6462,7 +6462,7 @@
   {
     "itemId": "AUTO_DRIER",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -6479,7 +6479,7 @@
   {
     "itemId": "AUTO_BREWER",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "HEATING_COIL:1",
@@ -6496,7 +6496,7 @@
   {
     "itemId": "ELECTRIC_PRESS",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "PISTON:1",
       "ELECTRIC_MOTOR:1",
@@ -6513,7 +6513,7 @@
   {
     "itemId": "ELECTRIC_PRESS_2",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "STICKY_PISTON:1",
       "ELECTRIC_PRESS:1",
@@ -6530,7 +6530,7 @@
   {
     "itemId": "MAGNESIUM_SALT",
     "recipeType": "slimefun:heated_pressure_chamber",
-    "recipeBlock": "Heated Pressure Chamber",
+    "recipeBlock": "§cHeated Pressure Chamber",
     "inputs": [
       "MAGNESIUM_DUST:1",
       "SALT:1",
@@ -6547,7 +6547,7 @@
   {
     "itemId": "MAGNESIUM_GENERATOR",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "ELECTRIC_MOTOR:1",
@@ -6564,7 +6564,7 @@
   {
     "itemId": "AUTO_ENCHANTER",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "ENCHANTING_TABLE:1",
@@ -6581,7 +6581,7 @@
   {
     "itemId": "AUTO_ENCHANTER_2",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "REINFORCED_PLATE:1",
       "BIG_CAPACITOR:1",
@@ -6598,7 +6598,7 @@
   {
     "itemId": "AUTO_DISENCHANTER",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "REDSTONE:1",
       "ANVIL:1",
@@ -6615,7 +6615,7 @@
   {
     "itemId": "AUTO_DISENCHANTER_2",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "REINFORCED_PLATE:1",
       "ANVIL:1",
@@ -6632,7 +6632,7 @@
   {
     "itemId": "AUTO_ANVIL",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "ANVIL:1",
@@ -6649,7 +6649,7 @@
   {
     "itemId": "AUTO_ANVIL_2",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "AUTO_ANVIL:1",
@@ -6666,7 +6666,7 @@
   {
     "itemId": "BOOK_BINDER",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "ENCHANTING_TABLE:1",
@@ -6683,7 +6683,7 @@
   {
     "itemId": "MULTIMETER",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "COPPER_INGOT:1",
       "AIR:0",
@@ -6700,7 +6700,7 @@
   {
     "itemId": "PLASTIC_SHEET",
     "recipeType": "slimefun:heated_pressure_chamber",
-    "recipeBlock": "Heated Pressure Chamber",
+    "recipeBlock": "§cHeated Pressure Chamber",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -6717,7 +6717,7 @@
   {
     "itemId": "ANDROID_MEMORY_CORE",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "BRASS_INGOT:1",
       "ORANGE_STAINED_GLASS:1",
@@ -6734,7 +6734,7 @@
   {
     "itemId": "GPS_TRANSMITTER",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -6751,7 +6751,7 @@
   {
     "itemId": "GPS_TRANSMITTER_2",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "GPS_TRANSMITTER:1",
       "BRONZE_INGOT:1",
@@ -6768,7 +6768,7 @@
   {
     "itemId": "GPS_TRANSMITTER_3",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "GPS_TRANSMITTER_2:1",
       "CORINTHIAN_BRONZE_INGOT:1",
@@ -6785,7 +6785,7 @@
   {
     "itemId": "GPS_TRANSMITTER_4",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "GPS_TRANSMITTER_3:1",
       "BLISTERING_INGOT_3:1",
@@ -6802,7 +6802,7 @@
   {
     "itemId": "GPS_CONTROL_PANEL",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -6819,7 +6819,7 @@
   {
     "itemId": "GPS_MARKER_TOOL",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "ELECTRO_MAGNET:1",
@@ -6836,7 +6836,7 @@
   {
     "itemId": "GPS_EMERGENCY_TRANSMITTER",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "ELECTRO_MAGNET:1",
@@ -6853,7 +6853,7 @@
   {
     "itemId": "ANDROID_INTERFACE_ITEMS",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "PLASTIC_SHEET:1",
       "STEEL_INGOT:1",
@@ -6870,7 +6870,7 @@
   {
     "itemId": "ANDROID_INTERFACE_FUEL",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "PLASTIC_SHEET:1",
       "STEEL_INGOT:1",
@@ -6887,7 +6887,7 @@
   {
     "itemId": "PROGRAMMABLE_ANDROID",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "PLASTIC_SHEET:1",
       "ANDROID_MEMORY_CORE:1",
@@ -6904,7 +6904,7 @@
   {
     "itemId": "PROGRAMMABLE_ANDROID_MINER",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -6921,7 +6921,7 @@
   {
     "itemId": "PROGRAMMABLE_ANDROID_FARMER",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -6938,7 +6938,7 @@
   {
     "itemId": "PROGRAMMABLE_ANDROID_WOODCUTTER",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -6955,7 +6955,7 @@
   {
     "itemId": "PROGRAMMABLE_ANDROID_FISHERMAN",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -6972,7 +6972,7 @@
   {
     "itemId": "PROGRAMMABLE_ANDROID_BUTCHER",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "GPS_TRANSMITTER:1",
@@ -6989,7 +6989,7 @@
   {
     "itemId": "PROGRAMMABLE_ANDROID_2",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "PLASTIC_SHEET:1",
       "ANDROID_MEMORY_CORE:1",
@@ -7006,7 +7006,7 @@
   {
     "itemId": "PROGRAMMABLE_ANDROID_2_FISHERMAN",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -7023,7 +7023,7 @@
   {
     "itemId": "PROGRAMMABLE_ANDROID_2_BUTCHER",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "GPS_TRANSMITTER:1",
@@ -7040,7 +7040,7 @@
   {
     "itemId": "PROGRAMMABLE_ANDROID_2_FARMER",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "GPS_TRANSMITTER:1",
@@ -7057,7 +7057,7 @@
   {
     "itemId": "PROGRAMMABLE_ANDROID_3",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "PLASTIC_SHEET:1",
       "ANDROID_MEMORY_CORE:1",
@@ -7074,7 +7074,7 @@
   {
     "itemId": "PROGRAMMABLE_ANDROID_3_FISHERMAN",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -7091,7 +7091,7 @@
   {
     "itemId": "PROGRAMMABLE_ANDROID_3_BUTCHER",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "GPS_TRANSMITTER_3:1",
@@ -7108,7 +7108,7 @@
   {
     "itemId": "BLANK_RUNE",
     "recipeType": "slimefun:ancient_altar",
-    "recipeBlock": "Ancient Altar",
+    "recipeBlock": "§dAncient Altar",
     "inputs": [
       "STONE:1",
       "MAGIC_LUMP_1:1",
@@ -7125,7 +7125,7 @@
   {
     "itemId": "ANCIENT_RUNE_AIR",
     "recipeType": "slimefun:ancient_altar",
-    "recipeBlock": "Ancient Altar",
+    "recipeBlock": "§dAncient Altar",
     "inputs": [
       "FEATHER:1",
       "MAGIC_LUMP_1:1",
@@ -7142,7 +7142,7 @@
   {
     "itemId": "ANCIENT_RUNE_EARTH",
     "recipeType": "slimefun:ancient_altar",
-    "recipeBlock": "Ancient Altar",
+    "recipeBlock": "§dAncient Altar",
     "inputs": [
       "DIRT:1",
       "MAGIC_LUMP_1:1",
@@ -7159,7 +7159,7 @@
   {
     "itemId": "ANCIENT_RUNE_FIRE",
     "recipeType": "slimefun:ancient_altar",
-    "recipeBlock": "Ancient Altar",
+    "recipeBlock": "§dAncient Altar",
     "inputs": [
       "FIRE_CHARGE:1",
       "MAGIC_LUMP_2:1",
@@ -7176,7 +7176,7 @@
   {
     "itemId": "ANCIENT_RUNE_WATER",
     "recipeType": "slimefun:ancient_altar",
-    "recipeBlock": "Ancient Altar",
+    "recipeBlock": "§dAncient Altar",
     "inputs": [
       "SALMON:1",
       "MAGIC_LUMP_2:1",
@@ -7193,7 +7193,7 @@
   {
     "itemId": "ANCIENT_RUNE_ENDER",
     "recipeType": "slimefun:ancient_altar",
-    "recipeBlock": "Ancient Altar",
+    "recipeBlock": "§dAncient Altar",
     "inputs": [
       "ENDER_PEARL:1",
       "ENDER_LUMP_3:1",
@@ -7210,7 +7210,7 @@
   {
     "itemId": "ANCIENT_RUNE_LIGHTNING",
     "recipeType": "slimefun:ancient_altar",
-    "recipeBlock": "Ancient Altar",
+    "recipeBlock": "§dAncient Altar",
     "inputs": [
       "IRON_INGOT:1",
       "MAGIC_LUMP_3:1",
@@ -7227,7 +7227,7 @@
   {
     "itemId": "ANCIENT_RUNE_RAINBOW",
     "recipeType": "slimefun:ancient_altar",
-    "recipeBlock": "Ancient Altar",
+    "recipeBlock": "§dAncient Altar",
     "inputs": [
       "RED_DYE:1",
       "MAGIC_LUMP_3:1",
@@ -7244,7 +7244,7 @@
   {
     "itemId": "ANCIENT_RUNE_SOULBOUND",
     "recipeType": "slimefun:ancient_altar",
-    "recipeBlock": "Ancient Altar",
+    "recipeBlock": "§dAncient Altar",
     "inputs": [
       "MAGIC_LUMP_3:1",
       "ESSENCE_OF_AFTERLIFE:1",
@@ -7261,7 +7261,7 @@
   {
     "itemId": "ANCIENT_RUNE_ENCHANTMENT",
     "recipeType": "slimefun:ancient_altar",
-    "recipeBlock": "Ancient Altar",
+    "recipeBlock": "§dAncient Altar",
     "inputs": [
       "MAGIC_LUMP_3:1",
       "MAGICAL_GLASS:1",
@@ -7278,7 +7278,7 @@
   {
     "itemId": "INFERNAL_BONEMEAL",
     "recipeType": "slimefun:ancient_altar",
-    "recipeBlock": "Ancient Altar",
+    "recipeBlock": "§dAncient Altar",
     "inputs": [
       "NETHER_WART:1",
       "ANCIENT_RUNE_EARTH:1",
@@ -7295,7 +7295,7 @@
   {
     "itemId": "ELYTRA_SCALE",
     "recipeType": "slimefun:ancient_altar",
-    "recipeBlock": "Ancient Altar",
+    "recipeBlock": "§dAncient Altar",
     "inputs": [
       "ENDER_LUMP_3:1",
       "ANCIENT_RUNE_AIR:1",
@@ -7312,7 +7312,7 @@
   {
     "itemId": "ELYTRA",
     "recipeType": "slimefun:ancient_altar",
-    "recipeBlock": "Ancient Altar",
+    "recipeBlock": "§dAncient Altar",
     "inputs": [
       "ELYTRA_SCALE:1",
       "ANCIENT_RUNE_AIR:1",
@@ -7329,7 +7329,7 @@
   {
     "itemId": "INFUSED_ELYTRA",
     "recipeType": "slimefun:ancient_altar",
-    "recipeBlock": "Ancient Altar",
+    "recipeBlock": "§dAncient Altar",
     "inputs": [
       "FLASK_OF_KNOWLEDGE:1",
       "ELYTRA_SCALE:1",
@@ -7346,7 +7346,7 @@
   {
     "itemId": "SOULBOUND_ELYTRA",
     "recipeType": "slimefun:ancient_altar",
-    "recipeBlock": "Ancient Altar",
+    "recipeBlock": "§dAncient Altar",
     "inputs": [
       "FLASK_OF_KNOWLEDGE:1",
       "ESSENCE_OF_AFTERLIFE:1",
@@ -7363,7 +7363,7 @@
   {
     "itemId": "TRIDENT",
     "recipeType": "slimefun:ancient_altar",
-    "recipeBlock": "Ancient Altar",
+    "recipeBlock": "§dAncient Altar",
     "inputs": [
       "NAUTILUS_SHELL:1",
       "REINFORCED_ALLOY_INGOT:1",
@@ -7380,7 +7380,7 @@
   {
     "itemId": "TOTEM_OF_UNDYING",
     "recipeType": "slimefun:ancient_altar",
-    "recipeBlock": "Ancient Altar",
+    "recipeBlock": "§dAncient Altar",
     "inputs": [
       "ESSENCE_OF_AFTERLIFE:1",
       "EMERALD_BLOCK:1",
@@ -7397,7 +7397,7 @@
   {
     "itemId": "RAINBOW_WOOL",
     "recipeType": "slimefun:ancient_altar",
-    "recipeBlock": "Ancient Altar",
+    "recipeBlock": "§dAncient Altar",
     "inputs": [
       "WHITE_WOOL:1",
       "WHITE_WOOL:1",
@@ -7414,7 +7414,7 @@
   {
     "itemId": "RAINBOW_GLASS",
     "recipeType": "slimefun:ancient_altar",
-    "recipeBlock": "Ancient Altar",
+    "recipeBlock": "§dAncient Altar",
     "inputs": [
       "WHITE_STAINED_GLASS:1",
       "WHITE_STAINED_GLASS:1",
@@ -7431,7 +7431,7 @@
   {
     "itemId": "RAINBOW_GLASS_PANE",
     "recipeType": "slimefun:ancient_altar",
-    "recipeBlock": "Ancient Altar",
+    "recipeBlock": "§dAncient Altar",
     "inputs": [
       "WHITE_STAINED_GLASS_PANE:1",
       "WHITE_STAINED_GLASS_PANE:1",
@@ -7448,7 +7448,7 @@
   {
     "itemId": "RAINBOW_CLAY",
     "recipeType": "slimefun:ancient_altar",
-    "recipeBlock": "Ancient Altar",
+    "recipeBlock": "§dAncient Altar",
     "inputs": [
       "WHITE_TERRACOTTA:1",
       "WHITE_TERRACOTTA:1",
@@ -7465,7 +7465,7 @@
   {
     "itemId": "RAINBOW_CONCRETE",
     "recipeType": "slimefun:ancient_altar",
-    "recipeBlock": "Ancient Altar",
+    "recipeBlock": "§dAncient Altar",
     "inputs": [
       "WHITE_CONCRETE:1",
       "WHITE_CONCRETE:1",
@@ -7482,7 +7482,7 @@
   {
     "itemId": "RAINBOW_GLAZED_TERRACOTTA",
     "recipeType": "slimefun:ancient_altar",
-    "recipeBlock": "Ancient Altar",
+    "recipeBlock": "§dAncient Altar",
     "inputs": [
       "WHITE_GLAZED_TERRACOTTA:1",
       "WHITE_GLAZED_TERRACOTTA:1",
@@ -7499,7 +7499,7 @@
   {
     "itemId": "RAINBOW_WOOL_XMAS",
     "recipeType": "slimefun:ancient_altar",
-    "recipeBlock": "Ancient Altar",
+    "recipeBlock": "§dAncient Altar",
     "inputs": [
       "RED_DYE:1",
       "CHRISTMAS_COOKIE:1",
@@ -7516,7 +7516,7 @@
   {
     "itemId": "RAINBOW_GLASS_XMAS",
     "recipeType": "slimefun:ancient_altar",
-    "recipeBlock": "Ancient Altar",
+    "recipeBlock": "§dAncient Altar",
     "inputs": [
       "RED_DYE:1",
       "CHRISTMAS_COOKIE:1",
@@ -7533,7 +7533,7 @@
   {
     "itemId": "RAINBOW_GLASS_PANE_XMAS",
     "recipeType": "slimefun:ancient_altar",
-    "recipeBlock": "Ancient Altar",
+    "recipeBlock": "§dAncient Altar",
     "inputs": [
       "RED_DYE:1",
       "CHRISTMAS_COOKIE:1",
@@ -7550,7 +7550,7 @@
   {
     "itemId": "RAINBOW_CLAY_XMAS",
     "recipeType": "slimefun:ancient_altar",
-    "recipeBlock": "Ancient Altar",
+    "recipeBlock": "§dAncient Altar",
     "inputs": [
       "RED_DYE:1",
       "CHRISTMAS_COOKIE:1",
@@ -7567,7 +7567,7 @@
   {
     "itemId": "RAINBOW_CONCRETE_XMAS",
     "recipeType": "slimefun:ancient_altar",
-    "recipeBlock": "Ancient Altar",
+    "recipeBlock": "§dAncient Altar",
     "inputs": [
       "RED_DYE:1",
       "CHRISTMAS_COOKIE:1",
@@ -7584,7 +7584,7 @@
   {
     "itemId": "RAINBOW_GLAZED_TERRACOTTA_XMAS",
     "recipeType": "slimefun:ancient_altar",
-    "recipeBlock": "Ancient Altar",
+    "recipeBlock": "§dAncient Altar",
     "inputs": [
       "RED_DYE:1",
       "CHRISTMAS_COOKIE:1",
@@ -7601,7 +7601,7 @@
   {
     "itemId": "RAINBOW_WOOL_VALENTINE",
     "recipeType": "slimefun:ancient_altar",
-    "recipeBlock": "Ancient Altar",
+    "recipeBlock": "§dAncient Altar",
     "inputs": [
       "RED_DYE:1",
       "POPPY:1",
@@ -7618,7 +7618,7 @@
   {
     "itemId": "RAINBOW_GLASS_VALENTINE",
     "recipeType": "slimefun:ancient_altar",
-    "recipeBlock": "Ancient Altar",
+    "recipeBlock": "§dAncient Altar",
     "inputs": [
       "RED_DYE:1",
       "POPPY:1",
@@ -7635,7 +7635,7 @@
   {
     "itemId": "RAINBOW_GLASS_PANE_VALENTINE",
     "recipeType": "slimefun:ancient_altar",
-    "recipeBlock": "Ancient Altar",
+    "recipeBlock": "§dAncient Altar",
     "inputs": [
       "RED_DYE:1",
       "POPPY:1",
@@ -7652,7 +7652,7 @@
   {
     "itemId": "RAINBOW_CLAY_VALENTINE",
     "recipeType": "slimefun:ancient_altar",
-    "recipeBlock": "Ancient Altar",
+    "recipeBlock": "§dAncient Altar",
     "inputs": [
       "RED_DYE:1",
       "POPPY:1",
@@ -7669,7 +7669,7 @@
   {
     "itemId": "RAINBOW_CONCRETE_VALENTINE",
     "recipeType": "slimefun:ancient_altar",
-    "recipeBlock": "Ancient Altar",
+    "recipeBlock": "§dAncient Altar",
     "inputs": [
       "RED_DYE:1",
       "POPPY:1",
@@ -7686,7 +7686,7 @@
   {
     "itemId": "RAINBOW_GLAZED_TERRACOTTA_VALENTINE",
     "recipeType": "slimefun:ancient_altar",
-    "recipeBlock": "Ancient Altar",
+    "recipeBlock": "§dAncient Altar",
     "inputs": [
       "RED_DYE:1",
       "POPPY:1",
@@ -7703,7 +7703,7 @@
   {
     "itemId": "RAINBOW_WOOL_HALLOWEEN",
     "recipeType": "slimefun:ancient_altar",
-    "recipeBlock": "Ancient Altar",
+    "recipeBlock": "§dAncient Altar",
     "inputs": [
       "ORANGE_DYE:1",
       "PUMPKIN:1",
@@ -7720,7 +7720,7 @@
   {
     "itemId": "RAINBOW_GLASS_HALLOWEEN",
     "recipeType": "slimefun:ancient_altar",
-    "recipeBlock": "Ancient Altar",
+    "recipeBlock": "§dAncient Altar",
     "inputs": [
       "ORANGE_DYE:1",
       "PUMPKIN:1",
@@ -7737,7 +7737,7 @@
   {
     "itemId": "RAINBOW_GLASS_PANE_HALLOWEEN",
     "recipeType": "slimefun:ancient_altar",
-    "recipeBlock": "Ancient Altar",
+    "recipeBlock": "§dAncient Altar",
     "inputs": [
       "ORANGE_DYE:1",
       "PUMPKIN:1",
@@ -7754,7 +7754,7 @@
   {
     "itemId": "RAINBOW_CLAY_HALLOWEEN",
     "recipeType": "slimefun:ancient_altar",
-    "recipeBlock": "Ancient Altar",
+    "recipeBlock": "§dAncient Altar",
     "inputs": [
       "ORANGE_DYE:1",
       "PUMPKIN:1",
@@ -7771,7 +7771,7 @@
   {
     "itemId": "RAINBOW_CONCRETE_HALLOWEEN",
     "recipeType": "slimefun:ancient_altar",
-    "recipeBlock": "Ancient Altar",
+    "recipeBlock": "§dAncient Altar",
     "inputs": [
       "ORANGE_DYE:1",
       "PUMPKIN:1",
@@ -7788,7 +7788,7 @@
   {
     "itemId": "RAINBOW_GLAZED_TERRACOTTA_HALLOWEEN",
     "recipeType": "slimefun:ancient_altar",
-    "recipeBlock": "Ancient Altar",
+    "recipeBlock": "§dAncient Altar",
     "inputs": [
       "ORANGE_DYE:1",
       "PUMPKIN:1",
@@ -7805,7 +7805,7 @@
   {
     "itemId": "WITHER_PROOF_GLASS",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "LEAD_INGOT:1",
       "WITHER_PROOF_OBSIDIAN:1",
@@ -7822,7 +7822,7 @@
   {
     "itemId": "GPS_GEO_SCANNER",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -7839,7 +7839,7 @@
   {
     "itemId": "PORTABLE_GEO_SCANNER",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "ELECTRO_MAGNET:1",
       "COMPASS:1",
@@ -7856,7 +7856,7 @@
   {
     "itemId": "OIL_PUMP",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "STEEL_INGOT:1",
       "MEDIUM_CAPACITOR:1",
@@ -7873,7 +7873,7 @@
   {
     "itemId": "GEO_MINER",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "DIAMOND_PICKAXE:1",
       "MEDIUM_CAPACITOR:1",
@@ -7890,7 +7890,7 @@
   {
     "itemId": "BUCKET_OF_OIL",
     "recipeType": "slimefun:oil_pump",
-    "recipeBlock": "Oil Pump",
+    "recipeBlock": "§4Oil Pump",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -7907,7 +7907,7 @@
   {
     "itemId": "BUCKET_OF_FUEL",
     "recipeType": "slimefun:refinery",
-    "recipeBlock": "Refinery",
+    "recipeBlock": "§cRefinery",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -7924,7 +7924,7 @@
   {
     "itemId": "NETHER_ICE",
     "recipeType": "slimefun:geo_miner",
-    "recipeBlock": "GEO Miner",
+    "recipeBlock": "§6GEO Miner",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -7941,7 +7941,7 @@
   {
     "itemId": "REFINERY",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "HARDENED_GLASS:1",
       "REDSTONE_ALLOY:1",
@@ -7958,7 +7958,7 @@
   {
     "itemId": "LAVA_GENERATOR",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "GOLD_16K:1",
@@ -7975,7 +7975,7 @@
   {
     "itemId": "LAVA_GENERATOR_2",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "CORINTHIAN_BRONZE_INGOT:1",
       "CORINTHIAN_BRONZE_INGOT:1",
@@ -7992,7 +7992,7 @@
   {
     "itemId": "COMBUSTION_REACTOR",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "STEEL_INGOT:1",
@@ -8009,7 +8009,7 @@
   {
     "itemId": "GPS_TELEPORTER_PYLON",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "ZINC_INGOT:1",
       "GLASS:1",
@@ -8026,7 +8026,7 @@
   {
     "itemId": "GPS_TELEPORTATION_MATRIX",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "GPS_TELEPORTER_PYLON:1",
       "REINFORCED_ALLOY_INGOT:1",
@@ -8043,7 +8043,7 @@
   {
     "itemId": "PORTABLE_TELEPORTER",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "ELECTRO_MAGNET:1",
       "GPS_TRANSMITTER_3:1",
@@ -8060,7 +8060,7 @@
   {
     "itemId": "GPS_ACTIVATION_DEVICE_SHARED",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "STONE_PRESSURE_PLATE:1",
@@ -8077,7 +8077,7 @@
   {
     "itemId": "GPS_ACTIVATION_DEVICE_PERSONAL",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "LEAD_INGOT:1",
@@ -8094,7 +8094,7 @@
   {
     "itemId": "INFUSED_HOPPER",
     "recipeType": "slimefun:ancient_altar",
-    "recipeBlock": "Ancient Altar",
+    "recipeBlock": "§dAncient Altar",
     "inputs": [
       "OBSIDIAN:1",
       "ANCIENT_RUNE_EARTH:1",
@@ -8111,7 +8111,7 @@
   {
     "itemId": "BLISTERING_INGOT",
     "recipeType": "slimefun:heated_pressure_chamber",
-    "recipeBlock": "Heated Pressure Chamber",
+    "recipeBlock": "§cHeated Pressure Chamber",
     "inputs": [
       "GOLD_24K:1",
       "URANIUM:1",
@@ -8128,7 +8128,7 @@
   {
     "itemId": "BLISTERING_INGOT_2",
     "recipeType": "slimefun:heated_pressure_chamber",
-    "recipeBlock": "Heated Pressure Chamber",
+    "recipeBlock": "§cHeated Pressure Chamber",
     "inputs": [
       "BLISTERING_INGOT:1",
       "CARBONADO:1",
@@ -8145,7 +8145,7 @@
   {
     "itemId": "BLISTERING_INGOT_3",
     "recipeType": "slimefun:heated_pressure_chamber",
-    "recipeBlock": "Heated Pressure Chamber",
+    "recipeBlock": "§cHeated Pressure Chamber",
     "inputs": [
       "BLISTERING_INGOT_2:1",
       "NETHER_STAR:1",
@@ -8162,7 +8162,7 @@
   {
     "itemId": "ENRICHED_NETHER_ICE",
     "recipeType": "slimefun:heated_pressure_chamber",
-    "recipeBlock": "Heated Pressure Chamber",
+    "recipeBlock": "§cHeated Pressure Chamber",
     "inputs": [
       "NETHER_ICE:1",
       "PLUTONIUM:1",
@@ -8179,7 +8179,7 @@
   {
     "itemId": "ELEVATOR_PLATE",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "STONE_PRESSURE_PLATE:1",
@@ -8196,7 +8196,7 @@
   {
     "itemId": "FOOD_FABRICATOR",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "BILLON_INGOT:1",
       "SILVER_INGOT:1",
@@ -8213,7 +8213,7 @@
   {
     "itemId": "FOOD_FABRICATOR_2",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "HARDENED_METAL_INGOT:1",
       "REINFORCED_ALLOY_INGOT:1",
@@ -8230,7 +8230,7 @@
   {
     "itemId": "ORGANIC_FOOD_WHEAT",
     "recipeType": "slimefun:food_fabricator",
-    "recipeBlock": "Food Fabricator",
+    "recipeBlock": "§cFood Fabricator",
     "inputs": [
       "CAN:1",
       "WHEAT:1",
@@ -8247,7 +8247,7 @@
   {
     "itemId": "ORGANIC_FOOD_CARROT",
     "recipeType": "slimefun:food_fabricator",
-    "recipeBlock": "Food Fabricator",
+    "recipeBlock": "§cFood Fabricator",
     "inputs": [
       "CAN:1",
       "CARROT:1",
@@ -8264,7 +8264,7 @@
   {
     "itemId": "ORGANIC_FOOD_POTATO",
     "recipeType": "slimefun:food_fabricator",
-    "recipeBlock": "Food Fabricator",
+    "recipeBlock": "§cFood Fabricator",
     "inputs": [
       "CAN:1",
       "POTATO:1",
@@ -8281,7 +8281,7 @@
   {
     "itemId": "ORGANIC_FOOD_SEEDS",
     "recipeType": "slimefun:food_fabricator",
-    "recipeBlock": "Food Fabricator",
+    "recipeBlock": "§cFood Fabricator",
     "inputs": [
       "CAN:1",
       "WHEAT_SEEDS:1",
@@ -8298,7 +8298,7 @@
   {
     "itemId": "ORGANIC_FOOD_BEETROOT",
     "recipeType": "slimefun:food_fabricator",
-    "recipeBlock": "Food Fabricator",
+    "recipeBlock": "§cFood Fabricator",
     "inputs": [
       "CAN:1",
       "BEETROOT:1",
@@ -8315,7 +8315,7 @@
   {
     "itemId": "ORGANIC_FOOD_MELON",
     "recipeType": "slimefun:food_fabricator",
-    "recipeBlock": "Food Fabricator",
+    "recipeBlock": "§cFood Fabricator",
     "inputs": [
       "CAN:1",
       "MELON_SLICE:1",
@@ -8332,7 +8332,7 @@
   {
     "itemId": "ORGANIC_FOOD_APPLE",
     "recipeType": "slimefun:food_fabricator",
-    "recipeBlock": "Food Fabricator",
+    "recipeBlock": "§cFood Fabricator",
     "inputs": [
       "CAN:1",
       "APPLE:1",
@@ -8349,7 +8349,7 @@
   {
     "itemId": "ORGANIC_FOOD_SWEET_BERRIES",
     "recipeType": "slimefun:food_fabricator",
-    "recipeBlock": "Food Fabricator",
+    "recipeBlock": "§cFood Fabricator",
     "inputs": [
       "CAN:1",
       "SWEET_BERRIES:1",
@@ -8366,7 +8366,7 @@
   {
     "itemId": "ORGANIC_FOOD_KELP",
     "recipeType": "slimefun:food_fabricator",
-    "recipeBlock": "Food Fabricator",
+    "recipeBlock": "§cFood Fabricator",
     "inputs": [
       "CAN:1",
       "DRIED_KELP:1",
@@ -8383,7 +8383,7 @@
   {
     "itemId": "ORGANIC_FOOD_COCOA",
     "recipeType": "slimefun:food_fabricator",
-    "recipeBlock": "Food Fabricator",
+    "recipeBlock": "§cFood Fabricator",
     "inputs": [
       "CAN:1",
       "COCOA_BEANS:1",
@@ -8400,7 +8400,7 @@
   {
     "itemId": "ORGANIC_FOOD_SEAGRASS",
     "recipeType": "slimefun:food_fabricator",
-    "recipeBlock": "Food Fabricator",
+    "recipeBlock": "§cFood Fabricator",
     "inputs": [
       "CAN:1",
       "SEAGRASS:1",
@@ -8417,7 +8417,7 @@
   {
     "itemId": "AUTO_BREEDER",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "GOLD_18K:1",
       "CAN:1",
@@ -8434,7 +8434,7 @@
   {
     "itemId": "ANIMAL_GROWTH_ACCELERATOR",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "BLISTERING_INGOT_3:1",
@@ -8451,7 +8451,7 @@
   {
     "itemId": "TREE_GROWTH_ACCELERATOR",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "CARBONADO:1",
@@ -8468,7 +8468,7 @@
   {
     "itemId": "XP_COLLECTOR",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "BLISTERING_INGOT_3:1",
@@ -8485,7 +8485,7 @@
   {
     "itemId": "FOOD_COMPOSTER",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "DAMASCUS_STEEL_INGOT:1",
       "FOOD_FABRICATOR:1",
@@ -8502,7 +8502,7 @@
   {
     "itemId": "FOOD_COMPOSTER_2",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "HARDENED_METAL_INGOT:1",
       "REINFORCED_ALLOY_INGOT:1",
@@ -8519,7 +8519,7 @@
   {
     "itemId": "FERTILIZER_WHEAT",
     "recipeType": "slimefun:food_composter",
-    "recipeBlock": "Food Composter",
+    "recipeBlock": "§cFood Composter",
     "inputs": [
       "ORGANIC_FOOD_WHEAT:1",
       "AIR:0",
@@ -8536,7 +8536,7 @@
   {
     "itemId": "FERTILIZER_CARROT",
     "recipeType": "slimefun:food_composter",
-    "recipeBlock": "Food Composter",
+    "recipeBlock": "§cFood Composter",
     "inputs": [
       "ORGANIC_FOOD_CARROT:1",
       "AIR:0",
@@ -8553,7 +8553,7 @@
   {
     "itemId": "FERTILIZER_POTATO",
     "recipeType": "slimefun:food_composter",
-    "recipeBlock": "Food Composter",
+    "recipeBlock": "§cFood Composter",
     "inputs": [
       "ORGANIC_FOOD_POTATO:1",
       "AIR:0",
@@ -8570,7 +8570,7 @@
   {
     "itemId": "FERTILIZER_SEEDS",
     "recipeType": "slimefun:food_composter",
-    "recipeBlock": "Food Composter",
+    "recipeBlock": "§cFood Composter",
     "inputs": [
       "ORGANIC_FOOD_SEEDS:1",
       "AIR:0",
@@ -8587,7 +8587,7 @@
   {
     "itemId": "FERTILIZER_BEETROOT",
     "recipeType": "slimefun:food_composter",
-    "recipeBlock": "Food Composter",
+    "recipeBlock": "§cFood Composter",
     "inputs": [
       "ORGANIC_FOOD_BEETROOT:1",
       "AIR:0",
@@ -8604,7 +8604,7 @@
   {
     "itemId": "FERTILIZER_MELON",
     "recipeType": "slimefun:food_composter",
-    "recipeBlock": "Food Composter",
+    "recipeBlock": "§cFood Composter",
     "inputs": [
       "ORGANIC_FOOD_MELON:1",
       "AIR:0",
@@ -8621,7 +8621,7 @@
   {
     "itemId": "FERTILIZER_APPLE",
     "recipeType": "slimefun:food_composter",
-    "recipeBlock": "Food Composter",
+    "recipeBlock": "§cFood Composter",
     "inputs": [
       "ORGANIC_FOOD_APPLE:1",
       "AIR:0",
@@ -8638,7 +8638,7 @@
   {
     "itemId": "FERTILIZER_SWEET_BERRIES",
     "recipeType": "slimefun:food_composter",
-    "recipeBlock": "Food Composter",
+    "recipeBlock": "§cFood Composter",
     "inputs": [
       "ORGANIC_FOOD_SWEET_BERRIES:1",
       "AIR:0",
@@ -8655,7 +8655,7 @@
   {
     "itemId": "FERTILIZER_KELP",
     "recipeType": "slimefun:food_composter",
-    "recipeBlock": "Food Composter",
+    "recipeBlock": "§cFood Composter",
     "inputs": [
       "ORGANIC_FOOD_KELP:1",
       "AIR:0",
@@ -8672,7 +8672,7 @@
   {
     "itemId": "FERTILIZER_COCOA",
     "recipeType": "slimefun:food_composter",
-    "recipeBlock": "Food Composter",
+    "recipeBlock": "§cFood Composter",
     "inputs": [
       "ORGANIC_FOOD_COCOA:1",
       "AIR:0",
@@ -8689,7 +8689,7 @@
   {
     "itemId": "FERTILIZER_SEAGRASS",
     "recipeType": "slimefun:food_composter",
-    "recipeBlock": "Food Composter",
+    "recipeBlock": "§cFood Composter",
     "inputs": [
       "ORGANIC_FOOD_SEAGRASS:1",
       "AIR:0",
@@ -8706,7 +8706,7 @@
   {
     "itemId": "CROP_GROWTH_ACCELERATOR",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "BLISTERING_INGOT_3:1",
@@ -8723,7 +8723,7 @@
   {
     "itemId": "CROP_GROWTH_ACCELERATOR_2",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "BLISTERING_INGOT_3:1",
@@ -8740,7 +8740,7 @@
   {
     "itemId": "FREEZER",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "SILVER_INGOT:1",
@@ -8757,7 +8757,7 @@
   {
     "itemId": "FREEZER_2",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "SILVER_INGOT:1",
@@ -8774,7 +8774,7 @@
   {
     "itemId": "FREEZER_3",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "REINFORCED_ALLOY_INGOT:1",
       "REINFORCED_ALLOY_INGOT:1",
@@ -8791,7 +8791,7 @@
   {
     "itemId": "REACTOR_COLLANT_CELL",
     "recipeType": "slimefun:freezer",
-    "recipeBlock": "Freezer",
+    "recipeBlock": "§bFreezer",
     "inputs": [
       "BLUE_ICE:1",
       "AIR:0",
@@ -8808,7 +8808,7 @@
   {
     "itemId": "NETHER_ICE_COOLANT_CELL",
     "recipeType": "slimefun:heated_pressure_chamber",
-    "recipeBlock": "Heated Pressure Chamber",
+    "recipeBlock": "§cHeated Pressure Chamber",
     "inputs": [
       "ENRICHED_NETHER_ICE:1",
       "AIR:0",
@@ -8825,7 +8825,7 @@
   {
     "itemId": "NEPTUNIUM",
     "recipeType": "slimefun:nuclear_reactor",
-    "recipeBlock": "Nuclear Reactor",
+    "recipeBlock": "§2Nuclear Reactor",
     "inputs": [
       "URANIUM:1",
       "AIR:0",
@@ -8842,7 +8842,7 @@
   {
     "itemId": "PLUTONIUM",
     "recipeType": "slimefun:nuclear_reactor",
-    "recipeBlock": "Nuclear Reactor",
+    "recipeBlock": "§2Nuclear Reactor",
     "inputs": [
       "NEPTUNIUM:1",
       "AIR:0",
@@ -8859,7 +8859,7 @@
   {
     "itemId": "BOOSTED_URANIUM",
     "recipeType": "slimefun:heated_pressure_chamber",
-    "recipeBlock": "Heated Pressure Chamber",
+    "recipeBlock": "§cHeated Pressure Chamber",
     "inputs": [
       "PLUTONIUM:1",
       "URANIUM:1",
@@ -8876,7 +8876,7 @@
   {
     "itemId": "NUCLEAR_REACTOR",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "BLISTERING_INGOT_3:1",
       "CARBONADO_EDGED_CAPACITOR:1",
@@ -8893,7 +8893,7 @@
   {
     "itemId": "NETHERSTAR_REACTOR",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "BOOSTED_URANIUM:1",
       "CARBONADO_EDGED_CAPACITOR:1",
@@ -8910,7 +8910,7 @@
   {
     "itemId": "CARGO_MOTOR",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "HARDENED_GLASS:1",
       "ELECTRO_MAGNET:1",
@@ -8927,7 +8927,7 @@
   {
     "itemId": "CARGO_MANAGER",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "HOLOGRAM_PROJECTOR:1",
@@ -8944,7 +8944,7 @@
   {
     "itemId": "CARGO_NODE",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "BRONZE_INGOT:1",
       "SILVER_INGOT:1",
@@ -8961,7 +8961,7 @@
   {
     "itemId": "CARGO_NODE_INPUT",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "HOPPER:1",
@@ -8978,7 +8978,7 @@
   {
     "itemId": "CARGO_NODE_OUTPUT",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "HOPPER:1",
@@ -8995,7 +8995,7 @@
   {
     "itemId": "CARGO_NODE_OUTPUT_ADVANCED",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "CARGO_MOTOR:1",
@@ -9012,7 +9012,7 @@
   {
     "itemId": "REACTOR_ACCESS_PORT",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "BLISTERING_INGOT_3:1",
@@ -9029,7 +9029,7 @@
   {
     "itemId": "FLUID_PUMP",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "MEDIUM_CAPACITOR:1",
@@ -9046,7 +9046,7 @@
   {
     "itemId": "TRASH_CAN_BLOCK",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "PORTABLE_DUSTBIN:1",
@@ -9063,7 +9063,7 @@
   {
     "itemId": "CARBON_PRESS",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "CARBON:1",
       "ELECTRIC_MOTOR:1",
@@ -9080,7 +9080,7 @@
   {
     "itemId": "CARBON_PRESS_2",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "CARBONADO:1",
       "ELECTRIC_MOTOR:1",
@@ -9097,7 +9097,7 @@
   {
     "itemId": "CARBON_PRESS_3",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "CARBONADO:1",
       "ELECTRIC_MOTOR:1",
@@ -9114,7 +9114,7 @@
   {
     "itemId": "ELECTRIC_SMELTERY",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "NETHER_BRICKS:1",
       "ELECTRIC_MOTOR:1",
@@ -9131,7 +9131,7 @@
   {
     "itemId": "ELECTRIC_SMELTERY_2",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "DAMASCUS_STEEL_INGOT:1",
       "POWER_CRYSTAL:1",
@@ -9148,7 +9148,7 @@
   {
     "itemId": "IRON_GOLEM_ASSEMBLER",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "BLISTERING_INGOT_3:1",
       "ADVANCED_CIRCUIT_BOARD:1",
@@ -9165,7 +9165,7 @@
   {
     "itemId": "WITHER_ASSEMBLER",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "BLISTERING_INGOT_3:1",
       "NETHER_STAR:1",
@@ -9182,7 +9182,7 @@
   {
     "itemId": "TAPE_MEASURE",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "SILICON:1",
       "YELLOW_DYE:1",
@@ -9199,7 +9199,7 @@
   {
     "itemId": "BEE_HELMET",
     "recipeType": "slimefun:armor_forge",
-    "recipeBlock": "Armor Forge",
+    "recipeBlock": "§6Armor Forge",
     "inputs": [
       "GOLD_8K:1",
       "HONEY_BLOCK:1",
@@ -9216,7 +9216,7 @@
   {
     "itemId": "BEE_WINGS",
     "recipeType": "slimefun:armor_forge",
-    "recipeBlock": "Armor Forge",
+    "recipeBlock": "§6Armor Forge",
     "inputs": [
       "GOLD_8K:1",
       "AIR:0",
@@ -9233,7 +9233,7 @@
   {
     "itemId": "BEE_LEGGINGS",
     "recipeType": "slimefun:armor_forge",
-    "recipeBlock": "Armor Forge",
+    "recipeBlock": "§6Armor Forge",
     "inputs": [
       "GOLD_8K:1",
       "HONEY_BLOCK:1",
@@ -9250,7 +9250,7 @@
   {
     "itemId": "BEE_BOOTS",
     "recipeType": "slimefun:armor_forge",
-    "recipeBlock": "Armor Forge",
+    "recipeBlock": "§6Armor Forge",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -9267,7 +9267,7 @@
   {
     "itemId": "ANCIENT_RUNE_VILLAGERS",
     "recipeType": "slimefun:ancient_altar",
-    "recipeBlock": "Ancient Altar",
+    "recipeBlock": "§dAncient Altar",
     "inputs": [
       "MAGIC_LUMP_3:1",
       "MAGICAL_GLASS:1",
@@ -9284,7 +9284,7 @@
   {
     "itemId": "STRANGE_NETHER_GOO",
     "recipeType": "slimefun:barter_drop",
-    "recipeBlock": "Barter Drop",
+    "recipeBlock": "§bBarter Drop",
     "inputs": [
       "AIR:0",
       "AIR:0",
@@ -9301,7 +9301,7 @@
   {
     "itemId": "GLOW_BERRY_JUICE",
     "recipeType": "slimefun:juicer",
-    "recipeBlock": "Juicer",
+    "recipeBlock": "§aJuicer",
     "inputs": [
       "GLOW_BERRIES:1",
       "AIR:0",
@@ -9318,7 +9318,7 @@
   {
     "itemId": "ELYTRA_CAP",
     "recipeType": "slimefun:armor_forge",
-    "recipeBlock": "Armor Forge",
+    "recipeBlock": "§6Armor Forge",
     "inputs": [
       "SLIME_BALL:1",
       "SLIME_BALL:1",
@@ -9335,7 +9335,7 @@
   {
     "itemId": "RAINBOW_LEATHER",
     "recipeType": "slimefun:ancient_altar",
-    "recipeBlock": "Ancient Altar",
+    "recipeBlock": "§dAncient Altar",
     "inputs": [
       "EMERALD:1",
       "LEATHER:1",
@@ -9352,7 +9352,7 @@
   {
     "itemId": "CRAFTING_MOTOR",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "CRAFTING_TABLE:1",
       "BLISTERING_INGOT_3:1",
@@ -9369,7 +9369,7 @@
   {
     "itemId": "VANILLA_AUTO_CRAFTER",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "CARGO_MOTOR:1",
@@ -9386,7 +9386,7 @@
   {
     "itemId": "ENHANCED_AUTO_CRAFTER",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "CRAFTING_MOTOR:1",
@@ -9403,7 +9403,7 @@
   {
     "itemId": "ARMOR_AUTO_CRAFTER",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "CRAFTING_MOTOR:1",
@@ -9420,7 +9420,7 @@
   {
     "itemId": "PRODUCE_COLLECTOR",
     "recipeType": "slimefun:enhanced_crafting_table",
-    "recipeBlock": "Enhanced Crafting Table",
+    "recipeBlock": "§eEnhanced Crafting Table",
     "inputs": [
       "AIR:0",
       "HAY_BLOCK:1",
