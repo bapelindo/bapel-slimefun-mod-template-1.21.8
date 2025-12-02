@@ -25,7 +25,6 @@ public class MachineAutomationHandler {
     private static long lastAutoTick = 0;
     private static ModConfig config;
     private static Map<String, Integer> cachedRecipeRequirements = new HashMap<>();
-    private static Map<String, String> recipeHistory = new HashMap<>();
     private static String selectedRecipeId = null;
     
     private static boolean debugMode = false;
@@ -53,21 +52,16 @@ public class MachineAutomationHandler {
         BapelSlimefunMod.LOGGER.info("[Automation] Debug mode: {}", enabled ? "ENABLED" : "DISABLED");
     }
     
-public static void setSelectedRecipe(String recipeId) {
+    public static void setSelectedRecipe(String recipeId) {
         selectedRecipeId = recipeId;
-        
-        // NEW: Simpan ke history jika Memory Mode aktif
-        if (currentMachine != null && recipeId != null) {
-            recipeHistory.put(currentMachine.getId(), recipeId);
-        }
-
         BapelSlimefunMod.LOGGER.info("[Automation] Selected recipe: {}", recipeId);
         
         if (RecipeDatabase.isInitialized() && recipeId != null) {
             RecipeData recipe = RecipeDatabase.getRecipe(recipeId);
             if (recipe != null) {
                 cachedRecipeRequirements = recipe.getGroupedInputs();
-                BapelSlimefunMod.LOGGER.info("[Automation] Updated recipe requirements: {}", cachedRecipeRequirements);
+                BapelSlimefunMod.LOGGER.info("[Automation] Updated recipe requirements: {}", 
+                    cachedRecipeRequirements);
             }
         }
     }
@@ -76,32 +70,19 @@ public static void setSelectedRecipe(String recipeId) {
         return selectedRecipeId;
     }
     
-public static void onContainerOpen(String title) {
+    public static void onContainerOpen(String title) {
         currentMachine = SlimefunDataLoader.getMachineByTitle(title);
         if (currentMachine != null) {
             BapelSlimefunMod.LOGGER.info("[Automation] Detected machine: {} (ID: {})", 
                 currentMachine.getName(), currentMachine.getId());
             
+            // Reset caches for new machine
             resetCaches();
+            cacheRecipeRequirements();
             
-            // NEW: Memory Mode Logic
-            boolean recipeRestored = false;
-            if (config != null && config.isRememberLastRecipe()) {
-                String lastRecipe = recipeHistory.get(currentMachine.getId());
-                if (lastRecipe != null) {
-                    BapelSlimefunMod.LOGGER.info("[Automation] Restoring last used recipe: {}", lastRecipe);
-                    // Set recipe tanpa pesan debug berlebihan
-                    setSelectedRecipe(lastRecipe);
-                    recipeRestored = true;
-                    
-                    // Siapkan data overlay tapi jangan tampilkan (biar hidden)
-                    RecipeOverlayRenderer.prepareData(currentMachine);
-                }
-            }
-
-            // Hanya tampilkan overlay jika TIDAK ada resep yang di-restore otomatis
-            if (!recipeRestored && config != null && config.isAutoShowOverlay()) {
+            if (config != null && config.isAutoShowOverlay()) {
                 try {
+                    BapelSlimefunMod.LOGGER.info("[Automation] Auto-showing recipe overlay");
                     RecipeOverlayRenderer.show(currentMachine);
                 } catch (Exception e) {
                     BapelSlimefunMod.LOGGER.error("[Automation] Failed to auto-show overlay", e);
@@ -141,52 +122,20 @@ public static void onContainerOpen(String title) {
         lastEmptySlotCheck = 0;
     }
     
-    // --- TAMBAHAN: Enum untuk Mode ---
-    public enum AutomationMode {
-        MASS_CRAFTING("Crafting Massal"),
-        FARMING("Farming Mode");
-        
-        private final String displayName;
-        AutomationMode(String displayName) { this.displayName = displayName; }
-        public String getDisplayName() { return displayName; }
-    }
-    
-    private static AutomationMode currentMode = AutomationMode.MASS_CRAFTING;
-
-    public static void cycleMode() {
-        currentMode = (currentMode == AutomationMode.MASS_CRAFTING) ? 
-                      AutomationMode.FARMING : AutomationMode.MASS_CRAFTING;
-        BapelSlimefunMod.LOGGER.info("[Automation] Mode changed to: {}", currentMode.getDisplayName());
-    }
-    public static AutomationMode getCurrentMode() {
-        return currentMode;
-    }
-private static void cacheRecipeRequirements() {
-        cachedRecipeRequirements.clear();
-        
-        // 1. Coba ambil dari Recipe ID (Database)
-        if (selectedRecipeId != null && RecipeDatabase.isInitialized()) {
-            RecipeData recipe = RecipeDatabase.getRecipe(selectedRecipeId);
-            if (recipe != null) {
-                cachedRecipeRequirements = recipe.getGroupedInputs();
-            }
+    private static void cacheRecipeRequirements() {
+        if (currentMachine == null || currentMachine.getRecipe().isEmpty()) {
+            cachedRecipeRequirements.clear();
+            return;
         }
-
-    // 2. FALLBACK SYSTEM (Fix untuk bug "Updated recipe requirements: {}")
-        // Jika requirements kosong (karena DB bug/error), paksa ambil dari data mesin langsung
-        if ((cachedRecipeRequirements == null || cachedRecipeRequirements.isEmpty()) 
-             && currentMachine != null) {
-            
-            List<String> rawRecipe = currentMachine.getRecipe();
-            if (rawRecipe != null && !rawRecipe.isEmpty()) {
-                List<RecipeHandler.RecipeIngredient> ingredients = RecipeHandler.parseRecipe(rawRecipe);
-                cachedRecipeRequirements = RecipeHandler.groupRecipeIngredients(ingredients);
-                
-                if (debugMode) {
-                    BapelSlimefunMod.LOGGER.warn("[Automation] Recovered {} inputs from raw machine data", 
-                        cachedRecipeRequirements.size());
-                }
-            }
+        
+        List<RecipeHandler.RecipeIngredient> ingredients = 
+            RecipeHandler.parseRecipe(currentMachine.getRecipe());
+        
+        cachedRecipeRequirements = RecipeHandler.groupRecipeIngredients(ingredients);
+        
+        if (debugMode) {
+            BapelSlimefunMod.LOGGER.info("[Automation] Cached {} recipe requirements", 
+                cachedRecipeRequirements.size());
         }
     }
     
@@ -501,6 +450,18 @@ private static void cacheRecipeRequirements() {
         }
     }
     
+    public static void setAutomationEnabled(boolean enabled) {
+        if (config != null) {
+            config.setAutomationEnabled(enabled);
+            
+            if (!enabled) {
+                resetCaches();
+            }
+            
+            BapelSlimefunMod.LOGGER.info("[Automation] Set to: {}", enabled ? "ENABLED" : "DISABLED");
+        }
+    }
+    
     public static boolean isAutomationEnabled() {
         return config != null && config.isAutomationEnabled();
     }
@@ -601,29 +562,5 @@ private static void cacheRecipeRequirements() {
         BapelSlimefunMod.LOGGER.info("║  Cache Size: {} items, {} slots", 
             cachedPlayerInventory.size(), knownEmptyInputSlots.size());
         BapelSlimefunMod.LOGGER.info("╚═══════════════════════════════════════╝");
-    }
-    public static void setAutomationEnabled(boolean enabled) {
-        if (config != null) {
-            config.setAutomationEnabled(enabled);
-            
-            if (!enabled) {
-                resetCaches();
-            }
-            
-            BapelSlimefunMod.LOGGER.info("[Automation] Set to: {}", enabled ? "ENABLED" : "DISABLED");
-        }
-    }
-    public static void toggleMemoryMode() {
-        if (config != null) {
-            boolean newState = !config.isRememberLastRecipe();
-            config.setRememberLastRecipe(newState);
-            // Gunakan helper sendPlayerMessage jika ada, atau system print/logger sementara
-            try {
-                Minecraft.getInstance().player.displayClientMessage(
-                    Component.literal("§b[Slimefun] Recipe Memory: " + (newState ? "§aON (Auto)" : "§cOFF (Manual)")), 
-                    true
-                );
-            } catch (Exception e) {}
-        }
     }
 }
