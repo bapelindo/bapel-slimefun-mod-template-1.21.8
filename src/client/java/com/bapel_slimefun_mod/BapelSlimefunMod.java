@@ -9,75 +9,51 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * Main mod class for Bapel Slimefun Mod
- * FIXED VERSION - Prevents double toggle of recipe overlay
- */
 public class BapelSlimefunMod implements ClientModInitializer {
     public static final String MOD_ID = "bapel-slimefun-mod";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     
-    // Config
     private static ModConfig config;
-    
-    // Keybindings
     private static KeyMapping toggleAutomationKey;
     private static KeyMapping debugInfoKey;
-    private static KeyMapping toggleRecipeOverlayKey;
     
     @Override
     public void onInitializeClient() {
         LOGGER.info("Initializing Bapel Slimefun Mod");
         
-        // Load configuration
         config = ModConfig.load();
         LOGGER.info("Configuration loaded: {}", config);
         
-        // Initialize systems
         initializeSystems();
-        
-        // Register keybindings
         registerKeybindings();
-        
-        // Register event handlers
         registerEventHandlers();
         
         LOGGER.info("Bapel Slimefun Mod initialized successfully");
     }
     
-    /**
-     * Initialize all mod systems
-     */
     private void initializeSystems() {
         try {
-            // Initialize item registry
             ItemRegistry.initialize();
-            LOGGER.info("✔ Item Registry initialized");
+            LOGGER.info("✓ Item Registry initialized");
             
-            // Initialize Slimefun data loader
             SlimefunDataLoader.loadData();
-            LOGGER.info("✔ Slimefun data loaded");
+            LOGGER.info("✓ Slimefun data loaded");
             
-            // Initialize recipe database
             RecipeDatabase.initialize();
-            LOGGER.info("✔ Recipe Database initialized");
+            LOGGER.info("✓ Recipe Database initialized");
             
-            // Initialize recipe overlay renderer
             RecipeOverlayRenderer.initialize();
-            LOGGER.info("✔ Recipe Overlay Renderer initialized");
+            LOGGER.info("✓ Recipe Overlay Renderer initialized");
             
-            // Register Debug Overlay (BARU)
             DebugOverlay.register();
-            LOGGER.info("✔ Debug Overlay registered");
+            LOGGER.info("✓ Debug Overlay registered");
             
-            // Initialize machine automation handler
             MachineAutomationHandler.init(config);
-            LOGGER.info("✔ Machine Automation Handler initialized");
+            LOGGER.info("✓ Machine Automation Handler initialized");
             
             LOGGER.info("All systems initialized successfully");
         } catch (Exception e) {
@@ -85,44 +61,28 @@ public class BapelSlimefunMod implements ClientModInitializer {
         }
     }
     
-    /**
-     * Register keybindings
-     */
     private void registerKeybindings() {
         try {
-            // Toggle automation (G)
             toggleAutomationKey = KeyBindingHelper.registerKeyBinding(new KeyMapping(
                 "key.bapel-slimefun-mod.toggle_automation",
                 GLFW.GLFW_KEY_G,
                 "category.bapel-slimefun-mod.automation"
             ));
             
-            // Debug info / Overlay (F3)
             debugInfoKey = KeyBindingHelper.registerKeyBinding(new KeyMapping(
                 "key.bapel-slimefun-mod.debug_info",
                 GLFW.GLFW_KEY_F3,
                 "category.bapel-slimefun-mod.automation"
             ));
             
-            // Recipe overlay (R)
-            toggleRecipeOverlayKey = KeyBindingHelper.registerKeyBinding(new KeyMapping(
-                "key.bapel-slimefun-mod.toggle_recipe_overlay",
-                GLFW.GLFW_KEY_R,
-                "category.bapel-slimefun-mod.automation"
-            ));
-            
-            LOGGER.info("✔ Keybindings registered");
+            LOGGER.info("✓ Keybindings registered (R key handled by mixin)");
         } catch (Exception e) {
             LOGGER.error("Error registering keybindings", e);
         }
     }
     
-    /**
-     * Register event handlers
-     */
     private void registerEventHandlers() {
         try {
-            // Register HUD render callback for recipe overlay
             HudRenderCallback.EVENT.register((context, tickDelta) -> {
                 try {
                     RecipeOverlayRenderer.render(context, tickDelta.getGameTimeDeltaPartialTick(true));
@@ -131,24 +91,17 @@ public class BapelSlimefunMod implements ClientModInitializer {
                 }
             });
             
-            // Register client tick callback for keybind handling
             ClientTickEvents.END_CLIENT_TICK.register(client -> {
                 try {
-                    // Handle toggle automation
                     while (toggleAutomationKey.consumeClick()) {
                         MachineAutomationHandler.toggleAutomation();
                     }
                     
-                    // Handle debug info (F3)
                     while (debugInfoKey.consumeClick()) {
                         if (config.isDebugMode()) {
-                            // Toggle Visual Overlay
                             DebugOverlay.toggle();
-                            
-                            // Tetap jalankan diagnostic log sebagai backup
                             DebugHelper.runFullDiagnostic();
                             
-                            // Feedback message ke player
                             if (client.player != null) {
                                 String status = DebugOverlay.isVisible() ? "§aSHOWN" : "§cHIDDEN";
                                 client.player.displayClientMessage(
@@ -167,33 +120,9 @@ public class BapelSlimefunMod implements ClientModInitializer {
                                     true
                                 );
                             }
-                            LOGGER.info("Debug mode is disabled. Enable in config to use.");
                         }
                     }
                     
-                    // Handle recipe overlay toggle (R)
-                    // FIXED: Skip if already handled by mixin (when in container screen)
-                    while (toggleRecipeOverlayKey.consumeClick()) {
-                        // Check if we're in a container screen
-                        // If so, the mixin already handled the R key
-                        if (isInContainerScreen(client)) {
-                            // Mixin handles R key in container screens
-                            // Skip to prevent double toggle
-                            LOGGER.debug("Skipping R keybind - handled by container mixin");
-                            continue;
-                        }
-                        
-                        // Check if input handler already processed this (cooldown check)
-                        if (RecipeOverlayInputHandler.isToggleOnCooldown()) {
-                            LOGGER.debug("Skipping R keybind - on cooldown");
-                            continue;
-                        }
-                        
-                        // Not in container screen, handle normally
-                        RecipeOverlayRenderer.toggle();
-                    }
-                    
-                    // Automation tick
                     MachineAutomationHandler.tick();
                     
                 } catch (Exception e) {
@@ -201,29 +130,16 @@ public class BapelSlimefunMod implements ClientModInitializer {
                 }
             });
             
-            LOGGER.info("✔ Event handlers registered");
+            LOGGER.info("✓ Event handlers registered");
         } catch (Exception e) {
             LOGGER.error("Error registering event handlers", e);
         }
     }
     
-    /**
-     * Check if player is currently in a container screen
-     */
-    private static boolean isInContainerScreen(Minecraft client) {
-        return client.screen instanceof AbstractContainerScreen;
-    }
-    
-    /**
-     * Get mod configuration
-     */
     public static ModConfig getConfig() {
         return config;
     }
     
-    /**
-     * Save configuration to file
-     */
     public static void saveConfig() {
         if (config != null) {
             config.save();
