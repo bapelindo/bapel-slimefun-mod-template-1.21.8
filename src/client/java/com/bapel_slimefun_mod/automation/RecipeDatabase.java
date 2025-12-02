@@ -494,4 +494,73 @@ public class RecipeDatabase {
     public static boolean isInitialized() {
         return initialized;
     }
+
+    /**
+ * DEBUG: Print recipes for a specific machine
+ */
+public static void debugMachineRecipes(String machineId) {
+    BapelSlimefunMod.LOGGER.info("╔════════════════════════════════════════╗");
+    BapelSlimefunMod.LOGGER.info("║   DEBUG: Recipes for {}       ", machineId);
+    BapelSlimefunMod.LOGGER.info("╠════════════════════════════════════════╣");
+    
+    // Check if machine ID exists in map
+    if (RECIPES_BY_MACHINE.containsKey(machineId)) {
+        List<RecipeData> recipes = RECIPES_BY_MACHINE.get(machineId);
+        BapelSlimefunMod.LOGGER.info("║ Found {} recipes", recipes.size());
+        
+        for (int i = 0; i < Math.min(5, recipes.size()); i++) {
+            RecipeData recipe = recipes.get(i);
+            BapelSlimefunMod.LOGGER.info("║   {}. {}", i+1, recipe.getDisplayString());
+        }
+        
+        if (recipes.size() > 5) {
+            BapelSlimefunMod.LOGGER.info("║   ... and {} more", recipes.size() - 5);
+        }
+    } else {
+        BapelSlimefunMod.LOGGER.info("║ ✗ Machine ID not found in RECIPES_BY_MACHINE");
+        BapelSlimefunMod.LOGGER.info("║");
+        BapelSlimefunMod.LOGGER.info("║ Available machine IDs:");
+        
+        int count = 0;
+        for (String id : RECIPES_BY_MACHINE.keySet()) {
+            if (count++ < 10) {
+                BapelSlimefunMod.LOGGER.info("║   - {}", id);
+            }
+        }
+        
+        if (RECIPES_BY_MACHINE.size() > 10) {
+            BapelSlimefunMod.LOGGER.info("║   ... and {} more", RECIPES_BY_MACHINE.size() - 10);
+        }
+        
+        // Try to find similar IDs
+        BapelSlimefunMod.LOGGER.info("║");
+        BapelSlimefunMod.LOGGER.info("║ Searching for similar IDs...");
+        
+        for (String id : RECIPES_BY_MACHINE.keySet()) {
+            if (id.contains("INGOT") || id.contains("FACTORY")) {
+                BapelSlimefunMod.LOGGER.info("║   Similar: {} ({} recipes)", 
+                    id, RECIPES_BY_MACHINE.get(id).size());
+            }
+        }
+    }
+    
+    BapelSlimefunMod.LOGGER.info("╚════════════════════════════════════════╝");
+}
+
+/**
+ * DEBUG: Print all machine IDs with recipe counts
+ */
+public static void printAllMachineRecipes() {
+    BapelSlimefunMod.LOGGER.info("╔════════════════════════════════════════╗");
+    BapelSlimefunMod.LOGGER.info("║   ALL MACHINES WITH RECIPES            ║");
+    BapelSlimefunMod.LOGGER.info("╠════════════════════════════════════════╣");
+    
+    for (Map.Entry<String, List<RecipeData>> entry : RECIPES_BY_MACHINE.entrySet()) {
+        String machineId = entry.getKey();
+        int recipeCount = entry.getValue().size();
+        BapelSlimefunMod.LOGGER.info("║ {} → {} recipes", machineId, recipeCount);
+    }
+    
+    BapelSlimefunMod.LOGGER.info("╚════════════════════════════════════════╝");
+}
 }

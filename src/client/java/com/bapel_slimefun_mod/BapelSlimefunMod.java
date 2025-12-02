@@ -45,6 +45,14 @@ public class BapelSlimefunMod implements ClientModInitializer {
             
             RecipeDatabase.initialize();
             LOGGER.info("✓ Recipe Database initialized");
+
+            // DEBUG: Print all machines with recipes
+            LOGGER.info("════════ RECIPE DATABASE DEBUG ════════");
+            RecipeDatabase.printAllMachineRecipes();
+
+            // DEBUG: Check specific machine
+            LOGGER.info("════════ CHECKING ELECTRIC_INGOT_FACTORY_3 ════════");
+            RecipeDatabase.debugMachineRecipes("ELECTRIC_INGOT_FACTORY_3");
             
             RecipeOverlayRenderer.initialize();
             LOGGER.info("✓ Recipe Overlay Renderer initialized");
