@@ -1,6 +1,8 @@
-package com.bapel_slimefun_mod.automation;
+package com.bapel_slimefun_mod.client;
 
 import com.bapel_slimefun_mod.BapelSlimefunMod;
+import com.bapel_slimefun_mod.automation.MachineAutomationHandler; // <-- TAMBAH IMPORT INI
+import com.bapel_slimefun_mod.automation.SlimefunMachineData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;

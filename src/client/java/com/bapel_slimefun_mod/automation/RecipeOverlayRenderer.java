@@ -15,8 +15,14 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 /**
- * Renders an in-game overlay for recipe selection without opening a screen
- * FIXED VERSION - Better toggle handling and user feedback
+ * FIXED VERSION - Semua bug sudah diperbaiki
+ * Bug fixes:
+ * 1. ✅ NullPointerException saat hide() - menggunakan new ArrayList() bukan clear()
+ * 2. ✅ ArrayIndexOutOfBoundsException - validasi index sebelum akses
+ * 3. ✅ ConcurrentModificationException - menggunakan copy list saat iterate
+ * 4. ✅ Memory leak - proper cleanup di hide()
+ * 5. ✅ Toggle tidak responsive - debounce mechanism
+ * 6. ✅ Scroll offset tidak sync - fixed updateScrollOffset()
  */
 public class RecipeOverlayRenderer {
     private static final Gson GSON = new Gson();
@@ -28,6 +34,10 @@ public class RecipeOverlayRenderer {
     private static long fadeStartTime = 0;
     private static boolean fadingIn = false;
     private static SlimefunMachineData currentMachine = null;
+    
+    // Debounce untuk toggle
+    private static long lastToggleTime = 0;
+    private static final long TOGGLE_COOLDOWN = 250; // 250ms cooldown
     
     // Config cache
     private static int posX, posY;
@@ -99,33 +109,39 @@ public class RecipeOverlayRenderer {
             return;
         }
         
-        JsonObject overlay = config.getAsJsonObject("overlay");
-        
-        // Position
-        JsonObject position = overlay.getAsJsonObject("position");
-        posX = position.get("x").getAsInt();
-        posY = position.get("y").getAsInt();
-        
-        // Dimensions
-        JsonObject dimensions = overlay.getAsJsonObject("dimensions");
-        width = dimensions.get("width").getAsInt();
-        maxHeight = dimensions.get("maxHeight").getAsInt();
-        entryHeight = dimensions.get("recipeEntryHeight").getAsInt();
-        padding = dimensions.get("padding").getAsInt();
-        spacing = dimensions.get("spacing").getAsInt();
-        
-        // Display options
-        JsonObject display = overlay.getAsJsonObject("display");
-        showIndex = display.get("showRecipeIndex").getAsBoolean();
-        showInputCount = display.get("showInputCount").getAsBoolean();
-        showOutput = display.get("showOutputInfo").getAsBoolean();
-        showCompletion = display.get("showCompletionPercentage").getAsBoolean();
-        showKeybinds = display.get("showKeybindHints").getAsBoolean();
-        maxVisible = display.get("maxRecipesVisible").getAsInt();
+        try {
+            JsonObject overlay = config.getAsJsonObject("overlay");
+            
+            // Position
+            JsonObject position = overlay.getAsJsonObject("position");
+            posX = position.get("x").getAsInt();
+            posY = position.get("y").getAsInt();
+            
+            // Dimensions
+            JsonObject dimensions = overlay.getAsJsonObject("dimensions");
+            width = dimensions.get("width").getAsInt();
+            maxHeight = dimensions.get("maxHeight").getAsInt();
+            entryHeight = dimensions.get("recipeEntryHeight").getAsInt();
+            padding = dimensions.get("padding").getAsInt();
+            spacing = dimensions.get("spacing").getAsInt();
+            
+            // Display options
+            JsonObject display = overlay.getAsJsonObject("display");
+            showIndex = display.get("showRecipeIndex").getAsBoolean();
+            showInputCount = display.get("showInputCount").getAsBoolean();
+            showOutput = display.get("showOutputInfo").getAsBoolean();
+            showCompletion = display.get("showCompletionPercentage").getAsBoolean();
+            showKeybinds = display.get("showKeybindHints").getAsBoolean();
+            maxVisible = display.get("maxRecipesVisible").getAsInt();
+        } catch (Exception e) {
+            BapelSlimefunMod.LOGGER.error("Error parsing config, using defaults", e);
+            setDefaultConfig();
+        }
     }
     
     /**
      * Show the overlay for a specific machine
+     * FIX: Validasi yang lebih ketat
      */
     public static void show(SlimefunMachineData machine) {
         if (machine == null) {
@@ -140,9 +156,11 @@ public class RecipeOverlayRenderer {
         if (availableRecipes.isEmpty()) {
             BapelSlimefunMod.LOGGER.warn("No recipes available for machine: {}", machine.getName());
             sendPlayerMessage("§c[Slimefun] No recipes for: " + machine.getName());
+            currentMachine = null; // Reset jika tidak ada recipes
             return;
         }
         
+        // Reset state dengan aman
         overlayVisible = true;
         selectedIndex = 0;
         scrollOffset = 0;
@@ -153,30 +171,57 @@ public class RecipeOverlayRenderer {
             machine.getName(), availableRecipes.size());
         sendPlayerMessage("§a[Slimefun] Recipe Overlay: §f" + machine.getName());
     }
+
+    /**
+     * Menyiapkan data resep tanpa menampilkan overlay (untuk Auto-Load)
+     */
+    public static void prepareData(SlimefunMachineData machine) {
+        if (machine == null) return;
+        
+        currentMachine = machine;
+        loadRecipesForMachine(machine);
+        
+        // Kita TIDAK mengubah overlayVisible menjadi true di sini
+        // agar overlay tetap tersembunyi saat auto-load
+    }
     
     /**
      * Hide the overlay
+     * FIX: Proper cleanup tanpa NullPointerException
      */
-/**
- * Hide the overlay
- */
-public static void hide() {
-    if (!overlayVisible) {
-        return; // Already hidden
+    public static void hide() {
+        if (!overlayVisible) {
+            return; // Already hidden
+        }
+        
+        // Set flag dulu
+        overlayVisible = false;
+        
+        // Clear references dengan aman
+        currentMachine = null;
+        selectedIndex = 0;
+        scrollOffset = 0;
+        
+        // FIX: Buat list baru, jangan clear yang existing
+        availableRecipes = new ArrayList<>();
+        
+        BapelSlimefunMod.LOGGER.info("Recipe overlay hidden");
     }
-    
-    overlayVisible = false;
-    currentMachine = null;
-    availableRecipes = new ArrayList<>(); // ✅ Create new list instead of clear()
-    
-    BapelSlimefunMod.LOGGER.info("Recipe overlay hidden");
-}
     
     /**
      * Toggle overlay visibility
-     * FIXED: Better handling and user feedback
+     * FIX: Debounce mechanism untuk mencegah toggle spam
      */
     public static void toggle() {
+        long now = System.currentTimeMillis();
+        
+        // Debounce check
+        if (now - lastToggleTime < TOGGLE_COOLDOWN) {
+            BapelSlimefunMod.LOGGER.debug("Toggle cooldown active, ignoring");
+            return;
+        }
+        lastToggleTime = now;
+        
         if (overlayVisible) {
             hide();
         } else {
@@ -195,78 +240,127 @@ public static void hide() {
      * Send a message to the player (action bar)
      */
     private static void sendPlayerMessage(String message) {
-        Minecraft mc = Minecraft.getInstance();
-        if (mc.player != null) {
-            mc.player.displayClientMessage(Component.literal(message), true);
+        try {
+            Minecraft mc = Minecraft.getInstance();
+            if (mc.player != null) {
+                mc.player.displayClientMessage(Component.literal(message), true);
+            }
+        } catch (Exception e) {
+            BapelSlimefunMod.LOGGER.error("Failed to send player message", e);
         }
     }
     
     /**
      * Load all recipes for the given machine
+     * FIX: Buat list baru, avoid concurrent modification
      */
-private static void loadRecipesForMachine(SlimefunMachineData machine) {
-    availableRecipes = new ArrayList<>(); // ✅ Create new list instead of clear()
-    
-    // Try to load from database first
-    if (RecipeDatabase.isInitialized() && RecipeDatabase.hasMachineRecipes(machine.getId())) {
-        availableRecipes = new ArrayList<>(RecipeDatabase.getRecipesForMachine(machine.getId())); // ✅ Copy into new list
-        BapelSlimefunMod.LOGGER.info("Loaded {} recipes from database for {}", 
-            availableRecipes.size(), machine.getName());
-        } else {
-            // Fallback: create recipe from machine data
-            List<String> recipeStrings = machine.getRecipe();
-            
-            if (recipeStrings != null && !recipeStrings.isEmpty()) {
-                List<RecipeHandler.RecipeIngredient> inputs = RecipeHandler.parseRecipe(recipeStrings);
+    private static void loadRecipesForMachine(SlimefunMachineData machine) {
+        // FIX: Buat list baru dari awal
+        List<RecipeData> newRecipes = new ArrayList<>();
+        
+        try {
+            // Try to load from database first
+            if (RecipeDatabase.isInitialized() && RecipeDatabase.hasMachineRecipes(machine.getId())) {
+                // FIX: Copy ke list baru untuk avoid concurrent modification
+                List<RecipeData> dbRecipes = RecipeDatabase.getRecipesForMachine(machine.getId());
+                newRecipes.addAll(dbRecipes);
                 
-                // Create a default output
-                List<RecipeData.RecipeOutput> outputs = new ArrayList<>();
-                outputs.add(new RecipeData.RecipeOutput("OUTPUT_ITEM", "Crafted Item", 1));
-                
-                RecipeData recipe = new RecipeData(
-                    machine.getId() + "_recipe_1",
-                    machine.getId(),
-                    inputs,
-                    outputs
-                );
-                
-                availableRecipes.add(recipe);
-                BapelSlimefunMod.LOGGER.info("Created fallback recipe for {}", machine.getName());
+                BapelSlimefunMod.LOGGER.info("Loaded {} recipes from database for {}", 
+                    newRecipes.size(), machine.getName());
             } else {
-                BapelSlimefunMod.LOGGER.warn("No recipes found for machine: {}", machine.getName());
+                // Fallback: create recipe from machine data
+                List<String> recipeStrings = machine.getRecipe();
+                
+                if (recipeStrings != null && !recipeStrings.isEmpty()) {
+                    List<RecipeHandler.RecipeIngredient> inputs = RecipeHandler.parseRecipe(recipeStrings);
+                    
+                    // Create a default output
+                    List<RecipeData.RecipeOutput> outputs = new ArrayList<>();
+                    outputs.add(new RecipeData.RecipeOutput("OUTPUT_ITEM", "Crafted Item", 1));
+                    
+                    RecipeData recipe = new RecipeData(
+                        machine.getId() + "_recipe_1",
+                        machine.getId(),
+                        inputs,
+                        outputs
+                    );
+                    
+                    newRecipes.add(recipe);
+                    BapelSlimefunMod.LOGGER.info("Created fallback recipe for {}", machine.getName());
+                } else {
+                    BapelSlimefunMod.LOGGER.warn("No recipes found for machine: {}", machine.getName());
+                }
             }
+        } catch (Exception e) {
+            BapelSlimefunMod.LOGGER.error("Error loading recipes for machine", e);
         }
+        
+        // FIX: Replace dengan list baru yang sudah di-populate
+        availableRecipes = newRecipes;
     }
     
     /**
      * Main render method - called every frame
+     * FIX: Validasi state sebelum render
      */
-    public static void render(GuiGraphics graphics, float partialTicks) {
-        if (!overlayVisible || currentMachine == null || availableRecipes.isEmpty()) {
+public static void render(GuiGraphics graphics, float partialTicks) {
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.screen == null) {
+            if (overlayVisible) hide();
             return;
         }
         
-        int alpha = calculateAlpha();
-        if (alpha <= 0) return;
+        if (!overlayVisible || currentMachine == null || availableRecipes.isEmpty()) return;
         
-        int yPos = posY;
-        
-        // Render background
-        renderBackground(graphics, yPos, alpha);
-        
-        // Render title
-        yPos += padding;
-        yPos = renderTitle(graphics, yPos, alpha);
-        
-        // Render recipes
-        yPos += spacing;
-        yPos = renderRecipeList(graphics, yPos, alpha);
-        
-        // Render keybind hints
-        if (showKeybinds) {
+        try {
+            int alpha = calculateAlpha();
+            if (alpha <= 0) return;
+            
+            int yPos = posY;
+            renderBackground(graphics, yPos, alpha);
+            yPos += padding;
+            
+            // --- GANTI renderTitle JADI renderHeader DI SINI ---
+            yPos = renderHeader(graphics, yPos, alpha);
+            // --------------------------------------------------
+            
             yPos += spacing;
-            renderKeybindHints(graphics, yPos, alpha);
+            yPos = renderRecipeList(graphics, yPos, alpha);
+
+            yPos += spacing;
+            renderAutomationStatus(graphics, yPos, alpha);
+            
+            if (showKeybinds) {
+                yPos += spacing;
+                renderKeybindHints(graphics, yPos, alpha);
+            }
+        } catch (Exception e) {
+            hide();
         }
+    }
+    
+
+    private static void renderAutomationStatus(GuiGraphics graphics, int yPos, int alpha) {
+        Minecraft mc = Minecraft.getInstance();
+        int labelColor = getColor("normalText", alpha);
+        int valueColor = getColor("availableText", alpha); // Hijau
+        int warningColor = 0xFFFF5555; // Merah
+        
+        int textX = posX + padding;
+        
+        // Baris 1: Status Automation
+        String statusText = MachineAutomationHandler.isAutomationEnabled() ? "ENABLED" : "DISABLED";
+        int statusColor = MachineAutomationHandler.isAutomationEnabled() ? valueColor : warningColor;
+        
+        graphics.drawString(mc.font, "Auto: ", textX, yPos, labelColor);
+        graphics.drawString(mc.font, statusText, textX + 30, yPos, statusColor);
+        
+        // Baris 2: Mode (Farming / Crafting Massal)
+        yPos += mc.font.lineHeight + 2;
+        String modeText = MachineAutomationHandler.getCurrentMode().getDisplayName();
+        
+        graphics.drawString(mc.font, "Mode: ", textX, yPos, labelColor);
+        graphics.drawString(mc.font, modeText, textX + 30, yPos, 0xFF55FFFF); // Cyan color for mode
     }
     
     /**
@@ -302,153 +396,228 @@ private static void loadRecipesForMachine(SlimefunMachineData machine) {
      * Render background box
      */
     private static void renderBackground(GuiGraphics graphics, int yPos, int alpha) {
-        int totalHeight = calculateTotalHeight();
-        int bgColor = getColor("background", alpha);
-        int borderColor = getColor("border", alpha);
-        
-        // Main background
-        graphics.fill(posX, yPos, posX + width, yPos + totalHeight, bgColor);
-        
-        // Border
-        graphics.fill(posX, yPos, posX + width, yPos + 1, borderColor); // Top
-        graphics.fill(posX, yPos + totalHeight - 1, posX + width, yPos + totalHeight, borderColor); // Bottom
-        graphics.fill(posX, yPos, posX + 1, yPos + totalHeight, borderColor); // Left
-        graphics.fill(posX + width - 1, yPos, posX + width, yPos + totalHeight, borderColor); // Right
+        try {
+            int totalHeight = calculateTotalHeight();
+            int bgColor = getColor("background", alpha);
+            int borderColor = getColor("border", alpha);
+            
+            // Main background
+            graphics.fill(posX, yPos, posX + width, yPos + totalHeight, bgColor);
+            
+            // Border
+            graphics.fill(posX, yPos, posX + width, yPos + 1, borderColor); // Top
+            graphics.fill(posX, yPos + totalHeight - 1, posX + width, yPos + totalHeight, borderColor); // Bottom
+            graphics.fill(posX, yPos, posX + 1, yPos + totalHeight, borderColor); // Left
+            graphics.fill(posX + width - 1, yPos, posX + width, yPos + totalHeight, borderColor); // Right
+        } catch (Exception e) {
+            BapelSlimefunMod.LOGGER.error("Error rendering background", e);
+        }
     }
     
     /**
      * Render title
      */
-    private static int renderTitle(GuiGraphics graphics, int yPos, int alpha) {
-        Minecraft mc = Minecraft.getInstance();
-        int textColor = getColor("titleText", alpha);
-        
-        String title = currentMachine != null ? 
-            currentMachine.getName() + " - Recipes" : 
-            "Recipe Overlay";
-        
-        int centerX = posX + width / 2;
-        
-        graphics.drawCenteredString(mc.font, title, centerX, yPos, textColor);
-        
-        return yPos + mc.font.lineHeight + spacing;
+// Method baru untuk menggambar Judul + Tombol Mode
+    private static int renderHeader(GuiGraphics graphics, int yPos, int alpha) {
+        try {
+            Minecraft mc = Minecraft.getInstance();
+            int textColor = getColor("titleText", alpha);
+            
+            // 1. Gambar Judul Mesin (Kiri)
+            String title = currentMachine != null ? currentMachine.getName() : "Recipes";
+            graphics.drawString(mc.font, title, posX + padding, yPos, textColor);
+            
+            // 2. Gambar Tombol Mode (Kanan)
+            boolean isMemory = MachineAutomationHandler.getConfig().isRememberLastRecipe();
+            String modeText = "Mode: " + (isMemory ? "§aAuto" : "§cManual");
+            
+            int modeWidth = mc.font.width(modeText);
+            int modeX = posX + width - padding - modeWidth;
+            
+            // Background tombol (abu-abu gelap)
+            int btnColor = (alpha << 24) | 0x444444; 
+            graphics.fill(modeX - 2, yPos - 2, modeX + modeWidth + 2, yPos + mc.font.lineHeight + 2, btnColor);
+            
+            graphics.drawString(mc.font, modeText, modeX, yPos, 0xFFFFFF);
+            
+            return yPos + mc.font.lineHeight + spacing;
+        } catch (Exception e) { return yPos; }
     }
+ 
     
+    // --- HELPER BARU: FORMAT NAMA ITEM ---
+    private static String formatItemName(String itemId) {
+        if (itemId == null || itemId.isEmpty()) return "Unknown";
+        String[] words = itemId.toLowerCase().split("_");
+        StringBuilder sb = new StringBuilder();
+        for (String word : words) {
+            if (sb.length() > 0) sb.append(" ");
+            if (!word.isEmpty()) {
+                sb.append(Character.toUpperCase(word.charAt(0)));
+                sb.append(word.substring(1));
+            }
+        }
+        return sb.toString();
+    }
     /**
      * Render the list of recipes
+     * FIX: Validasi bounds untuk mencegah ArrayIndexOutOfBoundsException
      */
     private static int renderRecipeList(GuiGraphics graphics, int startY, int alpha) {
-        Minecraft mc = Minecraft.getInstance();
-        LocalPlayer player = mc.player;
-        if (player == null) return startY;
-        
-        List<ItemStack> inventory = getPlayerInventory(player);
-        int yPos = startY;
-        
-        int visibleStart = scrollOffset;
-        int visibleEnd = Math.min(scrollOffset + maxVisible, availableRecipes.size());
-        
-        for (int i = visibleStart; i < visibleEnd; i++) {
-            RecipeData recipe = availableRecipes.get(i);
-            boolean isSelected = (i == selectedIndex);
+        try {
+            Minecraft mc = Minecraft.getInstance();
+            LocalPlayer player = mc.player;
+            if (player == null) return startY;
             
-            yPos = renderRecipeEntry(graphics, recipe, i, yPos, alpha, isSelected, inventory);
-            yPos += spacing;
+            List<ItemStack> inventory = getPlayerInventory(player);
+            int yPos = startY;
+            
+            // FIX: Validasi bounds dengan ketat
+            int recipeCount = availableRecipes.size();
+            if (recipeCount == 0) return yPos;
+            
+            int visibleStart = Math.max(0, Math.min(scrollOffset, recipeCount - 1));
+            int visibleEnd = Math.min(visibleStart + maxVisible, recipeCount);
+            
+            // FIX: Iterate dengan copy untuk avoid concurrent modification
+            List<RecipeData> recipesToRender = new ArrayList<>(availableRecipes.subList(visibleStart, visibleEnd));
+            
+            for (int i = 0; i < recipesToRender.size(); i++) {
+                int actualIndex = visibleStart + i;
+                RecipeData recipe = recipesToRender.get(i);
+                boolean isSelected = (actualIndex == selectedIndex);
+                
+                yPos = renderRecipeEntry(graphics, recipe, actualIndex, yPos, alpha, isSelected, inventory);
+                yPos += spacing;
+            }
+            
+            return yPos;
+        } catch (Exception e) {
+            BapelSlimefunMod.LOGGER.error("Error rendering recipe list", e);
+            return startY;
         }
-        
-        return yPos;
     }
     
     /**
      * Render a single recipe entry
      */
-    private static int renderRecipeEntry(GuiGraphics graphics, RecipeData recipe, int index,
+private static int renderRecipeEntry(GuiGraphics graphics, RecipeData recipe, int index,
                                         int yPos, int alpha, boolean isSelected, 
                                         List<ItemStack> inventory) {
-        Minecraft mc = Minecraft.getInstance();
-        
-        // Draw selection highlight
-        if (isSelected) {
-            int highlightColor = getColor("selectedBackground", alpha);
-            graphics.fill(posX + 2, yPos, posX + width - 2, yPos + entryHeight, highlightColor);
-        }
-        
-        int textX = posX + padding;
-        int textY = yPos + 4;
-        int textColor = getColor("normalText", alpha);
-        
-        // Recipe index and name
-        StringBuilder line1 = new StringBuilder();
-        if (showIndex) {
-            line1.append(index + 1).append(". ");
-        }
-        
-        RecipeData.RecipeOutput primaryOutput = recipe.getPrimaryOutput();
-        if (primaryOutput != null && showOutput) {
-            line1.append(primaryOutput.getDisplayName());
-            if (primaryOutput.getAmount() > 1) {
-                line1.append(" x").append(primaryOutput.getAmount());
+        try {
+            Minecraft mc = Minecraft.getInstance();
+            
+            // Highlight baris yang dipilih
+            if (isSelected) {
+                int highlightColor = getColor("selectedBackground", alpha);
+                graphics.fill(posX + 2, yPos, posX + width - 2, yPos + entryHeight, highlightColor);
             }
-        }
-        
-        graphics.drawString(mc.font, line1.toString(), textX, textY, textColor);
-        textY += mc.font.lineHeight + 2;
-        
-        // Inputs info
-        if (showInputCount) {
-            String inputInfo = "Inputs: " + recipe.getGroupedInputs().size() + " types";
-            graphics.drawString(mc.font, inputInfo, textX + 10, textY, 
-                getColor("normalText", alpha / 2));
-            textY += mc.font.lineHeight;
-        }
-        
-        // Completion percentage
-        if (showCompletion) {
-            RecipeHandler.RecipeSummary summary = new RecipeHandler.RecipeSummary(
-                inventory, recipe.getInputs()
-            );
             
-            float completion = summary.getCompletionPercentage();
-            int completionColor = completion >= 1.0f ? 
-                getColor("availableText", alpha) : 
-                getColor("missingText", alpha);
+            int textX = posX + padding;
+            int textY = yPos + 4;
+            int textColor = getColor("normalText", alpha);
             
-            String completionText = String.format("%.0f%%", completion * 100);
-            graphics.drawString(mc.font, completionText, textX + 10, textY, completionColor);
+            // --- BARIS 1: NAMA OUTPUT (HASIL) ---
+            StringBuilder line1 = new StringBuilder();
+            if (showIndex) {
+                line1.append(index + 1).append(". ");
+            }
+            
+            RecipeData.RecipeOutput primaryOutput = recipe.getPrimaryOutput();
+            if (primaryOutput != null && showOutput) {
+                line1.append(primaryOutput.getDisplayName());
+                if (primaryOutput.getAmount() > 1) {
+                    line1.append(" x").append(primaryOutput.getAmount());
+                }
+            } else {
+                line1.append("Unknown Output");
+            }
+            
+            graphics.drawString(mc.font, line1.toString(), textX, textY, textColor);
+            textY += mc.font.lineHeight + 2;
+            
+            // --- BARIS 2: NAMA INPUT (BAHAN) ---
+            // LOGIKA BARU: Menampilkan nama item input
+            if (showInputCount) {
+                Map<String, Integer> inputs = recipe.getGroupedInputs();
+                StringBuilder inputStr = new StringBuilder();
+                int i = 0;
+                
+                // Loop semua input dan format namanya
+                for (Map.Entry<String, Integer> entry : inputs.entrySet()) {
+                    if (i > 0) inputStr.append(" + ");
+                    
+                    inputStr.append(formatItemName(entry.getKey())); // Panggil helper baru
+                    if (entry.getValue() > 1) {
+                        inputStr.append(" x").append(entry.getValue());
+                    }
+                    
+                    i++;
+                    // Batasi tampilan max 3 bahan agar tidak kepanjangan
+                    if (i >= 3 && inputs.size() > 3) {
+                        inputStr.append("...");
+                        break;
+                    }
+                }
+
+                // Render teks input dengan warna lebih redup (alpha/2)
+                graphics.drawString(mc.font, inputStr.toString(), textX + 10, textY, 
+                    getColor("normalText", alpha / 2));
+                textY += mc.font.lineHeight;
+            }
+            
+            // --- INFO LAINNYA (Persentase) ---
+            if (showCompletion) {
+                RecipeHandler.RecipeSummary summary = new RecipeHandler.RecipeSummary(inventory, recipe.getInputs());
+                float completion = summary.getCompletionPercentage();
+                int completionColor = completion >= 1.0f ? getColor("availableText", alpha) : getColor("missingText", alpha);
+                String completionText = String.format("%.0f%%", completion * 100);
+                graphics.drawString(mc.font, completionText, textX + 10, textY, completionColor);
+            }
+            
+            return yPos + entryHeight;
+        } catch (Exception e) {
+            return yPos + entryHeight;
         }
-        
-        return yPos + entryHeight;
     }
     
     /**
      * Render keybind hints
      */
     private static void renderKeybindHints(GuiGraphics graphics, int yPos, int alpha) {
-        Minecraft mc = Minecraft.getInstance();
-        int textColor = getColor("normalText", alpha / 2);
-        
-        String hints = "[↑↓] Navigate  [Enter] Select  [R/Esc] Close";
-        graphics.drawCenteredString(mc.font, hints, posX + width / 2, yPos, textColor);
+        try {
+            Minecraft mc = Minecraft.getInstance();
+            int textColor = getColor("normalText", alpha / 2);
+            
+            String hints = "[↑↓] Navigate  [Enter] Select  [R/Esc] Close";
+            graphics.drawCenteredString(mc.font, hints, posX + width / 2, yPos, textColor);
+        } catch (Exception e) {
+            BapelSlimefunMod.LOGGER.error("Error rendering keybind hints", e);
+        }
     }
     
     /**
      * Calculate total height needed for overlay
      */
     private static int calculateTotalHeight() {
-        Minecraft mc = Minecraft.getInstance();
-        
-        int height = padding * 2; // Top and bottom padding
-        height += mc.font.lineHeight + spacing; // Title
-        height += spacing; // After title
-        
-        int visibleRecipes = Math.min(maxVisible, availableRecipes.size());
-        height += visibleRecipes * (entryHeight + spacing);
-        
-        if (showKeybinds) {
-            height += mc.font.lineHeight + spacing; // Keybind hints
+        try {
+            Minecraft mc = Minecraft.getInstance();
+            
+            int height = padding * 2; // Top and bottom padding
+            height += mc.font.lineHeight + spacing; // Title
+            height += spacing; // After title
+            
+            int visibleRecipes = Math.min(maxVisible, availableRecipes.size());
+            height += visibleRecipes * (entryHeight + spacing);
+            
+            if (showKeybinds) {
+                height += mc.font.lineHeight + spacing; // Keybind hints
+            }
+            
+            return Math.min(height, maxHeight);
+        } catch (Exception e) {
+            return maxHeight;
         }
-        
-        return Math.min(height, maxHeight);
     }
     
     /**
@@ -481,11 +650,15 @@ private static void loadRecipesForMachine(SlimefunMachineData machine) {
     private static List<ItemStack> getPlayerInventory(LocalPlayer player) {
         List<ItemStack> stacks = new ArrayList<>();
         
-        for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
-            ItemStack stack = player.getInventory().getItem(i);
-            if (!stack.isEmpty()) {
-                stacks.add(stack);
+        try {
+            for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+                ItemStack stack = player.getInventory().getItem(i);
+                if (!stack.isEmpty()) {
+                    stacks.add(stack);
+                }
             }
+        } catch (Exception e) {
+            BapelSlimefunMod.LOGGER.error("Error getting player inventory", e);
         }
         
         return stacks;
@@ -495,58 +668,103 @@ private static void loadRecipesForMachine(SlimefunMachineData machine) {
     
     /**
      * Move selection up
+     * FIX: Validasi bounds dengan ketat
      */
     public static void moveUp() {
-        if (availableRecipes.isEmpty()) return;
+        if (availableRecipes == null || availableRecipes.isEmpty()) return;
         
-        selectedIndex--;
-        if (selectedIndex < 0) {
-            selectedIndex = availableRecipes.size() - 1;
+        try {
+            selectedIndex--;
+            if (selectedIndex < 0) {
+                selectedIndex = availableRecipes.size() - 1;
+            }
+            
+            updateScrollOffset();
+        } catch (Exception e) {
+            BapelSlimefunMod.LOGGER.error("Error in moveUp", e);
+            selectedIndex = 0;
         }
-        
-        updateScrollOffset();
     }
     
     /**
      * Move selection down
+     * FIX: Validasi bounds dengan ketat
      */
     public static void moveDown() {
-        if (availableRecipes.isEmpty()) return;
+        if (availableRecipes == null || availableRecipes.isEmpty()) return;
         
-        selectedIndex++;
-        if (selectedIndex >= availableRecipes.size()) {
+        try {
+            selectedIndex++;
+            if (selectedIndex >= availableRecipes.size()) {
+                selectedIndex = 0;
+            }
+            
+            updateScrollOffset();
+        } catch (Exception e) {
+            BapelSlimefunMod.LOGGER.error("Error in moveDown", e);
             selectedIndex = 0;
         }
-        
-        updateScrollOffset();
     }
     
     /**
      * Update scroll offset to keep selected item visible
+     * FIX: Proper bounds checking
      */
     private static void updateScrollOffset() {
-        if (selectedIndex < scrollOffset) {
-            scrollOffset = selectedIndex;
-        } else if (selectedIndex >= scrollOffset + maxVisible) {
-            scrollOffset = selectedIndex - maxVisible + 1;
+        try {
+            if (availableRecipes == null || availableRecipes.isEmpty()) {
+                scrollOffset = 0;
+                return;
+            }
+            
+            int recipeCount = availableRecipes.size();
+            
+            // Clamp selectedIndex
+            selectedIndex = Math.max(0, Math.min(selectedIndex, recipeCount - 1));
+            
+            // Update scroll offset
+            if (selectedIndex < scrollOffset) {
+                scrollOffset = selectedIndex;
+            } else if (selectedIndex >= scrollOffset + maxVisible) {
+                scrollOffset = selectedIndex - maxVisible + 1;
+            }
+            
+            // Clamp scrollOffset
+            scrollOffset = Math.max(0, Math.min(scrollOffset, Math.max(0, recipeCount - maxVisible)));
+            
+        } catch (Exception e) {
+            BapelSlimefunMod.LOGGER.error("Error updating scroll offset", e);
+            scrollOffset = 0;
         }
     }
     
     /**
      * Select current recipe
+     * FIX: Validasi bounds sebelum select
      */
     public static void selectCurrent() {
-        if (availableRecipes.isEmpty() || selectedIndex < 0 || 
-            selectedIndex >= availableRecipes.size()) {
+        if (availableRecipes == null || availableRecipes.isEmpty()) {
+            BapelSlimefunMod.LOGGER.warn("No recipes to select");
             return;
         }
         
-        RecipeData selected = availableRecipes.get(selectedIndex);
-        MachineAutomationHandler.setSelectedRecipe(selected.getRecipeId());
-        
-        BapelSlimefunMod.LOGGER.info("Selected recipe: {}", selected.getDisplayString());
-        sendPlayerMessage("§a[Slimefun] Selected: §f" + selected.getDisplayString());
-        hide();
+        try {
+            // FIX: Validasi index
+            if (selectedIndex < 0 || selectedIndex >= availableRecipes.size()) {
+                BapelSlimefunMod.LOGGER.warn("Invalid selected index: {}", selectedIndex);
+                selectedIndex = 0;
+                return;
+            }
+            
+            RecipeData selected = availableRecipes.get(selectedIndex);
+            MachineAutomationHandler.setSelectedRecipe(selected.getRecipeId());
+            
+            BapelSlimefunMod.LOGGER.info("Selected recipe: {}", selected.getDisplayString());
+            sendPlayerMessage("§a[Slimefun] Selected: §f" + selected.getDisplayString());
+            hide();
+        } catch (Exception e) {
+            BapelSlimefunMod.LOGGER.error("Error selecting recipe", e);
+        }
     }
     
     /**
@@ -565,8 +783,12 @@ private static void loadRecipesForMachine(SlimefunMachineData machine) {
     
     /**
      * Get available recipes
+     * FIX: Return defensive copy
      */
     public static List<RecipeData> getAvailableRecipes() {
+        if (availableRecipes == null) {
+            return new ArrayList<>();
+        }
         return new ArrayList<>(availableRecipes);
     }
     
@@ -576,4 +798,9 @@ private static void loadRecipesForMachine(SlimefunMachineData machine) {
     public static SlimefunMachineData getCurrentMachine() {
         return currentMachine;
     }
+
+    public static int getScrollOffset() { return scrollOffset; }
+    public static int getPosX() { return posX; }
+    public static int getPosY() { return posY; }
+    public static int getEntryHeight() { return entryHeight; }
 }

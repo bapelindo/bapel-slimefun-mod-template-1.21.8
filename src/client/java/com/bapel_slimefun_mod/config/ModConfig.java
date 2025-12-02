@@ -91,6 +91,18 @@ public class ModConfig {
     /**
      * Check if automation is enabled
      */
+    // 1. Tambahkan variable ini di bagian atas (bersama variable automationEnabled dll)
+    private boolean rememberLastRecipe = true; 
+
+    // 2. Tambahkan Getter dan Setter ini di bagian bawah
+    public boolean isRememberLastRecipe() {
+        return rememberLastRecipe;
+    }
+
+    public void setRememberLastRecipe(boolean rememberLastRecipe) {
+        this.rememberLastRecipe = rememberLastRecipe;
+        save();
+    }
     public boolean isAutomationEnabled() {
         return automationEnabled;
     }
@@ -196,6 +208,7 @@ public class ModConfig {
         this.overlayPositionY = Math.max(0, overlayPositionY);
         save();
     }
+    
     
     /**
      * String representation of config

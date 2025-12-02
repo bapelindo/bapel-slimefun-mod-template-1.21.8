@@ -1,8 +1,10 @@
 package com.bapel_slimefun_mod.mixin.client;
-
+import com.bapel_slimefun_mod.client.ModKeybinds;
 import com.bapel_slimefun_mod.BapelSlimefunMod;
 import com.bapel_slimefun_mod.automation.MachineAutomationHandler;
 import com.bapel_slimefun_mod.automation.RecipeOverlayInputHandler;
+import com.bapel_slimefun_mod.automation.RecipeOverlayRenderer;
+
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import org.lwjgl.glfw.GLFW;
@@ -46,12 +48,15 @@ public abstract class ContainerScreenMixin {
         }
     }
     
-    @Inject(method = "removed", at = @At("HEAD"))
+@Inject(method = "removed", at = @At("HEAD"))
     private void onRemoved(CallbackInfo ci) {
         try {
             BapelSlimefunMod.LOGGER.info("╔═══════════════════════════════════════╗");
             BapelSlimefunMod.LOGGER.info("║  CONTAINER CLOSED                      ║");
             BapelSlimefunMod.LOGGER.info("╚═══════════════════════════════════════╝");
+            
+            // PERBAIKAN UTAMA: Panggil hide() secara langsung di sini!
+            RecipeOverlayRenderer.hide();
             
             MachineAutomationHandler.onContainerClose();
         } catch (Exception e) {
@@ -60,7 +65,7 @@ public abstract class ContainerScreenMixin {
         }
     }
     
-    @Inject(method = "keyPressed", at = @At("HEAD"), cancellable = true)
+@Inject(method = "keyPressed", at = @At("HEAD"), cancellable = true)
     private void onKeyPressed(int keyCode, int scanCode, int modifiers, 
                              CallbackInfoReturnable<Boolean> cir) {
         try {
@@ -69,18 +74,25 @@ public abstract class ContainerScreenMixin {
                 BapelSlimefunMod.LOGGER.info("║ R key pressed in container!");
             }
             
+            // --- FIX: Gunakan ModKeybinds.getToggleAutomationKey() ---
+            if (ModKeybinds.getToggleAutomationKey().matches(keyCode, scanCode)) {
+                BapelSlimefunMod.LOGGER.info("║ Automation key pressed in container!");
+                MachineAutomationHandler.toggle(); 
+                cir.setReturnValue(true);
+                cir.cancel();
+                return;
+            }
+            
             boolean handled = RecipeOverlayInputHandler.handleKeyPress(
                 keyCode, scanCode, 1, modifiers
             );
             
             if (handled) {
-                BapelSlimefunMod.LOGGER.debug("║ Key {} handled by overlay, consuming event", keyCode);
                 cir.setReturnValue(true);
                 cir.cancel();
             }
         } catch (Exception e) {
             BapelSlimefunMod.LOGGER.error("ERROR in onKeyPressed mixin", e);
-            e.printStackTrace();
         }
     }
     

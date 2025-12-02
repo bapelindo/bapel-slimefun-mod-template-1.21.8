@@ -135,28 +135,25 @@ public class RecipeOverlayInputHandler {
         return false;
     }
     
-    public static boolean handleMouseClick(double mouseX, double mouseY, int button) {
-        if (!RecipeOverlayRenderer.isVisible()) {
-            return false;
-        }
+public static boolean handleMouseClick(double mouseX, double mouseY, int button) {
+        if (!RecipeOverlayRenderer.isVisible()) return false;
         
         if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
+            // 1. Cek Klik Tombol Mode (BARU)
+            if (isClickOnModeButton(mouseX, mouseY)) {
+                MachineAutomationHandler.toggleMemoryMode();
+                return true;
+            }
+            
+            // 2. Cek Klik Overlay Resep (LAMA)
             if (isClickInOverlay(mouseX, mouseY)) {
                 int clickedIndex = calculateClickedRecipeIndex(mouseX, mouseY);
-                
                 if (clickedIndex >= 0 && clickedIndex < RecipeOverlayRenderer.getAvailableRecipes().size()) {
                     int currentIndex = RecipeOverlayRenderer.getSelectedIndex();
                     int diff = clickedIndex - currentIndex;
                     
-                    if (diff > 0) {
-                        for (int i = 0; i < diff; i++) {
-                            RecipeOverlayRenderer.moveDown();
-                        }
-                    } else if (diff < 0) {
-                        for (int i = 0; i < -diff; i++) {
-                            RecipeOverlayRenderer.moveUp();
-                        }
-                    }
+                    if (diff > 0) for (int i = 0; i < diff; i++) RecipeOverlayRenderer.moveDown();
+                    else if (diff < 0) for (int i = 0; i < -diff; i++) RecipeOverlayRenderer.moveUp();
                     
                     RecipeOverlayRenderer.selectCurrent();
                     return true;
@@ -166,43 +163,68 @@ public class RecipeOverlayInputHandler {
             RecipeOverlayRenderer.hide();
             return true;
         }
-        
         return false;
     }
     
     private static boolean isClickInOverlay(double mouseX, double mouseY) {
-        Minecraft mc = Minecraft.getInstance();
-        int screenWidth = mc.getWindow().getGuiScaledWidth();
-        int screenHeight = mc.getWindow().getGuiScaledHeight();
-        
-        int overlayX = 10;
-        int overlayY = 60;
-        int overlayWidth = 250;
-        int overlayHeight = 400;
+        // Gunakan nilai dinamis dari renderer agar hitbox akurat
+        int overlayX = RecipeOverlayRenderer.getPosX();
+        int overlayY = RecipeOverlayRenderer.getPosY();
+        int overlayWidth = 250; // Lebar standar
+        int overlayHeight = 400; // Tinggi max
         
         return mouseX >= overlayX && mouseX <= overlayX + overlayWidth &&
                mouseY >= overlayY && mouseY <= overlayY + overlayHeight;
     }
     
     private static int calculateClickedRecipeIndex(double mouseX, double mouseY) {
-        int entryHeight = 40;
+        int entryHeight = RecipeOverlayRenderer.getEntryHeight();
         int spacing = 4;
-        int titleHeight = 20;
-        int overlayY = 60;
         
-        int relativeY = (int) (mouseY - overlayY - titleHeight - spacing);
+        // Kalkulasi Y awal list resep agar persis sama dengan render logic:
+        // posY + padding(8) + titleHeight(9) + spacing(4) + spacing(4)
+        int listStartY = RecipeOverlayRenderer.getPosY() + 8 + 9 + 4 + 4;
+        
+        int relativeY = (int) (mouseY - listStartY);
         
         if (relativeY < 0) {
             return -1;
         }
         
-        int entryIndex = relativeY / (entryHeight + spacing);
+        // 1. Hitung baris keberapa yang diklik (Visual Index)
+        int visualIndex = relativeY / (entryHeight + spacing);
         
-        return entryIndex;
+        // 2. PERBAIKAN UTAMA: Tambahkan Scroll Offset!
+        // Tanpa ini, klik baris ke-1 akan selalu memilih item index 0, walaupun sudah di-scroll.
+        int absoluteIndex = visualIndex + RecipeOverlayRenderer.getScrollOffset();
+        
+        return absoluteIndex;
     }
     
     public static void reset() {
         lastInputTime = 0;
         lastToggleTime = 0;
+    }
+
+    private static boolean isClickOnModeButton(double mouseX, double mouseY) {
+        int posX = RecipeOverlayRenderer.getPosX();
+        int posY = RecipeOverlayRenderer.getPosY();
+        int width = RecipeOverlayRenderer.getEntryHeight() * 6; // Estimasi lebar overlay (250)
+        // Note: Sebaiknya gunakan getter width dari Renderer, tapi jika private, hardcode atau buka aksesnya.
+        // Asumsi lebar overlay standar 250:
+        int overlayWidth = 250; 
+        
+        int padding = 8;
+        int lineHeight = Minecraft.getInstance().font.lineHeight;
+        
+        // Perkiraan area tombol (pojok kanan atas di dalam padding)
+        int btnWidth = 80; // Lebar area klik aman
+        
+        int btnXStart = posX + overlayWidth - padding - btnWidth;
+        int btnYStart = posY + padding - 2;
+        int btnYEnd = btnYStart + lineHeight + 4;
+        
+        return mouseX >= btnXStart && mouseX <= posX + overlayWidth &&
+               mouseY >= btnYStart && mouseY <= btnYEnd;
     }
 }
