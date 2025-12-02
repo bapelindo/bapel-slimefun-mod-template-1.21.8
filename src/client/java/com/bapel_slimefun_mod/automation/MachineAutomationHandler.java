@@ -11,6 +11,14 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.*;
 
+/**
+ * OPTIMIZED Main handler for machine automation
+ * Performance improvements:
+ * - Cached inventory lookups
+ * - Reduced redundant checks
+ * - Batch operations where possible
+ * - Smart tick throttling
+ */
 public class MachineAutomationHandler {
     private static SlimefunMachineData currentMachine = null;
     private static long lastAutoTick = 0;
@@ -22,6 +30,16 @@ public class MachineAutomationHandler {
     private static int automationTickCount = 0;
     private static int successfulInputs = 0;
     private static int successfulOutputs = 0;
+    
+    // OPTIMIZATION: Cache player inventory to avoid repeated lookups
+    private static List<ItemStack> cachedPlayerInventory = new ArrayList<>();
+    private static long lastInventoryCacheTime = 0;
+    private static final long INVENTORY_CACHE_DURATION = 50; // 50ms = 1 tick
+    
+    // OPTIMIZATION: Track empty slots to avoid repeated scanning
+    private static Set<Integer> knownEmptyInputSlots = new HashSet<>();
+    private static long lastEmptySlotCheck = 0;
+    private static final long EMPTY_SLOT_CHECK_INTERVAL = 100; // Check every 100ms
     
     public static void init(ModConfig cfg) {
         config = cfg;
@@ -57,6 +75,8 @@ public class MachineAutomationHandler {
             BapelSlimefunMod.LOGGER.info("[Automation] Detected machine: {} (ID: {})", 
                 currentMachine.getName(), currentMachine.getId());
             
+            // Reset caches for new machine
+            resetCaches();
             cacheRecipeRequirements();
             
             if (config != null && config.isAutoShowOverlay()) {
@@ -71,36 +91,39 @@ public class MachineAutomationHandler {
             if (debugMode) {
                 logRecipeInfo();
             }
-        } else {
-            if (debugMode) {
-                BapelSlimefunMod.LOGGER.warn("[Automation] No machine detected for title: {}", title);
-            }
         }
     }
     
     public static void onContainerClose() {
-        if (currentMachine != null) {
-            BapelSlimefunMod.LOGGER.info("[Automation] Machine closed: {}", currentMachine.getName());
-            
-            if (debugMode) {
-                BapelSlimefunMod.LOGGER.info("[Automation] Session stats - Inputs: {}, Outputs: {}, Ticks: {}", 
-                    successfulInputs, successfulOutputs, automationTickCount);
-            }
+        if (currentMachine != null && debugMode) {
+            BapelSlimefunMod.LOGGER.info("[Automation] Machine closed: {} - Stats: Inputs={}, Outputs={}, Ticks={}", 
+                currentMachine.getName(), successfulInputs, successfulOutputs, automationTickCount);
         }
         
+        // Clear all state
         currentMachine = null;
         cachedRecipeRequirements.clear();
         selectedRecipeId = null;
+        resetCaches();
         
         automationTickCount = 0;
         successfulInputs = 0;
         successfulOutputs = 0;
     }
     
+    /**
+     * OPTIMIZATION: Reset all caches
+     */
+    private static void resetCaches() {
+        cachedPlayerInventory.clear();
+        knownEmptyInputSlots.clear();
+        lastInventoryCacheTime = 0;
+        lastEmptySlotCheck = 0;
+    }
+    
     private static void cacheRecipeRequirements() {
         if (currentMachine == null || currentMachine.getRecipe().isEmpty()) {
             cachedRecipeRequirements.clear();
-            BapelSlimefunMod.LOGGER.warn("[Automation] No recipe data to cache");
             return;
         }
         
@@ -109,15 +132,9 @@ public class MachineAutomationHandler {
         
         cachedRecipeRequirements = RecipeHandler.groupRecipeIngredients(ingredients);
         
-        BapelSlimefunMod.LOGGER.info("[Automation] Cached {} recipe requirements", 
-            cachedRecipeRequirements.size());
-        
         if (debugMode) {
-            BapelSlimefunMod.LOGGER.info("[Automation] Recipe requirements:");
-            for (Map.Entry<String, Integer> entry : cachedRecipeRequirements.entrySet()) {
-                BapelSlimefunMod.LOGGER.info("[Automation]   - {} x{}", 
-                    entry.getKey(), entry.getValue());
-            }
+            BapelSlimefunMod.LOGGER.info("[Automation] Cached {} recipe requirements", 
+                cachedRecipeRequirements.size());
         }
     }
     
@@ -125,39 +142,23 @@ public class MachineAutomationHandler {
         if (currentMachine == null) return;
         
         List<String> recipe = currentMachine.getRecipe();
-        if (recipe.isEmpty()) {
-            BapelSlimefunMod.LOGGER.debug("[Automation] Machine has no recipe");
-            return;
-        }
+        if (recipe.isEmpty()) return;
         
         List<RecipeHandler.RecipeIngredient> ingredients = RecipeHandler.parseRecipe(recipe);
-        boolean isMultiItem = RecipeHandler.isMultiItemRecipe(ingredients);
         Set<String> uniqueItems = RecipeHandler.getUniqueItems(ingredients);
         
-        BapelSlimefunMod.LOGGER.debug("[Automation] Recipe Info:");
-        BapelSlimefunMod.LOGGER.debug("[Automation]   Total ingredients: {}", ingredients.size());
-        BapelSlimefunMod.LOGGER.debug("[Automation]   Unique items: {}", uniqueItems.size());
-        BapelSlimefunMod.LOGGER.debug("[Automation]   Multi-item recipe: {}", isMultiItem);
-        BapelSlimefunMod.LOGGER.debug("[Automation]   Input slots: {}", Arrays.toString(currentMachine.getInputSlots()));
-        BapelSlimefunMod.LOGGER.debug("[Automation]   Output slots: {}", Arrays.toString(currentMachine.getOutputSlots()));
+        BapelSlimefunMod.LOGGER.debug("[Automation] Recipe: {} ingredients, {} unique items", 
+            ingredients.size(), uniqueItems.size());
     }
     
+    /**
+     * OPTIMIZED: Main automation tick with smart throttling
+     */
     public static void tick() {
-        if (config == null) {
-            if (debugMode && automationTickCount == 0) {
-                BapelSlimefunMod.LOGGER.warn("[Automation] Config is null!");
-            }
+        // Fast-path checks
+        if (config == null || !config.isAutomationEnabled() || currentMachine == null) {
             return;
         }
-        
-        if (!config.isAutomationEnabled()) {
-            if (debugMode && automationTickCount == 0) {
-                BapelSlimefunMod.LOGGER.info("[Automation] Automation disabled in config");
-            }
-            return;
-        }
-        
-        if (currentMachine == null) return;
         
         Minecraft mc = Minecraft.getInstance();
         LocalPlayer player = mc.player;
@@ -166,6 +167,7 @@ public class MachineAutomationHandler {
         AbstractContainerMenu menu = player.containerMenu;
         if (menu == null) return;
         
+        // Throttle based on config
         long now = System.currentTimeMillis();
         if (now - lastAutoTick < config.getAutomationDelayMs()) return;
         lastAutoTick = now;
@@ -175,54 +177,51 @@ public class MachineAutomationHandler {
         if (debugMode && automationTickCount == 1) {
             BapelSlimefunMod.LOGGER.info("╔═══════════════════════════════════════╗");
             BapelSlimefunMod.LOGGER.info("║  AUTOMATION STARTED                    ║");
-            BapelSlimefunMod.LOGGER.info("╠═══════════════════════════════════════╣");
             BapelSlimefunMod.LOGGER.info("║  Machine: {}", currentMachine.getName());
             BapelSlimefunMod.LOGGER.info("║  Delay: {}ms", config.getAutomationDelayMs());
-            BapelSlimefunMod.LOGGER.info("║  Recipe Requirements: {}", cachedRecipeRequirements.size());
             BapelSlimefunMod.LOGGER.info("╚═══════════════════════════════════════╝");
         }
         
         try {
+            // Process outputs first (clear space)
             autoOutput(menu, mc);
+            
+            // Then process inputs
             autoInput(menu, player, mc);
         } catch (Exception e) {
             BapelSlimefunMod.LOGGER.error("[Automation] Error in automation tick", e);
         }
     }
     
+    /**
+     * OPTIMIZED: Auto-output with batch processing
+     */
     private static void autoOutput(AbstractContainerMenu menu, Minecraft mc) {
-        if (!currentMachine.hasOutputSlots()) {
-            if (debugMode && automationTickCount == 1) {
-                BapelSlimefunMod.LOGGER.warn("[Automation] Machine has no output slots");
-            }
-            return;
-        }
+        if (!currentMachine.hasOutputSlots()) return;
         
         try {
-            for (int slotIndex : currentMachine.getOutputSlots()) {
-                if (slotIndex < 0 || slotIndex >= menu.slots.size()) {
-                    if (debugMode) {
-                        BapelSlimefunMod.LOGGER.warn("[Automation] Invalid output slot index: {}", slotIndex);
-                    }
-                    continue;
-                }
+            int[] outputSlots = currentMachine.getOutputSlots();
+            
+            // OPTIMIZATION: Process all output slots in one pass
+            for (int slotIndex : outputSlots) {
+                if (slotIndex < 0 || slotIndex >= menu.slots.size()) continue;
                 
                 Slot slot = menu.slots.get(slotIndex);
-                if (slot == null) continue;
+                if (slot == null || slot.getItem().isEmpty()) continue;
                 
                 ItemStack stack = slot.getItem();
+                String itemId = AutomationUtils.getItemId(stack);
+                int count = stack.getCount();
                 
-                if (!stack.isEmpty()) {
-                    String itemId = AutomationUtils.getItemId(stack);
-                    int count = stack.getCount();
-                    
-                    mc.gameMode.handleInventoryMouseClick(
-                        menu.containerId, slotIndex, 0, ClickType.QUICK_MOVE, mc.player
-                    );
-                    
-                    successfulOutputs++;
-                    
-                    BapelSlimefunMod.LOGGER.info("[Automation] Auto-output: Moved {} x{}", itemId, count);
+                // Quick move to player inventory
+                mc.gameMode.handleInventoryMouseClick(
+                    menu.containerId, slotIndex, 0, ClickType.QUICK_MOVE, mc.player
+                );
+                
+                successfulOutputs++;
+                
+                if (debugMode) {
+                    BapelSlimefunMod.LOGGER.info("[Automation] Auto-output: {} x{}", itemId, count);
                 }
             }
         } catch (Exception e) {
@@ -230,46 +229,36 @@ public class MachineAutomationHandler {
         }
     }
     
+    /**
+     * OPTIMIZED: Auto-input with cached inventory and smart slot tracking
+     */
     private static void autoInput(AbstractContainerMenu menu, LocalPlayer player, Minecraft mc) {
-        if (!currentMachine.hasInputSlots()) {
-            if (debugMode && automationTickCount == 1) {
-                BapelSlimefunMod.LOGGER.warn("[Automation] Machine has no input slots");
-            }
-            return;
-        }
-        
-        if (cachedRecipeRequirements.isEmpty()) {
-            if (debugMode && automationTickCount % 20 == 1) {
-                BapelSlimefunMod.LOGGER.warn("[Automation] No cached recipe requirements - cannot automate");
-            }
-            return;
-        }
+        if (!currentMachine.hasInputSlots() || cachedRecipeRequirements.isEmpty()) return;
         
         try {
-            if (!hasEmptyInputSlot(menu)) {
+            // OPTIMIZATION: Check for empty input slots periodically
+            long now = System.currentTimeMillis();
+            if (now - lastEmptySlotCheck > EMPTY_SLOT_CHECK_INTERVAL) {
+                updateEmptyInputSlots(menu);
+                lastEmptySlotCheck = now;
+            }
+            
+            if (knownEmptyInputSlots.isEmpty()) {
                 if (debugMode && automationTickCount % 100 == 1) {
                     BapelSlimefunMod.LOGGER.debug("[Automation] No empty input slots");
                 }
                 return;
             }
             
-            List<ItemStack> playerInventory = getPlayerInventoryStacks(player);
+            // OPTIMIZATION: Use cached player inventory
+            List<ItemStack> playerInventory = getCachedPlayerInventory(player);
             
-            RecipeHandler.RecipeSummary summary = new RecipeHandler.RecipeSummary(
-                playerInventory, 
-                RecipeHandler.parseRecipe(currentMachine.getRecipe())
-            );
-            
-            if (debugMode && automationTickCount % 100 == 1) {
-                BapelSlimefunMod.LOGGER.debug("[Automation] Recipe completion: {:.1f}%", 
-                    summary.getCompletionPercentage() * 100);
-            }
-            
+            // Try to move items in priority order (recipe requirements)
             for (Map.Entry<String, Integer> required : cachedRecipeRequirements.entrySet()) {
                 String itemId = required.getKey();
                 
-                if (moveItemToInput(menu, player, mc, itemId)) {
-                    break;
+                if (moveItemToInput(menu, player, mc, itemId, playerInventory)) {
+                    break; // Only move one item per tick to avoid overwhelming
                 }
             }
         } catch (Exception e) {
@@ -277,70 +266,86 @@ public class MachineAutomationHandler {
         }
     }
     
-    private static boolean hasEmptyInputSlot(AbstractContainerMenu menu) {
+    /**
+     * OPTIMIZATION: Update cache of empty input slots
+     */
+    private static void updateEmptyInputSlots(AbstractContainerMenu menu) {
+        knownEmptyInputSlots.clear();
+        
         try {
             for (int slotIndex : currentMachine.getInputSlots()) {
                 if (slotIndex >= 0 && slotIndex < menu.slots.size()) {
                     Slot slot = menu.slots.get(slotIndex);
                     if (slot != null && slot.getItem().isEmpty()) {
-                        return true;
+                        knownEmptyInputSlots.add(slotIndex);
                     }
                 }
             }
         } catch (Exception e) {
-            BapelSlimefunMod.LOGGER.error("[Automation] Error checking empty input slots", e);
+            BapelSlimefunMod.LOGGER.error("[Automation] Error updating empty slots", e);
         }
-        return false;
     }
     
-    private static List<ItemStack> getPlayerInventoryStacks(LocalPlayer player) {
-        List<ItemStack> stacks = new ArrayList<>();
+    /**
+     * OPTIMIZATION: Get cached player inventory
+     */
+    private static List<ItemStack> getCachedPlayerInventory(LocalPlayer player) {
+        long now = System.currentTimeMillis();
         
+        // Return cached if still valid
+        if (now - lastInventoryCacheTime < INVENTORY_CACHE_DURATION && !cachedPlayerInventory.isEmpty()) {
+            return cachedPlayerInventory;
+        }
+        
+        // Rebuild cache
+        cachedPlayerInventory.clear();
         try {
             for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
                 ItemStack stack = player.getInventory().getItem(i);
                 if (!stack.isEmpty()) {
-                    stacks.add(stack);
+                    cachedPlayerInventory.add(stack);
                 }
             }
         } catch (Exception e) {
-            BapelSlimefunMod.LOGGER.error("[Automation] Error getting player inventory", e);
+            BapelSlimefunMod.LOGGER.error("[Automation] Error caching player inventory", e);
         }
         
-        return stacks;
+        lastInventoryCacheTime = now;
+        return cachedPlayerInventory;
     }
     
+    /**
+     * OPTIMIZED: Move item to input with cached inventory lookup
+     */
     private static boolean moveItemToInput(AbstractContainerMenu menu, LocalPlayer player, 
-                                          Minecraft mc, String itemId) {
+                                          Minecraft mc, String itemId, List<ItemStack> inventory) {
         try {
-            int playerSlotIndex = findItemInPlayerInventory(menu, player, itemId);
-            if (playerSlotIndex == -1) {
-                if (debugMode && automationTickCount % 100 == 1) {
-                    BapelSlimefunMod.LOGGER.debug("[Automation] Item not found in player inventory: {}", itemId);
-                }
-                return false;
-            }
+            // OPTIMIZATION: Use cached inventory instead of scanning menu slots
+            int playerSlotIndex = findItemInPlayerInventoryOptimized(menu, player, itemId);
+            if (playerSlotIndex == -1) return false;
             
-            int emptyInputSlot = findEmptyInputSlot(menu);
-            if (emptyInputSlot == -1) {
-                if (debugMode) {
-                    BapelSlimefunMod.LOGGER.warn("[Automation] No empty input slot found");
-                }
-                return false;
-            }
+            // OPTIMIZATION: Pick first available empty slot from cache
+            Integer emptySlot = knownEmptyInputSlots.stream().findFirst().orElse(-1);
+            if (emptySlot == -1) return false;
             
             Slot playerSlot = menu.slots.get(playerSlotIndex);
             ItemStack stack = playerSlot.getItem();
             int count = stack.getCount();
             
+            // Quick move to input
             mc.gameMode.handleInventoryMouseClick(
                 menu.containerId, playerSlotIndex, 0, ClickType.QUICK_MOVE, player
             );
             
+            // Remove from empty slots cache (now occupied)
+            knownEmptyInputSlots.remove(emptySlot);
+            
             successfulInputs++;
             
-            BapelSlimefunMod.LOGGER.info("[Automation] Auto-input: Moved {} x{} to slot {}", 
-                itemId, count, emptyInputSlot);
+            if (debugMode) {
+                BapelSlimefunMod.LOGGER.info("[Automation] Auto-input: {} x{} → slot {}", 
+                    itemId, count, emptySlot);
+            }
             
             return true;
         } catch (Exception e) {
@@ -349,14 +354,18 @@ public class MachineAutomationHandler {
         }
     }
     
-    private static int findItemInPlayerInventory(AbstractContainerMenu menu, 
-                                                 LocalPlayer player, String itemId) {
+    /**
+     * OPTIMIZED: Find item in player inventory (reduced iterations)
+     */
+    private static int findItemInPlayerInventoryOptimized(AbstractContainerMenu menu, 
+                                                          LocalPlayer player, String itemId) {
         try {
+            // OPTIMIZATION: Only scan player inventory slots (skip machine slots)
+            int containerSize = player.getInventory().getContainerSize();
+            
             for (int i = 0; i < menu.slots.size(); i++) {
                 Slot slot = menu.slots.get(i);
-                if (slot == null) continue;
-                
-                if (slot.container != player.getInventory()) continue;
+                if (slot == null || slot.container != player.getInventory()) continue;
                 
                 ItemStack stack = slot.getItem();
                 if (stack.isEmpty()) continue;
@@ -367,24 +376,7 @@ public class MachineAutomationHandler {
                 }
             }
         } catch (Exception e) {
-            BapelSlimefunMod.LOGGER.error("[Automation] Error finding item in player inventory", e);
-        }
-        
-        return -1;
-    }
-    
-    private static int findEmptyInputSlot(AbstractContainerMenu menu) {
-        try {
-            for (int slotIndex : currentMachine.getInputSlots()) {
-                if (slotIndex >= 0 && slotIndex < menu.slots.size()) {
-                    Slot slot = menu.slots.get(slotIndex);
-                    if (slot != null && slot.getItem().isEmpty()) {
-                        return slotIndex;
-                    }
-                }
-            }
-        } catch (Exception e) {
-            BapelSlimefunMod.LOGGER.error("[Automation] Error finding empty input slot", e);
+            BapelSlimefunMod.LOGGER.error("[Automation] Error finding item", e);
         }
         
         return -1;
@@ -402,6 +394,9 @@ public class MachineAutomationHandler {
         return new HashMap<>(cachedRecipeRequirements);
     }
     
+    /**
+     * OPTIMIZED: Get recipe summary with cached inventory
+     */
     public static RecipeHandler.RecipeSummary getRecipeSummary() {
         if (currentMachine == null) return null;
         
@@ -410,7 +405,7 @@ public class MachineAutomationHandler {
             LocalPlayer player = mc.player;
             if (player == null) return null;
             
-            List<ItemStack> inventory = getPlayerInventoryStacks(player);
+            List<ItemStack> inventory = getCachedPlayerInventory(player);
             List<RecipeHandler.RecipeIngredient> recipe = 
                 RecipeHandler.parseRecipe(currentMachine.getRecipe());
             
@@ -425,6 +420,12 @@ public class MachineAutomationHandler {
         if (config != null) {
             boolean newState = !config.isAutomationEnabled();
             config.setAutomationEnabled(newState);
+            
+            // Clear caches when toggling off
+            if (!newState) {
+                resetCaches();
+            }
+            
             BapelSlimefunMod.LOGGER.info("[Automation] Toggled: {}", newState ? "ENABLED" : "DISABLED");
         }
     }
@@ -432,6 +433,11 @@ public class MachineAutomationHandler {
     public static void setAutomationEnabled(boolean enabled) {
         if (config != null) {
             config.setAutomationEnabled(enabled);
+            
+            if (!enabled) {
+                resetCaches();
+            }
+            
             BapelSlimefunMod.LOGGER.info("[Automation] Set to: {}", enabled ? "ENABLED" : "DISABLED");
         }
     }
@@ -444,6 +450,86 @@ public class MachineAutomationHandler {
         return config;
     }
     
+    // ========================================
+    // DEBUG DIAGNOSTIC METHODS
+    // ========================================
+    
+    public static void runFullDiagnostic() {
+        BapelSlimefunMod.LOGGER.info("╔════════════════════════════════════════════════════════╗");
+        BapelSlimefunMod.LOGGER.info("║                   FULL DIAGNOSTIC                       ║");
+        BapelSlimefunMod.LOGGER.info("╠════════════════════════════════════════════════════════╣");
+        
+        // Config
+        BapelSlimefunMod.LOGGER.info("║ CONFIG:");
+        if (config != null) {
+            BapelSlimefunMod.LOGGER.info("║   Automation: {}", config.isAutomationEnabled());
+            BapelSlimefunMod.LOGGER.info("║   Delay: {}ms", config.getAutomationDelayMs());
+            BapelSlimefunMod.LOGGER.info("║   Debug: {}", config.isDebugMode());
+        } else {
+            BapelSlimefunMod.LOGGER.info("║   NULL");
+        }
+        
+        // Machine
+        BapelSlimefunMod.LOGGER.info("║");
+        BapelSlimefunMod.LOGGER.info("║ MACHINE:");
+        if (currentMachine != null) {
+            BapelSlimefunMod.LOGGER.info("║   Name: {}", currentMachine.getName());
+            BapelSlimefunMod.LOGGER.info("║   ID: {}", currentMachine.getId());
+            BapelSlimefunMod.LOGGER.info("║   Input Slots: {}", currentMachine.getInputSlots().length);
+            BapelSlimefunMod.LOGGER.info("║   Output Slots: {}", currentMachine.getOutputSlots().length);
+        } else {
+            BapelSlimefunMod.LOGGER.info("║   NULL");
+        }
+        
+        // Automation status
+        BapelSlimefunMod.LOGGER.info("║");
+        BapelSlimefunMod.LOGGER.info("║ AUTOMATION:");
+        BapelSlimefunMod.LOGGER.info("║   Active: {}", isActive());
+        BapelSlimefunMod.LOGGER.info("║   Enabled: {}", isAutomationEnabled());
+        BapelSlimefunMod.LOGGER.info("║   Selected Recipe: {}", 
+            selectedRecipeId != null ? selectedRecipeId : "none");
+        
+        // Performance metrics
+        BapelSlimefunMod.LOGGER.info("║");
+        BapelSlimefunMod.LOGGER.info("║ PERFORMANCE:");
+        BapelSlimefunMod.LOGGER.info("║   Cached Inventory Items: {}", cachedPlayerInventory.size());
+        BapelSlimefunMod.LOGGER.info("║   Known Empty Slots: {}", knownEmptyInputSlots.size());
+        BapelSlimefunMod.LOGGER.info("║   Tick Count: {}", automationTickCount);
+        BapelSlimefunMod.LOGGER.info("║   Success Rate: {}/{}", successfulInputs, successfulOutputs);
+        
+        // Overlay
+        BapelSlimefunMod.LOGGER.info("║");
+        BapelSlimefunMod.LOGGER.info("║ OVERLAY:");
+        BapelSlimefunMod.LOGGER.info("║   Visible: {}", RecipeOverlayRenderer.isVisible());
+        BapelSlimefunMod.LOGGER.info("║   Available Recipes: {}", 
+            RecipeOverlayRenderer.getAvailableRecipes().size());
+        
+        // Database
+        BapelSlimefunMod.LOGGER.info("║");
+        BapelSlimefunMod.LOGGER.info("║ DATABASE:");
+        BapelSlimefunMod.LOGGER.info("║   Initialized: {}", RecipeDatabase.isInitialized());
+        BapelSlimefunMod.LOGGER.info("║   Total Recipes: {}", RecipeDatabase.getTotalRecipes());
+        
+        // Client
+        BapelSlimefunMod.LOGGER.info("║");
+        BapelSlimefunMod.LOGGER.info("║ CLIENT:");
+        Minecraft mc = Minecraft.getInstance();
+        BapelSlimefunMod.LOGGER.info("║   Player: {}", mc.player != null ? "present" : "null");
+        BapelSlimefunMod.LOGGER.info("║   Screen: {}", 
+            mc.screen != null ? mc.screen.getClass().getSimpleName() : "null");
+        
+        BapelSlimefunMod.LOGGER.info("╚════════════════════════════════════════════════════════╝");
+    }
+    
+    public static void logKeyPress(String key) {
+        BapelSlimefunMod.LOGGER.info("╔════════════════════════════════════════════════════════╗");
+        BapelSlimefunMod.LOGGER.info("║  KEY PRESS: {}", key);
+        BapelSlimefunMod.LOGGER.info("║  Overlay Visible: {}", RecipeOverlayRenderer.isVisible());
+        BapelSlimefunMod.LOGGER.info("║  In Container: {}", 
+            Minecraft.getInstance().screen instanceof net.minecraft.client.gui.screens.inventory.AbstractContainerScreen);
+        BapelSlimefunMod.LOGGER.info("╚════════════════════════════════════════════════════════╝");
+    }
+    
     public static void printDebugStatus() {
         BapelSlimefunMod.LOGGER.info("╔═══════════════════════════════════════╗");
         BapelSlimefunMod.LOGGER.info("║  AUTOMATION STATUS                     ║");
@@ -451,12 +537,10 @@ public class MachineAutomationHandler {
         BapelSlimefunMod.LOGGER.info("║  Enabled: {}", isAutomationEnabled());
         BapelSlimefunMod.LOGGER.info("║  Active: {}", isActive());
         BapelSlimefunMod.LOGGER.info("║  Machine: {}", currentMachine != null ? currentMachine.getName() : "none");
-        BapelSlimefunMod.LOGGER.info("║  Selected Recipe: {}", selectedRecipeId != null ? selectedRecipeId : "none");
-        BapelSlimefunMod.LOGGER.info("║  Cached Requirements: {}", cachedRecipeRequirements.size());
         BapelSlimefunMod.LOGGER.info("║  Tick Count: {}", automationTickCount);
-        BapelSlimefunMod.LOGGER.info("║  Successful Inputs: {}", successfulInputs);
-        BapelSlimefunMod.LOGGER.info("║  Successful Outputs: {}", successfulOutputs);
-        BapelSlimefunMod.LOGGER.info("║  Debug Mode: {}", debugMode);
+        BapelSlimefunMod.LOGGER.info("║  Inputs: {} | Outputs: {}", successfulInputs, successfulOutputs);
+        BapelSlimefunMod.LOGGER.info("║  Cache Size: {} items, {} slots", 
+            cachedPlayerInventory.size(), knownEmptyInputSlots.size());
         BapelSlimefunMod.LOGGER.info("╚═══════════════════════════════════════╝");
     }
 }

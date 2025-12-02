@@ -1,7 +1,6 @@
 package com.bapel_slimefun_mod.client;
 
 import com.bapel_slimefun_mod.automation.AutomationManager;
-import com.bapel_slimefun_mod.automation.DebugHelper;
 import com.bapel_slimefun_mod.automation.MachineAutomationHandler;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -60,7 +59,7 @@ public class ModKeybinds {
                 if (MachineAutomationHandler.getConfig() != null && 
                     MachineAutomationHandler.getConfig().isDebugMode()) {
                     
-                    DebugHelper.runFullDiagnostic();
+                    MachineAutomationHandler.runFullDiagnostic();
                     
                     if (client.player != null) {
                         client.player.displayClientMessage(

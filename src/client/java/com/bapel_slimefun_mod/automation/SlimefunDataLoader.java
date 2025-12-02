@@ -145,72 +145,94 @@ public class SlimefunDataLoader {
      * Clean title by removing color codes
      * FIX: Better regex pattern
      */
-    private static String cleanTitle(String title) {
-        if (title == null || title.isEmpty()) {
-            return "";
-        }
-        
-        // Remove all Minecraft color codes (§ followed by any character)
-        String cleaned = title.replaceAll("§.", "");
-        
-        // Remove alternative encoding
-        cleaned = cleaned.replaceAll("Â§.", "");
-        
-        // Remove & color codes
-        cleaned = cleaned.replaceAll("&[0-9a-fk-or]", "");
-        
-        // Trim whitespace
-        cleaned = cleaned.trim();
-        
-        return cleaned;
+private static String cleanTitle(String title) {
+    if (title == null || title.isEmpty()) {
+        return "";
     }
+    
+    // Remove all Minecraft color codes (§ followed by any character)
+    String cleaned = title.replaceAll("§.", "");
+    
+    // Remove alternative encoding (common in broken UTF-8)
+    cleaned = cleaned.replaceAll("Â§.", "");
+    cleaned = cleaned.replaceAll("Â", ""); // ✅ Remove standalone  characters
+    
+    // Remove & color codes
+    cleaned = cleaned.replaceAll("&[0-9a-fk-or]", "");
+    
+    // Normalize whitespace (replace multiple spaces with single space)
+    cleaned = cleaned.replaceAll("\\s+", " ");
+    
+    // Trim whitespace
+    cleaned = cleaned.trim();
+    
+    return cleaned;
+}
     
     /**
      * Get machine by GUI title
      * FIX: Enhanced logging and fallback matching
      */
-    public static SlimefunMachineData getMachineByTitle(String title) {
-        String cleanedTitle = cleanTitle(title);
-        
-        BapelSlimefunMod.LOGGER.info("[DataLoader] Looking for machine with title: '{}'", title);
-        BapelSlimefunMod.LOGGER.info("[DataLoader] Cleaned title: '{}'", cleanedTitle);
-        
-        // Try exact match first
-        SlimefunMachineData machine = MACHINES.get(cleanedTitle);
-        
-        if (machine != null) {
-            BapelSlimefunMod.LOGGER.info("[DataLoader] ✓ Found exact match: {}", machine.getId());
-            return machine;
-        }
-        
-        // Try partial match (contains)
-        BapelSlimefunMod.LOGGER.warn("[DataLoader] ✗ No exact match found");
-        BapelSlimefunMod.LOGGER.warn("[DataLoader] Trying partial match...");
-        
-        for (Map.Entry<String, SlimefunMachineData> entry : MACHINES.entrySet()) {
-            String key = entry.getKey();
-            
-            if (cleanedTitle.contains(key) || key.contains(cleanedTitle)) {
-                BapelSlimefunMod.LOGGER.info("[DataLoader] ✓ Found partial match: '{}' for '{}'", 
-                    key, cleanedTitle);
-                return entry.getValue();
-            }
-        }
-        
-        // Debug: Show available titles
-        BapelSlimefunMod.LOGGER.warn("[DataLoader] Available machine titles:");
-        int count = 0;
-        for (String key : MACHINES.keySet()) {
-            if (count++ < 10) {
-                BapelSlimefunMod.LOGGER.warn("[DataLoader]   - '{}'", key);
-            }
-        }
-        if (MACHINES.size() > 10) {
-            BapelSlimefunMod.LOGGER.warn("[DataLoader]   ... and {} more", MACHINES.size() - 10);
-        }
-        
-        return null;
+/**
+ * Get machine by GUI title
+ * ENHANCED: Better fuzzy matching
+ */
+public static SlimefunMachineData getMachineByTitle(String title) {
+    String cleanedTitle = cleanTitle(title);
+    
+    BapelSlimefunMod.LOGGER.info("[DataLoader] Looking for machine with title: '{}'", title);
+    BapelSlimefunMod.LOGGER.info("[DataLoader] Cleaned title: '{}'", cleanedTitle);
+    
+    // Try exact match first
+    SlimefunMachineData machine = MACHINES.get(cleanedTitle);
+    
+    if (machine != null) {
+        BapelSlimefunMod.LOGGER.info("[DataLoader] ✓ Found exact match: {}", machine.getId());
+        return machine;
     }
+    
+    // ✅ ENHANCED: Try fuzzy matching by removing ALL non-alphanumeric characters
+    String fuzzyTitle = cleanedTitle.replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
+    
+    BapelSlimefunMod.LOGGER.warn("[DataLoader] ✗ No exact match found");
+    BapelSlimefunMod.LOGGER.warn("[DataLoader] Trying fuzzy match with: '{}'", fuzzyTitle);
+    
+    for (Map.Entry<String, SlimefunMachineData> entry : MACHINES.entrySet()) {
+        String key = entry.getKey();
+        String fuzzyKey = key.replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
+        
+        if (fuzzyTitle.equals(fuzzyKey)) {
+            BapelSlimefunMod.LOGGER.info("[DataLoader] ✓ Found fuzzy match: '{}' for '{}'", 
+                key, cleanedTitle);
+            return entry.getValue();
+        }
+    }
+    
+    // Final fallback: contains match
+    for (Map.Entry<String, SlimefunMachineData> entry : MACHINES.entrySet()) {
+        String key = entry.getKey();
+        
+        if (cleanedTitle.contains(key) || key.contains(cleanedTitle)) {
+            BapelSlimefunMod.LOGGER.info("[DataLoader] ✓ Found contains match: '{}' for '{}'", 
+                key, cleanedTitle);
+            return entry.getValue();
+        }
+    }
+    
+    // Debug: Show available titles
+    BapelSlimefunMod.LOGGER.warn("[DataLoader] Available machine titles:");
+    int count = 0;
+    for (String key : MACHINES.keySet()) {
+        if (count++ < 10) {
+            BapelSlimefunMod.LOGGER.warn("[DataLoader]   - '{}'", key);
+        }
+    }
+    if (MACHINES.size() > 10) {
+        BapelSlimefunMod.LOGGER.warn("[DataLoader]   ... and {} more", MACHINES.size() - 10);
+    }
+    
+    return null;
+}
     
     /**
      * Check if title is a machine

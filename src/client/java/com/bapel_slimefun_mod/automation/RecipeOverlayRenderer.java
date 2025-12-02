@@ -157,17 +157,20 @@ public class RecipeOverlayRenderer {
     /**
      * Hide the overlay
      */
-    public static void hide() {
-        if (!overlayVisible) {
-            return; // Already hidden
-        }
-        
-        overlayVisible = false;
-        currentMachine = null;
-        availableRecipes.clear();
-        
-        BapelSlimefunMod.LOGGER.info("Recipe overlay hidden");
+/**
+ * Hide the overlay
+ */
+public static void hide() {
+    if (!overlayVisible) {
+        return; // Already hidden
     }
+    
+    overlayVisible = false;
+    currentMachine = null;
+    availableRecipes = new ArrayList<>(); // ✅ Create new list instead of clear()
+    
+    BapelSlimefunMod.LOGGER.info("Recipe overlay hidden");
+}
     
     /**
      * Toggle overlay visibility
@@ -201,14 +204,14 @@ public class RecipeOverlayRenderer {
     /**
      * Load all recipes for the given machine
      */
-    private static void loadRecipesForMachine(SlimefunMachineData machine) {
-        availableRecipes.clear();
-        
-        // Try to load from database first
-        if (RecipeDatabase.isInitialized() && RecipeDatabase.hasMachineRecipes(machine.getId())) {
-            availableRecipes = RecipeDatabase.getRecipesForMachine(machine.getId());
-            BapelSlimefunMod.LOGGER.info("Loaded {} recipes from database for {}", 
-                availableRecipes.size(), machine.getName());
+private static void loadRecipesForMachine(SlimefunMachineData machine) {
+    availableRecipes = new ArrayList<>(); // ✅ Create new list instead of clear()
+    
+    // Try to load from database first
+    if (RecipeDatabase.isInitialized() && RecipeDatabase.hasMachineRecipes(machine.getId())) {
+        availableRecipes = new ArrayList<>(RecipeDatabase.getRecipesForMachine(machine.getId())); // ✅ Copy into new list
+        BapelSlimefunMod.LOGGER.info("Loaded {} recipes from database for {}", 
+            availableRecipes.size(), machine.getName());
         } else {
             // Fallback: create recipe from machine data
             List<String> recipeStrings = machine.getRecipe();
