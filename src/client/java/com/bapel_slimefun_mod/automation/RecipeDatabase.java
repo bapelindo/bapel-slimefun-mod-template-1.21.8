@@ -46,7 +46,6 @@ public class RecipeDatabase {
         
         try {
             long startTime = System.currentTimeMillis();
-            BapelSlimefunMod.LOGGER.info("Initializing Recipe Database...");
             
             // Load recipes from both files
             int externalCount = loadExternalRecipes();
@@ -58,12 +57,6 @@ public class RecipeDatabase {
             long duration = System.currentTimeMillis() - startTime;
             initialized = true;
             
-            BapelSlimefunMod.LOGGER.info("Recipe Database initialized with {} recipes for {} machines in {}ms", 
-                RECIPES_BY_ID.size(), RECIPES_BY_MACHINE.size(), duration);
-            BapelSlimefunMod.LOGGER.info("  - External recipes: {}", externalCount);
-            BapelSlimefunMod.LOGGER.info("  - Processing recipes: {}", processingCount);
-            BapelSlimefunMod.LOGGER.info("  - Indexed outputs: {}, inputs: {}", 
-                RECIPES_BY_OUTPUT.size(), RECIPES_BY_INPUT.size());
             
         } catch (Exception e) {
             BapelSlimefunMod.LOGGER.error("Failed to initialize Recipe Database", e);
@@ -93,8 +86,6 @@ public class RecipeDatabase {
             }
         }
         
-        BapelSlimefunMod.LOGGER.debug("Built indexes: {} outputs, {} inputs", 
-            RECIPES_BY_OUTPUT.size(), RECIPES_BY_INPUT.size());
     }
     
     /**
@@ -125,11 +116,9 @@ public class RecipeDatabase {
                         loaded++;
                     }
                 } catch (Exception e) {
-                    BapelSlimefunMod.LOGGER.debug("Failed to parse external recipe", e);
                 }
             }
             
-            BapelSlimefunMod.LOGGER.info("Loaded {} external recipes", loaded);
             
         } catch (Exception e) {
             BapelSlimefunMod.LOGGER.error("Failed to load external recipes", e);
@@ -176,12 +165,10 @@ public class RecipeDatabase {
                             loaded++;
                         }
                     } catch (Exception e) {
-                        BapelSlimefunMod.LOGGER.debug("Failed to parse processing recipe", e);
                     }
                 }
             }
             
-            BapelSlimefunMod.LOGGER.info("Loaded {} processing recipes", loaded);
             
         } catch (Exception e) {
             BapelSlimefunMod.LOGGER.error("Failed to load processing recipes", e);
@@ -511,7 +498,6 @@ private static RecipeData parseProcessingRecipe(String machineId, JsonObject jso
      * Reload recipes from files
      */
     public static void reload() {
-        BapelSlimefunMod.LOGGER.info("Reloading recipe database...");
         clear();
         initialize();
     }
@@ -519,15 +505,6 @@ private static RecipeData parseProcessingRecipe(String machineId, JsonObject jso
     /**
      * Print database statistics
      */
-    public static void printStats() {
-        BapelSlimefunMod.LOGGER.info("===== Recipe Database Stats =====");
-        BapelSlimefunMod.LOGGER.info("Total Recipes: {}", getTotalRecipes());
-        BapelSlimefunMod.LOGGER.info("Machines with Recipes: {}", getTotalMachines());
-        BapelSlimefunMod.LOGGER.info("Indexed Outputs: {}", RECIPES_BY_OUTPUT.size());
-        BapelSlimefunMod.LOGGER.info("Indexed Inputs: {}", RECIPES_BY_INPUT.size());
-        BapelSlimefunMod.LOGGER.info("Cache Size: {}", CRAFTABLE_CACHE.size());
-        BapelSlimefunMod.LOGGER.info("================================");
-    }
     
     /**
      * Check if database is initialized
@@ -539,43 +516,8 @@ private static RecipeData parseProcessingRecipe(String machineId, JsonObject jso
     /**
      * DEBUG: Print recipes for a specific machine
      */
-    public static void debugMachineRecipes(String machineId) {
-        BapelSlimefunMod.LOGGER.info("╔═══════════════════════════════════════╗");
-        BapelSlimefunMod.LOGGER.info("║   DEBUG: Recipes for {}       ", machineId);
-        BapelSlimefunMod.LOGGER.info("╠═══════════════════════════════════════╣");
-        
-        if (RECIPES_BY_MACHINE.containsKey(machineId)) {
-            List<RecipeData> recipes = RECIPES_BY_MACHINE.get(machineId);
-            BapelSlimefunMod.LOGGER.info("║ Found {} recipes", recipes.size());
-            
-            for (int i = 0; i < Math.min(5, recipes.size()); i++) {
-                RecipeData recipe = recipes.get(i);
-                BapelSlimefunMod.LOGGER.info("║   {}. {}", i+1, recipe.getDisplayString());
-            }
-            
-            if (recipes.size() > 5) {
-                BapelSlimefunMod.LOGGER.info("║   ... and {} more", recipes.size() - 5);
-            }
-        } else {
-            BapelSlimefunMod.LOGGER.info("║ ✗ Machine ID not found");
-        }
-        
-        BapelSlimefunMod.LOGGER.info("╚═══════════════════════════════════════╝");
-    }
     
     /**
      * DEBUG: Print all machine IDs
      */
-    public static void printAllMachineRecipes() {
-        BapelSlimefunMod.LOGGER.info("╔═══════════════════════════════════════╗");
-        BapelSlimefunMod.LOGGER.info("║   ALL MACHINES WITH RECIPES            ║");
-        BapelSlimefunMod.LOGGER.info("╠═══════════════════════════════════════╣");
-        
-        for (Map.Entry<String, List<RecipeData>> entry : RECIPES_BY_MACHINE.entrySet()) {
-            BapelSlimefunMod.LOGGER.info("║ {} → {} recipes", 
-                entry.getKey(), entry.getValue().size());
-        }
-        
-        BapelSlimefunMod.LOGGER.info("╚═══════════════════════════════════════╝");
-    }
 }

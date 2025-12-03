@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
- * ✅ COMPLETE REWRITE: Multi-machine cache system
+ *  COMPLETE REWRITE: Multi-machine cache system
  * 
  * Detects "successfully constructed" message and caches the machine
  * Supports unlimited number of multiblocks
@@ -40,9 +40,6 @@ if (text.contains("Slimefun") && text.contains("successfully constructed this Mu
     }
     lastDetectionTime = now;
                 
-                BapelSlimefunMod.LOGGER.info("╔═══════════════════════════════════════╗");
-                BapelSlimefunMod.LOGGER.info("║  MULTIBLOCK CONSTRUCTION DETECTED!     ║");
-                BapelSlimefunMod.LOGGER.info("╚═══════════════════════════════════════╝");
                 
                 // Small delay to detect machine type
                 Minecraft mc = Minecraft.getInstance();
@@ -65,11 +62,10 @@ if (text.contains("Slimefun") && text.contains("successfully constructed this Mu
     
     
     /**
-     * ✅ NEW: Detect and cache the multiblock machine
+     *  NEW: Detect and cache the multiblock machine
      * This adds the machine to the multi-machine cache system
      */
     private void detectAndCacheMachine() {
-        BapelSlimefunMod.LOGGER.info("[ChatDetector] Attempting to detect multiblock type...");
         
         // Get all machines
         var allMachines = SlimefunDataLoader.getAllMachines();
@@ -98,7 +94,6 @@ if (text.contains("Slimefun") && text.contains("successfully constructed this Mu
             SlimefunMachineData machine = allMachines.get(multiblockId);
             if (machine != null && machine.isMultiblock()) {
                 detectedMachine = machine;
-                BapelSlimefunMod.LOGGER.info("[ChatDetector] ✓ Detected priority multiblock: {}", multiblockId);
                 break;
             }
         }
@@ -109,17 +104,16 @@ if (text.contains("Slimefun") && text.contains("successfully constructed this Mu
                 SlimefunMachineData machine = entry.getValue();
                 if (machine.isMultiblock()) {
                     detectedMachine = machine;
-                    BapelSlimefunMod.LOGGER.info("[ChatDetector] ✓ Detected multiblock: {}", entry.getKey());
                     break;
                 }
             }
         }
         
         if (detectedMachine != null) {
-            // ✅ CORE: Cache this machine at player position!
+            //  CORE: Cache this machine at player position!
             UnifiedAutomationManager.onMultiblockConstructed(detectedMachine);
         } else {
-            BapelSlimefunMod.LOGGER.warn("[ChatDetector] ✗ Could not detect multiblock type!");
+            BapelSlimefunMod.LOGGER.warn("[ChatDetector]  Could not detect multiblock type!");
         }
     }
 }

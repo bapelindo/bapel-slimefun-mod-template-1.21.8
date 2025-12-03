@@ -15,7 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 /**
- * âœ… COMPLETE FIXED VERSION - Z-Index Fix Applied for MC 1.21.8
+ * COMPLETE FIXED VERSION - Z-Index Fix Applied for MC 1.21.8
  * Changes:
  * 1. render() - Uses highZ parameter passed to all render methods
  * 2. renderBackground() - More opaque (220 min alpha), thicker borders, shadow effect
@@ -45,51 +45,80 @@ public class RecipeOverlayRenderer {
     
     public static void initialize() {
         loadConfig();
-        BapelSlimefunMod.LOGGER.info("Recipe Overlay Renderer initialized");
     }
     
     private static void loadConfig() {
         try {
             InputStream stream = RecipeOverlayRenderer.class
                 .getResourceAsStream("/assets/bapel-slimefun-mod/recipe_overlay_config.json");
-            if (stream == null) { setDefaultConfig(); return; }
+            if (stream == null) { 
+                setDefaultConfig(); 
+                return; 
+            }
             config = GSON.fromJson(new InputStreamReader(stream, StandardCharsets.UTF_8), JsonObject.class);
             cacheConfigValues();
-        } catch (Exception e) { setDefaultConfig(); }
+        } catch (Exception e) { 
+            setDefaultConfig(); 
+        }
     }
     
     private static void setDefaultConfig() {
-        posX = 10; posY = 60; width = 250; maxHeight = 400; entryHeight = 40;
-        padding = 8; spacing = 4; maxVisible = 8;
-        showIndex = true; showInputCount = true; showOutput = true; showCompletion = true; showKeybinds = true;
+        posX = 10; 
+        posY = 60; 
+        width = 250; 
+        maxHeight = 400; 
+        entryHeight = 40;
+        padding = 8; 
+        spacing = 4; 
+        maxVisible = 8;
+        showIndex = true; 
+        showInputCount = true; 
+        showOutput = true; 
+        showCompletion = true; 
+        showKeybinds = true;
     }
     
     private static void cacheConfigValues() {
-        if (config == null) { setDefaultConfig(); return; }
+        if (config == null) { 
+            setDefaultConfig(); 
+            return; 
+        }
         try {
             JsonObject overlay = config.getAsJsonObject("overlay");
             JsonObject position = overlay.getAsJsonObject("position");
-            posX = position.get("x").getAsInt(); posY = position.get("y").getAsInt();
+            posX = position.get("x").getAsInt(); 
+            posY = position.get("y").getAsInt();
+            
             JsonObject dimensions = overlay.getAsJsonObject("dimensions");
-            width = dimensions.get("width").getAsInt(); maxHeight = dimensions.get("maxHeight").getAsInt();
-            entryHeight = dimensions.get("recipeEntryHeight").getAsInt(); padding = dimensions.get("padding").getAsInt();
+            width = dimensions.get("width").getAsInt(); 
+            maxHeight = dimensions.get("maxHeight").getAsInt();
+            entryHeight = dimensions.get("recipeEntryHeight").getAsInt(); 
+            padding = dimensions.get("padding").getAsInt();
             spacing = dimensions.get("spacing").getAsInt();
+            
             JsonObject display = overlay.getAsJsonObject("display");
-            showIndex = display.get("showRecipeIndex").getAsBoolean(); showInputCount = display.get("showInputCount").getAsBoolean();
-            showOutput = display.get("showOutputInfo").getAsBoolean(); showCompletion = display.get("showCompletionPercentage").getAsBoolean();
-            showKeybinds = display.get("showKeybindHints").getAsBoolean(); maxVisible = display.get("maxRecipesVisible").getAsInt();
-        } catch (Exception e) { setDefaultConfig(); }
+            showIndex = display.get("showRecipeIndex").getAsBoolean(); 
+            showInputCount = display.get("showInputCount").getAsBoolean();
+            showOutput = display.get("showOutputInfo").getAsBoolean(); 
+            showCompletion = display.get("showCompletionPercentage").getAsBoolean();
+            showKeybinds = display.get("showKeybindHints").getAsBoolean(); 
+            maxVisible = display.get("maxRecipesVisible").getAsInt();
+        } catch (Exception e) { 
+            setDefaultConfig(); 
+        }
     }
     
     public static void show(SlimefunMachineData machine) {
         if (machine == null) return;
         currentMachine = machine;
         loadRecipesForMachine(machine);
+        
         if (availableRecipes.isEmpty()) {
-            sendPlayerMessage("Â§c[Slimefun] No recipes for: " + machine.getName());
+            sendPlayerMessage("§c[Slimefun] No recipes for: " + machine.getName());
             currentMachine = null;
             return;
         }
+        
         overlayVisible = true;
         selectedIndex = 0;
         scrollOffset = 0;
@@ -108,20 +137,29 @@ public class RecipeOverlayRenderer {
         long now = System.currentTimeMillis();
         if (now - lastToggleTime < TOGGLE_COOLDOWN) return;
         lastToggleTime = now;
-        if (overlayVisible) hide();
-        else {
+        
+        if (overlayVisible) {
+            hide();
+        } else {
             // FIX: Use UnifiedAutomationManager to support both MULTIBLOCK and ELECTRIC machines
             SlimefunMachineData machine = UnifiedAutomationManager.getCurrentMachine();
-            if (machine != null) show(machine);
-            else sendPlayerMessage("Â§e[Slimefun] Open a Slimefun machine first!");
+            if (machine != null) {
+                show(machine);
+            } else {
+                sendPlayerMessage("§e[Slimefun] Open a Slimefun machine first!");
+            }
         }
     }
     
     private static void sendPlayerMessage(String message) {
         try {
             Minecraft mc = Minecraft.getInstance();
-            if (mc.player != null) mc.player.displayClientMessage(Component.literal(message), true);
-        } catch (Exception e) {}
+            if (mc.player != null) {
+                mc.player.displayClientMessage(Component.literal(message), true);
+            }
+        } catch (Exception e) {
+            // Ignore
+        }
     }
     
     private static void loadRecipesForMachine(SlimefunMachineData machine) {
@@ -135,15 +173,22 @@ public class RecipeOverlayRenderer {
                     List<RecipeHandler.RecipeIngredient> inputs = RecipeHandler.parseRecipe(recipeStrings);
                     List<RecipeData.RecipeOutput> outputs = new ArrayList<>();
                     outputs.add(new RecipeData.RecipeOutput("OUTPUT_ITEM", "Crafted Item", 1));
-                    newRecipes.add(new RecipeData(machine.getId() + "_recipe_1", machine.getId(), inputs, outputs));
+                    newRecipes.add(new RecipeData(
+                        machine.getId() + "_recipe_1", 
+                        machine.getId(), 
+                        inputs, 
+                        outputs
+                    ));
                 }
             }
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            // Ignore
+        }
         availableRecipes = newRecipes;
     }
     
     /**
-     * âœ… FIXED: Render overlay with proper Z-index using blitSprite
+     * FIXED: Render overlay with proper Z-index
      * In MC 1.21.8, we need to use higher Z-index for all rendering operations
      */
     public static void render(GuiGraphics graphics, float partialTicks) {
@@ -153,13 +198,15 @@ public class RecipeOverlayRenderer {
             return;
         }
         
-        if (!overlayVisible || currentMachine == null || availableRecipes.isEmpty()) return;
+        if (!overlayVisible || currentMachine == null || availableRecipes.isEmpty()) {
+            return;
+        }
         
         try {
             int alpha = calculateAlpha();
             if (alpha <= 0) return;
             
-            // âœ… CRITICAL FIX: Set high Z-index for all rendering
+            // CRITICAL FIX: Set high Z-index for all rendering
             // Container GUI typically renders at Z=0-200, we use 500 to be on top
             int highZ = 500;
             
@@ -186,34 +233,43 @@ public class RecipeOverlayRenderer {
         try {
             JsonObject animation = config.getAsJsonObject("overlay").getAsJsonObject("animation");
             if (!animation.get("enabled").getAsBoolean()) return 255;
+            
             long elapsed = System.currentTimeMillis() - fadeStartTime;
-            int duration = fadingIn ? animation.get("fadeInDuration").getAsInt() : animation.get("fadeOutDuration").getAsInt();
-            if (elapsed >= duration) return fadingIn ? 255 : 0;
+            int duration = fadingIn ? 
+                animation.get("fadeInDuration").getAsInt() : 
+                animation.get("fadeOutDuration").getAsInt();
+            
+            if (elapsed >= duration) {
+                return fadingIn ? 255 : 0;
+            }
+            
             float progress = (float) elapsed / duration;
             return (int) (fadingIn ? progress * 255 : (1 - progress) * 255);
-        } catch (Exception e) { return 255; }
+        } catch (Exception e) { 
+            return 255; 
+        }
     }
     
     /**
-     * âœ… FIXED: More opaque background, thicker borders, shadow effect WITH Z-INDEX
+     * FIXED: More opaque background, thicker borders, shadow effect WITH Z-INDEX
      */
     private static void renderBackground(GuiGraphics graphics, int yPos, int alpha, int zIndex) {
         try {
             int totalHeight = calculateTotalHeight();
             
-            // âœ… FIX: Minimum 220 alpha for better visibility
+            // FIX: Minimum 220 alpha for better visibility
             int bgAlpha = Math.max(alpha, 220);
             int bgColor = getColorWithAlpha("background", bgAlpha);
             int borderColor = getColorWithAlpha("border", 255); // Always full opacity!
             
-            // âœ… FIX: Add shadow for depth
+            // FIX: Add shadow for depth
             int shadowColor = 0x80000000; // Semi-transparent black
             graphics.fill(posX + 2, yPos + 2, posX + width + 2, yPos + totalHeight + 2, shadowColor);
             
-            // Draw main background with Z-index
+            // Draw main background
             graphics.fill(posX, yPos, posX + width, yPos + totalHeight, bgColor);
             
-            // âœ… FIX: Thicker borders (2px instead of 1px)
+            // FIX: Thicker borders (2px instead of 1px)
             graphics.fill(posX, yPos, posX + width, yPos + 2, borderColor); // Top
             graphics.fill(posX, yPos + totalHeight - 2, posX + width, yPos + totalHeight, borderColor); // Bottom
             graphics.fill(posX, yPos, posX + 2, yPos + totalHeight, borderColor); // Left
@@ -225,71 +281,92 @@ public class RecipeOverlayRenderer {
     }
     
     /**
-     * âœ… FIXED: Bright yellow title with shadow for better visibility WITH Z-INDEX
+     * FIXED: Bright yellow title with shadow for better visibility WITH Z-INDEX
      */
     private static int renderTitle(GuiGraphics graphics, int yPos, int alpha, int zIndex) {
         try {
             Minecraft mc = Minecraft.getInstance();
             
-            // âœ… FIX: Bright yellow, always visible!
+            // FIX: Bright yellow, always visible!
             int textColor = 0xFFFFFF00; // Bright yellow
             
             String title = currentMachine != null ? currentMachine.getName() : "Recipes";
             
-            // âœ… FIX: Add shadow for better readability
+            // FIX: Add shadow for better readability
             graphics.drawCenteredString(mc.font, title, posX + width / 2 + 1, yPos + 1, 0xFF000000); // Shadow
             graphics.drawCenteredString(mc.font, title, posX + width / 2, yPos, textColor); // Main
             
             return yPos + mc.font.lineHeight + spacing;
-        } catch (Exception e) { return yPos; }
+        } catch (Exception e) { 
+            return yPos; 
+        }
     }
     
     private static int renderRecipeList(GuiGraphics graphics, int startY, int alpha, int zIndex) {
         try {
             Minecraft mc = Minecraft.getInstance();
             if (mc.player == null) return startY;
+            
             List<ItemStack> inventory = getPlayerInventory(mc.player);
             int yPos = startY;
             int recipeCount = availableRecipes.size();
+            
             if (recipeCount == 0) return yPos;
+            
             int visibleStart = Math.max(0, Math.min(scrollOffset, recipeCount - 1));
             int visibleEnd = Math.min(visibleStart + maxVisible, recipeCount);
-            List<RecipeData> recipesToRender = new ArrayList<>(availableRecipes.subList(visibleStart, visibleEnd));
+            
+            List<RecipeData> recipesToRender = new ArrayList<>(
+                availableRecipes.subList(visibleStart, visibleEnd)
+            );
+            
             for (int i = 0; i < recipesToRender.size(); i++) {
                 RecipeData recipe = recipesToRender.get(i);
                 boolean isSelected = ((visibleStart + i) == selectedIndex);
-                yPos = renderRecipeEntry(graphics, recipe, visibleStart + i, yPos, alpha, isSelected, inventory, zIndex);
+                yPos = renderRecipeEntry(
+                    graphics, recipe, visibleStart + i, yPos, 
+                    alpha, isSelected, inventory, zIndex
+                );
                 yPos += spacing;
             }
+            
             return yPos;
-        } catch (Exception e) { return startY; }
+        } catch (Exception e) { 
+            return startY; 
+        }
     }
     
     private static String formatItemName(String itemId) {
         if (itemId == null || itemId.isEmpty()) return "Unknown";
+        
         String[] words = itemId.toLowerCase().split("_");
         StringBuilder sb = new StringBuilder();
+        
         for (String word : words) {
             if (sb.length() > 0) sb.append(" ");
-            if (!word.isEmpty()) { sb.append(Character.toUpperCase(word.charAt(0))); sb.append(word.substring(1)); }
+            if (!word.isEmpty()) { 
+                sb.append(Character.toUpperCase(word.charAt(0)));
+                sb.append(word.substring(1)); 
+            }
         }
+        
         return sb.toString();
     }
     
     /**
-     * âœ… FIXED: Yellow highlight for selected item, better text contrast WITH Z-INDEX
+     * FIXED: Yellow highlight for selected item, better text contrast WITH Z-INDEX
      */
     private static int renderRecipeEntry(GuiGraphics graphics, RecipeData recipe, int index, int yPos, 
                                          int alpha, boolean isSelected, List<ItemStack> inventory, int zIndex) {
         try {
             Minecraft mc = Minecraft.getInstance();
             
-            // âœ… FIX: Brighter highlight + yellow border
+            // FIX: Brighter highlight + yellow border
             if (isSelected) {
                 int highlightColor = getColorWithAlpha("selectedBackground", 240);
                 graphics.fill(posX + 2, yPos, posX + width - 2, yPos + entryHeight, highlightColor);
                 
-                // âœ… FIX: Add yellow border for extra visibility
+                // FIX: Add yellow border for extra visibility
                 int yellowBorder = 0xFFFFFF00;
                 graphics.fill(posX + 2, yPos, posX + width - 2, yPos + 1, yellowBorder); // Top
                 graphics.fill(posX + 2, yPos + entryHeight - 1, posX + width - 2, yPos + entryHeight, yellowBorder); // Bottom
@@ -298,16 +375,23 @@ public class RecipeOverlayRenderer {
             int textX = posX + padding; 
             int textY = yPos + 4;
             
-            // âœ… FIX: Yellow for selected, white for normal
+            // FIX: Yellow for selected, white for normal
             int textColor = isSelected ? 0xFFFFFF00 : 0xFFFFFFFF;
             
             StringBuilder line1 = new StringBuilder();
-            if (showIndex) line1.append(index + 1).append(". ");
+            if (showIndex) {
+                line1.append(index + 1).append(". ");
+            }
+            
             RecipeData.RecipeOutput primaryOutput = recipe.getPrimaryOutput();
             if (primaryOutput != null && showOutput) {
                 line1.append(primaryOutput.getDisplayName());
-                if (primaryOutput.getAmount() > 1) line1.append(" x").append(primaryOutput.getAmount());
-            } else line1.append("Unknown Output");
+                if (primaryOutput.getAmount() > 1) {
+                    line1.append(" x").append(primaryOutput.getAmount());
+                }
+            } else {
+                line1.append("Unknown Output");
+            }
             
             graphics.drawString(mc.font, line1.toString(), textX, textY, textColor);
             textY += mc.font.lineHeight + 2;
@@ -316,49 +400,62 @@ public class RecipeOverlayRenderer {
                 Map<String, Integer> inputs = recipe.getGroupedInputs();
                 StringBuilder inputStr = new StringBuilder();
                 int i = 0;
+                
                 for (Map.Entry<String, Integer> entry : inputs.entrySet()) {
                     if (i > 0) inputStr.append(" + ");
                     inputStr.append(formatItemName(entry.getKey()));
-                    if (entry.getValue() > 1) inputStr.append(" x").append(entry.getValue());
+                    if (entry.getValue() > 1) {
+                        inputStr.append(" x").append(entry.getValue());
+                    }
                     i++;
-                    if (i >= 3 && inputs.size() > 3) { inputStr.append("..."); break; }
+                    if (i >= 3 && inputs.size() > 3) { 
+                        inputStr.append("..."); 
+                        break; 
+                    }
                 }
                 
-                // âœ… FIX: Lighter gray for better visibility
+                // FIX: Lighter gray for better visibility
                 int grayColor = isSelected ? 0xFFAAAAAA : 0xFF888888;
                 graphics.drawString(mc.font, inputStr.toString(), textX + 10, textY, grayColor);
                 textY += mc.font.lineHeight;
             }
             
             if (showCompletion) {
-                RecipeHandler.RecipeSummary summary = new RecipeHandler.RecipeSummary(inventory, recipe.getInputs());
+                RecipeHandler.RecipeSummary summary = new RecipeHandler.RecipeSummary(
+                    inventory, recipe.getInputs()
+                );
                 float completion = summary.getCompletionPercentage();
                 
-                // âœ… FIX: Bright green/red for completion
+                // FIX: Bright green/red for completion
                 int completionColor = completion >= 1.0f ? 0xFF00FF00 : 0xFFFF5555;
                 String completionText = String.format("%.0f%%", completion * 100);
                 graphics.drawString(mc.font, completionText, textX + 10, textY, completionColor);
             }
+            
             return yPos + entryHeight;
-        } catch (Exception e) { return yPos + entryHeight; }
+        } catch (Exception e) { 
+            return yPos + entryHeight; 
+        }
     }
     
     /**
-     * âœ… FIXED: White text with shadow for better visibility WITH Z-INDEX
+     * FIXED: White text with shadow for better visibility WITH Z-INDEX
      */
     private static void renderKeybindHints(GuiGraphics graphics, int yPos, int alpha, int zIndex) {
         try {
             Minecraft mc = Minecraft.getInstance();
             
-            // âœ… FIX: Bright white text
+            // FIX: Bright white text
             int textColor = 0xFFFFFFFF;
             
-            String hints = "[â†‘â†“] Navigate  [Enter] Select  [R/Esc] Close";
+            String hints = "[] Navigate  [Enter] Select  [R/Esc] Close";
             
-            // âœ… FIX: Add shadow
+            // FIX: Add shadow
             graphics.drawCenteredString(mc.font, hints, posX + width / 2 + 1, yPos + 1, 0xFF000000);
             graphics.drawCenteredString(mc.font, hints, posX + width / 2, yPos, textColor);
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            // Ignore
+        }
     }
     
     private static int calculateTotalHeight() {
@@ -367,11 +464,18 @@ public class RecipeOverlayRenderer {
             int height = padding * 2;
             height += mc.font.lineHeight + spacing;
             height += spacing;
+            
             int visibleRecipes = Math.min(maxVisible, availableRecipes.size());
             height += visibleRecipes * (entryHeight + spacing);
-            if (showKeybinds) height += mc.font.lineHeight + spacing;
+            
+            if (showKeybinds) {
+                height += mc.font.lineHeight + spacing;
+            }
+            
             return Math.min(height, maxHeight);
-        } catch (Exception e) { return maxHeight; }
+        } catch (Exception e) { 
+            return maxHeight; 
+        }
     }
     
     private static int getColor(String colorName, int alpha) {
@@ -379,14 +483,18 @@ public class RecipeOverlayRenderer {
         try {
             JsonObject colors = config.getAsJsonObject("overlay").getAsJsonObject("colors");
             JsonObject color = colors.getAsJsonObject(colorName);
-            int r = color.get("r").getAsInt(); int g = color.get("g").getAsInt(); int b = color.get("b").getAsInt();
+            int r = color.get("r").getAsInt(); 
+            int g = color.get("g").getAsInt(); 
+            int b = color.get("b").getAsInt();
             int a = Math.min(alpha, color.get("a").getAsInt());
             return (a << 24) | (r << 16) | (g << 8) | b;
-        } catch (Exception e) { return (alpha << 24) | 0xFFFFFF; }
+        } catch (Exception e) { 
+            return (alpha << 24) | 0xFFFFFF; 
+        }
     }
     
     /**
-     * âœ… NEW: Helper method for custom alpha values
+     * NEW: Helper method for custom alpha values
      */
     private static int getColorWithAlpha(String colorName, int alpha) {
         if (config == null) return (alpha << 24) | 0xFFFFFF;
@@ -408,56 +516,104 @@ public class RecipeOverlayRenderer {
         try {
             for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
                 ItemStack stack = player.getInventory().getItem(i);
-                if (!stack.isEmpty()) stacks.add(stack);
+                if (!stack.isEmpty()) {
+                    stacks.add(stack);
+                }
             }
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            // Ignore
+        }
         return stacks;
     }
     
     public static void moveUp() {
         if (availableRecipes == null || availableRecipes.isEmpty()) return;
         selectedIndex--;
-        if (selectedIndex < 0) selectedIndex = availableRecipes.size() - 1;
+        if (selectedIndex < 0) {
+            selectedIndex = availableRecipes.size() - 1;
+        }
         updateScrollOffset();
     }
     
     public static void moveDown() {
         if (availableRecipes == null || availableRecipes.isEmpty()) return;
         selectedIndex++;
-        if (selectedIndex >= availableRecipes.size()) selectedIndex = 0;
+        if (selectedIndex >= availableRecipes.size()) {
+            selectedIndex = 0;
+        }
         updateScrollOffset();
     }
     
     private static void updateScrollOffset() {
-        if (availableRecipes == null || availableRecipes.isEmpty()) { scrollOffset = 0; return; }
+        if (availableRecipes == null || availableRecipes.isEmpty()) { 
+            scrollOffset = 0; 
+            return; 
+        }
+        
         int recipeCount = availableRecipes.size();
         selectedIndex = Math.max(0, Math.min(selectedIndex, recipeCount - 1));
-        if (selectedIndex < scrollOffset) scrollOffset = selectedIndex;
-        else if (selectedIndex >= scrollOffset + maxVisible) scrollOffset = selectedIndex - maxVisible + 1;
+        
+        if (selectedIndex < scrollOffset) {
+            scrollOffset = selectedIndex;
+        } else if (selectedIndex >= scrollOffset + maxVisible) {
+            scrollOffset = selectedIndex - maxVisible + 1;
+        }
+        
         scrollOffset = Math.max(0, Math.min(scrollOffset, Math.max(0, recipeCount - maxVisible)));
     }
     
     public static void selectCurrent() {
         if (availableRecipes == null || availableRecipes.isEmpty()) return;
-        if (selectedIndex < 0 || selectedIndex >= availableRecipes.size()) { selectedIndex = 0; return; }
+        
+        if (selectedIndex < 0 || selectedIndex >= availableRecipes.size()) { 
+            selectedIndex = 0; 
+            return; 
+        }
+        
         RecipeData selected = availableRecipes.get(selectedIndex);
         UnifiedAutomationManager.setSelectedRecipe(selected.getRecipeId());
         
         try {
             Minecraft.getInstance().player.displayClientMessage(
-                Component.literal("Â§a[Slimefun] Selected: Â§f" + selected.getDisplayString()), true
+                Component.literal("§a[Slimefun] Selected: §f" + selected.getDisplayString()), 
+                true
             );
-        } catch(Exception e) {}
+        } catch(Exception e) {
+            // Ignore
+        }
         
         hide();
     }
     
-    public static boolean isVisible() { return overlayVisible; }
-    public static int getSelectedIndex() { return selectedIndex; }
-    public static List<RecipeData> getAvailableRecipes() { return availableRecipes == null ? new ArrayList<>() : new ArrayList<>(availableRecipes); }
-    public static SlimefunMachineData getCurrentMachine() { return currentMachine; }
-    public static int getScrollOffset() { return scrollOffset; }
-    public static int getPosX() { return posX; }
-    public static int getPosY() { return posY; }
-    public static int getEntryHeight() { return entryHeight; }
+    public static boolean isVisible() { 
+        return overlayVisible; 
+    }
+    
+    public static int getSelectedIndex() { 
+        return selectedIndex; 
+    }
+    
+    public static List<RecipeData> getAvailableRecipes() { 
+        return availableRecipes == null ? new ArrayList<>() : new ArrayList<>(availableRecipes); 
+    }
+    
+    public static SlimefunMachineData getCurrentMachine() { 
+        return currentMachine; 
+    }
+    
+    public static int getScrollOffset() { 
+        return scrollOffset; 
+    }
+    
+    public static int getPosX() { 
+        return posX; 
+    }
+    
+    public static int getPosY() { 
+        return posY; 
+    }
+    
+    public static int getEntryHeight() { 
+        return entryHeight; 
+    }
 }

@@ -52,7 +52,6 @@ public class AutomationUtils {
         String targetId = parts[0];
         String itemId = getItemId(stack);
         
-        // Debug logic (bisa dihapus nanti)
         // System.out.println("Comparing " + itemId + " with target " + targetId);
         
         return targetId.equalsIgnoreCase(itemId);
@@ -102,9 +101,6 @@ public class AutomationUtils {
         return slot.container == menu.slots.get(menu.slots.size() - 1).container;
     }
     
-    /**
-     * Format slot info for debugging
-     */
     public static String formatSlotInfo(Slot slot, int index) {
         if (slot == null) return "Slot " + index + ": null";
         
@@ -114,7 +110,6 @@ public class AutomationUtils {
         }
         
         return String.format("Slot %d: %s x%d", 
-            index, 
             getItemId(stack), 
             stack.getCount()
         );

@@ -11,15 +11,12 @@ import org.lwjgl.glfw.GLFW;
 
 /**
  * Handles keybind registration and input
- * K = Toggle automation, J = Debug info, R = Recipe overlay, M = Mode settings
+ * K = Toggle automation, R = Recipe overlay, M = Mode settings
  */
 public class ModKeybinds {
     
     // K = Toggle automation on/off
     private static KeyMapping toggleAutomationKey;
-    
-    // J = Debug info
-    private static KeyMapping debugInfoKey;
     
     // R = Toggle recipe overlay (handled in mixin)
     private static KeyMapping recipeOverlayKey;
@@ -35,13 +32,6 @@ public class ModKeybinds {
         toggleAutomationKey = KeyBindingHelper.registerKeyBinding(new KeyMapping(
             "key.bapel-slimefun-mod.toggle_automation",
             GLFW.GLFW_KEY_K,
-            "category.bapel-slimefun-mod.automation"
-        ));
-        
-        // J = Debug info
-        debugInfoKey = KeyBindingHelper.registerKeyBinding(new KeyMapping(
-            "key.bapel-slimefun-mod.debug_info",
-            GLFW.GLFW_KEY_J,
             "category.bapel-slimefun-mod.automation"
         ));
         
@@ -74,11 +64,6 @@ public class ModKeybinds {
             handleToggleAutomation();
         }
         
-        // J = Debug info
-        while (debugInfoKey.consumeClick()) {
-            handleDebugInfo();
-        }
-        
         // M = Mode settings
         while (modeSettingsKey.consumeClick()) {
             handleModeSettings(mc);
@@ -109,13 +94,6 @@ public class ModKeybinds {
     }
     
     /**
-     * Handle J = Debug info
-     */
-    private static void handleDebugInfo() {
-        AutomationManager.showDetailedStatus();
-    }
-    
-    /**
      * Handle M = Mode settings
      */
     private static void handleModeSettings(Minecraft mc) {
@@ -134,13 +112,6 @@ public class ModKeybinds {
      */
     public static KeyMapping getToggleAutomationKey() {
         return toggleAutomationKey;
-    }
-    
-    /**
-     * Get the debug info keybind (for mixin access)
-     */
-    public static KeyMapping getDebugInfoKey() {
-        return debugInfoKey;
     }
     
     /**

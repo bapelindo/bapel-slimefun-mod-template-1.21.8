@@ -22,7 +22,6 @@ public class ModConfig {
     // Automation settings
     private boolean automationEnabled = true;
     private int automationDelayMs = 200;
-    private boolean debugMode = false;
     
     // Overlay settings (NEW)
     private boolean autoShowOverlay = false;
@@ -44,7 +43,6 @@ public class ModConfig {
         if (Files.exists(configPath)) {
             try (Reader reader = Files.newBufferedReader(configPath)) {
                 ModConfig config = GSON.fromJson(reader, ModConfig.class);
-                LOGGER.info("Configuration loaded from {}", configPath);
                 return config;
             } catch (Exception e) {
                 LOGGER.error("Failed to load configuration, using defaults", e);
@@ -70,7 +68,6 @@ public class ModConfig {
             // Write config to file
             try (Writer writer = Files.newBufferedWriter(configPath)) {
                 GSON.toJson(this, writer);
-                LOGGER.info("Configuration saved to {}", configPath);
             }
         } catch (Exception e) {
             LOGGER.error("Failed to save configuration", e);
@@ -130,20 +127,9 @@ public class ModConfig {
         save();
     }
     
-    /**
-     * Check if debug mode is enabled
-     */
-    public boolean isDebugMode() {
-        return debugMode;
-    }
     
-    /**
-     * Set debug mode enabled state
-     */
-    public void setDebugMode(boolean debugMode) {
-        this.debugMode = debugMode;
-        save();
-    }
+    
+    
     
     // ========================================
     // OVERLAY SETTINGS - Getters/Setters (NEW)
@@ -218,7 +204,6 @@ public class ModConfig {
         return "ModConfig{" +
                 "automationEnabled=" + automationEnabled +
                 ", automationDelayMs=" + automationDelayMs +
-                ", debugMode=" + debugMode +
                 ", autoShowOverlay=" + autoShowOverlay +
                 ", enableOverlayAnimations=" + enableOverlayAnimations +
                 ", overlayPositionX=" + overlayPositionX +

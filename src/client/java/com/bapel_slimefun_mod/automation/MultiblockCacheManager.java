@@ -16,7 +16,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * ✅ NEW SYSTEM: Multi-machine cache with position tracking
+ * Multi-machine cache with position tracking
  * 
  * Stores multiple multiblock machines with their positions
  * Automatically detects which machine user is near based on position
@@ -49,11 +49,25 @@ public class MultiblockCacheManager {
             this.lastSelectedRecipe = null;
         }
         
-        public String getMachineId() { return machineId; }
-        public String getMachineName() { return machineName; }
-        public BlockPos getPosition() { return position; }
-        public long getConstructedTime() { return constructedTime; }
-        public String getLastSelectedRecipe() { return lastSelectedRecipe; }
+        public String getMachineId() { 
+            return machineId; 
+        }
+        
+        public String getMachineName() { 
+            return machineName; 
+        }
+        
+        public BlockPos getPosition() { 
+            return position; 
+        }
+        
+        public long getConstructedTime() { 
+            return constructedTime; 
+        }
+        
+        public String getLastSelectedRecipe() { 
+            return lastSelectedRecipe; 
+        }
         
         public void setLastSelectedRecipe(String recipeId) {
             this.lastSelectedRecipe = recipeId;
@@ -81,8 +95,6 @@ public class MultiblockCacheManager {
                     machineCache.putAll(loaded);
                 }
                 
-                BapelSlimefunMod.LOGGER.info("[MultiblockCache] Loaded {} cached machines", 
-                    machineCache.size());
                 isLoaded = true;
                 return;
             } catch (Exception e) {
@@ -91,7 +103,6 @@ public class MultiblockCacheManager {
         }
         
         isLoaded = true;
-        BapelSlimefunMod.LOGGER.info("[MultiblockCache] Created new cache");
     }
     
     /**
@@ -107,8 +118,6 @@ public class MultiblockCacheManager {
             
             try (Writer writer = Files.newBufferedWriter(cachePath)) {
                 GSON.toJson(machineCache, writer);
-                BapelSlimefunMod.LOGGER.info("[MultiblockCache] Saved {} machines to cache", 
-                    machineCache.size());
             }
         } catch (Exception e) {
             BapelSlimefunMod.LOGGER.error("[MultiblockCache] Failed to save cache", e);
@@ -116,7 +125,7 @@ public class MultiblockCacheManager {
     }
     
     /**
-     * ✅ CORE: Add machine to cache (called when "successfully constructed" appears)
+     * Add machine to cache (called when "successfully constructed" appears)
      */
     public static void addMachine(SlimefunMachineData machine, BlockPos position) {
         if (!isLoaded) load();
@@ -130,13 +139,10 @@ public class MultiblockCacheManager {
         
         machineCache.put(posKey, cached);
         save();
-        
-        BapelSlimefunMod.LOGGER.info("[MultiblockCache] ✓ Cached: {} at {}", 
-            machine.getName(), position);
     }
     
     /**
-     * ✅ CORE: Find nearest machine to player position
+     * Find nearest machine to player position
      */
     public static CachedMultiblock findNearestMachine(BlockPos playerPos) {
         if (!isLoaded) load();
@@ -151,11 +157,6 @@ public class MultiblockCacheManager {
                 nearest = machine;
                 nearestDistance = distance;
             }
-        }
-        
-        if (nearest != null) {
-            BapelSlimefunMod.LOGGER.info("[MultiblockCache] Found nearest: {} (distance: {:.1f})", 
-                nearest.getMachineName(), Math.sqrt(nearestDistance));
         }
         
         return nearest;
@@ -183,9 +184,6 @@ public class MultiblockCacheManager {
         if (machine != null) {
             machine.setLastSelectedRecipe(recipeId);
             save();
-            
-            BapelSlimefunMod.LOGGER.info("[MultiblockCache] Updated recipe for {}: {}", 
-                machine.getMachineName(), recipeId);
         }
     }
     
@@ -200,7 +198,6 @@ public class MultiblockCacheManager {
         
         if (removed != null) {
             save();
-            BapelSlimefunMod.LOGGER.info("[MultiblockCache] Removed: {}", removed);
         }
     }
     
@@ -210,11 +207,8 @@ public class MultiblockCacheManager {
     public static void clearAll() {
         if (!isLoaded) load();
         
-        int count = machineCache.size();
         machineCache.clear();
         save();
-        
-        BapelSlimefunMod.LOGGER.info("[MultiblockCache] Cleared {} machines from cache", count);
     }
     
     /**
@@ -241,6 +235,14 @@ public class MultiblockCacheManager {
     }
     
     /**
+     * Get cache size
+     */
+    public static int size() {
+        if (!isLoaded) load();
+        return machineCache.size();
+    }
+    
+    /**
      * Convert BlockPos to unique string key
      */
     private static String getPositionKey(BlockPos pos) {
@@ -252,25 +254,5 @@ public class MultiblockCacheManager {
      */
     private static Path getCachePath() {
         return Paths.get("config", CACHE_FILE);
-    }
-    
-    /**
-     * Print cache contents (debug)
-     */
-    public static void printCache() {
-        BapelSlimefunMod.LOGGER.info("╔═══════════════════════════════════════╗");
-        BapelSlimefunMod.LOGGER.info("║   MULTIBLOCK CACHE CONTENTS            ║");
-        BapelSlimefunMod.LOGGER.info("╠═══════════════════════════════════════╣");
-        BapelSlimefunMod.LOGGER.info("║ Total: {} machines", machineCache.size());
-        
-        int i = 1;
-        for (CachedMultiblock machine : machineCache.values()) {
-            BapelSlimefunMod.LOGGER.info("║ {}. {}", i++, machine);
-            if (machine.getLastSelectedRecipe() != null) {
-                BapelSlimefunMod.LOGGER.info("║    Recipe: {}", machine.getLastSelectedRecipe());
-            }
-        }
-        
-        BapelSlimefunMod.LOGGER.info("╚═══════════════════════════════════════╝");
     }
 }

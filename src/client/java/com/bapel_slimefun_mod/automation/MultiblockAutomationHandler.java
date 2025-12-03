@@ -36,7 +36,6 @@ public class MultiblockAutomationHandler {
     private static int nextSlotIndex = 0;
     public static void init(ModConfig cfg) {
         config = cfg;
-        BapelSlimefunMod.LOGGER.info("[MultiblockAuto] Handler initialized");
     }
     
     /**
@@ -44,7 +43,6 @@ public class MultiblockAutomationHandler {
      */
     public static void setSelectedRecipe(String recipeId) {
         selectedRecipeId = recipeId;
-        BapelSlimefunMod.LOGGER.info("[MultiblockAuto] Selected recipe: {}", recipeId);
     }
     
     public static String getSelectedRecipe() {
@@ -101,7 +99,6 @@ if (player.containerMenu instanceof DispenserMenu) {
         boolean inserted = autoFillDispenser(player, level, dispenserPos, recipe);
         
         if (inserted) {
-            BapelSlimefunMod.LOGGER.info("[MultiblockAuto] Auto-filled dispenser with recipe items");
         }
     }
     
@@ -245,7 +242,7 @@ private static boolean autoFillDispenser(LocalPlayer player, Level level, BlockP
             String hoverName = stack.getHoverName().getString();
             if (hoverName != null && !hoverName.isEmpty()) {
                 // Clean color codes and format as ID
-                String cleaned = hoverName.replaceAll("Â§[0-9a-fk-or]", "");
+                String cleaned = hoverName.replaceAll("§[0-9a-fk-or]", "");
                 if (!cleaned.isEmpty() && !cleaned.equals(stack.getItem().toString())) {
                     return cleaned.trim().toUpperCase().replace(" ", "_");
                 }
@@ -303,7 +300,6 @@ private static boolean autoFillDispenser(LocalPlayer player, Level level, BlockP
     public static void reset() {
         selectedRecipeId = null;
         lastProcessTime = 0;
-        BapelSlimefunMod.LOGGER.info("[MultiblockAuto] Reset");
     }
     
     /**

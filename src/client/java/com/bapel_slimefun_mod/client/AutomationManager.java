@@ -44,13 +44,12 @@ public class AutomationManager {
             // Aktifkan automation
             MachineAutomationHandler.setAutomationEnabled(true);
             
-            BapelSlimefunMod.LOGGER.info("[AutomationManager] Automation started for recipe: {}", recipeId);
             
             if (showMessage) {
                 SlimefunMachineData machine = MachineAutomationHandler.getCurrentMachine();
                 String machineName = machine != null ? machine.getName() : "Unknown";
                 
-                showPlayerMessage("§a✓ Automation Started!", false);
+                showPlayerMessage("§a Automation Started!", false);
                 showPlayerMessage("§7Machine: §f" + machineName, false);
                 showPlayerMessage("§7Recipe: §f" + recipeId, false);
                 showPlayerMessage("§7System akan otomatis menaruh input dan mengambil output", false);
@@ -80,10 +79,9 @@ public class AutomationManager {
     public static void stopAutomation(boolean showMessage) {
         MachineAutomationHandler.setAutomationEnabled(false);
         
-        BapelSlimefunMod.LOGGER.info("[AutomationManager] Automation stopped");
         
         if (showMessage) {
-            showPlayerMessage("§e⏸ Automation Stopped", true);
+            showPlayerMessage("§e Automation Stopped", true);
         }
     }
     
@@ -134,7 +132,7 @@ public class AutomationManager {
         SlimefunMachineData machine = MachineAutomationHandler.getCurrentMachine();
         
         StringBuilder status = new StringBuilder();
-        status.append(enabled ? "§a●" : "§c●");
+        status.append(enabled ? "§a" : "§c");
         status.append(" Automation: ");
         status.append(enabled ? "§aENABLED" : "§cDISABLED");
         
@@ -213,7 +211,6 @@ public class AutomationManager {
      */
     public static void clearSelectedRecipe() {
         UnifiedAutomationManager.setSelectedRecipe(null);
-        BapelSlimefunMod.LOGGER.info("[AutomationManager] Recipe cleared");
     }
     
     /**

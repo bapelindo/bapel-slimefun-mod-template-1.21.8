@@ -17,7 +17,6 @@ public class RecipeOverlayInputHandler {
         }
         
         if (key == GLFW.GLFW_KEY_R) {
-            BapelSlimefunMod.LOGGER.info("║ handleKeyPress: R key detected");
             return handleToggleKey();
         }
         
@@ -100,17 +99,11 @@ public class RecipeOverlayInputHandler {
         long now = System.currentTimeMillis();
         
         if (now - lastToggleTime < TOGGLE_COOLDOWN) {
-            BapelSlimefunMod.LOGGER.debug("║ Toggle cooldown active, ignoring R press");
             return true;
         }
         
         lastToggleTime = now;
-        
-        BapelSlimefunMod.LOGGER.info("║ Toggling recipe overlay...");
         RecipeOverlayRenderer.toggle();
-        
-        BapelSlimefunMod.LOGGER.info("║ Recipe overlay visible: {}", 
-            RecipeOverlayRenderer.isVisible());
         
         return true;
     }

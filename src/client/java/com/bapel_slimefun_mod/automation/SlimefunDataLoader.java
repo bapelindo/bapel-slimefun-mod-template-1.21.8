@@ -30,14 +30,11 @@ public class SlimefunDataLoader {
         if (loaded) return;
         
         try {
-            BapelSlimefunMod.LOGGER.info("[DataLoader] Starting to load Slimefun data...");
             
             // Load machines from slimefun_machines.json
             loadMachinesData();
             
             loaded = true;
-            BapelSlimefunMod.LOGGER.info("[DataLoader] Successfully loaded {} Slimefun machines", 
-                MACHINES.size());
             
         } catch (Exception e) {
             BapelSlimefunMod.LOGGER.error("[DataLoader] Failed to load Slimefun data", e);
@@ -101,14 +98,10 @@ public class SlimefunDataLoader {
                     loadedCount++;
                     
                     if (loadedCount <= 10) {
-                        BapelSlimefunMod.LOGGER.info("[DataLoader]   Loaded {}: '{}' ({})", 
-                            type, id, cleanedTitle);
                     }
                 }
             }
             
-            BapelSlimefunMod.LOGGER.info("[DataLoader] Loaded {} machines ({} multiblock, {} electric)", 
-                loadedCount, multiblockCount, loadedCount - multiblockCount);
             
         } catch (Exception e) {
             BapelSlimefunMod.LOGGER.error("[DataLoader] Failed to load machines data", e);
@@ -218,8 +211,8 @@ public class SlimefunDataLoader {
         String cleaned = title.replaceAll("§.", "");
         
         // Remove alternative encoding (common in broken UTF-8)
-        cleaned = cleaned.replaceAll("Â§.", "");
-        cleaned = cleaned.replaceAll("Â", "");
+        cleaned = cleaned.replaceAll("§.", "");
+        cleaned = cleaned.replaceAll("", "");
         
         // Remove & color codes
         cleaned = cleaned.replaceAll("&[0-9a-fk-or]", "");
@@ -242,12 +235,9 @@ public class SlimefunDataLoader {
     public static SlimefunMachineData getMachineByTitle(String title) {
         String cleanedTitle = cleanTitle(title);
         
-        BapelSlimefunMod.LOGGER.info("[DataLoader] Looking for machine: '{}'", title);
-        BapelSlimefunMod.LOGGER.info("[DataLoader] Cleaned: '{}'", cleanedTitle);
         
         // Special handling for Dispenser - might be a multiblock
         if ("Dispenser".equalsIgnoreCase(cleanedTitle)) {
-            BapelSlimefunMod.LOGGER.info("[DataLoader] Dispenser detected - checking for multiblock via Slimefun...");
             // Will be detected via Slimefun chat message or player interaction
             return null; // Return null for now, will be set later via chat detection
         }
@@ -256,31 +246,24 @@ public class SlimefunDataLoader {
         SlimefunMachineData machine = MACHINES.get(cleanedTitle);
         
         if (machine != null) {
-            BapelSlimefunMod.LOGGER.info("[DataLoader] ✓ Found exact match: {} ({})", 
-                machine.getId(), machine.isMultiblock() ? "MULTIBLOCK" : "ELECTRIC");
             return machine;
         }
         
         // Try by ID
         machine = MACHINES.get(title);
         if (machine != null) {
-            BapelSlimefunMod.LOGGER.info("[DataLoader] ✓ Found by ID: {} ({})", 
-                machine.getId(), machine.isMultiblock() ? "MULTIBLOCK" : "ELECTRIC");
             return machine;
         }
         
         // Try fuzzy matching
         String fuzzyTitle = cleanedTitle.replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
         
-        BapelSlimefunMod.LOGGER.warn("[DataLoader] ✗ No exact match, trying fuzzy: '{}'", fuzzyTitle);
         
         for (Map.Entry<String, SlimefunMachineData> entry : MACHINES.entrySet()) {
             String key = entry.getKey();
             String fuzzyKey = key.replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
             
             if (fuzzyTitle.equals(fuzzyKey)) {
-                BapelSlimefunMod.LOGGER.info("[DataLoader] ✓ Found fuzzy match: '{}' for '{}'", 
-                    key, cleanedTitle);
                 return entry.getValue();
             }
         }
@@ -290,13 +273,10 @@ public class SlimefunDataLoader {
             String key = entry.getKey();
             
             if (cleanedTitle.contains(key) || key.contains(cleanedTitle)) {
-                BapelSlimefunMod.LOGGER.info("[DataLoader] ✓ Found contains match: '{}' for '{}'", 
-                    key, cleanedTitle);
                 return entry.getValue();
             }
         }
         
-        BapelSlimefunMod.LOGGER.warn("[DataLoader] ✗ No match found for '{}'", title);
         return null;
     }
     
@@ -336,7 +316,6 @@ public class SlimefunDataLoader {
      * Reload data
      */
     public static void reload() {
-        BapelSlimefunMod.LOGGER.info("[DataLoader] Reloading...");
         MACHINES.clear();
         loaded = false;
         loadData();

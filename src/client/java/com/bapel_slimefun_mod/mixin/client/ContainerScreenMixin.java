@@ -31,37 +31,17 @@ public abstract class ContainerScreenMixin {
             if (title != null) {
                 String titleString = title.getString();
                 
-                BapelSlimefunMod.LOGGER.info("╔═══════════════════════════════════════╗");
-                BapelSlimefunMod.LOGGER.info("║  CONTAINER OPENED                      ║");
-                BapelSlimefunMod.LOGGER.info("╠═══════════════════════════════════════╣");
-                BapelSlimefunMod.LOGGER.info("║  Title: {}", titleString);
-                BapelSlimefunMod.LOGGER.info("║  Class: {}", screen.getClass().getSimpleName());
-                BapelSlimefunMod.LOGGER.info("╚═══════════════════════════════════════╝");
-                
                 // UPDATED: Use UnifiedAutomationManager instead of MachineAutomationHandler
                 UnifiedAutomationManager.onMachineOpen(titleString);
-                
-                if (UnifiedAutomationManager.getCurrentMachine() != null) {
-                    BapelSlimefunMod.LOGGER.info("✓ Machine detected: {} ({})", 
-                        UnifiedAutomationManager.getCurrentMachine().getId(),
-                        UnifiedAutomationManager.getCurrentMachine().isMultiblock() ? "MULTIBLOCK" : "ELECTRIC");
-                } else {
-                    BapelSlimefunMod.LOGGER.info("✗ Not a Slimefun machine");
-                }
             }
         } catch (Exception e) {
             BapelSlimefunMod.LOGGER.error("ERROR in onInit mixin", e);
-            e.printStackTrace();
         }
     }
     
     @Inject(method = "removed", at = @At("HEAD"))
     private void onRemoved(CallbackInfo ci) {
         try {
-            BapelSlimefunMod.LOGGER.info("â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—");
-            BapelSlimefunMod.LOGGER.info("â•‘  CONTAINER CLOSED                      â•‘");
-            BapelSlimefunMod.LOGGER.info("â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•");
-            
             // Hide overlay
             RecipeOverlayRenderer.hide();
             
@@ -69,14 +49,13 @@ public abstract class ContainerScreenMixin {
             UnifiedAutomationManager.onMachineClose();
         } catch (Exception e) {
             BapelSlimefunMod.LOGGER.error("ERROR in onRemoved mixin", e);
-            e.printStackTrace();
         }
     }
     
     @Inject(method = "render", at = @At("TAIL"))
     private void onRender(GuiGraphics graphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
         try {
-            // âœ… CRITICAL FIX: Render overlay at TAIL (after everything else)
+            // CRITICAL FIX: Render overlay at TAIL (after everything else)
             // This ensures it appears on top of all GUI elements including tooltips
             RecipeOverlayRenderer.render(graphics, partialTick);
         } catch (Exception e) {
@@ -88,15 +67,9 @@ public abstract class ContainerScreenMixin {
     private void onKeyPressed(int keyCode, int scanCode, int modifiers, 
                              CallbackInfoReturnable<Boolean> cir) {
         try {
-            // Log R key specifically
-            if (keyCode == GLFW.GLFW_KEY_R) {
-                BapelSlimefunMod.LOGGER.info("â•‘ R key pressed in container!");
-            }
-            
             // UPDATED: Use UnifiedAutomationManager for automation toggle
             if (ModKeybinds.getToggleAutomationKey().matches(keyCode, scanCode)) {
-                BapelSlimefunMod.LOGGER.info("â•‘ Automation key pressed in container!");
-                UnifiedAutomationManager.toggleAutomation();  // Changed from MachineAutomationHandler.toggle()
+                UnifiedAutomationManager.toggleAutomation();
                 cir.setReturnValue(true);
                 cir.cancel();
                 return;

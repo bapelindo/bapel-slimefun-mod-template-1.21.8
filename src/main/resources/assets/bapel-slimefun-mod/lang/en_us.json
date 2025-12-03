@@ -1,6 +1,5 @@
 {
   "key.bapel-slimefun-mod.toggle_automation": "Toggle Automation (K)",
-  "key.bapel-slimefun-mod.debug_info": "Debug Info (J)",
   "key.bapel-slimefun-mod.recipe_overlay": "Recipe Overlay (R)",
   "category.bapel-slimefun-mod.automation": "Slimefun Automation",
   
@@ -11,8 +10,6 @@
   "message.bapel-slimefun-mod.machine_detected": "§6Detected: §f%s",
   "message.bapel-slimefun-mod.auto_output": "§aAuto-Output: §f%s x%d",
   "message.bapel-slimefun-mod.auto_input": "§bAuto-Input: §f%s x%d",
-  "message.bapel-slimefun-mod.debug_printed": "§6Debug info printed to log",
-  "message.bapel-slimefun-mod.debug_disabled": "§cDebug mode is disabled",
   "message.bapel-slimefun-mod.overlay_opened": "§6Recipe Overlay Opened",
   "message.bapel-slimefun-mod.overlay_closed": "§7Recipe Overlay Closed",
   "message.bapel-slimefun-mod.recipe_selected": "§aSelected Recipe: §f%s",

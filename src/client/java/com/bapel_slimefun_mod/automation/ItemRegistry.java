@@ -35,9 +35,17 @@ public class ItemRegistry {
             this.category = category;
         }
         
-        public String getId() { return id; }
-        public String getName() { return name; }
-        public String getCategory() { return category; }
+        public String getId() { 
+            return id; 
+        }
+        
+        public String getName() { 
+            return name; 
+        }
+        
+        public String getCategory() { 
+            return category; 
+        }
         
         @Override
         public String toString() {
@@ -57,7 +65,6 @@ public class ItemRegistry {
         try {
             loadItems();
             initialized = true;
-            BapelSlimefunMod.LOGGER.info("Item Registry initialized with {} items", ITEMS_BY_ID.size());
         } catch (Exception e) {
             BapelSlimefunMod.LOGGER.error("Failed to initialize Item Registry", e);
         }
@@ -99,8 +106,6 @@ public class ItemRegistry {
                     BapelSlimefunMod.LOGGER.error("Failed to parse item: {}", itemObj, e);
                 }
             }
-            
-            BapelSlimefunMod.LOGGER.info("Loaded {} items from slimefun_items.json", loaded);
             
         } catch (Exception e) {
             BapelSlimefunMod.LOGGER.error("Failed to load items", e);
@@ -193,7 +198,6 @@ public class ItemRegistry {
      * Reload items from file
      */
     public static void reload() {
-        BapelSlimefunMod.LOGGER.info("Reloading item registry...");
         clear();
         initialize();
     }
@@ -206,26 +210,9 @@ public class ItemRegistry {
     }
     
     /**
-     * Print registry statistics
+     * Get registry size
      */
-    public static void printStats() {
-        BapelSlimefunMod.LOGGER.info("===== Item Registry Stats =====");
-        BapelSlimefunMod.LOGGER.info("Total Items: {}", ITEMS_BY_ID.size());
-        
-        // Count by category
-        Map<String, Integer> categoryCount = new HashMap<>();
-        for (SlimefunItemData item : ITEMS_BY_ID.values()) {
-            categoryCount.merge(item.getCategory(), 1, Integer::sum);
-        }
-        
-        BapelSlimefunMod.LOGGER.info("Categories:");
-        categoryCount.entrySet().stream()
-            .sorted((a, b) -> Integer.compare(b.getValue(), a.getValue()))
-            .limit(10)
-            .forEach(entry -> 
-                BapelSlimefunMod.LOGGER.info("  {}: {} items", entry.getKey(), entry.getValue())
-            );
-        
-        BapelSlimefunMod.LOGGER.info("================================");
+    public static int size() {
+        return ITEMS_BY_ID.size();
     }
 }

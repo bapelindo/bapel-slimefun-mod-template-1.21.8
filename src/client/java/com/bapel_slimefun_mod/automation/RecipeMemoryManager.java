@@ -39,8 +39,6 @@ public class RecipeMemoryManager {
                     recipeMemory = new HashMap<>();
                 }
                 
-                BapelSlimefunMod.LOGGER.info("[RecipeMemory] Loaded {} machine recipes from memory", 
-                    recipeMemory.size());
                 isLoaded = true;
                 return;
             } catch (Exception e) {
@@ -51,7 +49,6 @@ public class RecipeMemoryManager {
         // Create empty memory
         recipeMemory = new HashMap<>();
         isLoaded = true;
-        BapelSlimefunMod.LOGGER.info("[RecipeMemory] Created new recipe memory");
     }
     
     /**
@@ -72,8 +69,6 @@ public class RecipeMemoryManager {
             // Write memory to file
             try (Writer writer = Files.newBufferedWriter(memoryPath)) {
                 GSON.toJson(recipeMemory, writer);
-                BapelSlimefunMod.LOGGER.info("[RecipeMemory] Saved {} machine recipes", 
-                    recipeMemory.size());
             }
         } catch (Exception e) {
             BapelSlimefunMod.LOGGER.error("[RecipeMemory] Failed to save memory", e);
@@ -97,9 +92,6 @@ public class RecipeMemoryManager {
         
         recipeMemory.put(machineId, recipeId);
         save();
-        
-        BapelSlimefunMod.LOGGER.info("[RecipeMemory] Remembered recipe '{}' for machine '{}'", 
-            recipeId, machineId);
     }
     
     /**
@@ -116,14 +108,7 @@ public class RecipeMemoryManager {
             return null;
         }
         
-        String recipeId = recipeMemory.get(machineId);
-        
-        if (recipeId != null) {
-            BapelSlimefunMod.LOGGER.debug("[RecipeMemory] Retrieved recipe '{}' for machine '{}'", 
-                recipeId, machineId);
-        }
-        
-        return recipeId;
+        return recipeMemory.get(machineId);
     }
     
     /**
@@ -141,8 +126,6 @@ public class RecipeMemoryManager {
         
         recipeMemory.remove(machineId);
         save();
-        
-        BapelSlimefunMod.LOGGER.info("[RecipeMemory] Forgot recipe for machine '{}'", machineId);
     }
     
     /**
@@ -153,11 +136,8 @@ public class RecipeMemoryManager {
             load();
         }
         
-        int count = recipeMemory.size();
         recipeMemory.clear();
         save();
-        
-        BapelSlimefunMod.LOGGER.info("[RecipeMemory] Cleared all {} recipes from memory", count);
     }
     
     /**
