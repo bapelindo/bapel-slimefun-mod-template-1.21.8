@@ -2,7 +2,7 @@ package com.bapel_slimefun_mod.mixin.client;
 
 import com.bapel_slimefun_mod.client.ModKeybinds;
 import com.bapel_slimefun_mod.BapelSlimefunMod;
-import com.bapel_slimefun_mod.automation.MachineAutomationHandler;
+import com.bapel_slimefun_mod.automation.UnifiedAutomationManager;
 import com.bapel_slimefun_mod.automation.RecipeOverlayInputHandler;
 import com.bapel_slimefun_mod.automation.RecipeOverlayRenderer;
 
@@ -35,11 +35,13 @@ public abstract class ContainerScreenMixin {
                 BapelSlimefunMod.LOGGER.info("║  Class: {}", screen.getClass().getSimpleName());
                 BapelSlimefunMod.LOGGER.info("╚═══════════════════════════════════════╝");
                 
-                MachineAutomationHandler.onContainerOpen(titleString);
+                // UPDATED: Use UnifiedAutomationManager instead of MachineAutomationHandler
+                UnifiedAutomationManager.onMachineOpen(titleString);
                 
-                if (MachineAutomationHandler.getCurrentMachine() != null) {
-                    BapelSlimefunMod.LOGGER.info("✓ Machine detected: {}", 
-                        MachineAutomationHandler.getCurrentMachine().getName());
+                if (UnifiedAutomationManager.getCurrentMachine() != null) {
+                    BapelSlimefunMod.LOGGER.info("✓ Machine detected: {} ({})", 
+                        UnifiedAutomationManager.getCurrentMachine().getId(),
+                        UnifiedAutomationManager.getCurrentMachine().isMultiblock() ? "MULTIBLOCK" : "ELECTRIC");
                 } else {
                     BapelSlimefunMod.LOGGER.info("✗ Not a Slimefun machine");
                 }
@@ -57,10 +59,11 @@ public abstract class ContainerScreenMixin {
             BapelSlimefunMod.LOGGER.info("║  CONTAINER CLOSED                      ║");
             BapelSlimefunMod.LOGGER.info("╚═══════════════════════════════════════╝");
             
-            // PERBAIKAN UTAMA: Panggil hide() secara langsung di sini!
+            // Hide overlay
             RecipeOverlayRenderer.hide();
             
-            MachineAutomationHandler.onContainerClose();
+            // UPDATED: Use UnifiedAutomationManager instead of MachineAutomationHandler
+            UnifiedAutomationManager.onMachineClose();
         } catch (Exception e) {
             BapelSlimefunMod.LOGGER.error("ERROR in onRemoved mixin", e);
             e.printStackTrace();
@@ -87,10 +90,10 @@ public abstract class ContainerScreenMixin {
                 BapelSlimefunMod.LOGGER.info("║ R key pressed in container!");
             }
             
-            // --- FIX: Gunakan ModKeybinds.getToggleAutomationKey() ---
+            // UPDATED: Use UnifiedAutomationManager for automation toggle
             if (ModKeybinds.getToggleAutomationKey().matches(keyCode, scanCode)) {
                 BapelSlimefunMod.LOGGER.info("║ Automation key pressed in container!");
-                MachineAutomationHandler.toggle(); 
+                UnifiedAutomationManager.toggleAutomation();  // Changed from MachineAutomationHandler.toggle()
                 cir.setReturnValue(true);
                 cir.cancel();
                 return;

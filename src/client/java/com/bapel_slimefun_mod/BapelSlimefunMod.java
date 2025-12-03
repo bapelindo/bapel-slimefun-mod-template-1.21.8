@@ -49,8 +49,9 @@ public class BapelSlimefunMod implements ClientModInitializer {
             DebugOverlay.register();
             LOGGER.info("✓ Debug Overlay registered");
             
-            MachineAutomationHandler.init(config);
-            LOGGER.info("✓ Machine Automation Handler initialized");
+            // UPDATED: Use UnifiedAutomationManager instead of MachineAutomationHandler
+            UnifiedAutomationManager.init(config);
+            LOGGER.info("✓ Unified Automation Manager initialized");
             
             LOGGER.info("All systems initialized successfully");
         } catch (Exception e) {
@@ -65,7 +66,8 @@ public class BapelSlimefunMod implements ClientModInitializer {
             
             ClientTickEvents.END_CLIENT_TICK.register(client -> {
                 try {
-                    MachineAutomationHandler.tick();
+                    // UPDATED: Use UnifiedAutomationManager instead of MachineAutomationHandler
+                    UnifiedAutomationManager.tick();
                 } catch (Exception e) {
                     LOGGER.error("Error in client tick handler", e);
                 }

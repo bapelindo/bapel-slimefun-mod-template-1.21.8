@@ -3,6 +3,8 @@ package com.bapel_slimefun_mod.client;
 import com.bapel_slimefun_mod.BapelSlimefunMod;
 import com.bapel_slimefun_mod.automation.MachineAutomationHandler; // <-- TAMBAH IMPORT INI
 import com.bapel_slimefun_mod.automation.SlimefunMachineData;
+import com.bapel_slimefun_mod.automation.UnifiedAutomationManager;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
@@ -37,7 +39,7 @@ public class AutomationManager {
             }
             
             // Set recipe
-            MachineAutomationHandler.setSelectedRecipe(recipeId);
+            UnifiedAutomationManager.setSelectedRecipe(recipeId);
             
             // Aktifkan automation
             MachineAutomationHandler.setAutomationEnabled(true);
@@ -210,7 +212,7 @@ public class AutomationManager {
      * Clear selected recipe
      */
     public static void clearSelectedRecipe() {
-        MachineAutomationHandler.setSelectedRecipe(null);
+        UnifiedAutomationManager.setSelectedRecipe(null);
         BapelSlimefunMod.LOGGER.info("[AutomationManager] Recipe cleared");
     }
     

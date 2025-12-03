@@ -440,7 +440,7 @@ public class RecipeOverlayRenderer {
         if (availableRecipes == null || availableRecipes.isEmpty()) return;
         if (selectedIndex < 0 || selectedIndex >= availableRecipes.size()) { selectedIndex = 0; return; }
         RecipeData selected = availableRecipes.get(selectedIndex);
-        MachineAutomationHandler.setSelectedRecipe(selected.getRecipeId());
+        UnifiedAutomationManager.setSelectedRecipe(selected.getRecipeId());
         
         try {
             Minecraft.getInstance().player.displayClientMessage(

@@ -15,7 +15,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * FIXED VERSION - Loads machine data correctly from slimefun_machines.json
+ * Loads machine data from slimefun_machines.json
+ * Supports both electric machines and multiblock structures
  */
 public class SlimefunDataLoader {
     private static final Gson GSON = new Gson();
@@ -35,7 +36,7 @@ public class SlimefunDataLoader {
             loadMachinesData();
             
             loaded = true;
-            BapelSlimefunMod.LOGGER.info("[DataLoader] Successfully loaded {} Slimefun machines with recipes", 
+            BapelSlimefunMod.LOGGER.info("[DataLoader] Successfully loaded {} Slimefun machines", 
                 MACHINES.size());
             
         } catch (Exception e) {
@@ -46,7 +47,7 @@ public class SlimefunDataLoader {
     
     /**
      * Load machines from slimefun_machines.json
-     * FIX: Now correctly reads "id" field from machines JSON
+     * Supports both electric and multiblock machines
      */
     private static void loadMachinesData() {
         try {
@@ -63,68 +64,132 @@ public class SlimefunDataLoader {
                 JsonArray.class
             );
             
-            int loaded = 0;
+            int loadedCount = 0;
+            int multiblockCount = 0;
+            
             for (JsonElement element : machines) {
                 JsonObject obj = element.getAsJsonObject();
                 
-                // FIX: Check for "id" field existence
                 if (!obj.has("id")) {
                     BapelSlimefunMod.LOGGER.warn("[DataLoader] Machine object missing 'id' field");
                     continue;
                 }
                 
                 String id = obj.get("id").getAsString();
-                String inventoryTitle = obj.has("inventoryTitle") ? 
-                    obj.get("inventoryTitle").getAsString() : id;
+                String type = obj.has("type") ? obj.get("type").getAsString() : "ELECTRIC";
                 
-                // Parse slots
-                int[] inputSlots = parseSlotArray(obj.get("inputSlots"));
-                int[] outputSlots = parseSlotArray(obj.get("outputSlots"));
+                SlimefunMachineData data;
                 
-                // Parse energy
-                int energyCapacity = obj.has("energyCapacity") ? 
-                    obj.get("energyCapacity").getAsInt() : 0;
-                int energyConsumption = obj.has("energyConsumption") ? 
-                    obj.get("energyConsumption").getAsInt() : 0;
-                
-                // Parse processing recipes
-                List<String> recipe = new ArrayList<>();
-                if (obj.has("processingRecipes")) {
-                    JsonArray recipes = obj.getAsJsonArray("processingRecipes");
-                    if (recipes.size() > 0) {
-                        // For now, just take first recipe's inputs
-                        JsonObject firstRecipe = recipes.get(0).getAsJsonObject();
-                        if (firstRecipe.has("inputs")) {
-                            JsonArray inputs = firstRecipe.getAsJsonArray("inputs");
-                            for (JsonElement input : inputs) {
-                                recipe.add(input.getAsString());
-                            }
-                        }
+                if ("MULTIBLOCK".equals(type)) {
+                    // Load multiblock machine
+                    data = loadMultiblockMachine(obj, id);
+                    if (data != null) {
+                        multiblockCount++;
                     }
+                } else {
+                    // Load electric machine
+                    data = loadElectricMachine(obj, id);
                 }
                 
-                SlimefunMachineData data = new SlimefunMachineData(
-                    id, id, inventoryTitle, inputSlots, outputSlots, 
-                    recipe, energyCapacity, energyConsumption
-                );
-                
-                // Store by CLEANED title for matching
-                String cleanedTitle = cleanTitle(inventoryTitle);
-                MACHINES.put(cleanedTitle, data);
-                loaded++;
-                
-                if (loaded <= 5) {
-                    BapelSlimefunMod.LOGGER.info("[DataLoader]   Loaded: '{}' -> '{}'", 
-                        inventoryTitle, cleanedTitle);
+                if (data != null) {
+                    // Store by ID and cleaned title
+                    String inventoryTitle = data.getInventoryTitle();
+                    String cleanedTitle = cleanTitle(inventoryTitle);
+                    
+                    MACHINES.put(cleanedTitle, data);
+                    MACHINES.put(id, data); // Also store by ID for direct lookup
+                    loadedCount++;
+                    
+                    if (loadedCount <= 10) {
+                        BapelSlimefunMod.LOGGER.info("[DataLoader]   Loaded {}: '{}' ({})", 
+                            type, id, cleanedTitle);
+                    }
                 }
             }
             
-            BapelSlimefunMod.LOGGER.info("[DataLoader] Loaded {} machines from slimefun_machines.json", loaded);
+            BapelSlimefunMod.LOGGER.info("[DataLoader] Loaded {} machines ({} multiblock, {} electric)", 
+                loadedCount, multiblockCount, loadedCount - multiblockCount);
             
         } catch (Exception e) {
             BapelSlimefunMod.LOGGER.error("[DataLoader] Failed to load machines data", e);
             e.printStackTrace();
         }
+    }
+    
+    /**
+     * Load electric machine from JSON
+     */
+    private static SlimefunMachineData loadElectricMachine(JsonObject obj, String id) {
+        String inventoryTitle = obj.has("inventoryTitle") ? 
+            obj.get("inventoryTitle").getAsString() : id;
+        
+        // Parse slots
+        int[] inputSlots = parseSlotArray(obj.get("inputSlots"));
+        int[] outputSlots = parseSlotArray(obj.get("outputSlots"));
+        
+        // Parse energy
+        int energyCapacity = obj.has("energyCapacity") ? 
+            obj.get("energyCapacity").getAsInt() : 0;
+        int energyConsumption = obj.has("energyConsumption") ? 
+            obj.get("energyConsumption").getAsInt() : 0;
+        
+        // Parse processing recipes
+        List<String> recipe = new ArrayList<>();
+        if (obj.has("processingRecipes")) {
+            JsonArray recipes = obj.getAsJsonArray("processingRecipes");
+            if (recipes.size() > 0) {
+                // Take first recipe's inputs as default
+                JsonObject firstRecipe = recipes.get(0).getAsJsonObject();
+                if (firstRecipe.has("inputs")) {
+                    JsonArray inputs = firstRecipe.getAsJsonArray("inputs");
+                    for (JsonElement input : inputs) {
+                        recipe.add(input.getAsString());
+                    }
+                }
+            }
+        }
+        
+        return new SlimefunMachineData(
+            id, id, inventoryTitle, inputSlots, outputSlots, 
+            recipe, energyCapacity, energyConsumption
+        );
+    }
+    
+    /**
+     * Load multiblock machine from JSON
+     */
+    private static SlimefunMachineData loadMultiblockMachine(JsonObject obj, String id) {
+        String inventoryTitle = id; // Multiblocks don't have inventory titles
+        
+        // Parse structure
+        List<SlimefunMachineData.MultiblockStructure> structure = new ArrayList<>();
+        if (obj.has("structure")) {
+            JsonArray structureArray = obj.getAsJsonArray("structure");
+            for (JsonElement elem : structureArray) {
+                JsonObject block = elem.getAsJsonObject();
+                String material = block.get("material").getAsString();
+                String name = block.get("name").getAsString();
+                structure.add(new SlimefunMachineData.MultiblockStructure(material, name));
+            }
+        }
+        
+        // Parse processing recipes
+        List<String> recipe = new ArrayList<>();
+        if (obj.has("processingRecipes")) {
+            JsonArray recipes = obj.getAsJsonArray("processingRecipes");
+            if (recipes.size() > 0) {
+                // Take first recipe's inputs as default
+                JsonObject firstRecipe = recipes.get(0).getAsJsonObject();
+                if (firstRecipe.has("inputs")) {
+                    JsonArray inputs = firstRecipe.getAsJsonArray("inputs");
+                    for (JsonElement input : inputs) {
+                        recipe.add(input.getAsString());
+                    }
+                }
+            }
+        }
+        
+        return new SlimefunMachineData(id, id, inventoryTitle, structure, recipe);
     }
     
     /**
@@ -143,96 +208,87 @@ public class SlimefunDataLoader {
     
     /**
      * Clean title by removing color codes
-     * FIX: Better regex pattern
      */
-private static String cleanTitle(String title) {
-    if (title == null || title.isEmpty()) {
-        return "";
+    private static String cleanTitle(String title) {
+        if (title == null || title.isEmpty()) {
+            return "";
+        }
+        
+        // Remove all Minecraft color codes (§ followed by any character)
+        String cleaned = title.replaceAll("§.", "");
+        
+        // Remove alternative encoding (common in broken UTF-8)
+        cleaned = cleaned.replaceAll("Â§.", "");
+        cleaned = cleaned.replaceAll("Â", "");
+        
+        // Remove & color codes
+        cleaned = cleaned.replaceAll("&[0-9a-fk-or]", "");
+        
+        // Normalize whitespace
+        cleaned = cleaned.replaceAll("\\s+", " ");
+        
+        // Trim whitespace
+        cleaned = cleaned.trim();
+        
+        return cleaned;
     }
-    
-    // Remove all Minecraft color codes (§ followed by any character)
-    String cleaned = title.replaceAll("§.", "");
-    
-    // Remove alternative encoding (common in broken UTF-8)
-    cleaned = cleaned.replaceAll("Â§.", "");
-    cleaned = cleaned.replaceAll("Â", ""); // ✅ Remove standalone  characters
-    
-    // Remove & color codes
-    cleaned = cleaned.replaceAll("&[0-9a-fk-or]", "");
-    
-    // Normalize whitespace (replace multiple spaces with single space)
-    cleaned = cleaned.replaceAll("\\s+", " ");
-    
-    // Trim whitespace
-    cleaned = cleaned.trim();
-    
-    return cleaned;
-}
     
     /**
-     * Get machine by GUI title
-     * FIX: Enhanced logging and fallback matching
+     * Get machine by GUI title or ID
      */
-/**
- * Get machine by GUI title
- * ENHANCED: Better fuzzy matching
- */
-public static SlimefunMachineData getMachineByTitle(String title) {
-    String cleanedTitle = cleanTitle(title);
-    
-    BapelSlimefunMod.LOGGER.info("[DataLoader] Looking for machine with title: '{}'", title);
-    BapelSlimefunMod.LOGGER.info("[DataLoader] Cleaned title: '{}'", cleanedTitle);
-    
-    // Try exact match first
-    SlimefunMachineData machine = MACHINES.get(cleanedTitle);
-    
-    if (machine != null) {
-        BapelSlimefunMod.LOGGER.info("[DataLoader] ✓ Found exact match: {}", machine.getId());
-        return machine;
-    }
-    
-    // ✅ ENHANCED: Try fuzzy matching by removing ALL non-alphanumeric characters
-    String fuzzyTitle = cleanedTitle.replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
-    
-    BapelSlimefunMod.LOGGER.warn("[DataLoader] ✗ No exact match found");
-    BapelSlimefunMod.LOGGER.warn("[DataLoader] Trying fuzzy match with: '{}'", fuzzyTitle);
-    
-    for (Map.Entry<String, SlimefunMachineData> entry : MACHINES.entrySet()) {
-        String key = entry.getKey();
-        String fuzzyKey = key.replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
+    public static SlimefunMachineData getMachineByTitle(String title) {
+        String cleanedTitle = cleanTitle(title);
         
-        if (fuzzyTitle.equals(fuzzyKey)) {
-            BapelSlimefunMod.LOGGER.info("[DataLoader] ✓ Found fuzzy match: '{}' for '{}'", 
-                key, cleanedTitle);
-            return entry.getValue();
-        }
-    }
-    
-    // Final fallback: contains match
-    for (Map.Entry<String, SlimefunMachineData> entry : MACHINES.entrySet()) {
-        String key = entry.getKey();
+        BapelSlimefunMod.LOGGER.info("[DataLoader] Looking for machine: '{}'", title);
+        BapelSlimefunMod.LOGGER.info("[DataLoader] Cleaned: '{}'", cleanedTitle);
         
-        if (cleanedTitle.contains(key) || key.contains(cleanedTitle)) {
-            BapelSlimefunMod.LOGGER.info("[DataLoader] ✓ Found contains match: '{}' for '{}'", 
-                key, cleanedTitle);
-            return entry.getValue();
+        // Try exact match by title
+        SlimefunMachineData machine = MACHINES.get(cleanedTitle);
+        
+        if (machine != null) {
+            BapelSlimefunMod.LOGGER.info("[DataLoader] ✓ Found exact match: {} ({})", 
+                machine.getId(), machine.isMultiblock() ? "MULTIBLOCK" : "ELECTRIC");
+            return machine;
         }
-    }
-    
-    // Debug: Show available titles
-    BapelSlimefunMod.LOGGER.warn("[DataLoader] Available machine titles:");
-    int count = 0;
-    for (String key : MACHINES.keySet()) {
-        if (count++ < 10) {
-            BapelSlimefunMod.LOGGER.warn("[DataLoader]   - '{}'", key);
+        
+        // Try by ID
+        machine = MACHINES.get(title);
+        if (machine != null) {
+            BapelSlimefunMod.LOGGER.info("[DataLoader] ✓ Found by ID: {} ({})", 
+                machine.getId(), machine.isMultiblock() ? "MULTIBLOCK" : "ELECTRIC");
+            return machine;
         }
+        
+        // Try fuzzy matching
+        String fuzzyTitle = cleanedTitle.replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
+        
+        BapelSlimefunMod.LOGGER.warn("[DataLoader] ✗ No exact match, trying fuzzy: '{}'", fuzzyTitle);
+        
+        for (Map.Entry<String, SlimefunMachineData> entry : MACHINES.entrySet()) {
+            String key = entry.getKey();
+            String fuzzyKey = key.replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
+            
+            if (fuzzyTitle.equals(fuzzyKey)) {
+                BapelSlimefunMod.LOGGER.info("[DataLoader] ✓ Found fuzzy match: '{}' for '{}'", 
+                    key, cleanedTitle);
+                return entry.getValue();
+            }
+        }
+        
+        // Final fallback: contains match
+        for (Map.Entry<String, SlimefunMachineData> entry : MACHINES.entrySet()) {
+            String key = entry.getKey();
+            
+            if (cleanedTitle.contains(key) || key.contains(cleanedTitle)) {
+                BapelSlimefunMod.LOGGER.info("[DataLoader] ✓ Found contains match: '{}' for '{}'", 
+                    key, cleanedTitle);
+                return entry.getValue();
+            }
+        }
+        
+        BapelSlimefunMod.LOGGER.warn("[DataLoader] ✗ No match found for '{}'", title);
+        return null;
     }
-    if (MACHINES.size() > 10) {
-        BapelSlimefunMod.LOGGER.warn("[DataLoader]   ... and {} more", MACHINES.size() - 10);
-    }
-    
-    return null;
-}
     
     /**
      * Check if title is a machine
@@ -263,29 +319,5 @@ public static SlimefunMachineData getMachineByTitle(String title) {
         MACHINES.clear();
         loaded = false;
         loadData();
-    }
-    
-    /**
-     * Print all loaded machines for debugging
-     */
-    public static void printLoadedMachines() {
-        BapelSlimefunMod.LOGGER.info("╔════════════════════════════════════════╗");
-        BapelSlimefunMod.LOGGER.info("║   Loaded Machines ({} total)", MACHINES.size());
-        BapelSlimefunMod.LOGGER.info("╠════════════════════════════════════════╣");
-        
-        int count = 0;
-        for (Map.Entry<String, SlimefunMachineData> entry : MACHINES.entrySet()) {
-            if (count++ < 15) {
-                String title = entry.getKey();
-                SlimefunMachineData machine = entry.getValue();
-                BapelSlimefunMod.LOGGER.info("║ '{}' -> {}", title, machine.getId());
-            }
-        }
-        
-        if (MACHINES.size() > 15) {
-            BapelSlimefunMod.LOGGER.info("║ ... and {} more machines", MACHINES.size() - 15);
-        }
-        
-        BapelSlimefunMod.LOGGER.info("╚════════════════════════════════════════╝");
     }
 }
