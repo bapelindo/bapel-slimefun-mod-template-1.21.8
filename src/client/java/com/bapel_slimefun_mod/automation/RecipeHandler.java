@@ -5,6 +5,7 @@ import java.util.*;
 
 /**
  * Handles complex recipe matching including multi-item recipes
+ * FIXED: Preserves AIR items to maintain correct 3x3 grid pattern for automation
  */
 public class RecipeHandler {
     
@@ -60,15 +61,15 @@ public class RecipeHandler {
     
     /**
      * Parse recipe strings into structured ingredients
+     * FIX: Now KEEPS "AIR" items to ensure list size is always 9 for 3x3 recipes
      */
     public static List<RecipeIngredient> parseRecipe(List<String> recipeStrings) {
         List<RecipeIngredient> ingredients = new ArrayList<>();
         
         for (String recipeString : recipeStrings) {
             RecipeIngredient ingredient = RecipeIngredient.parse(recipeString);
-            if (!ingredient.getItemId().equalsIgnoreCase("AIR") && ingredient.getAmount() > 0) {
-                ingredients.add(ingredient);
-            }
+            // PERUBAHAN PENTING: Selalu tambahkan ingredient, termasuk AIR
+            ingredients.add(ingredient);
         }
         
         return ingredients;
@@ -76,13 +77,17 @@ public class RecipeHandler {
     
     /**
      * Group recipe ingredients by item ID and sum their amounts
-     * Example: [IRON:1, IRON:2, GOLD:1] -> {IRON: 3, GOLD: 1}
+     * FIX: Filters out "AIR" here so it doesn't count as a required item to fetch
      */
-    public static Map<String, Integer> groupRecipeIngredients(List<RecipeIngredient> ingredients) {
+public static Map<String, Integer> groupRecipeIngredients(List<RecipeIngredient> ingredients) {
         Map<String, Integer> grouped = new HashMap<>();
         
         for (RecipeIngredient ingredient : ingredients) {
             String itemId = ingredient.getItemId().toUpperCase();
+            
+            // PERUBAHAN: Abaikan AIR atau item dengan jumlah 0
+            if (itemId.equals("AIR") || ingredient.getAmount() <= 0) continue;
+            
             grouped.merge(itemId, ingredient.getAmount(), Integer::sum);
         }
         

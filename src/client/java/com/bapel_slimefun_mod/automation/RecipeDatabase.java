@@ -193,13 +193,12 @@ public class RecipeDatabase {
     /**
      * Parse external recipe from JSON
      */
-    private static RecipeData parseExternalRecipe(JsonObject json) {
+private static RecipeData parseExternalRecipe(JsonObject json) {
         String itemId = json.get("itemId").getAsString();
         String machineType = json.has("recipeType") ? 
             json.get("recipeType").getAsString().replace("slimefun:", "").toUpperCase() :
             json.has("machineType") ? json.get("machineType").getAsString() : "UNKNOWN";
         
-        // Parse inputs
         List<RecipeHandler.RecipeIngredient> inputs = new ArrayList<>();
         if (json.has("inputs")) {
             JsonArray inputsArray = json.getAsJsonArray("inputs");
@@ -207,10 +206,8 @@ public class RecipeDatabase {
                 RecipeHandler.RecipeIngredient ingredient = 
                     RecipeHandler.RecipeIngredient.parse(inputElement.getAsString());
                 
-                if (ingredient.getAmount() > 0 && 
-                    !ingredient.getItemId().equalsIgnoreCase("AIR")) {
-                    inputs.add(ingredient);
-                }
+                // PERUBAHAN: Langsung tambahkan semua (termasuk AIR)
+                inputs.add(ingredient);
             }
         }
         
@@ -237,10 +234,9 @@ public class RecipeDatabase {
     /**
      * Parse processing recipe from JSON
      */
-    private static RecipeData parseProcessingRecipe(String machineId, JsonObject json) {
+private static RecipeData parseProcessingRecipe(String machineId, JsonObject json) {
         String recipeId = machineId + "_recipe_" + Math.abs(json.hashCode());
         
-        // Parse inputs
         List<RecipeHandler.RecipeIngredient> inputs = new ArrayList<>();
         if (json.has("inputs")) {
             JsonArray inputsArray = json.getAsJsonArray("inputs");
@@ -248,16 +244,14 @@ public class RecipeDatabase {
                 RecipeHandler.RecipeIngredient ingredient = 
                     RecipeHandler.RecipeIngredient.parse(inputElement.getAsString());
                 
-                if (ingredient.getAmount() > 0 && 
-                    !ingredient.getItemId().equalsIgnoreCase("AIR")) {
-                    inputs.add(ingredient);
-                }
+                // PERUBAHAN: Langsung tambahkan semua (termasuk AIR)
+                inputs.add(ingredient);
             }
         }
         
         if (inputs.isEmpty()) return null;
         
-        // Parse outputs
+        // Parse outputs (tetap sama)
         List<RecipeData.RecipeOutput> outputs = new ArrayList<>();
         if (json.has("outputs")) {
             JsonArray outputsArray = json.getAsJsonArray("outputs");
