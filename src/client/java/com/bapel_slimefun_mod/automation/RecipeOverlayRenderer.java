@@ -15,7 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 /**
- * ✅ COMPLETE FIXED VERSION - Z-Index Fix Applied for MC 1.21.8
+ * âœ… COMPLETE FIXED VERSION - Z-Index Fix Applied for MC 1.21.8
  * Changes:
  * 1. render() - Uses highZ parameter passed to all render methods
  * 2. renderBackground() - More opaque (220 min alpha), thicker borders, shadow effect
@@ -86,7 +86,7 @@ public class RecipeOverlayRenderer {
         currentMachine = machine;
         loadRecipesForMachine(machine);
         if (availableRecipes.isEmpty()) {
-            sendPlayerMessage("§c[Slimefun] No recipes for: " + machine.getName());
+            sendPlayerMessage("Â§c[Slimefun] No recipes for: " + machine.getName());
             currentMachine = null;
             return;
         }
@@ -110,9 +110,10 @@ public class RecipeOverlayRenderer {
         lastToggleTime = now;
         if (overlayVisible) hide();
         else {
-            SlimefunMachineData machine = MachineAutomationHandler.getCurrentMachine();
+            // FIX: Use UnifiedAutomationManager to support both MULTIBLOCK and ELECTRIC machines
+            SlimefunMachineData machine = UnifiedAutomationManager.getCurrentMachine();
             if (machine != null) show(machine);
-            else sendPlayerMessage("§e[Slimefun] Open a Slimefun machine first!");
+            else sendPlayerMessage("Â§e[Slimefun] Open a Slimefun machine first!");
         }
     }
     
@@ -142,7 +143,7 @@ public class RecipeOverlayRenderer {
     }
     
     /**
-     * ✅ FIXED: Render overlay with proper Z-index using blitSprite
+     * âœ… FIXED: Render overlay with proper Z-index using blitSprite
      * In MC 1.21.8, we need to use higher Z-index for all rendering operations
      */
     public static void render(GuiGraphics graphics, float partialTicks) {
@@ -158,7 +159,7 @@ public class RecipeOverlayRenderer {
             int alpha = calculateAlpha();
             if (alpha <= 0) return;
             
-            // ✅ CRITICAL FIX: Set high Z-index for all rendering
+            // âœ… CRITICAL FIX: Set high Z-index for all rendering
             // Container GUI typically renders at Z=0-200, we use 500 to be on top
             int highZ = 500;
             
@@ -194,25 +195,25 @@ public class RecipeOverlayRenderer {
     }
     
     /**
-     * ✅ FIXED: More opaque background, thicker borders, shadow effect WITH Z-INDEX
+     * âœ… FIXED: More opaque background, thicker borders, shadow effect WITH Z-INDEX
      */
     private static void renderBackground(GuiGraphics graphics, int yPos, int alpha, int zIndex) {
         try {
             int totalHeight = calculateTotalHeight();
             
-            // ✅ FIX: Minimum 220 alpha for better visibility
+            // âœ… FIX: Minimum 220 alpha for better visibility
             int bgAlpha = Math.max(alpha, 220);
             int bgColor = getColorWithAlpha("background", bgAlpha);
             int borderColor = getColorWithAlpha("border", 255); // Always full opacity!
             
-            // ✅ FIX: Add shadow for depth
+            // âœ… FIX: Add shadow for depth
             int shadowColor = 0x80000000; // Semi-transparent black
             graphics.fill(posX + 2, yPos + 2, posX + width + 2, yPos + totalHeight + 2, shadowColor);
             
             // Draw main background with Z-index
             graphics.fill(posX, yPos, posX + width, yPos + totalHeight, bgColor);
             
-            // ✅ FIX: Thicker borders (2px instead of 1px)
+            // âœ… FIX: Thicker borders (2px instead of 1px)
             graphics.fill(posX, yPos, posX + width, yPos + 2, borderColor); // Top
             graphics.fill(posX, yPos + totalHeight - 2, posX + width, yPos + totalHeight, borderColor); // Bottom
             graphics.fill(posX, yPos, posX + 2, yPos + totalHeight, borderColor); // Left
@@ -224,18 +225,18 @@ public class RecipeOverlayRenderer {
     }
     
     /**
-     * ✅ FIXED: Bright yellow title with shadow for better visibility WITH Z-INDEX
+     * âœ… FIXED: Bright yellow title with shadow for better visibility WITH Z-INDEX
      */
     private static int renderTitle(GuiGraphics graphics, int yPos, int alpha, int zIndex) {
         try {
             Minecraft mc = Minecraft.getInstance();
             
-            // ✅ FIX: Bright yellow, always visible!
+            // âœ… FIX: Bright yellow, always visible!
             int textColor = 0xFFFFFF00; // Bright yellow
             
             String title = currentMachine != null ? currentMachine.getName() : "Recipes";
             
-            // ✅ FIX: Add shadow for better readability
+            // âœ… FIX: Add shadow for better readability
             graphics.drawCenteredString(mc.font, title, posX + width / 2 + 1, yPos + 1, 0xFF000000); // Shadow
             graphics.drawCenteredString(mc.font, title, posX + width / 2, yPos, textColor); // Main
             
@@ -276,19 +277,19 @@ public class RecipeOverlayRenderer {
     }
     
     /**
-     * ✅ FIXED: Yellow highlight for selected item, better text contrast WITH Z-INDEX
+     * âœ… FIXED: Yellow highlight for selected item, better text contrast WITH Z-INDEX
      */
     private static int renderRecipeEntry(GuiGraphics graphics, RecipeData recipe, int index, int yPos, 
                                          int alpha, boolean isSelected, List<ItemStack> inventory, int zIndex) {
         try {
             Minecraft mc = Minecraft.getInstance();
             
-            // ✅ FIX: Brighter highlight + yellow border
+            // âœ… FIX: Brighter highlight + yellow border
             if (isSelected) {
                 int highlightColor = getColorWithAlpha("selectedBackground", 240);
                 graphics.fill(posX + 2, yPos, posX + width - 2, yPos + entryHeight, highlightColor);
                 
-                // ✅ FIX: Add yellow border for extra visibility
+                // âœ… FIX: Add yellow border for extra visibility
                 int yellowBorder = 0xFFFFFF00;
                 graphics.fill(posX + 2, yPos, posX + width - 2, yPos + 1, yellowBorder); // Top
                 graphics.fill(posX + 2, yPos + entryHeight - 1, posX + width - 2, yPos + entryHeight, yellowBorder); // Bottom
@@ -297,7 +298,7 @@ public class RecipeOverlayRenderer {
             int textX = posX + padding; 
             int textY = yPos + 4;
             
-            // ✅ FIX: Yellow for selected, white for normal
+            // âœ… FIX: Yellow for selected, white for normal
             int textColor = isSelected ? 0xFFFFFF00 : 0xFFFFFFFF;
             
             StringBuilder line1 = new StringBuilder();
@@ -323,7 +324,7 @@ public class RecipeOverlayRenderer {
                     if (i >= 3 && inputs.size() > 3) { inputStr.append("..."); break; }
                 }
                 
-                // ✅ FIX: Lighter gray for better visibility
+                // âœ… FIX: Lighter gray for better visibility
                 int grayColor = isSelected ? 0xFFAAAAAA : 0xFF888888;
                 graphics.drawString(mc.font, inputStr.toString(), textX + 10, textY, grayColor);
                 textY += mc.font.lineHeight;
@@ -333,7 +334,7 @@ public class RecipeOverlayRenderer {
                 RecipeHandler.RecipeSummary summary = new RecipeHandler.RecipeSummary(inventory, recipe.getInputs());
                 float completion = summary.getCompletionPercentage();
                 
-                // ✅ FIX: Bright green/red for completion
+                // âœ… FIX: Bright green/red for completion
                 int completionColor = completion >= 1.0f ? 0xFF00FF00 : 0xFFFF5555;
                 String completionText = String.format("%.0f%%", completion * 100);
                 graphics.drawString(mc.font, completionText, textX + 10, textY, completionColor);
@@ -343,18 +344,18 @@ public class RecipeOverlayRenderer {
     }
     
     /**
-     * ✅ FIXED: White text with shadow for better visibility WITH Z-INDEX
+     * âœ… FIXED: White text with shadow for better visibility WITH Z-INDEX
      */
     private static void renderKeybindHints(GuiGraphics graphics, int yPos, int alpha, int zIndex) {
         try {
             Minecraft mc = Minecraft.getInstance();
             
-            // ✅ FIX: Bright white text
+            // âœ… FIX: Bright white text
             int textColor = 0xFFFFFFFF;
             
-            String hints = "[↑↓] Navigate  [Enter] Select  [R/Esc] Close";
+            String hints = "[â†‘â†“] Navigate  [Enter] Select  [R/Esc] Close";
             
-            // ✅ FIX: Add shadow
+            // âœ… FIX: Add shadow
             graphics.drawCenteredString(mc.font, hints, posX + width / 2 + 1, yPos + 1, 0xFF000000);
             graphics.drawCenteredString(mc.font, hints, posX + width / 2, yPos, textColor);
         } catch (Exception e) {}
@@ -385,7 +386,7 @@ public class RecipeOverlayRenderer {
     }
     
     /**
-     * ✅ NEW: Helper method for custom alpha values
+     * âœ… NEW: Helper method for custom alpha values
      */
     private static int getColorWithAlpha(String colorName, int alpha) {
         if (config == null) return (alpha << 24) | 0xFFFFFF;
@@ -444,7 +445,7 @@ public class RecipeOverlayRenderer {
         
         try {
             Minecraft.getInstance().player.displayClientMessage(
-                Component.literal("§a[Slimefun] Selected: §f" + selected.getDisplayString()), true
+                Component.literal("Â§a[Slimefun] Selected: Â§f" + selected.getDisplayString()), true
             );
         } catch(Exception e) {}
         

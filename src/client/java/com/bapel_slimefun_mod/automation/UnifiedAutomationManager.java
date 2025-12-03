@@ -4,12 +4,19 @@ import com.bapel_slimefun_mod.BapelSlimefunMod;
 import com.bapel_slimefun_mod.config.ModConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 
 import java.util.List;
 
 /**
- * Unified automation manager that handles both electric and multiblock machines
+ * âœ… COMPLETE REWRITE: Multi-machine cache system with proximity detection
+ * 
+ * NEW FEATURES:
+ * 1. Unlimited multiblock caching (not just one!)
+ * 2. Proximity-based detection (which machine am I near?)
+ * 3. Auto-load last recipe per machine
+ * 4. Persistent across sessions
  */
 public class UnifiedAutomationManager {
     
@@ -18,35 +25,158 @@ public class UnifiedAutomationManager {
     private static boolean automationEnabled = false;
     private static long lastTickTime = 0;
     
+    // âœ… NEW: Track current cached machine reference
+    private static MultiblockCacheManager.CachedMultiblock currentCachedMachine = null;
+    
     public static void init(ModConfig cfg) {
         config = cfg;
         MachineAutomationHandler.init(cfg);
         MultiblockAutomationHandler.init(cfg);
-        BapelSlimefunMod.LOGGER.info("[UnifiedAuto] Initialized");
+        
+        // âœ… NEW: Load multiblock cache
+        MultiblockCacheManager.load();
+        
+        BapelSlimefunMod.LOGGER.info("[UnifiedAuto] Initialized with {} cached multiblocks", 
+            MultiblockCacheManager.getAllMachines().size());
     }
     
     /**
-     * Called when a machine GUI is opened
+     * âœ… NEW: Called when user constructs a multiblock ("successfully constructed")
+     * This caches the machine at the player's position
+     */
+    public static void onMultiblockConstructed(SlimefunMachineData machine) {
+        Minecraft mc = Minecraft.getInstance();
+        LocalPlayer player = mc.player;
+        
+        if (player == null) return;
+        
+        BlockPos playerPos = player.blockPosition();
+        
+        // Cache this machine at player position
+        MultiblockCacheManager.addMachine(machine, playerPos);
+        
+        // Set as current machine
+        currentMachine = machine;
+        currentCachedMachine = MultiblockCacheManager.getMachineAt(playerPos);
+        
+        BapelSlimefunMod.LOGGER.info("[UnifiedAuto] âœ“ Multiblock constructed and cached: {} at {}", 
+            machine.getName(), playerPos);
+        
+        // Show confirmation
+        if (mc.player != null) {
+            mc.player.displayClientMessage(
+                Component.literal("Â§aâœ“ " + machine.getName() + " cached! Press R for recipes."),
+                false
+            );
+        }
+        
+        // âœ… AUTO-LOAD: Check if this machine has a remembered recipe
+        if (currentCachedMachine != null && currentCachedMachine.getLastSelectedRecipe() != null) {
+            String rememberedRecipe = currentCachedMachine.getLastSelectedRecipe();
+            
+            BapelSlimefunMod.LOGGER.info("[UnifiedAuto] Found remembered recipe: {}", rememberedRecipe);
+            
+            // Show recipe overlay with this recipe pre-selected
+            // (User can still change it)
+            try {
+                RecipeOverlayRenderer.show(machine);
+                
+                if (mc.player != null) {
+                    mc.player.displayClientMessage(
+                        Component.literal("Â§eâ†’ Last recipe: " + getRecipeDisplayName(rememberedRecipe)),
+                        true
+                    );
+                }
+            } catch (Exception e) {
+                BapelSlimefunMod.LOGGER.error("Failed to show overlay", e);
+            }
+        }
+    }
+    
+    /**
+     * âœ… UPDATED: Called when opening a container (might be dispenser near multiblock)
      */
     public static void onMachineOpen(String title) {
         currentMachine = SlimefunDataLoader.getMachineByTitle(title);
         
+        // âœ… NEW: If title is "Dispenser", try to detect nearby cached multiblock
+        if (title.equalsIgnoreCase("Dispenser") || title.contains("Dispenser")) {
+            Minecraft mc = Minecraft.getInstance();
+            LocalPlayer player = mc.player;
+            
+            if (player != null) {
+                BlockPos playerPos = player.blockPosition();
+                
+                // Find nearest cached multiblock
+                currentCachedMachine = MultiblockCacheManager.findNearestMachine(playerPos);
+                
+                if (currentCachedMachine != null) {
+                    // Load the cached machine
+                    String machineId = currentCachedMachine.getMachineId();
+                    currentMachine = SlimefunDataLoader.getMultiblockById(machineId);
+                    
+                    if (currentMachine != null) {
+                        BapelSlimefunMod.LOGGER.info("[UnifiedAuto] âœ“ Detected nearby multiblock: {} at distance {}", 
+                            currentMachine.getName(),
+                            playerPos.distSqr(currentCachedMachine.getPosition()));
+                        
+                        // âœ… AUTO-LOAD: Load last recipe if exists
+                        String lastRecipe = currentCachedMachine.getLastSelectedRecipe();
+                        if (lastRecipe != null && config != null && config.isRememberLastRecipe()) {
+                            BapelSlimefunMod.LOGGER.info("[UnifiedAuto] Auto-loading recipe: {}", lastRecipe);
+                            
+                            // Set recipe and auto-start
+                            MultiblockAutomationHandler.setSelectedRecipe(lastRecipe);
+                            
+                            // Auto-start automation
+                            automationEnabled = true;
+                            config.setAutomationEnabled(true);
+                            
+                            if (mc.player != null) {
+                                mc.player.displayClientMessage(
+                                    Component.literal("Â§aâœ“ Auto-loaded recipe: " + getRecipeDisplayName(lastRecipe)),
+                                    false
+                                );
+                                mc.player.displayClientMessage(
+                                    Component.literal("Â§aâ–¶ Automation STARTED!"),
+                                    true
+                                );
+                            }
+                            
+                            return; // Don't show overlay in auto mode
+                        }
+                        
+                        // Show overlay if no auto-load
+                        if (config != null && config.isAutoShowOverlay()) {
+                            try {
+                                RecipeOverlayRenderer.show(currentMachine);
+                            } catch (Exception e) {
+                                BapelSlimefunMod.LOGGER.error("Failed to show overlay", e);
+                            }
+                        }
+                        
+                        return;
+                    }
+                }
+                
+                BapelSlimefunMod.LOGGER.info("[UnifiedAuto] No cached multiblock found near player");
+            }
+        }
+        
+        // Normal electric machine handling
         if (currentMachine != null) {
             BapelSlimefunMod.LOGGER.info("[UnifiedAuto] Detected {} machine: {}", 
                 currentMachine.isMultiblock() ? "MULTIBLOCK" : "ELECTRIC",
                 currentMachine.getId());
             
             if (currentMachine.isElectric()) {
-                // Delegate to electric handler
                 MachineAutomationHandler.onContainerOpen(title);
             } else if (currentMachine.isMultiblock()) {
-                // Multiblock machines don't have GUIs in the same way
-                // Show recipe overlay
                 if (config != null && config.isAutoShowOverlay()) {
                     try {
                         RecipeOverlayRenderer.show(currentMachine);
                     } catch (Exception e) {
-                        BapelSlimefunMod.LOGGER.error("[UnifiedAuto] Failed to show overlay", e);
+                        BapelSlimefunMod.LOGGER.error("Failed to show overlay", e);
                     }
                 }
             }
@@ -62,75 +192,110 @@ public class UnifiedAutomationManager {
             
             if (currentMachine.isElectric()) {
                 MachineAutomationHandler.onContainerClose();
-            } else if (currentMachine.isMultiblock()) {
-                MultiblockAutomationHandler.reset();
             }
         }
         
+        // âœ… CHANGED: Keep currentCachedMachine for proximity detection
+        // Only clear currentMachine (GUI reference)
         currentMachine = null;
     }
     
     /**
-     * Main tick handler - routes to appropriate handler
+     * Main tick handler
      */
     public static void tick() {
-        if (!automationEnabled || currentMachine == null) return;
+        if (!automationEnabled) return;
+        
+        SlimefunMachineData machine = getCurrentMachine();
+        if (machine == null) return;
         
         // Throttle ticks
         long now = System.currentTimeMillis();
-        if (config != null && now - lastTickTime < 50) { // 50ms = 1 tick
+        if (config != null && now - lastTickTime < 50) {
             return;
         }
         lastTickTime = now;
         
-        if (currentMachine.isElectric()) {
-            // Electric machines handled by MachineAutomationHandler
+        if (machine.isElectric()) {
             MachineAutomationHandler.tick();
-        } else if (currentMachine.isMultiblock()) {
-            // Multiblock machines
-            MultiblockAutomationHandler.tick(currentMachine);
+        } else if (machine.isMultiblock()) {
+            MultiblockAutomationHandler.tick(machine);
         }
     }
     
     /**
-     * Set selected recipe (works for both types)
+     * âœ… UPDATED: Set selected recipe + save to cache
      */
     public static void setSelectedRecipe(String recipeId) {
-        if (currentMachine == null) return;
+        SlimefunMachineData machine = getCurrentMachine();
+        if (machine == null) {
+            BapelSlimefunMod.LOGGER.warn("[UnifiedAuto] Cannot set recipe - no machine active!");
+            return;
+        }
         
         BapelSlimefunMod.LOGGER.info("[UnifiedAuto] Setting recipe: {} for {}", 
-            recipeId, currentMachine.getId());
+            recipeId, machine.getId());
         
-        if (currentMachine.isElectric()) {
+        if (machine.isElectric()) {
             MachineAutomationHandler.setSelectedRecipe(recipeId);
-        } else if (currentMachine.isMultiblock()) {
+        } else if (machine.isMultiblock()) {
             MultiblockAutomationHandler.setSelectedRecipe(recipeId);
+            
+            // âœ… NEW: Save recipe to cache for this machine
+            if (currentCachedMachine != null && config != null && config.isRememberLastRecipe()) {
+                MultiblockCacheManager.updateRecipe(
+                    currentCachedMachine.getPosition(), 
+                    recipeId
+                );
+                BapelSlimefunMod.LOGGER.info("[UnifiedAuto] Recipe saved to cache");
+            }
         }
+        
+        // Auto-start automation
+        automationEnabled = true;
+        if (config != null) {
+            config.setAutomationEnabled(true);
+        }
+        MachineAutomationHandler.setAutomationEnabled(true);
         
         // Show confirmation
         Minecraft mc = Minecraft.getInstance();
         if (mc.player != null) {
             String displayName = getRecipeDisplayName(recipeId);
             mc.player.displayClientMessage(
-                Component.literal("§aRecipe selected: " + displayName), 
+                Component.literal("Â§aâœ“ Recipe selected: " + displayName), 
+                false
+            );
+            mc.player.displayClientMessage(
+                Component.literal("Â§aâ–¶ Automation AUTO STARTED!"), 
                 true
             );
         }
+        
+        BapelSlimefunMod.LOGGER.info("[UnifiedAuto] Automation AUTO STARTED");
     }
     
     /**
      * Get selected recipe
      */
     public static String getSelectedRecipe() {
-        if (currentMachine == null) return null;
+        SlimefunMachineData machine = getCurrentMachine();
+        if (machine == null) return null;
         
-        if (currentMachine.isElectric()) {
+        if (machine.isElectric()) {
             return MachineAutomationHandler.getSelectedRecipe();
-        } else if (currentMachine.isMultiblock()) {
+        } else if (machine.isMultiblock()) {
             return MultiblockAutomationHandler.getSelectedRecipe();
         }
         
         return null;
+    }
+    
+    /**
+     * âœ… UPDATED: Get current machine (includes cached multiblock)
+     */
+    public static SlimefunMachineData getCurrentMachine() {
+        return currentMachine;
     }
     
     /**
@@ -145,57 +310,41 @@ public class UnifiedAutomationManager {
         if (player != null) {
             if (automationEnabled) {
                 player.displayClientMessage(
-                    Component.literal("§a[Slimefun] Automation STARTED ▶"), 
+                    Component.literal("Â§a[Slimefun] Automation STARTED â–¶"), 
                     false
                 );
                 BapelSlimefunMod.LOGGER.info("[UnifiedAuto] Automation ENABLED");
             } else {
                 player.displayClientMessage(
-                    Component.literal("§c[Slimefun] Automation STOPPED ■"), 
+                    Component.literal("Â§c[Slimefun] Automation STOPPED â– "), 
                     false
                 );
                 BapelSlimefunMod.LOGGER.info("[UnifiedAuto] Automation DISABLED");
             }
         }
         
-        // Also update electric handler
         if (config != null) {
             config.setAutomationEnabled(automationEnabled);
         }
         MachineAutomationHandler.setAutomationEnabled(automationEnabled);
     }
     
-    /**
-     * Check if automation is enabled
-     */
     public static boolean isAutomationEnabled() {
         return automationEnabled;
     }
     
-    /**
-     * Get current machine
-     */
-    public static SlimefunMachineData getCurrentMachine() {
-        return currentMachine;
-    }
-    
-    /**
-     * Check if currently in a machine
-     */
     public static boolean isActive() {
-        return currentMachine != null;
+        return getCurrentMachine() != null;
     }
     
-    /**
-     * Get recipe summary for current machine
-     */
     public static RecipeHandler.RecipeSummary getRecipeSummary() {
-        if (currentMachine == null) return null;
+        SlimefunMachineData machine = getCurrentMachine();
+        if (machine == null) return null;
         
-        if (currentMachine.isElectric()) {
+        if (machine.isElectric()) {
             return MachineAutomationHandler.getRecipeSummary();
-        } else if (currentMachine.isMultiblock()) {
-            return MultiblockAutomationHandler.getRecipeSummary(currentMachine);
+        } else if (machine.isMultiblock()) {
+            return MultiblockAutomationHandler.getRecipeSummary(machine);
         }
         
         return null;
@@ -203,20 +352,17 @@ public class UnifiedAutomationManager {
     
     /**
      * Get display name for recipe
-     * FIXED: Use proper string manipulation without lambda
      */
     private static String getRecipeDisplayName(String recipeId) {
         RecipeData recipe = RecipeDatabase.getRecipe(recipeId);
         if (recipe == null) return recipeId;
         
-        // FIXED: Get outputs properly
         List<RecipeData.RecipeOutput> outputs = recipe.getOutputs();
         if (outputs.isEmpty()) return recipeId;
         
         RecipeData.RecipeOutput output = outputs.get(0);
         String itemId = output.getItemId();
         
-        // Convert ITEM_ID to "Item Id" format
         String[] words = itemId.toLowerCase().split("_");
         StringBuilder displayName = new StringBuilder();
         
@@ -225,7 +371,6 @@ public class UnifiedAutomationManager {
                 displayName.append(" ");
             }
             if (word.length() > 0) {
-                // Capitalize first letter manually
                 displayName.append(Character.toUpperCase(word.charAt(0)));
                 if (word.length() > 1) {
                     displayName.append(word.substring(1));
@@ -240,21 +385,34 @@ public class UnifiedAutomationManager {
      * Debug info
      */
     public static void printDebugInfo() {
-        BapelSlimefunMod.LOGGER.info("╔═══════════════════════════════════════╗");
-        BapelSlimefunMod.LOGGER.info("║  UNIFIED AUTOMATION STATUS            ║");
-        BapelSlimefunMod.LOGGER.info("╠═══════════════════════════════════════╣");
-        BapelSlimefunMod.LOGGER.info("║  Enabled: {}", automationEnabled);
-        BapelSlimefunMod.LOGGER.info("║  Active: {}", isActive());
+        BapelSlimefunMod.LOGGER.info("â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—");
+        BapelSlimefunMod.LOGGER.info("â•‘  UNIFIED AUTOMATION STATUS            â•‘");
+        BapelSlimefunMod.LOGGER.info("â• â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•£");
+        BapelSlimefunMod.LOGGER.info("â•‘  Enabled: {}", automationEnabled);
+        BapelSlimefunMod.LOGGER.info("â•‘  Active: {}", isActive());
         
-        if (currentMachine != null) {
-            BapelSlimefunMod.LOGGER.info("║  Machine: {} ({})", 
-                currentMachine.getId(),
-                currentMachine.isMultiblock() ? "MULTIBLOCK" : "ELECTRIC");
-            BapelSlimefunMod.LOGGER.info("║  Selected Recipe: {}", getSelectedRecipe());
+        SlimefunMachineData machine = getCurrentMachine();
+        if (machine != null) {
+            BapelSlimefunMod.LOGGER.info("â•‘  Machine: {} ({})", 
+                machine.getId(),
+                machine.isMultiblock() ? "MULTIBLOCK" : "ELECTRIC");
+            BapelSlimefunMod.LOGGER.info("â•‘  Selected Recipe: {}", getSelectedRecipe());
+            
+            if (currentCachedMachine != null) {
+                BapelSlimefunMod.LOGGER.info("â•‘  Cached: {} at {}", 
+                    currentCachedMachine.getMachineName(),
+                    currentCachedMachine.getPosition());
+            }
         } else {
-            BapelSlimefunMod.LOGGER.info("║  Machine: none");
+            BapelSlimefunMod.LOGGER.info("â•‘  Machine: none");
         }
         
-        BapelSlimefunMod.LOGGER.info("╚═══════════════════════════════════════╝");
+        BapelSlimefunMod.LOGGER.info("â•‘");
+        BapelSlimefunMod.LOGGER.info("â•‘  Total Cached: {} machines", 
+            MultiblockCacheManager.getAllMachines().size());
+        BapelSlimefunMod.LOGGER.info("â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•");
+        
+        // Print cache contents
+        MultiblockCacheManager.printCache();
     }
 }

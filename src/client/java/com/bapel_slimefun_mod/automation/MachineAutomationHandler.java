@@ -61,7 +61,7 @@ public class MachineAutomationHandler {
     }
     
     // ============================================
-    // ✅ FIX #1: OVERLOADED setSelectedRecipe()
+    // âœ… FIX #1: OVERLOADED setSelectedRecipe()
     // ============================================
     
     /**
@@ -107,7 +107,7 @@ public class MachineAutomationHandler {
     }
     
     // ============================================
-    // ✅ FIX #2: UPDATED onContainerOpen()
+    // âœ… FIX #2: UPDATED onContainerOpen()
     // ============================================
     
     public static void onContainerOpen(String title) {
@@ -120,7 +120,7 @@ public class MachineAutomationHandler {
             
             // Reset caches for new machine
             resetCaches();
-            // ❌ REMOVED: cacheRecipeRequirements(); - This was causing auto-select bug!
+            // âŒ REMOVED: cacheRecipeRequirements(); - This was causing auto-select bug!
             
             // AUTO MODE: Check if we have a remembered recipe for this machine
             if (config != null && config.isRememberLastRecipe()) {
@@ -130,7 +130,7 @@ public class MachineAutomationHandler {
                     BapelSlimefunMod.LOGGER.info("[Automation] Auto Mode: Found remembered recipe '{}' for machine '{}'", 
                         rememberedRecipe, currentMachine.getId());
                     
-                    // ✅ FIX: Use overload with rememberRecipe=false to prevent double-save
+                    // âœ… FIX: Use overload with rememberRecipe=false to prevent double-save
                     setSelectedRecipe(rememberedRecipe, false);
                     
                     // Show message to player
@@ -138,12 +138,12 @@ public class MachineAutomationHandler {
                     if (mc.player != null) {
                         String displayName = getRecipeDisplayName(rememberedRecipe);
                         mc.player.displayClientMessage(
-                            Component.literal("§a✓ Auto Mode: Loaded recipe '" + displayName + "'"), 
+                            Component.literal("Â§aâœ“ Auto Mode: Loaded recipe '" + displayName + "'"), 
                             true
                         );
                     }
                     
-                    // ❌ REMOVED: Auto-start automation - user must press K
+                    // âŒ REMOVED: Auto-start automation - user must press K
                     // User has full control!
                     
                     autoInsertTriggered = true;
@@ -200,7 +200,7 @@ public class MachineAutomationHandler {
     }
     
     // ============================================
-    // ❌ DELETED: cacheRecipeRequirements()
+    // âŒ DELETED: cacheRecipeRequirements()
     // This method was causing auto-select bug!
     // ============================================
     
@@ -218,7 +218,7 @@ public class MachineAutomationHandler {
     }
     
     // ============================================
-    // ✅ FIX #3: NEW HELPER METHOD
+    // âœ… FIX #3: NEW HELPER METHOD
     // ============================================
     
     /**
@@ -263,11 +263,11 @@ public class MachineAutomationHandler {
         automationTickCount++;
         
         if (debugMode && automationTickCount == 1) {
-            BapelSlimefunMod.LOGGER.info("╔═══════════════════════════════════════╗");
-            BapelSlimefunMod.LOGGER.info("║  AUTOMATION STARTED                    ║");
-            BapelSlimefunMod.LOGGER.info("║  Machine: {}", currentMachine.getName());
-            BapelSlimefunMod.LOGGER.info("║  Delay: {}ms", config.getAutomationDelayMs());
-            BapelSlimefunMod.LOGGER.info("╚═══════════════════════════════════════╝");
+            BapelSlimefunMod.LOGGER.info("â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—");
+            BapelSlimefunMod.LOGGER.info("â•‘  AUTOMATION STARTED                    â•‘");
+            BapelSlimefunMod.LOGGER.info("â•‘  Machine: {}", currentMachine.getName());
+            BapelSlimefunMod.LOGGER.info("â•‘  Delay: {}ms", config.getAutomationDelayMs());
+            BapelSlimefunMod.LOGGER.info("â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•");
         }
         
         try {
@@ -430,7 +430,7 @@ public class MachineAutomationHandler {
             successfulInputs++;
             
             if (debugMode) {
-                BapelSlimefunMod.LOGGER.info("[Automation] Auto-input: {} x{} → slot {}", 
+                BapelSlimefunMod.LOGGER.info("[Automation] Auto-input: {} x{} â†’ slot {}", 
                     itemId, count, emptySlot);
             }
             
@@ -487,10 +487,10 @@ public class MachineAutomationHandler {
             
             if (!newState) {
                 resetCaches();
-                sendPlayerMessage("§c[Slimefun] Automation STOPPED ⏹");
+                sendPlayerMessage("Â§c[Slimefun] Automation STOPPED â¹");
                 BapelSlimefunMod.LOGGER.info("[Automation] Stopped manually");
             } else {
-                sendPlayerMessage("§a[Slimefun] Automation STARTED ▶");
+                sendPlayerMessage("Â§a[Slimefun] Automation STARTED â–¶");
                 BapelSlimefunMod.LOGGER.info("[Automation] Started manually");
             }
         }
@@ -540,93 +540,93 @@ public class MachineAutomationHandler {
     // ========================================
     
     public static void runFullDiagnostic() {
-        BapelSlimefunMod.LOGGER.info("╔═══════════════════════════════════════════════════════════╗");
-        BapelSlimefunMod.LOGGER.info("║                   FULL DIAGNOSTIC                       ║");
-        BapelSlimefunMod.LOGGER.info("╠═══════════════════════════════════════════════════════════╣");
+        BapelSlimefunMod.LOGGER.info("â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—");
+        BapelSlimefunMod.LOGGER.info("â•‘                   FULL DIAGNOSTIC                       â•‘");
+        BapelSlimefunMod.LOGGER.info("â• â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•£");
         
         // Config
-        BapelSlimefunMod.LOGGER.info("║ CONFIG:");
+        BapelSlimefunMod.LOGGER.info("â•‘ CONFIG:");
         if (config != null) {
-            BapelSlimefunMod.LOGGER.info("║   Automation: {}", config.isAutomationEnabled());
-            BapelSlimefunMod.LOGGER.info("║   Delay: {}ms", config.getAutomationDelayMs());
-            BapelSlimefunMod.LOGGER.info("║   Debug: {}", config.isDebugMode());
+            BapelSlimefunMod.LOGGER.info("â•‘   Automation: {}", config.isAutomationEnabled());
+            BapelSlimefunMod.LOGGER.info("â•‘   Delay: {}ms", config.getAutomationDelayMs());
+            BapelSlimefunMod.LOGGER.info("â•‘   Debug: {}", config.isDebugMode());
         } else {
-            BapelSlimefunMod.LOGGER.info("║   NULL");
+            BapelSlimefunMod.LOGGER.info("â•‘   NULL");
         }
         
         // Machine
-        BapelSlimefunMod.LOGGER.info("║");
-        BapelSlimefunMod.LOGGER.info("║ MACHINE:");
+        BapelSlimefunMod.LOGGER.info("â•‘");
+        BapelSlimefunMod.LOGGER.info("â•‘ MACHINE:");
         if (currentMachine != null) {
-            BapelSlimefunMod.LOGGER.info("║   Name: {}", currentMachine.getName());
-            BapelSlimefunMod.LOGGER.info("║   ID: {}", currentMachine.getId());
-            BapelSlimefunMod.LOGGER.info("║   Input Slots: {}", currentMachine.getInputSlots().length);
-            BapelSlimefunMod.LOGGER.info("║   Output Slots: {}", currentMachine.getOutputSlots().length);
+            BapelSlimefunMod.LOGGER.info("â•‘   Name: {}", currentMachine.getName());
+            BapelSlimefunMod.LOGGER.info("â•‘   ID: {}", currentMachine.getId());
+            BapelSlimefunMod.LOGGER.info("â•‘   Input Slots: {}", currentMachine.getInputSlots().length);
+            BapelSlimefunMod.LOGGER.info("â•‘   Output Slots: {}", currentMachine.getOutputSlots().length);
         } else {
-            BapelSlimefunMod.LOGGER.info("║   NULL");
+            BapelSlimefunMod.LOGGER.info("â•‘   NULL");
         }
         
         // Automation status
-        BapelSlimefunMod.LOGGER.info("║");
-        BapelSlimefunMod.LOGGER.info("║ AUTOMATION:");
-        BapelSlimefunMod.LOGGER.info("║   Active: {}", isActive());
-        BapelSlimefunMod.LOGGER.info("║   Enabled: {}", isAutomationEnabled());
-        BapelSlimefunMod.LOGGER.info("║   Selected Recipe: {}", 
+        BapelSlimefunMod.LOGGER.info("â•‘");
+        BapelSlimefunMod.LOGGER.info("â•‘ AUTOMATION:");
+        BapelSlimefunMod.LOGGER.info("â•‘   Active: {}", isActive());
+        BapelSlimefunMod.LOGGER.info("â•‘   Enabled: {}", isAutomationEnabled());
+        BapelSlimefunMod.LOGGER.info("â•‘   Selected Recipe: {}", 
             selectedRecipeId != null ? selectedRecipeId : "none");
         
         // Performance metrics
-        BapelSlimefunMod.LOGGER.info("║");
-        BapelSlimefunMod.LOGGER.info("║ PERFORMANCE:");
-        BapelSlimefunMod.LOGGER.info("║   Cached Inventory Items: {}", cachedPlayerInventory.size());
-        BapelSlimefunMod.LOGGER.info("║   Known Empty Slots: {}", knownEmptyInputSlots.size());
-        BapelSlimefunMod.LOGGER.info("║   Tick Count: {}", automationTickCount);
-        BapelSlimefunMod.LOGGER.info("║   Success Rate: {}/{}", successfulInputs, successfulOutputs);
+        BapelSlimefunMod.LOGGER.info("â•‘");
+        BapelSlimefunMod.LOGGER.info("â•‘ PERFORMANCE:");
+        BapelSlimefunMod.LOGGER.info("â•‘   Cached Inventory Items: {}", cachedPlayerInventory.size());
+        BapelSlimefunMod.LOGGER.info("â•‘   Known Empty Slots: {}", knownEmptyInputSlots.size());
+        BapelSlimefunMod.LOGGER.info("â•‘   Tick Count: {}", automationTickCount);
+        BapelSlimefunMod.LOGGER.info("â•‘   Success Rate: {}/{}", successfulInputs, successfulOutputs);
         
         // Overlay
-        BapelSlimefunMod.LOGGER.info("║");
-        BapelSlimefunMod.LOGGER.info("║ OVERLAY:");
-        BapelSlimefunMod.LOGGER.info("║   Visible: {}", RecipeOverlayRenderer.isVisible());
-        BapelSlimefunMod.LOGGER.info("║   Available Recipes: {}", 
+        BapelSlimefunMod.LOGGER.info("â•‘");
+        BapelSlimefunMod.LOGGER.info("â•‘ OVERLAY:");
+        BapelSlimefunMod.LOGGER.info("â•‘   Visible: {}", RecipeOverlayRenderer.isVisible());
+        BapelSlimefunMod.LOGGER.info("â•‘   Available Recipes: {}", 
             RecipeOverlayRenderer.getAvailableRecipes().size());
         
         // Database
-        BapelSlimefunMod.LOGGER.info("║");
-        BapelSlimefunMod.LOGGER.info("║ DATABASE:");
-        BapelSlimefunMod.LOGGER.info("║   Initialized: {}", RecipeDatabase.isInitialized());
-        BapelSlimefunMod.LOGGER.info("║   Total Recipes: {}", RecipeDatabase.getTotalRecipes());
+        BapelSlimefunMod.LOGGER.info("â•‘");
+        BapelSlimefunMod.LOGGER.info("â•‘ DATABASE:");
+        BapelSlimefunMod.LOGGER.info("â•‘   Initialized: {}", RecipeDatabase.isInitialized());
+        BapelSlimefunMod.LOGGER.info("â•‘   Total Recipes: {}", RecipeDatabase.getTotalRecipes());
         
         // Client
-        BapelSlimefunMod.LOGGER.info("║");
-        BapelSlimefunMod.LOGGER.info("║ CLIENT:");
+        BapelSlimefunMod.LOGGER.info("â•‘");
+        BapelSlimefunMod.LOGGER.info("â•‘ CLIENT:");
         Minecraft mc = Minecraft.getInstance();
-        BapelSlimefunMod.LOGGER.info("║   Player: {}", mc.player != null ? "present" : "null");
-        BapelSlimefunMod.LOGGER.info("║   Screen: {}", 
+        BapelSlimefunMod.LOGGER.info("â•‘   Player: {}", mc.player != null ? "present" : "null");
+        BapelSlimefunMod.LOGGER.info("â•‘   Screen: {}", 
             mc.screen != null ? mc.screen.getClass().getSimpleName() : "null");
         
-        BapelSlimefunMod.LOGGER.info("╚═══════════════════════════════════════════════════════════╝");
+        BapelSlimefunMod.LOGGER.info("â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•");
     }
     
     public static void logKeyPress(String key) {
-        BapelSlimefunMod.LOGGER.info("╔═══════════════════════════════════════════════════════════╗");
-        BapelSlimefunMod.LOGGER.info("║  KEY PRESS: {}", key);
-        BapelSlimefunMod.LOGGER.info("║  Overlay Visible: {}", RecipeOverlayRenderer.isVisible());
-        BapelSlimefunMod.LOGGER.info("║  In Container: {}", 
+        BapelSlimefunMod.LOGGER.info("â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—");
+        BapelSlimefunMod.LOGGER.info("â•‘  KEY PRESS: {}", key);
+        BapelSlimefunMod.LOGGER.info("â•‘  Overlay Visible: {}", RecipeOverlayRenderer.isVisible());
+        BapelSlimefunMod.LOGGER.info("â•‘  In Container: {}", 
             Minecraft.getInstance().screen instanceof net.minecraft.client.gui.screens.inventory.AbstractContainerScreen);
-        BapelSlimefunMod.LOGGER.info("╚═══════════════════════════════════════════════════════════╝");
+        BapelSlimefunMod.LOGGER.info("â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•");
     }
     
     public static void printDebugStatus() {
-        BapelSlimefunMod.LOGGER.info("╔═══════════════════════════════════════╗");
-        BapelSlimefunMod.LOGGER.info("║  AUTOMATION STATUS                     ║");
-        BapelSlimefunMod.LOGGER.info("╠═══════════════════════════════════════╣");
-        BapelSlimefunMod.LOGGER.info("║  Enabled: {}", isAutomationEnabled());
-        BapelSlimefunMod.LOGGER.info("║  Active: {}", isActive());
-        BapelSlimefunMod.LOGGER.info("║  Machine: {}", currentMachine != null ? currentMachine.getName() : "none");
-        BapelSlimefunMod.LOGGER.info("║  Tick Count: {}", automationTickCount);
-        BapelSlimefunMod.LOGGER.info("║  Inputs: {} | Outputs: {}", successfulInputs, successfulOutputs);
-        BapelSlimefunMod.LOGGER.info("║  Cache Size: {} items, {} slots", 
+        BapelSlimefunMod.LOGGER.info("â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—");
+        BapelSlimefunMod.LOGGER.info("â•‘  AUTOMATION STATUS                     â•‘");
+        BapelSlimefunMod.LOGGER.info("â• â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•£");
+        BapelSlimefunMod.LOGGER.info("â•‘  Enabled: {}", isAutomationEnabled());
+        BapelSlimefunMod.LOGGER.info("â•‘  Active: {}", isActive());
+        BapelSlimefunMod.LOGGER.info("â•‘  Machine: {}", currentMachine != null ? currentMachine.getName() : "none");
+        BapelSlimefunMod.LOGGER.info("â•‘  Tick Count: {}", automationTickCount);
+        BapelSlimefunMod.LOGGER.info("â•‘  Inputs: {} | Outputs: {}", successfulInputs, successfulOutputs);
+        BapelSlimefunMod.LOGGER.info("â•‘  Cache Size: {} items, {} slots", 
             cachedPlayerInventory.size(), knownEmptyInputSlots.size());
-        BapelSlimefunMod.LOGGER.info("╚═══════════════════════════════════════╝");
+        BapelSlimefunMod.LOGGER.info("â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•");
     }
 
     public static boolean isAutomationEnabled() {

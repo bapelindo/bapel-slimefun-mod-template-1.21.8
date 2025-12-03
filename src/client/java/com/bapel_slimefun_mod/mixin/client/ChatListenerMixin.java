@@ -4,7 +4,6 @@ import com.bapel_slimefun_mod.BapelSlimefunMod;
 import com.bapel_slimefun_mod.automation.SlimefunDataLoader;
 import com.bapel_slimefun_mod.automation.SlimefunMachineData;
 import com.bapel_slimefun_mod.automation.UnifiedAutomationManager;
-import com.bapel_slimefun_mod.automation.RecipeOverlayRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.chat.Component;
@@ -14,9 +13,18 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+/**
+ * ✅ COMPLETE REWRITE: Multi-machine cache system
+ * 
+ * Detects "successfully constructed" message and caches the machine
+ * Supports unlimited number of multiblocks
+ */
 @Mixin(ClientPacketListener.class)
 public class ChatListenerMixin {
     
+    private static long lastDetectionTime = 0;
+    private static final long DETECTION_COOLDOWN = 500; // 500ms
+  
     @Inject(method = "handleSystemChat", at = @At("HEAD"))
     private void onSystemChat(ClientboundSystemChatPacket packet, CallbackInfo ci) {
         try {
@@ -24,66 +32,94 @@ public class ChatListenerMixin {
             String text = message.getString();
             
             // Detect Slimefun multiblock construction message
-            // Format: "Slimefun 4> You have successfully constructed this Multiblock..."
-            if (text.contains("Slimefun") && text.contains("successfully constructed this Multiblock")) {
-                BapelSlimefunMod.LOGGER.info("[ChatDetector] Multiblock construction detected!");
+if (text.contains("Slimefun") && text.contains("successfully constructed this Multiblock")) {
                 
-                // Delayed detection - wait for dispenser to open
+    long now = System.currentTimeMillis();
+    if (now - lastDetectionTime < DETECTION_COOLDOWN) {
+        return; // Skip duplicate
+    }
+    lastDetectionTime = now;
+                
+                BapelSlimefunMod.LOGGER.info("╔═══════════════════════════════════════╗");
+                BapelSlimefunMod.LOGGER.info("║  MULTIBLOCK CONSTRUCTION DETECTED!     ║");
+                BapelSlimefunMod.LOGGER.info("╚═══════════════════════════════════════╝");
+                
+                // Small delay to detect machine type
                 Minecraft mc = Minecraft.getInstance();
                 new Thread(() -> {
                     try {
-                        Thread.sleep(100); // Small delay
+                        Thread.sleep(150);
                         
                         mc.execute(() -> {
-                            // Try to detect which multiblock was built
-                            detectMultiblockType();
+                            detectAndCacheMachine();
                         });
                     } catch (Exception e) {
-                        BapelSlimefunMod.LOGGER.error("Error in delayed multiblock detection", e);
+                        BapelSlimefunMod.LOGGER.error("[ChatDetector] Error in delayed detection", e);
                     }
                 }).start();
             }
         } catch (Exception e) {
-            BapelSlimefunMod.LOGGER.error("Error in chat listener", e);
+            BapelSlimefunMod.LOGGER.error("[ChatDetector] Error in chat listener", e);
         }
     }
     
-    private void detectMultiblockType() {
-        // For now, show a generic multiblock selection overlay
-        // In the future, we can detect based on blocks around the player
-        
+    
+    /**
+     * ✅ NEW: Detect and cache the multiblock machine
+     * This adds the machine to the multi-machine cache system
+     */
+    private void detectAndCacheMachine() {
         BapelSlimefunMod.LOGGER.info("[ChatDetector] Attempting to detect multiblock type...");
         
-        // Get all multiblock machines
+        // Get all machines
         var allMachines = SlimefunDataLoader.getAllMachines();
         
-        for (var entry : allMachines.entrySet()) {
-            SlimefunMachineData machine = entry.getValue();
-            
-            // For Enhanced Crafting Table specifically
-            if (machine.getId().equals("ENHANCED_CRAFTING_TABLE")) {
-                BapelSlimefunMod.LOGGER.info("[ChatDetector] Detected ENHANCED_CRAFTING_TABLE");
-                
-                // Set as current machine
-                UnifiedAutomationManager.onMachineOpen("ENHANCED_CRAFTING_TABLE");
-                
-                // Show recipe overlay
-                try {
-                    RecipeOverlayRenderer.show(machine);
-                    
-                    Minecraft mc = Minecraft.getInstance();
-                    if (mc.player != null) {
-                        mc.player.displayClientMessage(
-                            Component.literal("§a[Slimefun] Enhanced Crafting Table detected! Press R for recipes."),
-                            true
-                        );
-                    }
-                } catch (Exception e) {
-                    BapelSlimefunMod.LOGGER.error("Failed to show overlay", e);
-                }
-                
+        // Priority list of common multiblocks
+        String[] priorityMultiblocks = {
+            "ENHANCED_CRAFTING_TABLE",
+            "ORE_CRUSHER",
+            "COMPRESSOR",
+            "SMELTERY",
+            "PRESSURE_CHAMBER",
+            "MAGIC_WORKBENCH",
+            "ARMOR_FORGE",
+            "MAKESHIFT_SMELTERY",
+            "ORE_WASHER",
+            "AUTOMATED_PANNING_MACHINE",
+            "GOLD_PAN",
+            "ANCIENT_ALTAR",
+            "JUICER"
+        };
+        
+        SlimefunMachineData detectedMachine = null;
+        
+        // Try priority list first
+        for (String multiblockId : priorityMultiblocks) {
+            SlimefunMachineData machine = allMachines.get(multiblockId);
+            if (machine != null && machine.isMultiblock()) {
+                detectedMachine = machine;
+                BapelSlimefunMod.LOGGER.info("[ChatDetector] ✓ Detected priority multiblock: {}", multiblockId);
                 break;
             }
+        }
+        
+        // If not found, try any multiblock
+        if (detectedMachine == null) {
+            for (var entry : allMachines.entrySet()) {
+                SlimefunMachineData machine = entry.getValue();
+                if (machine.isMultiblock()) {
+                    detectedMachine = machine;
+                    BapelSlimefunMod.LOGGER.info("[ChatDetector] ✓ Detected multiblock: {}", entry.getKey());
+                    break;
+                }
+            }
+        }
+        
+        if (detectedMachine != null) {
+            // ✅ CORE: Cache this machine at player position!
+            UnifiedAutomationManager.onMultiblockConstructed(detectedMachine);
+        } else {
+            BapelSlimefunMod.LOGGER.warn("[ChatDetector] ✗ Could not detect multiblock type!");
         }
     }
 }

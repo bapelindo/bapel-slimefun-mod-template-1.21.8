@@ -198,7 +198,7 @@ public class MultiblockAutomationHandler {
             String hoverName = stack.getHoverName().getString();
             if (hoverName != null && !hoverName.isEmpty()) {
                 // Clean color codes and format as ID
-                String cleaned = hoverName.replaceAll("§[0-9a-fk-or]", "");
+                String cleaned = hoverName.replaceAll("Â§[0-9a-fk-or]", "");
                 if (!cleaned.isEmpty() && !cleaned.equals(stack.getItem().toString())) {
                     return cleaned.trim().toUpperCase().replace(" ", "_");
                 }

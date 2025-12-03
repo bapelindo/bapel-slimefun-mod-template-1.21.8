@@ -22,6 +22,9 @@ public abstract class ContainerScreenMixin {
     @Inject(method = "init", at = @At("RETURN"))
     private void onInit(CallbackInfo ci) {
         try {
+            // FIX: Force hide overlay from previous container
+            RecipeOverlayRenderer.hide();
+            
             AbstractContainerScreen<?> screen = (AbstractContainerScreen<?>) (Object) this;
             Component title = screen.getTitle();
             
@@ -55,9 +58,9 @@ public abstract class ContainerScreenMixin {
     @Inject(method = "removed", at = @At("HEAD"))
     private void onRemoved(CallbackInfo ci) {
         try {
-            BapelSlimefunMod.LOGGER.info("╔═══════════════════════════════════════╗");
-            BapelSlimefunMod.LOGGER.info("║  CONTAINER CLOSED                      ║");
-            BapelSlimefunMod.LOGGER.info("╚═══════════════════════════════════════╝");
+            BapelSlimefunMod.LOGGER.info("â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—");
+            BapelSlimefunMod.LOGGER.info("â•‘  CONTAINER CLOSED                      â•‘");
+            BapelSlimefunMod.LOGGER.info("â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•");
             
             // Hide overlay
             RecipeOverlayRenderer.hide();
@@ -73,7 +76,7 @@ public abstract class ContainerScreenMixin {
     @Inject(method = "render", at = @At("TAIL"))
     private void onRender(GuiGraphics graphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
         try {
-            // ✅ CRITICAL FIX: Render overlay at TAIL (after everything else)
+            // âœ… CRITICAL FIX: Render overlay at TAIL (after everything else)
             // This ensures it appears on top of all GUI elements including tooltips
             RecipeOverlayRenderer.render(graphics, partialTick);
         } catch (Exception e) {
@@ -87,12 +90,12 @@ public abstract class ContainerScreenMixin {
         try {
             // Log R key specifically
             if (keyCode == GLFW.GLFW_KEY_R) {
-                BapelSlimefunMod.LOGGER.info("║ R key pressed in container!");
+                BapelSlimefunMod.LOGGER.info("â•‘ R key pressed in container!");
             }
             
             // UPDATED: Use UnifiedAutomationManager for automation toggle
             if (ModKeybinds.getToggleAutomationKey().matches(keyCode, scanCode)) {
-                BapelSlimefunMod.LOGGER.info("║ Automation key pressed in container!");
+                BapelSlimefunMod.LOGGER.info("â•‘ Automation key pressed in container!");
                 UnifiedAutomationManager.toggleAutomation();  // Changed from MachineAutomationHandler.toggle()
                 cir.setReturnValue(true);
                 cir.cancel();

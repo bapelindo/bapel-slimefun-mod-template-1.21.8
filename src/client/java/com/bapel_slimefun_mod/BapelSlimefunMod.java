@@ -49,7 +49,11 @@ public class BapelSlimefunMod implements ClientModInitializer {
             DebugOverlay.register();
             LOGGER.info("✓ Debug Overlay registered");
             
-            // UPDATED: Use UnifiedAutomationManager instead of MachineAutomationHandler
+            // ✅ NEW: Initialize multiblock cache system
+            MultiblockCacheManager.load();
+            LOGGER.info("✓ Multiblock Cache Manager loaded ({} cached machines)", 
+                MultiblockCacheManager.getAllMachines().size());
+            
             UnifiedAutomationManager.init(config);
             LOGGER.info("✓ Unified Automation Manager initialized");
             
@@ -61,12 +65,8 @@ public class BapelSlimefunMod implements ClientModInitializer {
     
     private void registerEventHandlers() {
         try {
-            // ✅ Overlay rendering is now handled in ContainerScreenMixin
-            // No need for HUD callback - rendering happens after container renders
-            
             ClientTickEvents.END_CLIENT_TICK.register(client -> {
                 try {
-                    // UPDATED: Use UnifiedAutomationManager instead of MachineAutomationHandler
                     UnifiedAutomationManager.tick();
                 } catch (Exception e) {
                     LOGGER.error("Error in client tick handler", e);
