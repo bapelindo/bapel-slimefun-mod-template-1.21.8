@@ -6,7 +6,6 @@ import com.bapel_slimefun_mod.client.ModKeybinds;
 import com.bapel_slimefun_mod.config.ModConfig;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,13 +60,8 @@ public class BapelSlimefunMod implements ClientModInitializer {
     
     private void registerEventHandlers() {
         try {
-            HudRenderCallback.EVENT.register((context, tickDelta) -> {
-                try {
-                    RecipeOverlayRenderer.render(context, tickDelta.getGameTimeDeltaPartialTick(true));
-                } catch (Exception e) {
-                    LOGGER.error("Error rendering recipe overlay", e);
-                }
-            });
+            // ✅ Overlay rendering is now handled in ContainerScreenMixin
+            // No need for HUD callback - rendering happens after container renders
             
             ClientTickEvents.END_CLIENT_TICK.register(client -> {
                 try {

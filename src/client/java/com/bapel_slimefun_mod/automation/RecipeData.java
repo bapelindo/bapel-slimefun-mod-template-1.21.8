@@ -84,7 +84,7 @@ public class RecipeData {
     public String getMachineId() { return machineId; }
     public List<RecipeHandler.RecipeIngredient> getInputs() { return inputs; }
     public List<RecipeOutput> getOutputs() { return outputs; }
-    public Map<String, Integer> getGroupedInputs() { return groupedInputs; }
+public Map<String, Integer> getGroupedInputs() { return new HashMap<>(groupedInputs); }
     
     /**
      * Get primary output (first output)

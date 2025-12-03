@@ -1,5 +1,5 @@
 package com.bapel_slimefun_mod.automation;
-
+import com.bapel_slimefun_mod.client.AutomationManager;
 import com.bapel_slimefun_mod.BapelSlimefunMod;
 import com.bapel_slimefun_mod.config.ModConfig;
 import net.minecraft.client.Minecraft;
@@ -13,7 +13,12 @@ import net.minecraft.world.item.ItemStack;
 import java.util.*;
 
 /**
- * OPTIMIZED Main handler for machine automation
+ * FIXED VERSION - Main handler for machine automation
+ * 
+ * BUGS FIXED:
+ * 1. Auto-select recipe #1 bug - Removed cacheRecipeRequirements()
+ * 2. Double remember bug - Added overloaded setSelectedRecipe()
+ * 
  * Performance improvements:
  * - Cached inventory lookups
  * - Reduced redundant checks
@@ -26,7 +31,9 @@ public class MachineAutomationHandler {
     private static ModConfig config;
     private static Map<String, Integer> cachedRecipeRequirements = new HashMap<>();
     private static String selectedRecipeId = null;
-    
+
+    private static boolean automationEnabled = false;
+    private static boolean autoInsertTriggered = false;
     private static boolean debugMode = false;
     private static int automationTickCount = 0;
     private static int successfulInputs = 0;
@@ -44,6 +51,7 @@ public class MachineAutomationHandler {
     
     public static void init(ModConfig cfg) {
         config = cfg;
+        RecipeMemoryManager.load();
         BapelSlimefunMod.LOGGER.info("[Automation] Handler initialized");
     }
     
@@ -52,10 +60,38 @@ public class MachineAutomationHandler {
         BapelSlimefunMod.LOGGER.info("[Automation] Debug mode: {}", enabled ? "ENABLED" : "DISABLED");
     }
     
+    // ============================================
+    // ✅ FIX #1: OVERLOADED setSelectedRecipe()
+    // ============================================
+    
+    /**
+     * Set selected recipe (DEFAULT: remember = true)
+     */
     public static void setSelectedRecipe(String recipeId) {
+        setSelectedRecipe(recipeId, true); // Default behavior - remember recipe
+    }
+    
+    /**
+     * Set selected recipe with control over remembering
+     * @param recipeId Recipe to select
+     * @param rememberRecipe If true, save to memory (for manual selection)
+     *                       If false, don't save (for loading from memory)
+     */
+    public static void setSelectedRecipe(String recipeId, boolean rememberRecipe) {
         selectedRecipeId = recipeId;
         BapelSlimefunMod.LOGGER.info("[Automation] Selected recipe: {}", recipeId);
         
+        // AUTO MODE: Remember this recipe for the current machine
+        // ONLY if rememberRecipe=true (manual selection)
+        if (rememberRecipe && config != null && config.isRememberLastRecipe() && 
+            currentMachine != null && recipeId != null) {
+            
+            RecipeMemoryManager.rememberRecipe(currentMachine.getId(), recipeId);
+            BapelSlimefunMod.LOGGER.info("[Automation] Auto Mode: Remembered recipe '{}' for machine '{}'", 
+                recipeId, currentMachine.getId());
+        }
+        
+        // UPDATE REQUIREMENTS from RecipeDatabase
         if (RecipeDatabase.isInitialized() && recipeId != null) {
             RecipeData recipe = RecipeDatabase.getRecipe(recipeId);
             if (recipe != null) {
@@ -70,16 +106,52 @@ public class MachineAutomationHandler {
         return selectedRecipeId;
     }
     
+    // ============================================
+    // ✅ FIX #2: UPDATED onContainerOpen()
+    // ============================================
+    
     public static void onContainerOpen(String title) {
         currentMachine = SlimefunDataLoader.getMachineByTitle(title);
+        autoInsertTriggered = false;
+        
         if (currentMachine != null) {
             BapelSlimefunMod.LOGGER.info("[Automation] Detected machine: {} (ID: {})", 
                 currentMachine.getName(), currentMachine.getId());
             
             // Reset caches for new machine
             resetCaches();
-            cacheRecipeRequirements();
+            // ❌ REMOVED: cacheRecipeRequirements(); - This was causing auto-select bug!
             
+            // AUTO MODE: Check if we have a remembered recipe for this machine
+            if (config != null && config.isRememberLastRecipe()) {
+                String rememberedRecipe = RecipeMemoryManager.getRememberedRecipe(currentMachine.getId());
+                
+                if (rememberedRecipe != null) {
+                    BapelSlimefunMod.LOGGER.info("[Automation] Auto Mode: Found remembered recipe '{}' for machine '{}'", 
+                        rememberedRecipe, currentMachine.getId());
+                    
+                    // ✅ FIX: Use overload with rememberRecipe=false to prevent double-save
+                    setSelectedRecipe(rememberedRecipe, false);
+                    
+                    // Show message to player
+                    Minecraft mc = Minecraft.getInstance();
+                    if (mc.player != null) {
+                        String displayName = getRecipeDisplayName(rememberedRecipe);
+                        mc.player.displayClientMessage(
+                            Component.literal("§a✓ Auto Mode: Loaded recipe '" + displayName + "'"), 
+                            true
+                        );
+                    }
+                    
+                    // ❌ REMOVED: Auto-start automation - user must press K
+                    // User has full control!
+                    
+                    autoInsertTriggered = true;
+                    return; // Don't show overlay in auto mode
+                }
+            }
+            
+            // MANUAL MODE or no remembered recipe: Show overlay if configured
             if (config != null && config.isAutoShowOverlay()) {
                 try {
                     BapelSlimefunMod.LOGGER.info("[Automation] Auto-showing recipe overlay");
@@ -101,11 +173,16 @@ public class MachineAutomationHandler {
                 currentMachine.getName(), successfulInputs, successfulOutputs, automationTickCount);
         }
         
+        // MANUAL MODE: Clear recipe selection when closing machine
+        if (config != null && !config.isRememberLastRecipe()) {
+            selectedRecipeId = null;
+        }
+        
         // Clear all state
         currentMachine = null;
         cachedRecipeRequirements.clear();
-        selectedRecipeId = null;
         resetCaches();
+        autoInsertTriggered = false;
         
         automationTickCount = 0;
         successfulInputs = 0;
@@ -122,22 +199,10 @@ public class MachineAutomationHandler {
         lastEmptySlotCheck = 0;
     }
     
-    private static void cacheRecipeRequirements() {
-        if (currentMachine == null || currentMachine.getRecipe().isEmpty()) {
-            cachedRecipeRequirements.clear();
-            return;
-        }
-        
-        List<RecipeHandler.RecipeIngredient> ingredients = 
-            RecipeHandler.parseRecipe(currentMachine.getRecipe());
-        
-        cachedRecipeRequirements = RecipeHandler.groupRecipeIngredients(ingredients);
-        
-        if (debugMode) {
-            BapelSlimefunMod.LOGGER.info("[Automation] Cached {} recipe requirements", 
-                cachedRecipeRequirements.size());
-        }
-    }
+    // ============================================
+    // ❌ DELETED: cacheRecipeRequirements()
+    // This method was causing auto-select bug!
+    // ============================================
     
     private static void logRecipeInfo() {
         if (currentMachine == null) return;
@@ -150,6 +215,28 @@ public class MachineAutomationHandler {
         
         BapelSlimefunMod.LOGGER.debug("[Automation] Recipe: {} ingredients, {} unique items", 
             ingredients.size(), uniqueItems.size());
+    }
+    
+    // ============================================
+    // ✅ FIX #3: NEW HELPER METHOD
+    // ============================================
+    
+    /**
+     * Get user-friendly recipe display name
+     */
+    private static String getRecipeDisplayName(String recipeId) {
+        if (recipeId == null) return "Unknown";
+        
+        try {
+            RecipeData recipe = RecipeDatabase.getRecipe(recipeId);
+            if (recipe != null && recipe.getPrimaryOutput() != null) {
+                return recipe.getPrimaryOutput().getDisplayName();
+            }
+        } catch (Exception e) {
+            BapelSlimefunMod.LOGGER.error("Failed to get recipe display name", e);
+        }
+        
+        return recipeId;
     }
     
     /**
@@ -258,9 +345,7 @@ public class MachineAutomationHandler {
             for (Map.Entry<String, Integer> required : cachedRecipeRequirements.entrySet()) {
                 String itemId = required.getKey();
                 
-                // PERBAIKAN DI SINI: "break" dihapus
-                // Sekarang loop akan mencoba memindahkan SATU dari SETIAP jenis item per tick.
-                // Contoh: 1 Carbon, lalu 1 Iron Ingot, lalu 1 Iron Dust dalam satu siklus tick.
+                // Move one item at a time, try all recipe items each tick
                 moveItemToInput(menu, player, mc, itemId, playerInventory);
             }
         } catch (Exception e) {
@@ -317,7 +402,7 @@ public class MachineAutomationHandler {
     }
     
     /**
-     * OPTIMIZED: Move item to input with cached inventory lookup
+     * OPTIMIZATION: Move item to input with cached inventory lookup
      */
     private static boolean moveItemToInput(AbstractContainerMenu menu, LocalPlayer player, 
                                           Minecraft mc, String itemId, List<ItemStack> inventory) {
@@ -357,7 +442,7 @@ public class MachineAutomationHandler {
     }
     
     /**
-     * OPTIMIZED: Find item in player inventory (reduced iterations)
+     * OPTIMIZATION: Find item in player inventory (reduced iterations)
      */
     private static int findItemInPlayerInventoryOptimized(AbstractContainerMenu menu, 
                                                           LocalPlayer player, String itemId) {
@@ -382,7 +467,7 @@ public class MachineAutomationHandler {
         return -1;
     }
 
-    // Helper method untuk mengirim pesan ke player (sebelumnya hilang)
+    // Helper method untuk mengirim pesan ke player
     private static void sendPlayerMessage(String message) {
         try {
             Minecraft mc = Minecraft.getInstance();
@@ -394,7 +479,7 @@ public class MachineAutomationHandler {
         }
     }
 
-    // FIX: Method toggle untuk Keybind (dengan akses config yang benar)
+    // Method toggle untuk Keybind
     public static void toggle() {
         if (config != null) {
             boolean newState = !config.isAutomationEnabled();
@@ -450,34 +535,14 @@ public class MachineAutomationHandler {
         }
     }
     
-    public static void setAutomationEnabled(boolean enabled) {
-        if (config != null) {
-            config.setAutomationEnabled(enabled);
-            
-            if (!enabled) {
-                resetCaches();
-            }
-            
-            BapelSlimefunMod.LOGGER.info("[Automation] Set to: {}", enabled ? "ENABLED" : "DISABLED");
-        }
-    }
-    
-    public static boolean isAutomationEnabled() {
-        return config != null && config.isAutomationEnabled();
-    }
-    
-    public static ModConfig getConfig() {
-        return config;
-    }
-    
     // ========================================
     // DEBUG DIAGNOSTIC METHODS
     // ========================================
     
     public static void runFullDiagnostic() {
-        BapelSlimefunMod.LOGGER.info("╔════════════════════════════════════════════════════════╗");
+        BapelSlimefunMod.LOGGER.info("╔═══════════════════════════════════════════════════════════╗");
         BapelSlimefunMod.LOGGER.info("║                   FULL DIAGNOSTIC                       ║");
-        BapelSlimefunMod.LOGGER.info("╠════════════════════════════════════════════════════════╣");
+        BapelSlimefunMod.LOGGER.info("╠═══════════════════════════════════════════════════════════╣");
         
         // Config
         BapelSlimefunMod.LOGGER.info("║ CONFIG:");
@@ -538,16 +603,16 @@ public class MachineAutomationHandler {
         BapelSlimefunMod.LOGGER.info("║   Screen: {}", 
             mc.screen != null ? mc.screen.getClass().getSimpleName() : "null");
         
-        BapelSlimefunMod.LOGGER.info("╚════════════════════════════════════════════════════════╝");
+        BapelSlimefunMod.LOGGER.info("╚═══════════════════════════════════════════════════════════╝");
     }
     
     public static void logKeyPress(String key) {
-        BapelSlimefunMod.LOGGER.info("╔════════════════════════════════════════════════════════╗");
+        BapelSlimefunMod.LOGGER.info("╔═══════════════════════════════════════════════════════════╗");
         BapelSlimefunMod.LOGGER.info("║  KEY PRESS: {}", key);
         BapelSlimefunMod.LOGGER.info("║  Overlay Visible: {}", RecipeOverlayRenderer.isVisible());
         BapelSlimefunMod.LOGGER.info("║  In Container: {}", 
             Minecraft.getInstance().screen instanceof net.minecraft.client.gui.screens.inventory.AbstractContainerScreen);
-        BapelSlimefunMod.LOGGER.info("╚════════════════════════════════════════════════════════╝");
+        BapelSlimefunMod.LOGGER.info("╚═══════════════════════════════════════════════════════════╝");
     }
     
     public static void printDebugStatus() {
@@ -562,5 +627,17 @@ public class MachineAutomationHandler {
         BapelSlimefunMod.LOGGER.info("║  Cache Size: {} items, {} slots", 
             cachedPlayerInventory.size(), knownEmptyInputSlots.size());
         BapelSlimefunMod.LOGGER.info("╚═══════════════════════════════════════╝");
+    }
+
+    public static boolean isAutomationEnabled() {
+        return automationEnabled;
+    }
+    
+    public static void setAutomationEnabled(boolean enabled) {
+        automationEnabled = enabled;
+    }
+    
+    public static boolean isAutoInsertTriggered() {
+        return autoInsertTriggered;
     }
 }

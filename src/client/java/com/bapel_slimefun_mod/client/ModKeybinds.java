@@ -1,15 +1,17 @@
 package com.bapel_slimefun_mod.client;
 
-// import com.bapel_slimefun_mod.automation.AutomationManager;
 import com.bapel_slimefun_mod.automation.MachineAutomationHandler;
+import com.bapel_slimefun_mod.client.gui.AutomationModeScreen;
+import com.bapel_slimefun_mod.config.ModConfig;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
 import org.lwjgl.glfw.GLFW;
 
 /**
  * Handles keybind registration and input
- * SIMPLIFIED: Hanya 3 keybind utama - K (toggle), J (debug), R (recipe overlay)
+ * K = Toggle automation, J = Debug info, R = Recipe overlay, M = Mode settings
  */
 public class ModKeybinds {
     
@@ -21,6 +23,9 @@ public class ModKeybinds {
     
     // R = Toggle recipe overlay (handled in mixin)
     private static KeyMapping recipeOverlayKey;
+    
+    // M = Open mode settings
+    private static KeyMapping modeSettingsKey;
     
     /**
      * Register all keybinds
@@ -47,63 +52,108 @@ public class ModKeybinds {
             "category.bapel-slimefun-mod.automation"
         ));
         
-        // Register tick event to check for key presses
+        // M = Open mode settings
+        modeSettingsKey = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+            "key.bapel-slimefun-mod.mode_settings",
+            GLFW.GLFW_KEY_M,
+            "category.bapel-slimefun-mod.automation"
+        ));
+        
+        // Register tick event to handle key presses
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            // K = Toggle automation
-            while (toggleAutomationKey.consumeClick()) {
-                AutomationManager.toggleAutomation();
-            }
-            
-            // J = Debug info
-            while (debugInfoKey.consumeClick()) {
-                if (MachineAutomationHandler.getConfig() != null && 
-                    MachineAutomationHandler.getConfig().isDebugMode()) {
-                    
-                    MachineAutomationHandler.runFullDiagnostic();
-                    
-                    if (client.player != null) {
-                        client.player.displayClientMessage(
-                            net.minecraft.network.chat.Component.literal(
-                                "§6[Slimefun] §fDebug info printed to log"
-                            ),
-                            true
-                        );
-                    }
-                } else {
-                    if (client.player != null) {
-                        client.player.displayClientMessage(
-                            net.minecraft.network.chat.Component.literal(
-                                "§6[Slimefun] §cDebug mode is disabled"
-                            ),
-                            true
-                        );
-                    }
-                }
-            }
-            
-            // R = Recipe overlay (handled in ContainerScreenMixin)
-            // No need to handle here, mixin will catch it
+            handleKeyPresses(client);
         });
     }
     
     /**
-     * Get the toggle automation keybind (K)
+     * Handle all key presses
+     */
+    private static void handleKeyPresses(Minecraft mc) {
+        // K = Toggle automation
+        while (toggleAutomationKey.consumeClick()) {
+            handleToggleAutomation();
+        }
+        
+        // J = Debug info
+        while (debugInfoKey.consumeClick()) {
+            handleDebugInfo();
+        }
+        
+        // M = Mode settings
+        while (modeSettingsKey.consumeClick()) {
+            handleModeSettings(mc);
+        }
+        
+        // R is handled in RecipeOverlayInputHandler mixin
+    }
+    
+    /**
+     * Handle K = Toggle automation
+     */
+    private static void handleToggleAutomation() {
+        if (!MachineAutomationHandler.isActive()) {
+            return;
+        }
+        
+        boolean currentState = MachineAutomationHandler.isAutomationEnabled();
+        MachineAutomationHandler.setAutomationEnabled(!currentState);
+        
+        String status = !currentState ? "§aENABLED" : "§cDISABLED";
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.player != null) {
+            mc.player.displayClientMessage(
+                net.minecraft.network.chat.Component.literal("§eAutomation: " + status), 
+                true
+            );
+        }
+    }
+    
+    /**
+     * Handle J = Debug info
+     */
+    private static void handleDebugInfo() {
+        AutomationManager.showDetailedStatus();
+    }
+    
+    /**
+     * Handle M = Mode settings
+     */
+    private static void handleModeSettings(Minecraft mc) {
+        if (mc.player != null) {
+            ModConfig config = ModConfig.load();
+            mc.setScreen(new AutomationModeScreen(mc.screen, config));
+        }
+    }
+    
+    // ========================================
+    // GETTER METHODS (for Mixin access)
+    // ========================================
+    
+    /**
+     * Get the toggle automation keybind (for mixin access)
      */
     public static KeyMapping getToggleAutomationKey() {
         return toggleAutomationKey;
     }
     
     /**
-     * Get the debug info keybind (J)
+     * Get the debug info keybind (for mixin access)
      */
     public static KeyMapping getDebugInfoKey() {
         return debugInfoKey;
     }
     
     /**
-     * Get the recipe overlay keybind (R)
+     * Get the recipe overlay keybind (for mixin access)
      */
     public static KeyMapping getRecipeOverlayKey() {
         return recipeOverlayKey;
+    }
+    
+    /**
+     * Get the mode settings keybind (for mixin access)
+     */
+    public static KeyMapping getModeSettingsKey() {
+        return modeSettingsKey;
     }
 }

@@ -1,10 +1,12 @@
 package com.bapel_slimefun_mod.mixin.client;
+
 import com.bapel_slimefun_mod.client.ModKeybinds;
 import com.bapel_slimefun_mod.BapelSlimefunMod;
 import com.bapel_slimefun_mod.automation.MachineAutomationHandler;
 import com.bapel_slimefun_mod.automation.RecipeOverlayInputHandler;
 import com.bapel_slimefun_mod.automation.RecipeOverlayRenderer;
 
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import org.lwjgl.glfw.GLFW;
@@ -48,7 +50,7 @@ public abstract class ContainerScreenMixin {
         }
     }
     
-@Inject(method = "removed", at = @At("HEAD"))
+    @Inject(method = "removed", at = @At("HEAD"))
     private void onRemoved(CallbackInfo ci) {
         try {
             BapelSlimefunMod.LOGGER.info("╔═══════════════════════════════════════╗");
@@ -65,7 +67,18 @@ public abstract class ContainerScreenMixin {
         }
     }
     
-@Inject(method = "keyPressed", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "render", at = @At("TAIL"))
+    private void onRender(GuiGraphics graphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
+        try {
+            // ✅ CRITICAL FIX: Render overlay at TAIL (after everything else)
+            // This ensures it appears on top of all GUI elements including tooltips
+            RecipeOverlayRenderer.render(graphics, partialTick);
+        } catch (Exception e) {
+            BapelSlimefunMod.LOGGER.error("ERROR rendering recipe overlay", e);
+        }
+    }
+    
+    @Inject(method = "keyPressed", at = @At("HEAD"), cancellable = true)
     private void onKeyPressed(int keyCode, int scanCode, int modifiers, 
                              CallbackInfoReturnable<Boolean> cir) {
         try {

@@ -91,10 +91,10 @@ public class ModConfig {
     /**
      * Check if automation is enabled
      */
-    // 1. Tambahkan variable ini di bagian atas (bersama variable automationEnabled dll)
-    private boolean rememberLastRecipe = true; 
+    // Di bagian variable declarations (sudah ada di dokumen Anda, pastikan ada)
+    private boolean rememberLastRecipe = true; // true = AUTO mode, false = MANUAL mode
 
-    // 2. Tambahkan Getter dan Setter ini di bagian bawah
+    // Getter dan Setter (sudah ada di dokumen)
     public boolean isRememberLastRecipe() {
         return rememberLastRecipe;
     }
