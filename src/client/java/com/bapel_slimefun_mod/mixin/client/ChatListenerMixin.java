@@ -1,29 +1,35 @@
 package com.bapel_slimefun_mod.mixin.client;
 
 import com.bapel_slimefun_mod.BapelSlimefunMod;
+import com.bapel_slimefun_mod.automation.MultiblockDetector;
 import com.bapel_slimefun_mod.automation.SlimefunDataLoader;
 import com.bapel_slimefun_mod.automation.SlimefunMachineData;
 import com.bapel_slimefun_mod.automation.UnifiedAutomationManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSystemChatPacket;
+import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
- *  COMPLETE REWRITE: Multi-machine cache system
+ * ✅ BEST: Ultra-precise multiblock detection using MultiblockDetector
  * 
- * Detects "successfully constructed" message and caches the machine
- * Supports unlimited number of multiblocks
+ * FEATURES:
+ * 1. Confidence-based matching (60%+ threshold)
+ * 2. Signature block recognition
+ * 3. Disambiguates similar structures
+ * 4. Handles all edge cases
  */
 @Mixin(ClientPacketListener.class)
 public class ChatListenerMixin {
     
     private static long lastDetectionTime = 0;
-    private static final long DETECTION_COOLDOWN = 500; // 500ms
+    private static final long DETECTION_COOLDOWN = 500;
   
     @Inject(method = "handleSystemChat", at = @At("HEAD"))
     private void onSystemChat(ClientboundSystemChatPacket packet, CallbackInfo ci) {
@@ -31,89 +37,50 @@ public class ChatListenerMixin {
             Component message = packet.content();
             String text = message.getString();
             
-            // Detect Slimefun multiblock construction message
-if (text.contains("Slimefun") && text.contains("successfully constructed this Multiblock")) {
+            if (text.contains("Slimefun") && text.contains("successfully constructed this Multiblock")) {
+                long now = System.currentTimeMillis();
+                if (now - lastDetectionTime < DETECTION_COOLDOWN) {
+                    return;
+                }
+                lastDetectionTime = now;
                 
-    long now = System.currentTimeMillis();
-    if (now - lastDetectionTime < DETECTION_COOLDOWN) {
-        return; // Skip duplicate
-    }
-    lastDetectionTime = now;
-                
-                
-                // Small delay to detect machine type
                 Minecraft mc = Minecraft.getInstance();
                 new Thread(() -> {
                     try {
-                        Thread.sleep(150);
-                        
-                        mc.execute(() -> {
-                            detectAndCacheMachine();
-                        });
+                        Thread.sleep(250);
+                        mc.execute(() -> detectAndCacheMachine());
                     } catch (Exception e) {
-                        BapelSlimefunMod.LOGGER.error("[ChatDetector] Error in delayed detection", e);
+                        BapelSlimefunMod.LOGGER.error("Error in delayed detection", e);
                     }
                 }).start();
             }
         } catch (Exception e) {
-            BapelSlimefunMod.LOGGER.error("[ChatDetector] Error in chat listener", e);
+            BapelSlimefunMod.LOGGER.error("Error in chat listener", e);
         }
     }
     
-    
     /**
-     *  NEW: Detect and cache the multiblock machine
-     * This adds the machine to the multi-machine cache system
+     * ✅ ADVANCED: Use MultiblockDetector for accurate detection
      */
     private void detectAndCacheMachine() {
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.player == null || mc.level == null) return;
         
-        // Get all machines
-        var allMachines = SlimefunDataLoader.getAllMachines();
+        BlockPos playerPos = mc.player.blockPosition();
+        Level level = mc.level;
         
-        // Priority list of common multiblocks
-        String[] priorityMultiblocks = {
-            "ENHANCED_CRAFTING_TABLE",
-            "ORE_CRUSHER",
-            "COMPRESSOR",
-            "SMELTERY",
-            "PRESSURE_CHAMBER",
-            "MAGIC_WORKBENCH",
-            "ARMOR_FORGE",
-            "MAKESHIFT_SMELTERY",
-            "ORE_WASHER",
-            "AUTOMATED_PANNING_MACHINE",
-            "GOLD_PAN",
-            "ANCIENT_ALTAR",
-            "JUICER"
-        };
+        // Use advanced detector
+        MultiblockDetector.DetectionResult result = MultiblockDetector.detect(level, playerPos);
         
-        SlimefunMachineData detectedMachine = null;
-        
-        // Try priority list first
-        for (String multiblockId : priorityMultiblocks) {
-            SlimefunMachineData machine = allMachines.get(multiblockId);
-            if (machine != null && machine.isMultiblock()) {
-                detectedMachine = machine;
-                break;
+        if (result != null) {
+            SlimefunMachineData machine = SlimefunDataLoader.getMultiblockById(result.getMachineId());
+            
+            if (machine != null) {
+                UnifiedAutomationManager.onMultiblockConstructed(machine);
+                BapelSlimefunMod.LOGGER.info("Detected: {}", result.toString());
             }
-        }
-        
-        // If not found, try any multiblock
-        if (detectedMachine == null) {
-            for (var entry : allMachines.entrySet()) {
-                SlimefunMachineData machine = entry.getValue();
-                if (machine.isMultiblock()) {
-                    detectedMachine = machine;
-                    break;
-                }
-            }
-        }
-        
-        if (detectedMachine != null) {
-            //  CORE: Cache this machine at player position!
-            UnifiedAutomationManager.onMultiblockConstructed(detectedMachine);
         } else {
-            BapelSlimefunMod.LOGGER.warn("[ChatDetector]  Could not detect multiblock type!");
+            BapelSlimefunMod.LOGGER.warn("No matching multiblock found");
         }
     }
 }

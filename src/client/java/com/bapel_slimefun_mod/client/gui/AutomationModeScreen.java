@@ -1,19 +1,20 @@
 package com.bapel_slimefun_mod.client.gui;
 
+import com.bapel_slimefun_mod.automation.MultiblockCacheManager;
 import com.bapel_slimefun_mod.automation.RecipeMemoryManager;
 import com.bapel_slimefun_mod.config.ModConfig;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
 /**
- * GUI Screen untuk mengatur Auto/Manual Mode
- * - Auto Mode: Otomatis mengingat dan memasukkan recipe ketika kembali ke machine
- * - Manual Mode: Harus memilih recipe setiap kali membuka machine
+ * ✅ UPDATED: GUI Screen with Multiblock Automation Management
  * 
- * FIXED: Changed renderBackground to renderDirtBackground to avoid blur crash in 1.21.8
+ * Features:
+ * - Auto/Manual Mode toggle
+ * - Multiblock cache management
+ * - Recipe memory management
  */
 public class AutomationModeScreen extends Screen {
     private final Screen parent;
@@ -21,6 +22,7 @@ public class AutomationModeScreen extends Screen {
     
     private Button autoModeButton;
     private Button manualModeButton;
+    private Button multiblockCacheButton;
     private Button clearMemoryButton;
     private Button doneButton;
     
@@ -37,7 +39,7 @@ public class AutomationModeScreen extends Screen {
     @Override
     protected void init() {
         int centerX = this.width / 2;
-        int startY = this.height / 2 - 60;
+        int startY = this.height / 2 - 80;
         
         // Auto Mode Button
         this.autoModeButton = Button.builder(
@@ -55,13 +57,22 @@ public class AutomationModeScreen extends Screen {
         .bounds(centerX - BUTTON_WIDTH / 2, startY + BUTTON_SPACING, BUTTON_WIDTH, BUTTON_HEIGHT)
         .build();
         
-        // Clear Memory Button
-        int memoryCount = RecipeMemoryManager.getMemoryCount();
-        this.clearMemoryButton = Button.builder(
-            Component.literal("§c Clear Memory (" + memoryCount + " recipes)"),
-            button -> clearMemory()
+        // Multiblock Cache Button (NEW - replaces Clear Memory)
+        int multiblockCount = MultiblockCacheManager.size();
+        this.multiblockCacheButton = Button.builder(
+            Component.literal("§b⚙ Multiblock Cache (" + multiblockCount + " machines)"),
+            button -> openMultiblockManager()
         )
         .bounds(centerX - BUTTON_WIDTH / 2, startY + BUTTON_SPACING * 3, BUTTON_WIDTH, BUTTON_HEIGHT)
+        .build();
+        
+        // Clear Memory Button (moved down)
+        int memoryCount = RecipeMemoryManager.getMemoryCount();
+        this.clearMemoryButton = Button.builder(
+            Component.literal("§c✖ Clear Memory (" + memoryCount + " recipes)"),
+            button -> clearMemory()
+        )
+        .bounds(centerX - BUTTON_WIDTH / 2, startY + BUTTON_SPACING * 4, BUTTON_WIDTH, BUTTON_HEIGHT)
         .build();
         
         // Done Button
@@ -69,12 +80,13 @@ public class AutomationModeScreen extends Screen {
             Component.literal("Done"),
             button -> this.minecraft.setScreen(parent)
         )
-        .bounds(centerX - BUTTON_WIDTH / 2, startY + BUTTON_SPACING * 5, BUTTON_WIDTH, BUTTON_HEIGHT)
+        .bounds(centerX - BUTTON_WIDTH / 2, startY + BUTTON_SPACING * 6, BUTTON_WIDTH, BUTTON_HEIGHT)
         .build();
         
         // Add buttons
         this.addRenderableWidget(autoModeButton);
         this.addRenderableWidget(manualModeButton);
+        this.addRenderableWidget(multiblockCacheButton);
         this.addRenderableWidget(clearMemoryButton);
         this.addRenderableWidget(doneButton);
         
@@ -85,12 +97,21 @@ public class AutomationModeScreen extends Screen {
         config.setRememberLastRecipe(auto);
         updateButtonStates();
         
-        // Show confirmation message
+        // Show confirmation
         if (minecraft != null && minecraft.player != null) {
             String message = auto ? 
                 "§a✓ Auto Mode Enabled - Recipes will be remembered" :
-                "§e✓ Manual Mode Enabled - You must select recipes manually";
+                "§e✓ Manual Mode Enabled - Select recipes manually";
             minecraft.player.displayClientMessage(Component.literal(message), true);
+        }
+    }
+    
+    /**
+     * NEW: Open multiblock cache manager
+     */
+    private void openMultiblockManager() {
+        if (minecraft != null) {
+            minecraft.setScreen(new MultiblockCacheScreen(this, config));
         }
     }
     
@@ -98,10 +119,12 @@ public class AutomationModeScreen extends Screen {
         int count = RecipeMemoryManager.getMemoryCount();
         RecipeMemoryManager.clearAll();
         
-        // Update button text
-        this.clearMemoryButton.setMessage(Component.literal("§c Clear Memory (0 recipes)"));
+        // Update button
+        this.clearMemoryButton.setMessage(
+            Component.literal("§c✖ Clear Memory (0 recipes)")
+        );
         
-        // Show confirmation message
+        // Show confirmation
         if (minecraft != null && minecraft.player != null) {
             minecraft.player.displayClientMessage(
                 Component.literal("§e✓ Cleared " + count + " recipe memories"), 
@@ -124,12 +147,10 @@ public class AutomationModeScreen extends Screen {
     
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        // FIXED: Use manual background rendering to avoid blur crash
-        // In Minecraft 1.21.8, renderBackground can cause "Can only blur once per frame" error
-        // Draw a simple semi-transparent dark background instead
+        // Draw background
         graphics.fill(0, 0, this.width, this.height, 0xC0101010);
         
-        // Render title
+        // Title
         graphics.drawCenteredString(
             this.font, 
             this.title, 
@@ -138,8 +159,8 @@ public class AutomationModeScreen extends Screen {
             0xFFFFFF
         );
         
-        // Render mode description
-        int descY = this.height / 2 - 85;
+        // Current mode
+        int descY = this.height / 2 - 95;
         String currentMode = config.isRememberLastRecipe() ? "§aAuto Mode" : "§eManual Mode";
         graphics.drawCenteredString(
             this.font,
@@ -149,45 +170,249 @@ public class AutomationModeScreen extends Screen {
             0xFFFFFF
         );
         
-        // Render explanation
-        int explainY = this.height / 2 + 15;
+        // Explanation
+        int explainY = this.height / 2 - 10;
         
         if (config.isRememberLastRecipe()) {
-            // Auto mode explanation
             graphics.drawCenteredString(
                 this.font,
-                Component.literal("§7Auto Mode: Recipes are remembered per machine"),
+                Component.literal("§7Auto Mode: Recipes remembered per machine"),
                 this.width / 2,
                 explainY,
                 0xAAAAAA
             );
             graphics.drawCenteredString(
                 this.font,
-                Component.literal("§7When you return to a machine, it will auto-insert items"),
+                Component.literal("§7Auto-insert items when returning to machine"),
                 this.width / 2,
                 explainY + 12,
                 0xAAAAAA
             );
         } else {
-            // Manual mode explanation
             graphics.drawCenteredString(
                 this.font,
-                Component.literal("§7Manual Mode: You must select recipe every time"),
+                Component.literal("§7Manual Mode: Select recipe every time"),
                 this.width / 2,
                 explainY,
                 0xAAAAAA
             );
             graphics.drawCenteredString(
                 this.font,
-                Component.literal("§7The overlay will always show when opening a machine"),
+                Component.literal("§7Overlay shows when opening machine"),
                 this.width / 2,
                 explainY + 12,
                 0xAAAAAA
             );
         }
         
+        // Multiblock info
+        int multiblockY = this.height / 2 + 40;
+        int cacheCount = MultiblockCacheManager.size();
+        graphics.drawCenteredString(
+            this.font,
+            Component.literal("§7Cached multiblocks: §b" + cacheCount + " §7machines"),
+            this.width / 2,
+            multiblockY,
+            0xAAAAAA
+        );
+        
         // Render buttons
         super.render(graphics, mouseX, mouseY, partialTick);
+    }
+    
+    @Override
+    public boolean isPauseScreen() {
+        return false;
+    }
+    
+    @Override
+    public void onClose() {
+        this.minecraft.setScreen(parent);
+    }
+}
+
+/**
+ * ✅ NEW: Multiblock Cache Management Screen
+ */
+class MultiblockCacheScreen extends Screen {
+    private final Screen parent;
+    private final ModConfig config;
+    
+    private Button viewCacheButton;
+    private Button clearCacheButton;
+    private Button backButton;
+    
+    private static final int BUTTON_WIDTH = 200;
+    private static final int BUTTON_HEIGHT = 20;
+    private static final int BUTTON_SPACING = 25;
+    
+    public MultiblockCacheScreen(Screen parent, ModConfig config) {
+        super(Component.literal("Multiblock Cache Manager"));
+        this.parent = parent;
+        this.config = config;
+    }
+    
+    @Override
+    protected void init() {
+        int centerX = this.width / 2;
+        int startY = this.height / 2 - 40;
+        
+        // View Cache Button
+        this.viewCacheButton = Button.builder(
+            Component.literal("§b📋 View Cached Machines"),
+            button -> viewCache()
+        )
+        .bounds(centerX - BUTTON_WIDTH / 2, startY, BUTTON_WIDTH, BUTTON_HEIGHT)
+        .build();
+        
+        // Clear Cache Button
+        int cacheCount = MultiblockCacheManager.size();
+        this.clearCacheButton = Button.builder(
+            Component.literal("§c✖ Clear Cache (" + cacheCount + " machines)"),
+            button -> clearCache()
+        )
+        .bounds(centerX - BUTTON_WIDTH / 2, startY + BUTTON_SPACING, BUTTON_WIDTH, BUTTON_HEIGHT)
+        .build();
+        
+        // Back Button
+        this.backButton = Button.builder(
+            Component.literal("Back"),
+            button -> this.minecraft.setScreen(parent)
+        )
+        .bounds(centerX - BUTTON_WIDTH / 2, startY + BUTTON_SPACING * 3, BUTTON_WIDTH, BUTTON_HEIGHT)
+        .build();
+        
+        this.addRenderableWidget(viewCacheButton);
+        this.addRenderableWidget(clearCacheButton);
+        this.addRenderableWidget(backButton);
+    }
+    
+    private void viewCache() {
+        if (minecraft != null && minecraft.player != null) {
+            var machines = MultiblockCacheManager.getAllMachines();
+            
+            if (machines.isEmpty()) {
+                minecraft.player.displayClientMessage(
+                    Component.literal("§eNo multiblocks cached yet"), 
+                    false
+                );
+                return;
+            }
+            
+            minecraft.player.displayClientMessage(
+                Component.literal("§6§l=== Cached Multiblocks ==="), 
+                false
+            );
+            
+            int index = 1;
+            for (var machine : machines) {
+                String lastRecipe = machine.getLastSelectedRecipe() != null ? 
+                    "§a✓" : "§7✗";
+                
+                minecraft.player.displayClientMessage(
+                    Component.literal(String.format(
+                        "§7%d. §f%s %s §7at [%d, %d, %d]",
+                        index++,
+                        machine.getMachineName(),
+                        lastRecipe,
+                        machine.getPosition().getX(),
+                        machine.getPosition().getY(),
+                        machine.getPosition().getZ()
+                    )), 
+                    false
+                );
+            }
+            
+            minecraft.player.displayClientMessage(
+                Component.literal("§6§l======================"), 
+                false
+            );
+        }
+    }
+    
+    private void clearCache() {
+        int count = MultiblockCacheManager.size();
+        MultiblockCacheManager.clearAll();
+        
+        // Update button
+        this.clearCacheButton.setMessage(
+            Component.literal("§c✖ Clear Cache (0 machines)")
+        );
+        
+        // Show confirmation
+        if (minecraft != null && minecraft.player != null) {
+            minecraft.player.displayClientMessage(
+                Component.literal("§e✓ Cleared " + count + " cached multiblocks"), 
+                true
+            );
+        }
+    }
+    
+    @Override
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        // Draw background
+        graphics.fill(0, 0, this.width, this.height, 0xC0101010);
+        
+        // Title
+        graphics.drawCenteredString(
+            this.font, 
+            this.title, 
+            this.width / 2, 
+            20, 
+            0xFFFFFF
+        );
+        
+        // Info
+        int infoY = this.height / 2 - 60;
+        int cacheCount = MultiblockCacheManager.size();
+        
+        graphics.drawCenteredString(
+            this.font,
+            Component.literal("§7Total Cached: §b" + cacheCount + " §7multiblocks"),
+            this.width / 2,
+            infoY,
+            0xAAAAAA
+        );
+        
+        graphics.drawCenteredString(
+            this.font,
+            Component.literal("§7Cached machines remember their last recipe"),
+            this.width / 2,
+            infoY + 12,
+            0x888888
+        );
+        
+        graphics.drawCenteredString(
+            this.font,
+            Component.literal("§7and auto-load when you return to them"),
+            this.width / 2,
+            infoY + 24,
+            0x888888
+        );
+        
+        // Cache statistics
+        int statsY = this.height / 2 + 60;
+        var stats = MultiblockCacheManager.getStatistics();
+        
+        if (!stats.isEmpty()) {
+            graphics.drawCenteredString(
+                this.font,
+                Component.literal("§7Most cached: §f" + getMostCachedType(stats)),
+                this.width / 2,
+                statsY,
+                0xAAAAAA
+            );
+        }
+        
+        // Render buttons
+        super.render(graphics, mouseX, mouseY, partialTick);
+    }
+    
+    private String getMostCachedType(java.util.Map<String, Integer> stats) {
+        return stats.entrySet().stream()
+            .max(java.util.Map.Entry.comparingByValue())
+            .map(e -> e.getKey() + " (" + e.getValue() + ")")
+            .orElse("None");
     }
     
     @Override
