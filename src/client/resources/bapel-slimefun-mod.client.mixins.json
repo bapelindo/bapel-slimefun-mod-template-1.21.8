@@ -3,7 +3,8 @@
 	"package": "com.bapel_slimefun_mod.mixin.client",
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
-		"ContainerScreenMixin"
+		"ContainerScreenMixin",
+		"ChatListenerMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

@@ -236,11 +236,21 @@ public class SlimefunDataLoader {
     /**
      * Get machine by GUI title or ID
      */
+/**
+     * Get machine by GUI title or ID
+     */
     public static SlimefunMachineData getMachineByTitle(String title) {
         String cleanedTitle = cleanTitle(title);
         
         BapelSlimefunMod.LOGGER.info("[DataLoader] Looking for machine: '{}'", title);
         BapelSlimefunMod.LOGGER.info("[DataLoader] Cleaned: '{}'", cleanedTitle);
+        
+        // Special handling for Dispenser - might be a multiblock
+        if ("Dispenser".equalsIgnoreCase(cleanedTitle)) {
+            BapelSlimefunMod.LOGGER.info("[DataLoader] Dispenser detected - checking for multiblock via Slimefun...");
+            // Will be detected via Slimefun chat message or player interaction
+            return null; // Return null for now, will be set later via chat detection
+        }
         
         // Try exact match by title
         SlimefunMachineData machine = MACHINES.get(cleanedTitle);
@@ -287,6 +297,17 @@ public class SlimefunDataLoader {
         }
         
         BapelSlimefunMod.LOGGER.warn("[DataLoader] ✗ No match found for '{}'", title);
+        return null;
+    }
+    
+    /**
+     * Get multiblock machine by ID directly
+     */
+    public static SlimefunMachineData getMultiblockById(String machineId) {
+        SlimefunMachineData machine = MACHINES.get(machineId);
+        if (machine != null && machine.isMultiblock()) {
+            return machine;
+        }
         return null;
     }
     
