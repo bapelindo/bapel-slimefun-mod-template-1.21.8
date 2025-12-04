@@ -5,28 +5,39 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+
+import java.util.*;
 
 /**
- * ✅ 100% EXACT MULTIBLOCK DETECTOR - NO FUZZY MATCHING
+ * ✅ COMPLETE FIX: Enhanced multiblock detection with detailed logging
  * 
- * FEATURES:
- * - Checks patterns in ALL 4 CARDINAL DIRECTIONS (N, E, S, W)
- * - Uses EXACT block matching (== comparison)
- * - Supports all multiblock types from Slimefun
- * - Scans 3x3x3 area with precise positioning
- * - 100% reliable detection with no false positives
+ * KEY FIXES:
+ * 1. Added DEBUG_MODE for detailed pattern matching logs
+ * 2. Fixed coordinate order in scan (Y-Z-X matching structure order)
+ * 3. Better material normalization with fallback mappings
+ * 4. More lenient fuzzy matching for similar blocks
  */
 public class MultiblockDetector {
     
+    // ✅ NEW: Enable debug logging
+    private static final boolean DEBUG_MODE = true;
+    
+    /**
+     * Detection result with confidence score
+     */
     public static class DetectionResult {
         private final String machineId;
         private final BlockPos dispenserPos;
         private final double confidence;
+        private final Map<String, Integer> matchedBlocks;
         
-        public DetectionResult(String machineId, BlockPos dispenserPos, double confidence) {
+        public DetectionResult(String machineId, BlockPos dispenserPos, double confidence, 
+                              Map<String, Integer> matchedBlocks) {
             this.machineId = machineId;
             this.dispenserPos = dispenserPos;
             this.confidence = confidence;
+            this.matchedBlocks = matchedBlocks;
         }
         
         public String getMachineId() { return machineId; }
@@ -42,389 +53,555 @@ public class MultiblockDetector {
     }
     
     /**
-     * Detect multiblock from dispenser position
-     * Returns null if no multiblock is detected
+     * Structure snapshot of area around dispenser
+     */
+    private static class StructureSnapshot {
+        final Map<String, Integer> blockCounts;
+        final Set<String> uniqueBlocks;
+        final List<BlockPos> allPositions;
+        
+        StructureSnapshot(Map<String, Integer> blockCounts, Set<String> uniqueBlocks, 
+                         List<BlockPos> allPositions) {
+            this.blockCounts = blockCounts;
+            this.uniqueBlocks = uniqueBlocks;
+            this.allPositions = allPositions;
+        }
+    }
+    
+    /**
+     * ✅ FIXED: Detect from OPENED dispenser position
      */
     public static DetectionResult detect(Level level, BlockPos dispenserPos) {
-        BapelSlimefunMod.LOGGER.info("[Detector] Starting EXACT detection at dispenser [{},{},{}]", 
+        BapelSlimefunMod.LOGGER.info("[Detector] Starting detection at dispenser [{},{},{}]", 
             dispenserPos.getX(), dispenserPos.getY(), dispenserPos.getZ());
         
-        // Validate dispenser - EXACT check
+        // Validate that this is actually a dispenser
         if (level.getBlockState(dispenserPos).getBlock() != Blocks.DISPENSER) {
             BapelSlimefunMod.LOGGER.error("[Detector] Position is not a dispenser!");
             return null;
         }
         
-        DetectionResult result;
+        // Get all machine definitions
+        Map<String, SlimefunMachineData> machines = SlimefunDataLoader.getAllMachines();
         
-        // 1. PRESSURE CHAMBER (3x3 grid)
-        result = checkPressureChamber(level, dispenserPos);
-        if (result != null) return result;
+        // ✅ STEP 1: Try EXACT pattern matching first (3x3x3 with dispenser at center)
+        for (SlimefunMachineData machine : machines.values()) {
+            if (!machine.isMultiblock() || machine.getStructure() == null) continue;
+            
+            if (DEBUG_MODE) {
+                BapelSlimefunMod.LOGGER.info("[Detector] Testing EXACT match for: {}", machine.getId());
+            }
+            
+            if (testExactPattern(level, dispenserPos, machine)) {
+                BapelSlimefunMod.LOGGER.info("[Detector] ✓ EXACT MATCH: {} (100%)", machine.getId());
+                
+                StructureSnapshot snapshot = scanStructure(level, dispenserPos);
+                return new DetectionResult(
+                    machine.getId(), 
+                    dispenserPos, 
+                    1.0,
+                    snapshot.blockCounts
+                );
+            }
+        }
         
-        // 2. SMELTERY variants (3D cross)
-        result = checkSmeltery(level, dispenserPos);
-        if (result != null) return result;
+        // ✅ STEP 2: FALLBACK - Fuzzy matching (5x5x5 scan)
+        BapelSlimefunMod.LOGGER.info("[Detector] No exact match, trying fuzzy matching...");
         
-        result = checkMakeshiftSmeltery(level, dispenserPos);
-        if (result != null) return result;
+        StructureSnapshot snapshot = scanStructure(level, dispenserPos);
+        List<DetectionResult> candidates = new ArrayList<>();
         
-        // 3. 2x2 grids
-        result = checkOreCrusher(level, dispenserPos);
-        if (result != null) return result;
+        for (SlimefunMachineData machine : machines.values()) {
+            if (!machine.isMultiblock() || machine.getStructure() == null) continue;
+            
+            double confidence = calculateConfidence(machine, snapshot);
+            
+            if (confidence >= 0.5) {
+                candidates.add(new DetectionResult(
+                    machine.getId(), 
+                    dispenserPos, 
+                    confidence, 
+                    snapshot.blockCounts
+                ));
+                
+                BapelSlimefunMod.LOGGER.info("[Detector]   -> {}: {}% (fuzzy)", 
+                    machine.getId(), (int)(confidence * 100));
+            }
+        }
         
-        result = checkCompressor(level, dispenserPos);
-        if (result != null) return result;
+        if (candidates.isEmpty()) {
+            BapelSlimefunMod.LOGGER.warn("[Detector] No match found");
+            logSnapshot(snapshot);
+            return null;
+        }
         
-        // 4. 3-block vertical
-        result = checkMagicWorkbench(level, dispenserPos);
-        if (result != null) return result;
+        // Return BEST match
+        DetectionResult best = candidates.stream()
+            .max(Comparator
+                .comparingDouble(DetectionResult::getConfidence)
+                .thenComparingInt(r -> countSignatureMatches(r.getMachineId(), snapshot))
+            )
+            .orElse(null);
         
-        result = checkJuicer(level, dispenserPos);
-        if (result != null) return result;
+        if (best != null) {
+            BapelSlimefunMod.LOGGER.info("[Detector] ✓ BEST MATCH: {}", best.toString());
+        }
         
-        result = checkOreWasher(level, dispenserPos);
-        if (result != null) return result;
-        
-        // 5. 2-block vertical
-        result = checkArmorForge(level, dispenserPos);
-        if (result != null) return result;
-        
-        result = checkGrindStone(level, dispenserPos);
-        if (result != null) return result;
-        
-        result = checkEnhancedCraftingTable(level, dispenserPos);
-        if (result != null) return result;
-        
-        BapelSlimefunMod.LOGGER.warn("[Detector] No multiblock pattern matched (exact check failed)");
-        return null;
-    }
-    
-    // ========================================================================
-    // HELPER: EXACT block matching - NO FUZZY LOGIC
-    // ========================================================================
-    
-    /**
-     * EXACT match - uses == operator for 100% precision
-     */
-    private static boolean matchesBlockExact(Block actual, Block expected) {
-        return actual == expected;
-    }
-    
-    /**
-     * Check if block is a cauldron (any type)
-     */
-    private static boolean isCauldron(Block block) {
-        return block == Blocks.CAULDRON || block == Blocks.WATER_CAULDRON;
-    }
-    
-    /**
-     * Check if block is fire (any type)
-     */
-    private static boolean isFire(Block block) {
-        return block == Blocks.FIRE || block == Blocks.SOUL_FIRE;
-    }
-    
-    /**
-     * Check if block is an anvil (any damage level)
-     */
-    private static boolean isAnvil(Block block) {
-        return block == Blocks.ANVIL || 
-               block == Blocks.CHIPPED_ANVIL || 
-               block == Blocks.DAMAGED_ANVIL;
+        return best;
     }
     
     /**
-     * Get block at position with null safety
+     * ✅ COMPLETELY REWRITTEN: Test exact 3x3x3 pattern with detailed logging
      */
-    private static Block getBlock(Level level, BlockPos pos) {
-        try {
-            return level.getBlockState(pos).getBlock();
-        } catch (Exception e) {
-            return Blocks.AIR;
+    private static boolean testExactPattern(Level level, BlockPos dispenserPos, SlimefunMachineData machine) {
+        List<SlimefunMachineData.MultiblockStructure> structure = machine.getStructure();
+        
+        if (structure.size() != 27) {
+            if (DEBUG_MODE) {
+                BapelSlimefunMod.LOGGER.warn("[Detector] Structure size != 27: {}", structure.size());
+            }
+            return false;
+        }
+        
+        // Build expected pattern
+        Map<Integer, String> expectedPattern = new HashMap<>();
+        for (int i = 0; i < 27; i++) {
+            String material = normalizeMaterial(structure.get(i).getMaterial());
+            expectedPattern.put(i, material);
+        }
+        
+        // CRITICAL: Index 13 (center) MUST be DISPENSER
+        if (!"DISPENSER".equals(expectedPattern.get(13))) {
+            if (DEBUG_MODE) {
+                BapelSlimefunMod.LOGGER.warn("[Detector] Center (index 13) is not DISPENSER: {}", 
+                    expectedPattern.get(13));
+            }
+            return false;
+        }
+        
+        if (DEBUG_MODE) {
+            BapelSlimefunMod.LOGGER.info("[Detector] === Expected Pattern ===");
+            printPattern(expectedPattern);
+        }
+        
+        // ✅ FIX: Scan 3x3x3 cube with dispenser as center
+        // Order MUST match structure order: [y=-1 to 1][z=-1 to 1][x=-1 to 1]
+        int index = 0;
+        int mismatches = 0;
+        Map<Integer, String> actualPattern = new HashMap<>();
+        
+        for (int y = -1; y <= 1; y++) {
+            for (int z = -1; z <= 1; z++) {
+                for (int x = -1; x <= 1; x++) {
+                    BlockPos checkPos = dispenserPos.offset(x, y, z);
+                    BlockState state = level.getBlockState(checkPos);
+                    Block block = state.getBlock();
+                    
+                    String actualMaterial = normalizeBlockId(block);
+                    String expectedMaterial = expectedPattern.get(index);
+                    
+                    actualPattern.put(index, actualMaterial);
+                    
+                    // ✅ NEW: Try fuzzy match for similar blocks
+                    boolean matches = actualMaterial.equals(expectedMaterial) || 
+                                    areSimilarBlocks(actualMaterial, expectedMaterial);
+                    
+                    if (!matches) {
+                        mismatches++;
+                        if (DEBUG_MODE && mismatches <= 5) {
+                            BapelSlimefunMod.LOGGER.warn("[Detector] Mismatch at index {} [x={},y={},z={}]: expected '{}', got '{}'", 
+                                index, x, y, z, expectedMaterial, actualMaterial);
+                        }
+                    }
+                    
+                    index++;
+                }
+            }
+        }
+        
+        if (DEBUG_MODE) {
+            BapelSlimefunMod.LOGGER.info("[Detector] === Actual Pattern ===");
+            printPattern(actualPattern);
+            BapelSlimefunMod.LOGGER.info("[Detector] Total mismatches: {} / 27", mismatches);
+        }
+        
+        // ✅ LENIENT: Allow up to 2 mismatches for blocks that might have variants
+        return mismatches <= 2;
+    }
+    
+    /**
+     * ✅ NEW: Check if two blocks are similar enough to match
+     */
+    private static boolean areSimilarBlocks(String actual, String expected) {
+        // Fences - all wood fences match
+        if (expected.equals("FENCE") && actual.contains("FENCE")) {
+            return true;
+        }
+        
+        // Glass - colored glass matches plain glass
+        if (expected.equals("GLASS") && (actual.equals("GLASS") || actual.contains("STAINED_GLASS"))) {
+            return true;
+        }
+        
+        // Anvils - all damage states match
+        if (expected.equals("ANVIL") && actual.contains("ANVIL")) {
+            return true;
+        }
+        
+        // Cauldrons - all fill states match
+        if (expected.equals("CAULDRON") && actual.contains("CAULDRON")) {
+            return true;
+        }
+        
+        // Pistons - sticky/normal match
+        if (expected.equals("PISTON") && actual.contains("PISTON")) {
+            return true;
+        }
+        
+        // Trapdoors - all types match
+        if (expected.equals("TRAP_DOOR") && actual.contains("TRAPDOOR")) {
+            return true;
+        }
+        
+        return false;
+    }
+    
+    /**
+     * ✅ NEW: Print pattern for debugging
+     */
+    private static void printPattern(Map<Integer, String> pattern) {
+        for (int y = -1; y <= 1; y++) {
+            BapelSlimefunMod.LOGGER.info("[Detector] === Y={} ===", y);
+            for (int z = -1; z <= 1; z++) {
+                StringBuilder line = new StringBuilder("[Detector] ");
+                for (int x = -1; x <= 1; x++) {
+                    int index = ((y + 1) * 9) + ((z + 1) * 3) + (x + 1);
+                    String material = pattern.get(index);
+                    line.append(String.format("%-20s", material == null ? "NULL" : material));
+                }
+                BapelSlimefunMod.LOGGER.info(line.toString());
+            }
         }
     }
     
-    // ========================================================================
-    // PRESSURE CHAMBER - 3x3 Grid (ALL 4 ROTATIONS)
-    // Pattern: Dispenser at center-top of 3x3
-    //   [SLAB] [DISPENSER] [SLAB]
-    //   [PISTON] [GLASS] [PISTON]
-    //   [PISTON] [CAULDRON] [PISTON]
-    // ========================================================================
-    
-    private static DetectionResult checkPressureChamber(Level level, BlockPos dispenserPos) {
-        // Try all 4 cardinal directions
-        BlockPos[][] directions = {
-            { // NORTH (Z-)
-                dispenserPos.west(), dispenserPos, dispenserPos.east(),
-                dispenserPos.west().south(), dispenserPos.south(), dispenserPos.east().south(),
-                dispenserPos.west().south(2), dispenserPos.south(2), dispenserPos.east().south(2)
-            },
-            { // EAST (X+)
-                dispenserPos.north(), dispenserPos, dispenserPos.south(),
-                dispenserPos.north().east(), dispenserPos.east(), dispenserPos.south().east(),
-                dispenserPos.north().east(2), dispenserPos.east(2), dispenserPos.south().east(2)
-            },
-            { // SOUTH (Z+)
-                dispenserPos.west(), dispenserPos, dispenserPos.east(),
-                dispenserPos.west().north(), dispenserPos.north(), dispenserPos.east().north(),
-                dispenserPos.west().north(2), dispenserPos.north(2), dispenserPos.east().north(2)
-            },
-            { // WEST (X-)
-                dispenserPos.north(), dispenserPos, dispenserPos.south(),
-                dispenserPos.north().west(), dispenserPos.west(), dispenserPos.south().west(),
-                dispenserPos.north().west(2), dispenserPos.west(2), dispenserPos.south().west(2)
-            }
-        };
+    /**
+     * ✅ IMPROVED: Scan 5x5x5 area centered on dispenser
+     */
+    private static StructureSnapshot scanStructure(Level level, BlockPos dispenserPos) {
+        Map<String, Integer> blockCounts = new HashMap<>();
+        Set<String> uniqueBlocks = new HashSet<>();
+        List<BlockPos> allPositions = new ArrayList<>();
         
-        for (BlockPos[] pattern : directions) {
-            Block[] blocks = new Block[9];
-            for (int i = 0; i < 9; i++) {
-                blocks[i] = getBlock(level, pattern[i]);
+        // Scan 5x5x5 cube centered on dispenser
+        for (int x = -2; x <= 2; x++) {
+            for (int y = -2; y <= 2; y++) {
+                for (int z = -2; z <= 2; z++) {
+                    BlockPos pos = dispenserPos.offset(x, y, z);
+                    BlockState state = level.getBlockState(pos);
+                    Block block = state.getBlock();
+                    
+                    if (!state.isAir()) {
+                        String blockId = normalizeBlockId(block);
+                        blockCounts.merge(blockId, 1, Integer::sum);
+                        uniqueBlocks.add(blockId);
+                        allPositions.add(pos);
+                    }
+                }
             }
+        }
+        
+        return new StructureSnapshot(blockCounts, uniqueBlocks, allPositions);
+    }
+    
+    /**
+     * ✅ IMPROVED: Calculate confidence with stricter rules
+     */
+    private static double calculateConfidence(SlimefunMachineData machine, StructureSnapshot snapshot) {
+        List<SlimefunMachineData.MultiblockStructure> structure = machine.getStructure();
+        
+        // Build required blocks
+        Map<String, Integer> required = new HashMap<>();
+        for (SlimefunMachineData.MultiblockStructure block : structure) {
+            String material = normalizeMaterial(block.getMaterial());
+            required.merge(material, 1, Integer::sum);
+        }
+        
+        int totalRequired = required.values().stream().mapToInt(Integer::intValue).sum();
+        int matched = 0;
+        int excess = 0;
+        
+        // Count matches
+        for (Map.Entry<String, Integer> entry : required.entrySet()) {
+            String material = entry.getKey();
+            int requiredCount = entry.getValue();
+            int foundCount = snapshot.blockCounts.getOrDefault(material, 0);
             
-            // EXACT pattern matching - ALL blocks must match
-            if (blocks[0] == Blocks.SMOOTH_STONE_SLAB &&
-                blocks[1] == Blocks.DISPENSER &&
-                blocks[2] == Blocks.SMOOTH_STONE_SLAB &&
-                blocks[3] == Blocks.PISTON &&
-                blocks[4] == Blocks.GLASS &&
-                blocks[5] == Blocks.PISTON &&
-                blocks[6] == Blocks.PISTON &&
-                isCauldron(blocks[7]) &&
-                blocks[8] == Blocks.PISTON) {
-                
-                BapelSlimefunMod.LOGGER.info("[Detector] ✓ EXACT MATCH: PRESSURE_CHAMBER");
-                return new DetectionResult("PRESSURE_CHAMBER", dispenserPos, 1.0);
-            }
-        }
-        
-        return null;
-    }
-    
-    // ========================================================================
-    // SMELTERY - 3D Cross (ALL 4 ROTATIONS)
-    // Pattern: NETHER_BRICK_FENCE - DISPENSER - NETHER_BRICKS
-    //          + NETHER_BRICKS above + FIRE above that
-    // ========================================================================
-    
-    private static DetectionResult checkSmeltery(Level level, BlockPos dispenserPos) {
-        BlockPos[][] directions = {
-            { dispenserPos.north(), dispenserPos.south(), dispenserPos.above(), dispenserPos.above(2) },
-            { dispenserPos.east(), dispenserPos.west(), dispenserPos.above(), dispenserPos.above(2) },
-            { dispenserPos.south(), dispenserPos.north(), dispenserPos.above(), dispenserPos.above(2) },
-            { dispenserPos.west(), dispenserPos.east(), dispenserPos.above(), dispenserPos.above(2) }
-        };
-        
-        for (BlockPos[] pattern : directions) {
-            Block north = getBlock(level, pattern[0]);
-            Block south = getBlock(level, pattern[1]);
-            Block up1 = getBlock(level, pattern[2]);
-            Block up2 = getBlock(level, pattern[3]);
+            int matchCount = Math.min(requiredCount, foundCount);
+            matched += matchCount;
             
-            // EXACT matching
-            if (north == Blocks.NETHER_BRICK_FENCE &&
-                south == Blocks.NETHER_BRICKS &&
-                up1 == Blocks.NETHER_BRICKS &&
-                isFire(up2)) {
-                
-                BapelSlimefunMod.LOGGER.info("[Detector] ✓ EXACT MATCH: SMELTERY");
-                return new DetectionResult("SMELTERY", dispenserPos, 1.0);
+            if (foundCount > requiredCount) {
+                excess += (foundCount - requiredCount);
             }
         }
         
-        return null;
-    }
-    
-    private static DetectionResult checkMakeshiftSmeltery(Level level, BlockPos dispenserPos) {
-        BlockPos[][] directions = {
-            { dispenserPos.north(), dispenserPos.south(), dispenserPos.above(), dispenserPos.above(2) },
-            { dispenserPos.east(), dispenserPos.west(), dispenserPos.above(), dispenserPos.above(2) },
-            { dispenserPos.south(), dispenserPos.north(), dispenserPos.above(), dispenserPos.above(2) },
-            { dispenserPos.west(), dispenserPos.east(), dispenserPos.above(), dispenserPos.above(2) }
-        };
+        // Base score
+        double baseScore = (double) matched / totalRequired;
         
-        for (BlockPos[] pattern : directions) {
-            Block north = getBlock(level, pattern[0]);
-            Block south = getBlock(level, pattern[1]);
-            Block up1 = getBlock(level, pattern[2]);
-            Block up2 = getBlock(level, pattern[3]);
-            
-            // EXACT matching
-            if (north == Blocks.OAK_FENCE &&
-                south == Blocks.BRICKS &&
-                up1 == Blocks.BRICKS &&
-                isFire(up2)) {
-                
-                BapelSlimefunMod.LOGGER.info("[Detector] ✓ EXACT MATCH: MAKESHIFT_SMELTERY");
-                return new DetectionResult("MAKESHIFT_SMELTERY", dispenserPos, 1.0);
+        // Penalty for excess blocks (more strict)
+        double excessPenalty = Math.min(0.4, excess * 0.08);
+        
+        // Bonus for signature blocks
+        double signatureBonus = calculateSignatureBonus(machine.getId(), snapshot);
+        
+        // ✅ SPECIAL RULES (more strict)
+        
+        // ENHANCED_CRAFTING_TABLE: Must have 4+ crafting tables
+        if (machine.getId().equals("ENHANCED_CRAFTING_TABLE")) {
+            int craftingTableCount = snapshot.blockCounts.getOrDefault("CRAFTING_TABLE", 0);
+            if (craftingTableCount < 4) {
+                return 0;
+            }
+            // Must NOT have bookshelf
+            if (snapshot.uniqueBlocks.contains("BOOKSHELF")) {
+                return 0;
             }
         }
         
-        return null;
-    }
-    
-    // ========================================================================
-    // ORE CRUSHER & COMPRESSOR - 2x2 Grid (ALL 4 ROTATIONS)
-    // ========================================================================
-    
-    private static DetectionResult checkOreCrusher(Level level, BlockPos dispenserPos) {
-        // Pattern: NETHER_BRICK_FENCE - IRON_BARS
-        //          DISPENSER - IRON_BARS
-        
-        BlockPos[][] directions = {
-            { dispenserPos.north(), dispenserPos.north().east(), dispenserPos.east() },
-            { dispenserPos.east(), dispenserPos.east().south(), dispenserPos.south() },
-            { dispenserPos.south(), dispenserPos.south().west(), dispenserPos.west() },
-            { dispenserPos.west(), dispenserPos.west().north(), dispenserPos.north() }
-        };
-        
-        for (BlockPos[] pattern : directions) {
-            Block north = getBlock(level, pattern[0]);
-            Block ne = getBlock(level, pattern[1]);
-            Block east = getBlock(level, pattern[2]);
-            
-            // EXACT matching
-            if (north == Blocks.NETHER_BRICK_FENCE &&
-                ne == Blocks.IRON_BARS &&
-                east == Blocks.IRON_BARS) {
-                
-                BapelSlimefunMod.LOGGER.info("[Detector] ✓ EXACT MATCH: ORE_CRUSHER");
-                return new DetectionResult("ORE_CRUSHER", dispenserPos, 1.0);
+        // MAGIC_WORKBENCH: Must have bookshelf AND only 1 crafting table
+        if (machine.getId().equals("MAGIC_WORKBENCH")) {
+            if (!snapshot.uniqueBlocks.contains("BOOKSHELF")) {
+                return 0;
+            }
+            int craftingTableCount = snapshot.blockCounts.getOrDefault("CRAFTING_TABLE", 0);
+            if (craftingTableCount != 1) {
+                return 0;
             }
         }
         
-        return null;
-    }
-    
-    private static DetectionResult checkCompressor(Level level, BlockPos dispenserPos) {
-        BlockPos[][] directions = {
-            { dispenserPos.north(), dispenserPos.north().east(), dispenserPos.east() },
-            { dispenserPos.east(), dispenserPos.east().south(), dispenserPos.south() },
-            { dispenserPos.south(), dispenserPos.south().west(), dispenserPos.west() },
-            { dispenserPos.west(), dispenserPos.west().north(), dispenserPos.north() }
-        };
-        
-        for (BlockPos[] pattern : directions) {
-            Block north = getBlock(level, pattern[0]);
-            Block ne = getBlock(level, pattern[1]);
-            Block east = getBlock(level, pattern[2]);
-            
-            // EXACT matching
-            if (north == Blocks.NETHER_BRICK_FENCE &&
-                ne == Blocks.PISTON &&
-                east == Blocks.PISTON) {
-                
-                BapelSlimefunMod.LOGGER.info("[Detector] ✓ EXACT MATCH: COMPRESSOR");
-                return new DetectionResult("COMPRESSOR", dispenserPos, 1.0);
+        // ORE_CRUSHER: Must have BOTH iron bars AND nether brick fence
+        if (machine.getId().equals("ORE_CRUSHER")) {
+            boolean hasIronBars = snapshot.uniqueBlocks.contains("IRON_BARS");
+            boolean hasNetherFence = snapshot.uniqueBlocks.contains("NETHER_BRICK_FENCE");
+            if (!hasIronBars || !hasNetherFence) {
+                return 0;
             }
         }
         
-        return null;
-    }
-    
-    // ========================================================================
-    // MAGIC WORKBENCH - 3-block vertical
-    // Pattern: BOOKSHELF above DISPENSER above CRAFTING_TABLE
-    // ========================================================================
-    
-    private static DetectionResult checkMagicWorkbench(Level level, BlockPos dispenserPos) {
-        Block above = getBlock(level, dispenserPos.above());
-        Block below = getBlock(level, dispenserPos.below());
-        
-        // EXACT matching
-        if (above == Blocks.BOOKSHELF && below == Blocks.CRAFTING_TABLE) {
-            BapelSlimefunMod.LOGGER.info("[Detector] ✓ EXACT MATCH: MAGIC_WORKBENCH");
-            return new DetectionResult("MAGIC_WORKBENCH", dispenserPos, 1.0);
+        // COMPRESSOR: Must have pistons, but NOT cauldron/bookshelf/anvil
+        if (machine.getId().equals("COMPRESSOR")) {
+            if (!snapshot.uniqueBlocks.contains("PISTON")) {
+                return 0;
+            }
+            if (snapshot.uniqueBlocks.contains("BOOKSHELF") || 
+                snapshot.uniqueBlocks.contains("CAULDRON") ||
+                snapshot.uniqueBlocks.contains("ANVIL")) {
+                return 0;
+            }
         }
         
-        return null;
-    }
-    
-    // ========================================================================
-    // JUICER - 3-block vertical
-    // Pattern: GLASS above DISPENSER above NETHER_BRICK_FENCE
-    // ========================================================================
-    
-    private static DetectionResult checkJuicer(Level level, BlockPos dispenserPos) {
-        Block above = getBlock(level, dispenserPos.above());
-        Block below = getBlock(level, dispenserPos.below());
-        
-        // EXACT matching
-        if (above == Blocks.GLASS && below == Blocks.NETHER_BRICK_FENCE) {
-            BapelSlimefunMod.LOGGER.info("[Detector] ✓ EXACT MATCH: JUICER");
-            return new DetectionResult("JUICER", dispenserPos, 1.0);
+        // SMELTERY: Must have nether brick fence + nether brick
+        if (machine.getId().equals("SMELTERY")) {
+            if (!snapshot.uniqueBlocks.contains("NETHER_BRICK_FENCE") ||
+                !snapshot.uniqueBlocks.contains("NETHER_BRICK")) {
+                return 0;
+            }
         }
         
-        return null;
-    }
-    
-    // ========================================================================
-    // ORE WASHER - 3-block vertical
-    // Pattern: OAK_FENCE above DISPENSER above CAULDRON
-    // ========================================================================
-    
-    private static DetectionResult checkOreWasher(Level level, BlockPos dispenserPos) {
-        Block above = getBlock(level, dispenserPos.above());
-        Block below = getBlock(level, dispenserPos.below());
-        
-        // EXACT matching
-        if (above == Blocks.OAK_FENCE && isCauldron(below)) {
-            BapelSlimefunMod.LOGGER.info("[Detector] ✓ EXACT MATCH: ORE_WASHER");
-            return new DetectionResult("ORE_WASHER", dispenserPos, 1.0);
+        // PRESSURE_CHAMBER: Must have smooth stone slab + glass + piston
+        if (machine.getId().equals("PRESSURE_CHAMBER")) {
+            if (!snapshot.uniqueBlocks.contains("SMOOTH_STONE_SLAB") ||
+                !snapshot.uniqueBlocks.contains("GLASS") ||
+                !snapshot.uniqueBlocks.contains("PISTON")) {
+                return 0;
+            }
         }
         
-        return null;
-    }
-    
-    // ========================================================================
-    // ARMOR FORGE - 2-block vertical
-    // Pattern: ANVIL above DISPENSER
-    // ========================================================================
-    
-    private static DetectionResult checkArmorForge(Level level, BlockPos dispenserPos) {
-        Block above = getBlock(level, dispenserPos.above());
-        
-        // EXACT matching
-        if (isAnvil(above)) {
-            BapelSlimefunMod.LOGGER.info("[Detector] ✓ EXACT MATCH: ARMOR_FORGE");
-            return new DetectionResult("ARMOR_FORGE", dispenserPos, 1.0);
+        // ARMOR_FORGE: Must have anvil
+        if (machine.getId().equals("ARMOR_FORGE")) {
+            if (!snapshot.uniqueBlocks.contains("ANVIL")) {
+                return 0;
+            }
         }
         
-        return null;
-    }
-    
-    // ========================================================================
-    // GRIND STONE - 2-block vertical
-    // Pattern: OAK_FENCE above DISPENSER
-    // ========================================================================
-    
-    private static DetectionResult checkGrindStone(Level level, BlockPos dispenserPos) {
-        Block above = getBlock(level, dispenserPos.above());
-        
-        // EXACT matching
-        if (above == Blocks.OAK_FENCE) {
-            BapelSlimefunMod.LOGGER.info("[Detector] ✓ EXACT MATCH: GRIND_STONE");
-            return new DetectionResult("GRIND_STONE", dispenserPos, 1.0);
+        // ORE_WASHER: Must have cauldron
+        if (machine.getId().equals("ORE_WASHER")) {
+            if (!snapshot.uniqueBlocks.contains("CAULDRON")) {
+                return 0;
+            }
         }
         
-        return null;
+        double confidence = baseScore - excessPenalty + signatureBonus;
+        return Math.max(0, Math.min(1, confidence));
     }
     
-    // ========================================================================
-    // ENHANCED CRAFTING TABLE - 2-block vertical
-    // Pattern: CRAFTING_TABLE above DISPENSER
-    // ========================================================================
-    
-    private static DetectionResult checkEnhancedCraftingTable(Level level, BlockPos dispenserPos) {
-        Block above = getBlock(level, dispenserPos.above());
+    /**
+     * Count signature matches (for tie-breaking)
+     */
+    private static int countSignatureMatches(String machineId, StructureSnapshot snapshot) {
+        Map<String, Set<String>> signatures = new HashMap<>();
+        signatures.put("MAGIC_WORKBENCH", Set.of("BOOKSHELF"));
+        signatures.put("ENHANCED_CRAFTING_TABLE", Set.of("CRAFTING_TABLE"));
+        signatures.put("ORE_CRUSHER", Set.of("IRON_BARS", "NETHER_BRICK_FENCE"));
+        signatures.put("COMPRESSOR", Set.of("PISTON"));
+        signatures.put("SMELTERY", Set.of("NETHER_BRICK_FENCE", "NETHER_BRICK"));
+        signatures.put("PRESSURE_CHAMBER", Set.of("SMOOTH_STONE_SLAB", "GLASS", "PISTON"));
+        signatures.put("ARMOR_FORGE", Set.of("ANVIL"));
+        signatures.put("ORE_WASHER", Set.of("CAULDRON"));
         
-        // EXACT matching
-        if (above == Blocks.CRAFTING_TABLE) {
-            BapelSlimefunMod.LOGGER.info("[Detector] ✓ EXACT MATCH: ENHANCED_CRAFTING_TABLE");
-            return new DetectionResult("ENHANCED_CRAFTING_TABLE", dispenserPos, 1.0);
+        Set<String> required = signatures.get(machineId);
+        if (required == null) return 0;
+        
+        int count = 0;
+        for (String sig : required) {
+            if (snapshot.uniqueBlocks.contains(sig)) {
+                count++;
+            }
+        }
+        return count;
+    }
+    
+    /**
+     * Calculate signature bonus
+     */
+    private static double calculateSignatureBonus(String machineId, StructureSnapshot snapshot) {
+        Map<String, Set<String>> signatures = new HashMap<>();
+        
+        signatures.put("MAGIC_WORKBENCH", Set.of("BOOKSHELF"));
+        signatures.put("ENHANCED_CRAFTING_TABLE", Set.of("CRAFTING_TABLE"));
+        signatures.put("ORE_CRUSHER", Set.of("IRON_BARS", "NETHER_BRICK_FENCE"));
+        signatures.put("COMPRESSOR", Set.of("PISTON"));
+        signatures.put("SMELTERY", Set.of("NETHER_BRICK_FENCE", "NETHER_BRICK"));
+        signatures.put("PRESSURE_CHAMBER", Set.of("SMOOTH_STONE_SLAB", "GLASS", "PISTON"));
+        signatures.put("ARMOR_FORGE", Set.of("ANVIL"));
+        signatures.put("MAKESHIFT_SMELTERY", Set.of("FURNACE", "BRICK_BLOCK"));
+        signatures.put("ORE_WASHER", Set.of("CAULDRON"));
+        signatures.put("JUICER", Set.of("GLASS"));
+        signatures.put("ANCIENT_ALTAR", Set.of("ENCHANTMENT_TABLE"));
+        signatures.put("GOLD_PAN", Set.of("TRAP_DOOR"));
+        
+        Set<String> requiredSignature = signatures.get(machineId);
+        if (requiredSignature == null) return 0;
+        
+        boolean hasAllSignatures = requiredSignature.stream()
+            .allMatch(snapshot.uniqueBlocks::contains);
+        
+        if (!hasAllSignatures) return -0.5;
+        return 0.4;
+    }
+    
+    /**
+     * Normalize block ID
+     */
+    private static String normalizeBlockId(Block block) {
+        return normalizeMaterial(block.toString());
+    }
+    
+    /**
+     * ✅ ENHANCED: Normalize material name with comprehensive mappings
+     */
+    private static String normalizeMaterial(String material) {
+        // Clean up block name format
+        material = material.replace("Block{minecraft:", "")
+                         .replace("}", "")
+                         .toUpperCase();
+        
+        Map<String, String> mappings = new HashMap<>();
+        
+        // Core blocks
+        mappings.put("CRAFTING_TABLE", "CRAFTING_TABLE");
+        mappings.put("BOOKSHELF", "BOOKSHELF");
+        mappings.put("DISPENSER", "DISPENSER");
+        mappings.put("IRON_BLOCK", "IRON_BLOCK");
+        mappings.put("ANVIL", "ANVIL");
+        mappings.put("CHIPPED_ANVIL", "ANVIL");
+        mappings.put("DAMAGED_ANVIL", "ANVIL");
+        mappings.put("ENCHANTING_TABLE", "ENCHANTMENT_TABLE");
+        mappings.put("ENCHANTMENT_TABLE", "ENCHANTMENT_TABLE");
+        
+        // Fences - all types map to FENCE
+        String[] fenceTypes = {"OAK", "SPRUCE", "BIRCH", "JUNGLE", "ACACIA", "DARK_OAK", 
+                               "MANGROVE", "CHERRY", "BAMBOO", "CRIMSON", "WARPED"};
+        for (String type : fenceTypes) {
+            mappings.put(type + "_FENCE", "FENCE");
         }
         
-        return null;
+        // Iron Bars & alternatives
+        mappings.put("IRON_BARS", "IRON_BARS");
+        mappings.put("BLACK_STAINED_GLASS_PANE", "IRON_BARS");
+        mappings.put("GRAY_STAINED_GLASS_PANE", "IRON_BARS");
+        mappings.put("GLASS_PANE", "IRON_BARS");
+        
+        // Glass (all colors)
+        String[] glassColors = {"WHITE", "ORANGE", "MAGENTA", "LIGHT_BLUE", "YELLOW", "LIME", 
+                                "PINK", "CYAN", "PURPLE", "BLUE", "BROWN", "GREEN", "RED", 
+                                "BLACK", "GRAY", "LIGHT_GRAY"};
+        for (String color : glassColors) {
+            mappings.put(color + "_STAINED_GLASS", "GLASS");
+        }
+        mappings.put("GLASS", "GLASS");
+        
+        // Pistons
+        mappings.put("PISTON", "PISTON");
+        mappings.put("STICKY_PISTON", "PISTON");
+        
+        // Cauldron
+        mappings.put("CAULDRON", "CAULDRON");
+        mappings.put("WATER_CAULDRON", "CAULDRON");
+        mappings.put("LAVA_CAULDRON", "CAULDRON");
+        mappings.put("POWDER_SNOW_CAULDRON", "CAULDRON");
+        
+        // Nether Brick
+        mappings.put("NETHER_BRICK_FENCE", "NETHER_BRICK_FENCE");
+        mappings.put("NETHER_BRICK_WALL", "NETHER_BRICK_FENCE");
+        mappings.put("NETHER_BRICKS", "NETHER_BRICK");
+        
+        // Furnace
+        mappings.put("FURNACE", "FURNACE");
+        mappings.put("BLAST_FURNACE", "FURNACE");
+        mappings.put("SMOKER", "FURNACE");
+        
+        // Bricks
+        mappings.put("BRICKS", "BRICK_BLOCK");
+        
+        // Trapdoor - all types
+        String[] trapdoorTypes = {"OAK", "SPRUCE", "BIRCH", "JUNGLE", "ACACIA", "DARK_OAK",
+                                  "MANGROVE", "CHERRY", "BAMBOO", "CRIMSON", "WARPED", "IRON",
+                                  "COPPER", "EXPOSED_COPPER", "WEATHERED_COPPER", "OXIDIZED_COPPER",
+                                  "WAXED_COPPER", "WAXED_EXPOSED_COPPER", "WAXED_WEATHERED_COPPER",
+                                  "WAXED_OXIDIZED_COPPER"};
+        for (String type : trapdoorTypes) {
+            mappings.put(type + "_TRAPDOOR", "TRAP_DOOR");
+        }
+        
+        // Stone
+        mappings.put("STONE_BRICKS", "SMOOTH_BRICK");
+        mappings.put("SMOOTH_STONE_SLAB", "SMOOTH_STONE_SLAB");
+        
+        return mappings.getOrDefault(material, material);
+    }
+    
+    /**
+     * Log snapshot for debugging
+     */
+    private static void logSnapshot(StructureSnapshot snapshot) {
+        BapelSlimefunMod.LOGGER.info("[Detector] === Structure Snapshot ===");
+        BapelSlimefunMod.LOGGER.info("[Detector] Unique blocks: {}", snapshot.uniqueBlocks);
+        BapelSlimefunMod.LOGGER.info("[Detector] Block counts:");
+        
+        snapshot.blockCounts.forEach((block, count) -> 
+            BapelSlimefunMod.LOGGER.info("[Detector]   - {} x{}", block, count)
+        );
+        
+        BapelSlimefunMod.LOGGER.info("[Detector] =======================");
+    }
+    
+    /**
+     * Get detailed report
+     */
+    public static String getDetectionReport(DetectionResult result) {
+        if (result == null) return "No machine detected";
+        
+        return String.format("Detected: %s (%.0f%% confidence)", 
+            result.getMachineId(), result.getConfidence() * 100);
     }
 }
