@@ -14,7 +14,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 
 /**
- * ✅ FIXED: Machine Detector Screen
+ * âœ… FIXED: Machine Detector Screen
  * 
  * Accessible via M key in overlay (similar to Cache Multiblock)
  * Features:
@@ -49,7 +49,7 @@ public class MachineDetectorScreen extends Screen {
         
         // Verify Multiblock Button
         this.verifyButton = Button.builder(
-            Component.literal("§a✓ Verify Multiblock"),
+            Component.literal("§aâœ“ Verify Multiblock"),
             button -> verifyMultiblock()
         )
         .bounds(centerX - BUTTON_WIDTH / 2, startY, BUTTON_WIDTH, BUTTON_HEIGHT)
@@ -60,8 +60,8 @@ public class MachineDetectorScreen extends Screen {
             MultiblockCacheManager.getMachineAt(dispenserPos);
         
         String clearLabel = cached != null ? 
-            "§c✖ Clear Cache (" + cached.getMachineName() + ")" :
-            "§7✖ Clear Cache (No cache)";
+            "§câœ– Clear Cache (" + cached.getMachineName() + ")" :
+            "§7âœ– Clear Cache (No cache)";
         
         this.clearCacheButton = Button.builder(
             Component.literal(clearLabel),
@@ -104,7 +104,7 @@ public class MachineDetectorScreen extends Screen {
         
         // Check if position is actually a dispenser
         if (level.getBlockState(dispenserPos).getBlock() != Blocks.DISPENSER) {
-            detectionResult = "§c✖ Not a dispenser!";
+            detectionResult = "§câœ– Not a dispenser!";
             verifyButton.active = true;
             isDetecting = false;
             return;
@@ -123,7 +123,7 @@ public class MachineDetectorScreen extends Screen {
                 
                 // Update detection result
                 detectionResult = String.format(
-                    "§a✓ Detected: §f%s\n§7Confidence: §b%.0f%%\n§aAdded to cache!",
+                    "§aâœ“ Detected: §f%s\n§7Confidence: §b%.0f%%\n§aAdded to cache!",
                     machine.getName(),
                     result.getConfidence() * 100
                 );
@@ -131,7 +131,7 @@ public class MachineDetectorScreen extends Screen {
                 // Send player message
                 minecraft.player.displayClientMessage(
                     Component.literal(String.format(
-                        "§a[Detector] ✓ Detected: §f%s §7(%.0f%% confidence)",
+                        "§a[Detector] âœ“ Detected: §f%s §7(%.0f%% confidence)",
                         machine.getName(),
                         result.getConfidence() * 100
                     )),
@@ -141,13 +141,13 @@ public class MachineDetectorScreen extends Screen {
                 // Update clear cache button
                 updateClearCacheButton();
             } else {
-                detectionResult = "§c✖ Machine data not found";
+                detectionResult = "§câœ– Machine data not found";
             }
         } else {
-            detectionResult = "§c✖ No multiblock detected\n§7Make sure structure is complete";
+            detectionResult = "§câœ– No multiblock detected\n§7Make sure structure is complete";
             
             minecraft.player.displayClientMessage(
-                Component.literal("§c[Detector] ✖ No multiblock detected"),
+                Component.literal("§c[Detector] âœ– No multiblock detected"),
                 false
             );
         }
@@ -168,10 +168,10 @@ public class MachineDetectorScreen extends Screen {
             String machineName = cached.getMachineName();
             MultiblockCacheManager.removeMachine(dispenserPos);
             
-            detectionResult = "§e✓ Cache cleared: §f" + machineName;
+            detectionResult = "§eâœ“ Cache cleared: §f" + machineName;
             
             minecraft.player.displayClientMessage(
-                Component.literal("§e[Detector] ✓ Cache cleared: §f" + machineName),
+                Component.literal("§e[Detector] âœ“ Cache cleared: §f" + machineName),
                 true
             );
             
@@ -186,12 +186,12 @@ public class MachineDetectorScreen extends Screen {
         
         if (cached != null) {
             clearCacheButton.setMessage(
-                Component.literal("§c✖ Clear Cache (" + cached.getMachineName() + ")")
+                Component.literal("§câœ– Clear Cache (" + cached.getMachineName() + ")")
             );
             clearCacheButton.active = true;
         } else {
             clearCacheButton.setMessage(
-                Component.literal("§7✖ Clear Cache (No cache)")
+                Component.literal("§7âœ– Clear Cache (No cache)")
             );
             clearCacheButton.active = false;
         }

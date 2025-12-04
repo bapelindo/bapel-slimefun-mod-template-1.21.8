@@ -10,9 +10,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
- * ✅ CLEANED: No more command handling
+ * âœ… CLEANED: No more command handling
  * 
- * All machine detection is now handled via GUI (M key → Machine Detector)
+ * All machine detection is now handled via GUI (M key â†’ Machine Detector)
  * This mixin only logs Slimefun messages for debugging
  */
 @Mixin(ClientPacketListener.class)
@@ -24,16 +24,16 @@ public class ChatListenerMixin {
             Component message = packet.content();
             String text = message.getString();
             
-            // ✅ OPTIONAL: Log Slimefun messages for debugging
+            // âœ… OPTIONAL: Log Slimefun messages for debugging
             if (text.contains("Slimefun")) {
                 BapelSlimefunMod.LOGGER.debug("[Chat] Slimefun message: {}", text);
             }
             
-            // NOTE: All commands removed - use GUI instead (M key → Machine Detector)
-            // - /verify → Now: M key → Machine Detector → Verify Multiblock
-            // - /clear → Now: M key → Multiblock Cache → Clear Cache
-            // - /list → Now: M key → Multiblock Cache → View Cache
-            // - /clearall → Now: M key → Multiblock Cache → Clear All
+            // NOTE: All commands removed - use GUI instead (M key â†’ Machine Detector)
+            // - /verify â†’ Now: M key â†’ Machine Detector â†’ Verify Multiblock
+            // - /clear â†’ Now: M key â†’ Multiblock Cache â†’ Clear Cache
+            // - /list â†’ Now: M key â†’ Multiblock Cache â†’ View Cache
+            // - /clearall â†’ Now: M key â†’ Multiblock Cache â†’ Clear All
             
         } catch (Exception e) {
             BapelSlimefunMod.LOGGER.error("Error in chat listener", e);

@@ -17,7 +17,7 @@ import net.minecraft.world.level.block.entity.DispenserBlockEntity;
 import java.util.*;
 
 /**
- * ✅ FIXED: Auto-pad recipes with AIR to reach 9 inputs for multiblock automation
+ * âœ… FIXED: Auto-pad recipes with AIR to reach 9 inputs for multiblock automation
  */
 public class MultiblockAutomationHandler {
     
@@ -40,7 +40,7 @@ public class MultiblockAutomationHandler {
         resetAutomationState();
         
         if (recipeId != null) {
-            BapelSlimefunMod.LOGGER.info("[MultiblockAuto] ✓ Recipe selected: {}", recipeId);
+            BapelSlimefunMod.LOGGER.info("[MultiblockAuto] âœ“ Recipe selected: {}", recipeId);
         } else {
             BapelSlimefunMod.LOGGER.info("[MultiblockAuto] Recipe deselected (null)");
         }
@@ -88,7 +88,7 @@ public class MultiblockAutomationHandler {
         
         RecipeData recipe = RecipeDatabase.getRecipe(selectedRecipeId);
         if (recipe == null) {
-            BapelSlimefunMod.LOGGER.warn("[MultiblockAuto] ✖ Recipe not found in database: {}", selectedRecipeId);
+            BapelSlimefunMod.LOGGER.warn("[MultiblockAuto] âœ– Recipe not found in database: {}", selectedRecipeId);
             return;
         }
         
@@ -121,7 +121,7 @@ public class MultiblockAutomationHandler {
     }
     
     /**
-     * ✅ FIXED: Auto-pad recipe inputs to 9 if needed
+     * âœ… FIXED: Auto-pad recipe inputs to 9 if needed
      */
     private static boolean autoFillDispenserRoundRobin(LocalPlayer player, Level level, 
                                                        BlockPos pos, RecipeData recipe) {
@@ -136,7 +136,7 @@ public class MultiblockAutomationHandler {
         BapelSlimefunMod.LOGGER.info("[MultiblockAuto] Recipe '{}' has {} raw inputs", 
             recipe.getRecipeId(), inputs.size());
         
-        // ✅ CRITICAL FIX: Auto-pad inputs to 9 if needed
+        // âœ… CRITICAL FIX: Auto-pad inputs to 9 if needed
         List<RecipeHandler.RecipeIngredient> paddedInputs = padInputsTo9(inputs);
         
         BapelSlimefunMod.LOGGER.info("[MultiblockAuto] After padding: {} inputs", paddedInputs.size());
@@ -234,7 +234,7 @@ public class MultiblockAutomationHandler {
     }
     
     /**
-     * ✅ NEW: Pad recipe inputs to exactly 9 entries with AIR
+     * âœ… NEW: Pad recipe inputs to exactly 9 entries with AIR
      */
     private static List<RecipeHandler.RecipeIngredient> padInputsTo9(List<RecipeHandler.RecipeIngredient> inputs) {
         List<RecipeHandler.RecipeIngredient> padded = new ArrayList<>(inputs);
@@ -363,7 +363,7 @@ public class MultiblockAutomationHandler {
             
             List<ItemStack> inventory = getPlayerInventory(player);
             
-            // ✅ Use padded inputs
+            // âœ… Use padded inputs
             List<RecipeHandler.RecipeIngredient> paddedInputs = padInputsTo9(recipe.getInputs());
             
             return new RecipeHandler.RecipeSummary(inventory, paddedInputs);

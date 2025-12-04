@@ -14,12 +14,9 @@ public class BapelSlimefunMod implements ClientModInitializer {
     
     private static ModConfig config;
     
-    // ✅ NEW: Debug counter for tick
-    private static int tickCounter = 0;
-    
     @Override
     public void onInitializeClient() {
-        LOGGER.info("=== Bapel Slimefun Mod Initializing ===");
+        LOGGER.info("Bapel Slimefun Mod Initializing");
         
         config = ModConfig.load();
         
@@ -27,13 +24,11 @@ public class BapelSlimefunMod implements ClientModInitializer {
         ModKeybinds.register();
         registerEventHandlers();
         
-        LOGGER.info("=== Bapel Slimefun Mod Initialized Successfully ===");
+        LOGGER.info("Bapel Slimefun Mod Initialized Successfully");
     }
     
     private void initializeSystems() {
         try {
-            LOGGER.info("Initializing systems...");
-            
             ItemRegistry.initialize();
             SlimefunDataLoader.loadData();
             RecipeDatabase.initialize();
@@ -47,38 +42,17 @@ public class BapelSlimefunMod implements ClientModInitializer {
         }
     }
     
-    /**
-     * ✅ CRITICAL FIX: Register tick event handler properly
-     */
     private void registerEventHandlers() {
         try {
-            LOGGER.info("Registering event handlers...");
-            
-            // ✅ Register main tick handler
             ClientTickEvents.END_CLIENT_TICK.register(client -> {
                 try {
-                    // ✅ CALL THE TICK METHOD!
                     UnifiedAutomationManager.tick();
-                    
-                    // ✅ DEBUG: Log every second to verify tick is running
-                    tickCounter++;
-                    if (tickCounter % 20 == 0) { // Every second (20 ticks)
-                        boolean enabled = UnifiedAutomationManager.isAutomationEnabled();
-                        SlimefunMachineData machine = UnifiedAutomationManager.getCurrentMachine();
-                        
-                        LOGGER.debug("[TICK] Counter: {} | Automation: {} | Machine: {}", 
-                                   tickCounter, 
-                                   enabled, 
-                                   machine != null ? machine.getId() : "NULL");
-                    }
-                    
                 } catch (Exception e) {
                     LOGGER.error("Error in client tick handler", e);
                 }
             });
             
             LOGGER.info("Event handlers registered successfully");
-            
         } catch (Exception e) {
             LOGGER.error("Error registering event handlers", e);
         }

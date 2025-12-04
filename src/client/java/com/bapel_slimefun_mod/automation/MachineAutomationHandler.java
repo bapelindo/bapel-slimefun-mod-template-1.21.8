@@ -5,13 +5,13 @@ import com.bapel_slimefun_mod.BapelSlimefunMod;
 import com.bapel_slimefun_mod.config.ModConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.core.BlockPos; // ✅ ADD THIS
+import net.minecraft.core.BlockPos; // âœ… ADD THIS
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level; // ✅ ADD THIS
+import net.minecraft.world.level.Level; // âœ… ADD THIS
 
 import java.util.*;
 
@@ -519,7 +519,7 @@ public class MachineAutomationHandler {
     }
 
     /**
- * ✅ Validate multiblock structure before processing
+ * âœ… Validate multiblock structure before processing
  */
 
 }

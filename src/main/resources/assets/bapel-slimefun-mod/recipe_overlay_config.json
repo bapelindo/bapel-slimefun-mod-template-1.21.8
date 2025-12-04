@@ -83,7 +83,7 @@
     "formatting": {
       "titleFormat": "§e§l{machine_name} - Recipes",
       "recipeFormat": "§f{index}. §a{output_name} §7x{output_count}",
-      "inputFormat": "  §7• §f{item_name} §7x{amount}",
+      "inputFormat": "  §7â€¢ §f{item_name} §7x{amount}",
       "completionFormat": "§7[{percentage}%]",
       "selectedFormat": "§l> {text} §l<",
       "keybindFormat": "§8[{key}] §7{action}"

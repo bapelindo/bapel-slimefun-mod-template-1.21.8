@@ -13,7 +13,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * ✅ FIXED: Keep AIR items in recipe parsing for multiblock automation
+ * âœ… FIXED: Keep AIR items in recipe parsing for multiblock automation
  */
 public class RecipeDatabase {
     private static final Gson GSON = new Gson();
@@ -155,7 +155,7 @@ public class RecipeDatabase {
     }
     
     /**
-     * ✅ FIXED: Keep ALL inputs including AIR for multiblock recipes
+     * âœ… FIXED: Keep ALL inputs including AIR for multiblock recipes
      */
     private static RecipeData parseExternalRecipe(JsonObject json) {
         String itemId = json.get("itemId").getAsString();
@@ -170,13 +170,13 @@ public class RecipeDatabase {
                 RecipeHandler.RecipeIngredient ingredient = 
                     RecipeHandler.RecipeIngredient.parse(inputElement.getAsString());
                 
-                // ✅ CRITICAL FIX: Always add ingredient (including AIR)
+                // âœ… CRITICAL FIX: Always add ingredient (including AIR)
                 // This preserves the 3x3 grid structure for multiblock automation
                 inputs.add(ingredient);
             }
         }
         
-        // ✅ REMOVED: Don't check if inputs are empty
+        // âœ… REMOVED: Don't check if inputs are empty
         // Even if all AIR, we need the structure
         
         // Parse outputs
@@ -198,7 +198,7 @@ public class RecipeDatabase {
     }
     
     /**
-     * ✅ FIXED: Keep ALL inputs including AIR for multiblock recipes
+     * âœ… FIXED: Keep ALL inputs including AIR for multiblock recipes
      */
     private static RecipeData parseProcessingRecipe(String machineId, JsonObject json) {
         String recipeId = machineId + "_recipe_" + Math.abs(json.hashCode());
@@ -210,12 +210,12 @@ public class RecipeDatabase {
                 RecipeHandler.RecipeIngredient ingredient = 
                     RecipeHandler.RecipeIngredient.parse(inputElement.getAsString());
                 
-                // ✅ CRITICAL FIX: Always add ingredient (including AIR)
+                // âœ… CRITICAL FIX: Always add ingredient (including AIR)
                 inputs.add(ingredient);
             }
         }
         
-        // ✅ REMOVED: Don't check if inputs are empty
+        // âœ… REMOVED: Don't check if inputs are empty
         
         // Parse outputs
         List<RecipeData.RecipeOutput> outputs = new ArrayList<>();

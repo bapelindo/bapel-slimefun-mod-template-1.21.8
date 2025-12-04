@@ -12,7 +12,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 
 /**
- * ✅ FIXED: GUI Screen with Multiblock Automation Management + Machine Detector
+ * âœ… FIXED: GUI Screen with Multiblock Automation Management + Machine Detector
  * 
  * Features:
  * - Auto/Manual Mode toggle
@@ -48,7 +48,7 @@ public class AutomationModeScreen extends Screen {
         
         // Auto Mode Button
         this.autoModeButton = Button.builder(
-            Component.literal(config.isRememberLastRecipe() ? "§a✓ Auto Mode" : "Auto Mode"),
+            Component.literal(config.isRememberLastRecipe() ? "§aâœ“ Auto Mode" : "Auto Mode"),
             button -> setAutoMode(true)
         )
         .bounds(centerX - BUTTON_WIDTH / 2, startY, BUTTON_WIDTH, BUTTON_HEIGHT)
@@ -56,7 +56,7 @@ public class AutomationModeScreen extends Screen {
         
         // Manual Mode Button
         this.manualModeButton = Button.builder(
-            Component.literal(!config.isRememberLastRecipe() ? "§a✓ Manual Mode" : "Manual Mode"),
+            Component.literal(!config.isRememberLastRecipe() ? "§aâœ“ Manual Mode" : "Manual Mode"),
             button -> setAutoMode(false)
         )
         .bounds(centerX - BUTTON_WIDTH / 2, startY + BUTTON_SPACING, BUTTON_WIDTH, BUTTON_HEIGHT)
@@ -65,7 +65,7 @@ public class AutomationModeScreen extends Screen {
         // Multiblock Cache Button
         int multiblockCount = MultiblockCacheManager.size();
         this.multiblockCacheButton = Button.builder(
-            Component.literal("§b⚙ Multiblock Cache (" + multiblockCount + " machines)"),
+            Component.literal("§bâš™ Multiblock Cache (" + multiblockCount + " machines)"),
             button -> openMultiblockManager()
         )
         .bounds(centerX - BUTTON_WIDTH / 2, startY + BUTTON_SPACING * 3, BUTTON_WIDTH, BUTTON_HEIGHT)
@@ -73,7 +73,7 @@ public class AutomationModeScreen extends Screen {
         
         // Machine Detector Button (FIXED: Always enabled)
         this.machineDetectorButton = Button.builder(
-            Component.literal("§e🔍 Machine Detector"),
+            Component.literal("§eðŸ” Machine Detector"),
             button -> openMachineDetector()
         )
         .bounds(centerX - BUTTON_WIDTH / 2, startY + BUTTON_SPACING * 4, BUTTON_WIDTH, BUTTON_HEIGHT)
@@ -82,7 +82,7 @@ public class AutomationModeScreen extends Screen {
         // Clear Memory Button
         int memoryCount = RecipeMemoryManager.getMemoryCount();
         this.clearMemoryButton = Button.builder(
-            Component.literal("§c✖ Clear Memory (" + memoryCount + " recipes)"),
+            Component.literal("§câœ– Clear Memory (" + memoryCount + " recipes)"),
             button -> clearMemory()
         )
         .bounds(centerX - BUTTON_WIDTH / 2, startY + BUTTON_SPACING * 5, BUTTON_WIDTH, BUTTON_HEIGHT)
@@ -114,8 +114,8 @@ public class AutomationModeScreen extends Screen {
         // Show confirmation
         if (minecraft != null && minecraft.player != null) {
             String message = auto ? 
-                "§a✓ Auto Mode Enabled - Recipes will be remembered" :
-                "§e✓ Manual Mode Enabled - Select recipes manually";
+                "§aâœ“ Auto Mode Enabled - Recipes will be remembered" :
+                "§eâœ“ Manual Mode Enabled - Select recipes manually";
             minecraft.player.displayClientMessage(Component.literal(message), true);
         }
     }
@@ -160,13 +160,13 @@ public class AutomationModeScreen extends Screen {
         
         // Update button
         this.clearMemoryButton.setMessage(
-            Component.literal("§c✖ Clear Memory (0 recipes)")
+            Component.literal("§câœ– Clear Memory (0 recipes)")
         );
         
         // Show confirmation
         if (minecraft != null && minecraft.player != null) {
             minecraft.player.displayClientMessage(
-                Component.literal("§e✓ Cleared " + count + " recipe memories"), 
+                Component.literal("§eâœ“ Cleared " + count + " recipe memories"), 
                 true
             );
         }
@@ -176,11 +176,11 @@ public class AutomationModeScreen extends Screen {
         boolean isAuto = config.isRememberLastRecipe();
         
         this.autoModeButton.setMessage(
-            Component.literal(isAuto ? "§a✓ Auto Mode" : "Auto Mode")
+            Component.literal(isAuto ? "§aâœ“ Auto Mode" : "Auto Mode")
         );
         
         this.manualModeButton.setMessage(
-            Component.literal(!isAuto ? "§a✓ Manual Mode" : "Manual Mode")
+            Component.literal(!isAuto ? "§aâœ“ Manual Mode" : "Manual Mode")
         );
     }
     
@@ -294,7 +294,7 @@ public class AutomationModeScreen extends Screen {
 }
 
 /**
- * ✅ Multiblock Cache Management Screen
+ * âœ… Multiblock Cache Management Screen
  */
 class MultiblockCacheScreen extends Screen {
     private final Screen parent;
@@ -321,7 +321,7 @@ class MultiblockCacheScreen extends Screen {
         
         // View Cache Button
         this.viewCacheButton = Button.builder(
-            Component.literal("§b📋 View Cached Machines"),
+            Component.literal("§bðŸ“‹ View Cached Machines"),
             button -> viewCache()
         )
         .bounds(centerX - BUTTON_WIDTH / 2, startY, BUTTON_WIDTH, BUTTON_HEIGHT)
@@ -330,7 +330,7 @@ class MultiblockCacheScreen extends Screen {
         // Clear Cache Button
         int cacheCount = MultiblockCacheManager.size();
         this.clearCacheButton = Button.builder(
-            Component.literal("§c✖ Clear Cache (" + cacheCount + " machines)"),
+            Component.literal("§câœ– Clear Cache (" + cacheCount + " machines)"),
             button -> clearCache()
         )
         .bounds(centerX - BUTTON_WIDTH / 2, startY + BUTTON_SPACING, BUTTON_WIDTH, BUTTON_HEIGHT)
@@ -369,7 +369,7 @@ class MultiblockCacheScreen extends Screen {
             int index = 1;
             for (var machine : machines) {
                 String lastRecipe = machine.getLastSelectedRecipe() != null ? 
-                    "§a✓" : "§7✗";
+                    "§aâœ“" : "§7âœ—";
                 
                 minecraft.player.displayClientMessage(
                     Component.literal(String.format(
@@ -398,13 +398,13 @@ class MultiblockCacheScreen extends Screen {
         
         // Update button
         this.clearCacheButton.setMessage(
-            Component.literal("§c✖ Clear Cache (0 machines)")
+            Component.literal("§câœ– Clear Cache (0 machines)")
         );
         
         // Show confirmation
         if (minecraft != null && minecraft.player != null) {
             minecraft.player.displayClientMessage(
-                Component.literal("§e✓ Cleared " + count + " cached multiblocks"), 
+                Component.literal("§eâœ“ Cleared " + count + " cached multiblocks"), 
                 true
             );
         }
