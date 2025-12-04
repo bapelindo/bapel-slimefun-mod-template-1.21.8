@@ -2,19 +2,23 @@ package com.bapel_slimefun_mod.client.gui;
 
 import com.bapel_slimefun_mod.automation.MultiblockCacheManager;
 import com.bapel_slimefun_mod.automation.RecipeMemoryManager;
+import com.bapel_slimefun_mod.automation.UnifiedAutomationManager;
+import com.bapel_slimefun_mod.automation.SlimefunMachineData;
 import com.bapel_slimefun_mod.config.ModConfig;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 
 /**
- * ✅ UPDATED: GUI Screen with Multiblock Automation Management
+ * âœ… FIXED: GUI Screen with Multiblock Automation Management + Machine Detector
  * 
  * Features:
  * - Auto/Manual Mode toggle
  * - Multiblock cache management
  * - Recipe memory management
+ * - Machine Detector (Always accessible - checks position when clicked)
  */
 public class AutomationModeScreen extends Screen {
     private final Screen parent;
@@ -23,6 +27,7 @@ public class AutomationModeScreen extends Screen {
     private Button autoModeButton;
     private Button manualModeButton;
     private Button multiblockCacheButton;
+    private Button machineDetectorButton;
     private Button clearMemoryButton;
     private Button doneButton;
     
@@ -39,11 +44,11 @@ public class AutomationModeScreen extends Screen {
     @Override
     protected void init() {
         int centerX = this.width / 2;
-        int startY = this.height / 2 - 80;
+        int startY = this.height / 2 - 90;
         
         // Auto Mode Button
         this.autoModeButton = Button.builder(
-            Component.literal(config.isRememberLastRecipe() ? "§a✓ Auto Mode" : "Auto Mode"),
+            Component.literal(config.isRememberLastRecipe() ? "§aâœ“ Auto Mode" : "Auto Mode"),
             button -> setAutoMode(true)
         )
         .bounds(centerX - BUTTON_WIDTH / 2, startY, BUTTON_WIDTH, BUTTON_HEIGHT)
@@ -51,28 +56,36 @@ public class AutomationModeScreen extends Screen {
         
         // Manual Mode Button
         this.manualModeButton = Button.builder(
-            Component.literal(!config.isRememberLastRecipe() ? "§a✓ Manual Mode" : "Manual Mode"),
+            Component.literal(!config.isRememberLastRecipe() ? "§aâœ“ Manual Mode" : "Manual Mode"),
             button -> setAutoMode(false)
         )
         .bounds(centerX - BUTTON_WIDTH / 2, startY + BUTTON_SPACING, BUTTON_WIDTH, BUTTON_HEIGHT)
         .build();
         
-        // Multiblock Cache Button (NEW - replaces Clear Memory)
+        // Multiblock Cache Button
         int multiblockCount = MultiblockCacheManager.size();
         this.multiblockCacheButton = Button.builder(
-            Component.literal("§b⚙ Multiblock Cache (" + multiblockCount + " machines)"),
+            Component.literal("§bâš™ Multiblock Cache (" + multiblockCount + " machines)"),
             button -> openMultiblockManager()
         )
         .bounds(centerX - BUTTON_WIDTH / 2, startY + BUTTON_SPACING * 3, BUTTON_WIDTH, BUTTON_HEIGHT)
         .build();
         
-        // Clear Memory Button (moved down)
-        int memoryCount = RecipeMemoryManager.getMemoryCount();
-        this.clearMemoryButton = Button.builder(
-            Component.literal("§c✖ Clear Memory (" + memoryCount + " recipes)"),
-            button -> clearMemory()
+        // Machine Detector Button (FIXED: Always enabled)
+        this.machineDetectorButton = Button.builder(
+            Component.literal("§eðŸ” Machine Detector"),
+            button -> openMachineDetector()
         )
         .bounds(centerX - BUTTON_WIDTH / 2, startY + BUTTON_SPACING * 4, BUTTON_WIDTH, BUTTON_HEIGHT)
+        .build();
+        
+        // Clear Memory Button
+        int memoryCount = RecipeMemoryManager.getMemoryCount();
+        this.clearMemoryButton = Button.builder(
+            Component.literal("§câœ– Clear Memory (" + memoryCount + " recipes)"),
+            button -> clearMemory()
+        )
+        .bounds(centerX - BUTTON_WIDTH / 2, startY + BUTTON_SPACING * 5, BUTTON_WIDTH, BUTTON_HEIGHT)
         .build();
         
         // Done Button
@@ -80,13 +93,14 @@ public class AutomationModeScreen extends Screen {
             Component.literal("Done"),
             button -> this.minecraft.setScreen(parent)
         )
-        .bounds(centerX - BUTTON_WIDTH / 2, startY + BUTTON_SPACING * 6, BUTTON_WIDTH, BUTTON_HEIGHT)
+        .bounds(centerX - BUTTON_WIDTH / 2, startY + BUTTON_SPACING * 7, BUTTON_WIDTH, BUTTON_HEIGHT)
         .build();
         
         // Add buttons
         this.addRenderableWidget(autoModeButton);
         this.addRenderableWidget(manualModeButton);
         this.addRenderableWidget(multiblockCacheButton);
+        this.addRenderableWidget(machineDetectorButton);
         this.addRenderableWidget(clearMemoryButton);
         this.addRenderableWidget(doneButton);
         
@@ -100,18 +114,43 @@ public class AutomationModeScreen extends Screen {
         // Show confirmation
         if (minecraft != null && minecraft.player != null) {
             String message = auto ? 
-                "§a✓ Auto Mode Enabled - Recipes will be remembered" :
-                "§e✓ Manual Mode Enabled - Select recipes manually";
+                "§aâœ“ Auto Mode Enabled - Recipes will be remembered" :
+                "§eâœ“ Manual Mode Enabled - Select recipes manually";
             minecraft.player.displayClientMessage(Component.literal(message), true);
         }
     }
     
     /**
-     * NEW: Open multiblock cache manager
+     * Open multiblock cache manager
      */
     private void openMultiblockManager() {
         if (minecraft != null) {
             minecraft.setScreen(new MultiblockCacheScreen(this, config));
+        }
+    }
+    
+    /**
+     * FIXED: Open machine detector - check position when clicked
+     */
+    private void openMachineDetector() {
+        if (minecraft == null || minecraft.player == null) return;
+        
+        // Get saved dispenser position
+        BlockPos dispenserPos = UnifiedAutomationManager.getCurrentDispenserPos();
+        
+        if (dispenserPos != null) {
+            // Have position - open detector screen
+            minecraft.setScreen(new MachineDetectorScreen(this, dispenserPos));
+        } else {
+            // No position - show helpful message
+            minecraft.player.displayClientMessage(
+                Component.literal("§e[Detector] Please open a multiblock dispenser first!"),
+                true
+            );
+            minecraft.player.displayClientMessage(
+                Component.literal("§7Tip: Right-click a multiblock dispenser, then press M"),
+                false
+            );
         }
     }
     
@@ -121,13 +160,13 @@ public class AutomationModeScreen extends Screen {
         
         // Update button
         this.clearMemoryButton.setMessage(
-            Component.literal("§c✖ Clear Memory (0 recipes)")
+            Component.literal("§câœ– Clear Memory (0 recipes)")
         );
         
         // Show confirmation
         if (minecraft != null && minecraft.player != null) {
             minecraft.player.displayClientMessage(
-                Component.literal("§e✓ Cleared " + count + " recipe memories"), 
+                Component.literal("§eâœ“ Cleared " + count + " recipe memories"), 
                 true
             );
         }
@@ -137,11 +176,11 @@ public class AutomationModeScreen extends Screen {
         boolean isAuto = config.isRememberLastRecipe();
         
         this.autoModeButton.setMessage(
-            Component.literal(isAuto ? "§a✓ Auto Mode" : "Auto Mode")
+            Component.literal(isAuto ? "§aâœ“ Auto Mode" : "Auto Mode")
         );
         
         this.manualModeButton.setMessage(
-            Component.literal(!isAuto ? "§a✓ Manual Mode" : "Manual Mode")
+            Component.literal(!isAuto ? "§aâœ“ Manual Mode" : "Manual Mode")
         );
     }
     
@@ -160,7 +199,7 @@ public class AutomationModeScreen extends Screen {
         );
         
         // Current mode
-        int descY = this.height / 2 - 95;
+        int descY = this.height / 2 - 105;
         String currentMode = config.isRememberLastRecipe() ? "§aAuto Mode" : "§eManual Mode";
         graphics.drawCenteredString(
             this.font,
@@ -171,7 +210,7 @@ public class AutomationModeScreen extends Screen {
         );
         
         // Explanation
-        int explainY = this.height / 2 - 10;
+        int explainY = this.height / 2 - 20;
         
         if (config.isRememberLastRecipe()) {
             graphics.drawCenteredString(
@@ -216,6 +255,29 @@ public class AutomationModeScreen extends Screen {
             0xAAAAAA
         );
         
+        // Machine Detector status (UPDATED: Show helpful info)
+        BlockPos dispenserPos = UnifiedAutomationManager.getCurrentDispenserPos();
+        if (dispenserPos != null) {
+            graphics.drawCenteredString(
+                this.font,
+                Component.literal("§7Last dispenser: §e[" + 
+                    dispenserPos.getX() + ", " + 
+                    dispenserPos.getY() + ", " + 
+                    dispenserPos.getZ() + "]"),
+                this.width / 2,
+                multiblockY + 12,
+                0xAAAAAA
+            );
+        } else {
+            graphics.drawCenteredString(
+                this.font,
+                Component.literal("§7Tip: Open a dispenser first to use detector"),
+                this.width / 2,
+                multiblockY + 12,
+                0x888888
+            );
+        }
+        
         // Render buttons
         super.render(graphics, mouseX, mouseY, partialTick);
     }
@@ -232,7 +294,7 @@ public class AutomationModeScreen extends Screen {
 }
 
 /**
- * ✅ NEW: Multiblock Cache Management Screen
+ * âœ… Multiblock Cache Management Screen
  */
 class MultiblockCacheScreen extends Screen {
     private final Screen parent;
@@ -259,7 +321,7 @@ class MultiblockCacheScreen extends Screen {
         
         // View Cache Button
         this.viewCacheButton = Button.builder(
-            Component.literal("§b📋 View Cached Machines"),
+            Component.literal("§bðŸ“‹ View Cached Machines"),
             button -> viewCache()
         )
         .bounds(centerX - BUTTON_WIDTH / 2, startY, BUTTON_WIDTH, BUTTON_HEIGHT)
@@ -268,7 +330,7 @@ class MultiblockCacheScreen extends Screen {
         // Clear Cache Button
         int cacheCount = MultiblockCacheManager.size();
         this.clearCacheButton = Button.builder(
-            Component.literal("§c✖ Clear Cache (" + cacheCount + " machines)"),
+            Component.literal("§câœ– Clear Cache (" + cacheCount + " machines)"),
             button -> clearCache()
         )
         .bounds(centerX - BUTTON_WIDTH / 2, startY + BUTTON_SPACING, BUTTON_WIDTH, BUTTON_HEIGHT)
@@ -307,7 +369,7 @@ class MultiblockCacheScreen extends Screen {
             int index = 1;
             for (var machine : machines) {
                 String lastRecipe = machine.getLastSelectedRecipe() != null ? 
-                    "§a✓" : "§7✗";
+                    "§aâœ“" : "§7âœ—";
                 
                 minecraft.player.displayClientMessage(
                     Component.literal(String.format(
@@ -336,13 +398,13 @@ class MultiblockCacheScreen extends Screen {
         
         // Update button
         this.clearCacheButton.setMessage(
-            Component.literal("§c✖ Clear Cache (0 machines)")
+            Component.literal("§câœ– Clear Cache (0 machines)")
         );
         
         // Show confirmation
         if (minecraft != null && minecraft.player != null) {
             minecraft.player.displayClientMessage(
-                Component.literal("§e✓ Cleared " + count + " cached multiblocks"), 
+                Component.literal("§eâœ“ Cleared " + count + " cached multiblocks"), 
                 true
             );
         }

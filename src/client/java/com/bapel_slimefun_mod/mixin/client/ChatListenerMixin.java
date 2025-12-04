@@ -10,15 +10,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
- * ✅ DISABLED: Detection now happens in ContainerScreenMixin (GUI open event)
+ * âœ… CLEANED: No more command handling
  * 
- * This mixin is kept for future features but multiblock detection is disabled.
- * Detection from chat message is unreliable because:
- * 1. Message arrives AFTER dispenser state changes
- * 2. Raycast may miss the dispenser
- * 3. Player might have moved away
- * 
- * Better approach: Detect when Dispenser GUI opens (ContainerScreenMixin)
+ * All machine detection is now handled via GUI (M key â†’ Machine Detector)
+ * This mixin only logs Slimefun messages for debugging
  */
 @Mixin(ClientPacketListener.class)
 public class ChatListenerMixin {
@@ -29,12 +24,16 @@ public class ChatListenerMixin {
             Component message = packet.content();
             String text = message.getString();
             
-            // ✅ OPTIONAL: Log Slimefun messages for debugging
+            // âœ… OPTIONAL: Log Slimefun messages for debugging
             if (text.contains("Slimefun")) {
                 BapelSlimefunMod.LOGGER.debug("[Chat] Slimefun message: {}", text);
             }
             
-            // ❌ REMOVED: Multiblock detection (now handled in ContainerScreenMixin)
+            // NOTE: All commands removed - use GUI instead (M key â†’ Machine Detector)
+            // - /verify â†’ Now: M key â†’ Machine Detector â†’ Verify Multiblock
+            // - /clear â†’ Now: M key â†’ Multiblock Cache â†’ Clear Cache
+            // - /list â†’ Now: M key â†’ Multiblock Cache â†’ View Cache
+            // - /clearall â†’ Now: M key â†’ Multiblock Cache â†’ Clear All
             
         } catch (Exception e) {
             BapelSlimefunMod.LOGGER.error("Error in chat listener", e);

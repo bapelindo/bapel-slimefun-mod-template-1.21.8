@@ -16,6 +16,7 @@ public class BapelSlimefunMod implements ClientModInitializer {
     
     @Override
     public void onInitializeClient() {
+        LOGGER.info("Bapel Slimefun Mod Initializing");
         
         config = ModConfig.load();
         
@@ -23,25 +24,19 @@ public class BapelSlimefunMod implements ClientModInitializer {
         ModKeybinds.register();
         registerEventHandlers();
         
+        LOGGER.info("Bapel Slimefun Mod Initialized Successfully");
     }
     
     private void initializeSystems() {
         try {
             ItemRegistry.initialize();
-            
             SlimefunDataLoader.loadData();
-            
             RecipeDatabase.initialize();
-
-            
             RecipeOverlayRenderer.initialize();
-            
-            
-            //  NEW: Initialize multiblock cache system
             MultiblockCacheManager.load();
-            
             UnifiedAutomationManager.init(config);
             
+            LOGGER.info("All systems initialized successfully");
         } catch (Exception e) {
             LOGGER.error("Error during system initialization", e);
         }
@@ -57,6 +52,7 @@ public class BapelSlimefunMod implements ClientModInitializer {
                 }
             });
             
+            LOGGER.info("Event handlers registered successfully");
         } catch (Exception e) {
             LOGGER.error("Error registering event handlers", e);
         }

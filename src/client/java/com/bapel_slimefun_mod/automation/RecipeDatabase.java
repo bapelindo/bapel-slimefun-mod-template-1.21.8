@@ -13,84 +13,64 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * OPTIMIZED Database for managing multiple recipes per machine
- * Performance improvements:
- * - Lazy loading of recipe data
- * - ConcurrentHashMap for thread-safe access
- * - Indexed lookups for faster queries
- * - Cached common queries
+ * âœ… FIXED: Keep AIR items in recipe parsing for multiblock automation
  */
 public class RecipeDatabase {
     private static final Gson GSON = new Gson();
     
-    // OPTIMIZATION: Use ConcurrentHashMap for thread-safe access
     private static final Map<String, List<RecipeData>> RECIPES_BY_MACHINE = new ConcurrentHashMap<>();
     private static final Map<String, RecipeData> RECIPES_BY_ID = new ConcurrentHashMap<>();
     
-    // OPTIMIZATION: Index for faster lookups
     private static final Map<String, Set<String>> RECIPES_BY_OUTPUT = new ConcurrentHashMap<>();
     private static final Map<String, Set<String>> RECIPES_BY_INPUT = new ConcurrentHashMap<>();
     
-    // OPTIMIZATION: Cache common queries
     private static final Map<String, List<RecipeData>> CRAFTABLE_CACHE = new ConcurrentHashMap<>();
     private static long lastCacheClear = 0;
-    private static final long CACHE_CLEAR_INTERVAL = 5000; // Clear cache every 5 seconds
+    private static final long CACHE_CLEAR_INTERVAL = 5000;
     
     private static boolean initialized = false;
     
-    /**
-     * Initialize the recipe database
-     */
     public static void initialize() {
         if (initialized) return;
         
         try {
             long startTime = System.currentTimeMillis();
             
-            // Load recipes from both files
             int externalCount = loadExternalRecipes();
             int processingCount = loadProcessingRecipes();
             
-            // Build indexes after loading
             buildIndexes();
             
             long duration = System.currentTimeMillis() - startTime;
             initialized = true;
             
+            BapelSlimefunMod.LOGGER.info("[RecipeDB] Loaded {} external + {} processing recipes in {}ms", 
+                externalCount, processingCount, duration);
             
         } catch (Exception e) {
             BapelSlimefunMod.LOGGER.error("Failed to initialize Recipe Database", e);
         }
     }
     
-    /**
-     * OPTIMIZATION: Build indexes for faster lookups
-     */
     private static void buildIndexes() {
         RECIPES_BY_OUTPUT.clear();
         RECIPES_BY_INPUT.clear();
         
         for (RecipeData recipe : RECIPES_BY_ID.values()) {
-            // Index by outputs
             for (RecipeData.RecipeOutput output : recipe.getOutputs()) {
                 RECIPES_BY_OUTPUT
                     .computeIfAbsent(output.getItemId().toUpperCase(), k -> new HashSet<>())
                     .add(recipe.getRecipeId());
             }
             
-            // Index by inputs
             for (RecipeHandler.RecipeIngredient input : recipe.getInputs()) {
                 RECIPES_BY_INPUT
                     .computeIfAbsent(input.getItemId().toUpperCase(), k -> new HashSet<>())
                     .add(recipe.getRecipeId());
             }
         }
-        
     }
     
-    /**
-     * Load external recipes from slimefun_recipes.json
-     */
     private static int loadExternalRecipes() {
         int loaded = 0;
         
@@ -116,9 +96,9 @@ public class RecipeDatabase {
                         loaded++;
                     }
                 } catch (Exception e) {
+                    // Skip invalid recipe
                 }
             }
-            
             
         } catch (Exception e) {
             BapelSlimefunMod.LOGGER.error("Failed to load external recipes", e);
@@ -127,9 +107,6 @@ public class RecipeDatabase {
         return loaded;
     }
     
-    /**
-     * Load processing recipes from slimefun_machines.json
-     */
     private static int loadProcessingRecipes() {
         int loaded = 0;
         
@@ -165,10 +142,10 @@ public class RecipeDatabase {
                             loaded++;
                         }
                     } catch (Exception e) {
+                        // Skip invalid recipe
                     }
                 }
             }
-            
             
         } catch (Exception e) {
             BapelSlimefunMod.LOGGER.error("Failed to load processing recipes", e);
@@ -178,9 +155,9 @@ public class RecipeDatabase {
     }
     
     /**
-     * Parse external recipe from JSON
+     * âœ… FIXED: Keep ALL inputs including AIR for multiblock recipes
      */
-private static RecipeData parseExternalRecipe(JsonObject json) {
+    private static RecipeData parseExternalRecipe(JsonObject json) {
         String itemId = json.get("itemId").getAsString();
         String machineType = json.has("recipeType") ? 
             json.get("recipeType").getAsString().replace("slimefun:", "").toUpperCase() :
@@ -193,12 +170,14 @@ private static RecipeData parseExternalRecipe(JsonObject json) {
                 RecipeHandler.RecipeIngredient ingredient = 
                     RecipeHandler.RecipeIngredient.parse(inputElement.getAsString());
                 
-                // PERUBAHAN: Langsung tambahkan semua (termasuk AIR)
+                // âœ… CRITICAL FIX: Always add ingredient (including AIR)
+                // This preserves the 3x3 grid structure for multiblock automation
                 inputs.add(ingredient);
             }
         }
         
-        if (inputs.isEmpty()) return null;
+        // âœ… REMOVED: Don't check if inputs are empty
+        // Even if all AIR, we need the structure
         
         // Parse outputs
         List<RecipeData.RecipeOutput> outputs = new ArrayList<>();
@@ -219,9 +198,9 @@ private static RecipeData parseExternalRecipe(JsonObject json) {
     }
     
     /**
-     * Parse processing recipe from JSON
+     * âœ… FIXED: Keep ALL inputs including AIR for multiblock recipes
      */
-private static RecipeData parseProcessingRecipe(String machineId, JsonObject json) {
+    private static RecipeData parseProcessingRecipe(String machineId, JsonObject json) {
         String recipeId = machineId + "_recipe_" + Math.abs(json.hashCode());
         
         List<RecipeHandler.RecipeIngredient> inputs = new ArrayList<>();
@@ -231,14 +210,14 @@ private static RecipeData parseProcessingRecipe(String machineId, JsonObject jso
                 RecipeHandler.RecipeIngredient ingredient = 
                     RecipeHandler.RecipeIngredient.parse(inputElement.getAsString());
                 
-                // PERUBAHAN: Langsung tambahkan semua (termasuk AIR)
+                // âœ… CRITICAL FIX: Always add ingredient (including AIR)
                 inputs.add(ingredient);
             }
         }
         
-        if (inputs.isEmpty()) return null;
+        // âœ… REMOVED: Don't check if inputs are empty
         
-        // Parse outputs (tetap sama)
+        // Parse outputs
         List<RecipeData.RecipeOutput> outputs = new ArrayList<>();
         if (json.has("outputs")) {
             JsonArray outputsArray = json.getAsJsonArray("outputs");
@@ -252,9 +231,6 @@ private static RecipeData parseProcessingRecipe(String machineId, JsonObject jso
         return new RecipeData(recipeId, machineId, inputs, outputs);
     }
     
-    /**
-     * Register a recipe in the database
-     */
     public static void registerRecipe(RecipeData recipe) {
         RECIPES_BY_ID.put(recipe.getRecipeId(), recipe);
         
@@ -262,68 +238,43 @@ private static RecipeData parseProcessingRecipe(String machineId, JsonObject jso
         RECIPES_BY_MACHINE.computeIfAbsent(machineId, k -> new ArrayList<>()).add(recipe);
     }
     
-    /**
-     * OPTIMIZED: Get all recipes for a specific machine (returns immutable view)
-     */
     public static List<RecipeData> getRecipesForMachine(String machineId) {
         List<RecipeData> recipes = RECIPES_BY_MACHINE.get(machineId);
         return recipes != null ? Collections.unmodifiableList(recipes) : Collections.emptyList();
     }
     
-    /**
-     * Get a specific recipe by ID
-     */
     public static RecipeData getRecipe(String recipeId) {
         return RECIPES_BY_ID.get(recipeId);
     }
     
-    /**
-     * Check if a machine has recipes
-     */
     public static boolean hasMachineRecipes(String machineId) {
         List<RecipeData> recipes = RECIPES_BY_MACHINE.get(machineId);
         return recipes != null && !recipes.isEmpty();
     }
     
-    /**
-     * Get total number of recipes
-     */
     public static int getTotalRecipes() {
         return RECIPES_BY_ID.size();
     }
     
-    /**
-     * Get total number of machines with recipes
-     */
     public static int getTotalMachines() {
         return RECIPES_BY_MACHINE.size();
     }
     
-    /**
-     * Get all machine IDs that have recipes
-     */
     public static Set<String> getAllMachineIds() {
         return Collections.unmodifiableSet(RECIPES_BY_MACHINE.keySet());
     }
     
-    /**
-     * OPTIMIZED: Get craftable recipes with caching
-     */
     public static List<RecipeData> getCraftableRecipes(String machineId, 
                                                        List<net.minecraft.world.item.ItemStack> inventory) {
-        // Clear cache periodically
         clearCacheIfNeeded();
         
-        // Create cache key
         String cacheKey = machineId + "_" + getInventoryHash(inventory);
         
-        // Check cache
         List<RecipeData> cached = CRAFTABLE_CACHE.get(cacheKey);
         if (cached != null) {
             return cached;
         }
         
-        // Calculate craftable recipes
         List<RecipeData> craftable = new ArrayList<>();
         List<RecipeData> allRecipes = getRecipesForMachine(machineId);
         
@@ -337,15 +288,11 @@ private static RecipeData parseProcessingRecipe(String machineId, JsonObject jso
             }
         }
         
-        // Cache result
         CRAFTABLE_CACHE.put(cacheKey, craftable);
         
         return craftable;
     }
     
-    /**
-     * OPTIMIZATION: Simple hash for inventory state
-     */
     private static int getInventoryHash(List<net.minecraft.world.item.ItemStack> inventory) {
         int hash = 0;
         for (net.minecraft.world.item.ItemStack stack : inventory) {
@@ -356,9 +303,6 @@ private static RecipeData parseProcessingRecipe(String machineId, JsonObject jso
         return hash;
     }
     
-    /**
-     * OPTIMIZATION: Clear cache if too old
-     */
     private static void clearCacheIfNeeded() {
         long now = System.currentTimeMillis();
         if (now - lastCacheClear > CACHE_CLEAR_INTERVAL) {
@@ -367,14 +311,10 @@ private static RecipeData parseProcessingRecipe(String machineId, JsonObject jso
         }
     }
     
-    /**
-     * OPTIMIZED: Get recipes sorted by completion (cached)
-     */
     public static List<RecipeData> getRecipesSortedByCompletion(String machineId,
                                                                 List<net.minecraft.world.item.ItemStack> inventory) {
         List<RecipeData> recipes = getRecipesForMachine(machineId);
         
-        // Create list with completion data
         List<RecipeWithCompletion> recipesWithCompletion = new ArrayList<>(recipes.size());
         for (RecipeData recipe : recipes) {
             RecipeHandler.RecipeSummary summary = new RecipeHandler.RecipeSummary(
@@ -383,10 +323,8 @@ private static RecipeData parseProcessingRecipe(String machineId, JsonObject jso
             recipesWithCompletion.add(new RecipeWithCompletion(recipe, summary.getCompletionPercentage()));
         }
         
-        // Sort by completion (highest first)
         recipesWithCompletion.sort((a, b) -> Float.compare(b.completion, a.completion));
         
-        // Extract recipes
         List<RecipeData> sorted = new ArrayList<>(recipesWithCompletion.size());
         for (RecipeWithCompletion rwc : recipesWithCompletion) {
             sorted.add(rwc.recipe);
@@ -395,9 +333,6 @@ private static RecipeData parseProcessingRecipe(String machineId, JsonObject jso
         return sorted;
     }
     
-    /**
-     * Helper class for sorting
-     */
     private static class RecipeWithCompletion {
         final RecipeData recipe;
         final float completion;
@@ -408,14 +343,10 @@ private static RecipeData parseProcessingRecipe(String machineId, JsonObject jso
         }
     }
     
-    /**
-     * OPTIMIZED: Search recipes by output using index
-     */
     public static List<RecipeData> searchRecipesByOutput(String searchTerm) {
         List<RecipeData> results = new ArrayList<>();
         String searchUpper = searchTerm.toUpperCase();
         
-        // Try exact match first (O(1) with index)
         Set<String> recipeIds = RECIPES_BY_OUTPUT.get(searchUpper);
         if (recipeIds != null) {
             for (String recipeId : recipeIds) {
@@ -427,7 +358,6 @@ private static RecipeData parseProcessingRecipe(String machineId, JsonObject jso
             return results;
         }
         
-        // Fallback to partial match
         for (Map.Entry<String, Set<String>> entry : RECIPES_BY_OUTPUT.entrySet()) {
             if (entry.getKey().contains(searchUpper)) {
                 for (String recipeId : entry.getValue()) {
@@ -442,9 +372,6 @@ private static RecipeData parseProcessingRecipe(String machineId, JsonObject jso
         return results;
     }
     
-    /**
-     * OPTIMIZED: Get recipes using ingredient (indexed)
-     */
     public static List<RecipeData> getRecipesUsingIngredient(String itemId) {
         List<RecipeData> results = new ArrayList<>();
         String itemIdUpper = itemId.toUpperCase();
@@ -462,9 +389,6 @@ private static RecipeData parseProcessingRecipe(String machineId, JsonObject jso
         return results;
     }
     
-    /**
-     * OPTIMIZED: Get recipes producing output (indexed)
-     */
     public static List<RecipeData> getRecipesProducing(String itemId) {
         List<RecipeData> results = new ArrayList<>();
         String itemIdUpper = itemId.toUpperCase();
@@ -482,9 +406,6 @@ private static RecipeData parseProcessingRecipe(String machineId, JsonObject jso
         return results;
     }
     
-    /**
-     * Clear all recipes
-     */
     public static void clear() {
         RECIPES_BY_ID.clear();
         RECIPES_BY_MACHINE.clear();
@@ -494,30 +415,12 @@ private static RecipeData parseProcessingRecipe(String machineId, JsonObject jso
         initialized = false;
     }
     
-    /**
-     * Reload recipes from files
-     */
     public static void reload() {
         clear();
         initialize();
     }
     
-    /**
-     * Print database statistics
-     */
-    
-    /**
-     * Check if database is initialized
-     */
     public static boolean isInitialized() {
         return initialized;
     }
-    
-    /**
-     * DEBUG: Print recipes for a specific machine
-     */
-    
-    /**
-     * DEBUG: Print all machine IDs
-     */
 }
