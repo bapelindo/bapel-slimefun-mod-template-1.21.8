@@ -6,7 +6,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-
+import net.minecraft.world.level.Level; // ✅ ADD THIS
+import net.minecraft.world.level.block.Blocks; // ✅ ADD THIS
 /**
  * ✅ COMPLETE FIXED VERSION: Clean, efficient multi-machine cache system
  * 
@@ -109,24 +110,65 @@ public class UnifiedAutomationManager {
         }
     }
     
-    /**
-     * Handle dispenser opening (might be multiblock)
-     */
-    private static void handleDispenserOpen() {
-        try {
-            Minecraft mc = Minecraft.getInstance();
-            LocalPlayer player = mc.player;
-            if (player == null) return;
-            
-            BlockPos playerPos = player.blockPosition();
-            currentCachedMachine = MultiblockCacheManager.findNearestMachine(playerPos);
-            
-            if (currentCachedMachine == null) return;
-            
+   /**
+ * 🔧 DEBUG: Print cache status
+ */
+public static void printCacheStatus() {
+    BapelSlimefunMod.LOGGER.info("=== MULTIBLOCK CACHE STATUS ===");
+    BapelSlimefunMod.LOGGER.info("Total cached: {}", MultiblockCacheManager.size());
+    
+    for (MultiblockCacheManager.CachedMultiblock cached : MultiblockCacheManager.getAllMachines()) {
+        BapelSlimefunMod.LOGGER.info("  - {} at {}", 
+            cached.getMachineName(), 
+            cached.getPosition()
+        );
+    }
+}
+/**
+ * Handle dispenser opening (might be multiblock)
+ * ✅ FLOW: Detect → Cache → Auto-load recipe
+ */
+/**
+ * Handle dispenser opening (might be multiblock)
+ */
+private static void handleDispenserOpen() {
+    try {
+        Minecraft mc = Minecraft.getInstance();
+        LocalPlayer player = mc.player;
+        if (player == null) return;
+        
+        net.minecraft.world.level.Level level = mc.level;
+        if (level == null) return;
+        
+        BlockPos playerPos = player.blockPosition();
+        
+        // 🔍 STEP 1: Find which dispenser user opened (INCREASED RADIUS to 5)
+        BlockPos openedDispenser = findNearbyDispenser(player, level, 5);
+        
+        if (openedDispenser == null) {
+            BapelSlimefunMod.LOGGER.warn("[UnifiedAuto] No dispenser found near player at {}", playerPos);
+            return;
+        }
+        
+        BapelSlimefunMod.LOGGER.info("[UnifiedAuto] Dispenser opened at {}", openedDispenser);
+        
+        // 🔧 DEBUG: Print block layout
+        MultiblockDetector.printDebugLayout(level, openedDispenser);
+        
+        // 🔍 STEP 2: Check if already cached
+        currentCachedMachine = MultiblockCacheManager.getMachineAt(openedDispenser);
+        
+        // ✅ CASE 1: Already cached - Load recipe
+        if (currentCachedMachine != null) {
             String machineId = currentCachedMachine.getMachineId();
             currentMachine = SlimefunDataLoader.getMultiblockById(machineId);
             
-            if (currentMachine == null) return;
+            if (currentMachine == null) {
+                BapelSlimefunMod.LOGGER.error("[UnifiedAuto] Machine data not found: {}", machineId);
+                return;
+            }
+            
+            BapelSlimefunMod.LOGGER.info("[UnifiedAuto] ✅ Cached machine found: {}", currentMachine.getName());
             
             // Auto-load last recipe if exists
             String lastRecipe = currentCachedMachine.getLastSelectedRecipe();
@@ -146,14 +188,62 @@ public class UnifiedAutomationManager {
                 return;
             }
             
-            // Show overlay if no auto-load
+            // No saved recipe - show overlay
             if (config != null && config.isAutoShowOverlay()) {
                 RecipeOverlayRenderer.show(currentMachine);
+            } else {
+                player.displayClientMessage(
+                    Component.literal("§e⚡ " + currentMachine.getName() + " ready! Press R for recipes"),
+                    true
+                );
             }
-        } catch (Exception e) {
-            BapelSlimefunMod.LOGGER.error("Error handling dispenser", e);
+            return;
         }
+        
+        // 🔍 CASE 2: Not cached - Try to DETECT multiblock structure
+        BapelSlimefunMod.LOGGER.info("[UnifiedAuto] 🔍 Attempting multiblock detection...");
+        
+        MultiblockDetector.DetectionResult result = MultiblockDetector.detect(level, openedDispenser);
+        
+        if (result == null) {
+            BapelSlimefunMod.LOGGER.info("[UnifiedAuto] ❌ No multiblock detected - vanilla dispenser or unknown structure");
+            return;
+        }
+        
+        // ✅ DETECTION SUCCESS!
+        SlimefunMachineData detected = SlimefunDataLoader.getMultiblockById(result.getMachineId());
+        
+        if (detected == null) {
+            BapelSlimefunMod.LOGGER.error("[UnifiedAuto] Machine data not found: {}", result.getMachineId());
+            return;
+        }
+        
+        BapelSlimefunMod.LOGGER.info("[UnifiedAuto] ✅ NEW MULTIBLOCK DETECTED: {}", result);
+        
+        // Cache this machine
+        MultiblockCacheManager.addMachine(detected, result.getDispenserPos());
+        currentCachedMachine = MultiblockCacheManager.getMachineAt(result.getDispenserPos());
+        currentMachine = detected;
+        
+        // Show success message
+        player.displayClientMessage(
+            Component.literal("§a✓ " + detected.getName() + " detected!"),
+            false
+        );
+        player.displayClientMessage(
+            Component.literal("§e⚡ Press R to select recipe"),
+            true
+        );
+        
+        // Show recipe overlay if configured
+        if (config != null && config.isAutoShowOverlay()) {
+            RecipeOverlayRenderer.show(detected);
+        }
+        
+    } catch (Exception e) {
+        BapelSlimefunMod.LOGGER.error("[UnifiedAuto] Error handling dispenser", e);
     }
+}
     
     /**
      * Called when machine GUI is closed
@@ -349,37 +439,59 @@ public class UnifiedAutomationManager {
         return null;
     }
     
-    /**
-     * Get display name for recipe
-     */
-    private static String getRecipeDisplayName(String recipeId) {
-        if (recipeId == null) return "Unknown";
-        
-        try {
-            RecipeData recipe = RecipeDatabase.getRecipe(recipeId);
-            if (recipe != null && recipe.getPrimaryOutput() != null) {
-                return recipe.getPrimaryOutput().getDisplayName();
-            }
-        } catch (Exception e) {
-            // Fallback to formatted ID
-        }
-        
-        // Format ID to display name
-        String[] words = recipeId.toLowerCase().split("_");
-        StringBuilder displayName = new StringBuilder();
-        
-        for (String word : words) {
-            if (displayName.length() > 0) {
-                displayName.append(" ");
-            }
-            if (word.length() > 0) {
-                displayName.append(Character.toUpperCase(word.charAt(0)));
-                if (word.length() > 1) {
-                    displayName.append(word.substring(1));
+
+/**
+ * 🔍 Helper: Find nearby dispenser
+ */
+private static BlockPos findNearbyDispenser(LocalPlayer player, net.minecraft.world.level.Level level, int radius) {
+    BlockPos playerPos = player.blockPosition();
+    
+    for (int x = -radius; x <= radius; x++) {
+        for (int y = -radius; y <= radius; y++) {
+            for (int z = -radius; z <= radius; z++) {
+                BlockPos pos = playerPos.offset(x, y, z);
+                
+                if (level.getBlockState(pos).getBlock() == Blocks.DISPENSER) {
+                    return pos;
                 }
             }
         }
-        
-        return displayName.toString();
     }
+    
+    return null;
+}
+
+/**
+ * Get display name for recipe
+ */
+private static String getRecipeDisplayName(String recipeId) {
+    if (recipeId == null) return "Unknown";
+    
+    try {
+        RecipeData recipe = RecipeDatabase.getRecipe(recipeId);
+        if (recipe != null && recipe.getPrimaryOutput() != null) {
+            return recipe.getPrimaryOutput().getDisplayName();
+        }
+    } catch (Exception e) {
+        // Fallback to formatted ID
+    }
+    
+    // Format ID to display name
+    String[] words = recipeId.toLowerCase().split("_");
+    StringBuilder displayName = new StringBuilder();
+    
+    for (String word : words) {
+        if (displayName.length() > 0) {
+            displayName.append(" ");
+        }
+        if (word.length() > 0) {
+            displayName.append(Character.toUpperCase(word.charAt(0)));
+            if (word.length() > 1) {
+                displayName.append(word.substring(1));
+            }
+        }
+    }
+    
+    return displayName.toString();
+}
 }

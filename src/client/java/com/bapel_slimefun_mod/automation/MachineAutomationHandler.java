@@ -1,14 +1,17 @@
 package com.bapel_slimefun_mod.automation;
+
 import com.bapel_slimefun_mod.client.AutomationManager;
 import com.bapel_slimefun_mod.BapelSlimefunMod;
 import com.bapel_slimefun_mod.config.ModConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.BlockPos; // ✅ ADD THIS
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level; // ✅ ADD THIS
 
 import java.util.*;
 
@@ -514,4 +517,9 @@ public class MachineAutomationHandler {
     public static boolean isAutoInsertTriggered() {
         return autoInsertTriggered;
     }
+
+    /**
+ * ✅ Validate multiblock structure before processing
+ */
+
 }
