@@ -284,17 +284,31 @@ public class UnifiedAutomationManager {
     /**
      * Called when machine GUI is closed
      */
+/**
+     * Called when machine GUI is closed
+     */
     public static void onMachineClose() {
         try {
+            // 1. Handle Electric Machines
             if (currentMachine != null && currentMachine.isElectric()) {
                 MachineAutomationHandler.onContainerClose();
             }
             
-            // ✅ Clear currentMachine when GUI closes
-            // This stops automation (which requires GUI for multiblock)
+            // 2. 🆕 CHAIN TO AUTO-CLICKER (Mata Rantai Otomatisasi)
+            // Jika kita punya data mesin multiblock, posisi dispenser, dan resep yang dipilih...
+            if (currentCachedMachine != null && currentDispenserPos != null) {
+                String selectedRecipe = MultiblockAutomationHandler.getSelectedRecipe();
+                
+                // Hanya jalankan auto-click jika automation dinyalakan secara global
+                if (selectedRecipe != null && automationEnabled) {
+                    BapelSlimefunMod.LOGGER.info("[UnifiedAuto] GUI Closed -> Starting Auto-Clicker chain");
+                    MultiblockAutoClicker.enable(currentDispenserPos, currentCachedMachine.getMachineId());
+                }
+            }
+            
+            // 3. Clear currentMachine (Karena GUI sudah tertutup)
             currentMachine = null;
             
-            // Note: Keep currentDispenserPos and currentCachedMachine for M key access
             BapelSlimefunMod.LOGGER.debug("[UnifiedAuto] Machine GUI closed");
         } catch (Exception e) {
             BapelSlimefunMod.LOGGER.error("Error in onMachineClose", e);
@@ -302,52 +316,79 @@ public class UnifiedAutomationManager {
     }
     
     /**
-     * ✅ COMPLETELY FIXED: Main tick handler with extensive logging
-     * 
-     * Key insight: Multiblock automation REQUIRES GUI to be open!
-     * So we check currentMachine (which is set when GUI opens)
+     * Main tick handler
      */
     public static void tick() {
-        // ✅ ALWAYS LOG - even if disabled (for debugging)
+        // 1. 🆕 ALWAYS TICK AUTO-CLICKER
+        // Auto-clicker berjalan saat GUI tertutup, jadi harus dipanggil di luar logic GUI
+        try {
+            MultiblockAutoClicker.tick();
+        } catch (Exception e) {
+            BapelSlimefunMod.LOGGER.error("Error ticking AutoClicker", e);
+        }
+
+        // 2. Cek Global Automation
         if (!automationEnabled) {
-            // Log once per second when disabled
-            long now = System.currentTimeMillis();
-            if (now % 1000 < 50) {
-                BapelSlimefunMod.LOGGER.debug("[UnifiedAuto] Tick called but automation DISABLED");
-            }
             return;
         }
         
         try {
-            // ✅ REMOVED THROTTLE FOR DEBUGGING - add back later
-            // long now = System.currentTimeMillis();
-            // if (config != null && now - lastTickTime < 50) return;
-            // lastTickTime = now;
-            
-            // ✅ LOG EVERY TICK when automation enabled
-            BapelSlimefunMod.LOGGER.info("[UnifiedAuto] ===== TICK ===== Automation: ENABLED");
-            
+            // 3. GUI Automation (Hanya berjalan saat membuka Container/Dispenser)
             SlimefunMachineData machine = getCurrentMachine();
             
             if (machine == null) {
-                BapelSlimefunMod.LOGGER.info("[UnifiedAuto] currentMachine = NULL - GUI closed or no machine");
+                // GUI tertutup -> logic pengisian item tidak jalan, tapi auto-clicker di atas tetap jalan
                 return;
             }
             
-            BapelSlimefunMod.LOGGER.info("[UnifiedAuto] currentMachine = {} | Type: {}", 
-                       machine.getId(), 
-                       machine.isMultiblock() ? "MULTIBLOCK" : "ELECTRIC");
-            
             if (machine.isElectric()) {
-                BapelSlimefunMod.LOGGER.info("[UnifiedAuto] Calling MachineAutomationHandler.tick()");
                 MachineAutomationHandler.tick();
             } else if (machine.isMultiblock()) {
-                BapelSlimefunMod.LOGGER.info("[UnifiedAuto] Calling MultiblockAutomationHandler.tick() for: {}", machine.getId());
                 MultiblockAutomationHandler.tick(machine);
             }
             
         } catch (Exception e) {
             BapelSlimefunMod.LOGGER.error("Error in tick", e);
+        }
+    }
+    
+    /**
+     * Toggle automation on/off
+     */
+    public static void toggleAutomation() {
+        try {
+            automationEnabled = !automationEnabled;
+            
+            Minecraft mc = Minecraft.getInstance();
+            LocalPlayer player = mc.player;
+            
+            if (player != null) {
+                if (automationEnabled) {
+                    player.displayClientMessage(
+                        Component.literal("§a[Slimefun] Automation STARTED ▶"), 
+                        false
+                    );
+                } else {
+                    player.displayClientMessage(
+                        Component.literal("§c[Slimefun] Automation STOPPED ■"), 
+                        false
+                    );
+                }
+            }
+            
+            if (config != null) {
+                config.setAutomationEnabled(automationEnabled);
+            }
+            MachineAutomationHandler.setAutomationEnabled(automationEnabled);
+            
+            // 🆕 MATIKAN AUTO-CLICKER JUGA SAAT TOGGLE OFF
+            if (!automationEnabled) {
+                MultiblockAutoClicker.disable();
+            }
+            
+            BapelSlimefunMod.LOGGER.info("[UnifiedAuto] Automation toggled: {}", automationEnabled);
+        } catch (Exception e) {
+            BapelSlimefunMod.LOGGER.error("Error toggling automation", e);
         }
     }
     
@@ -433,41 +474,7 @@ public class UnifiedAutomationManager {
     public static BlockPos getCurrentDispenserPos() {
         return currentDispenserPos;
     }
-    
-    /**
-     * Toggle automation on/off
-     */
-    public static void toggleAutomation() {
-        try {
-            automationEnabled = !automationEnabled;
-            
-            Minecraft mc = Minecraft.getInstance();
-            LocalPlayer player = mc.player;
-            
-            if (player != null) {
-                if (automationEnabled) {
-                    player.displayClientMessage(
-                        Component.literal("§a[Slimefun] Automation STARTED ▶"), 
-                        false
-                    );
-                } else {
-                    player.displayClientMessage(
-                        Component.literal("§c[Slimefun] Automation STOPPED ■"), 
-                        false
-                    );
-                }
-            }
-            
-            if (config != null) {
-                config.setAutomationEnabled(automationEnabled);
-            }
-            MachineAutomationHandler.setAutomationEnabled(automationEnabled);
-            
-            BapelSlimefunMod.LOGGER.info("[UnifiedAuto] Automation toggled: {}", automationEnabled);
-        } catch (Exception e) {
-            BapelSlimefunMod.LOGGER.error("Error toggling automation", e);
-        }
-    }
+
     
     /**
      * Check if automation is enabled
