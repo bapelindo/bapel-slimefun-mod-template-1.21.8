@@ -17,7 +17,11 @@ import net.minecraft.world.level.block.entity.DispenserBlockEntity;
 import java.util.*;
 
 /**
+<<<<<<< HEAD
  * âœ… FIXED: Auto-pad recipes with AIR to reach 9 inputs for multiblock automation
+=======
+ * ✅ FIXED: Multiblock automation now works correctly in Dispenser GUI
+>>>>>>> main
  */
 public class MultiblockAutomationHandler {
     
@@ -25,10 +29,14 @@ public class MultiblockAutomationHandler {
     private static ModConfig config;
     private static String selectedRecipeId = null;
     private static long lastProcessTime = 0;
+<<<<<<< HEAD
     
     private static int currentSlotIndex = 0;
     private static int emptySlotCount = 0;
     private static boolean allSlotsFilled = false;
+=======
+    private static int nextSlotIndex = 0;
+>>>>>>> main
     
     public static void init(ModConfig cfg) {
         config = cfg;
@@ -50,6 +58,12 @@ public class MultiblockAutomationHandler {
         return selectedRecipeId;
     }
     
+<<<<<<< HEAD
+=======
+    /**
+     * ✅ FIX: Simplified tick - only check if GUI is open
+     */
+>>>>>>> main
     public static void tick(SlimefunMachineData machine) {
         if (machine == null) {
             return;
@@ -67,6 +81,7 @@ public class MultiblockAutomationHandler {
         LocalPlayer player = mc.player;
         Level level = mc.level;
         
+<<<<<<< HEAD
         if (player == null || level == null) {
             return;
         }
@@ -129,10 +144,42 @@ public class MultiblockAutomationHandler {
             return false;
         }
         
+=======
+        if (player == null || level == null) return;
+        
+        // ✅ FIX: Check if Dispenser GUI is actually open
+        if (!(player.containerMenu instanceof DispenserMenu)) {
+            return; // Not in dispenser, skip
+        }
+        
+        // Throttle processing
+        long now = System.currentTimeMillis();
+        if (config != null && now - lastProcessTime < config.getAutomationDelayMs()) {
+            return;
+        }
+        
+        // ✅ FIX: Direct automation (no need to find dispenser - we're IN the GUI!)
+        RecipeData recipe = RecipeDatabase.getRecipe(selectedRecipeId);
+        if (recipe != null) {
+            if (autoFillDispenser(player, level, player.blockPosition(), recipe)) {
+                lastProcessTime = now;
+            }
+        }
+    }
+    
+    /**
+     * ✅ FIX: Improved dispenser filling with proper item distribution
+     */
+    private static boolean autoFillDispenser(LocalPlayer player, Level level, BlockPos pos, RecipeData recipe) {
+        // REQUIREMENT: Dispenser GUI must be open
+        if (!(player.containerMenu instanceof DispenserMenu)) return false;
+
+>>>>>>> main
         Minecraft mc = Minecraft.getInstance();
         AbstractContainerMenu menu = player.containerMenu;
         List<RecipeHandler.RecipeIngredient> inputs = recipe.getInputs();
         
+<<<<<<< HEAD
         BapelSlimefunMod.LOGGER.info("[MultiblockAuto] Recipe '{}' has {} raw inputs", 
             recipe.getRecipeId(), inputs.size());
         
@@ -153,6 +200,20 @@ public class MultiblockAutomationHandler {
         
         for (int i = 0; i < 9; i++) {
             RecipeHandler.RecipeIngredient target = paddedInputs.get(i);
+=======
+        // ✅ FIX: Must be 9-slot recipe (3x3 grid)
+        if (inputs.size() != 9) {
+            BapelSlimefunMod.LOGGER.warn("[MultiblockAuto] Recipe must have exactly 9 slots, got: {}", inputs.size());
+            return false;
+        }
+
+        // Process slots in round-robin fashion (1 per tick)
+        for (int k = 0; k < 9; k++) {
+            int i = (nextSlotIndex + k) % 9;
+            RecipeHandler.RecipeIngredient target = inputs.get(i);
+            
+            // Get current item in dispenser slot
+>>>>>>> main
             ItemStack currentStack = menu.getSlot(i).getItem();
             
             boolean needsWork = needsWorkOnSlot(currentStack, target);
@@ -178,6 +239,7 @@ public class MultiblockAutomationHandler {
             if (target.getItemId().equals("AIR") || target.getAmount() == 0) {
                 if (!currentStack.isEmpty()) {
                     // Remove wrong item
+<<<<<<< HEAD
                     mc.gameMode.handleInventoryMouseClick(menu.containerId, slotIndex, 0, 
                                                          ClickType.QUICK_MOVE, player);
                     
@@ -188,11 +250,22 @@ public class MultiblockAutomationHandler {
             }
             
             // CASE 2: Slot needs a specific ITEM
+=======
+                    mc.gameMode.handleInventoryMouseClick(menu.containerId, i, 0, ClickType.QUICK_MOVE, player);
+                    nextSlotIndex = (i + 1) % 9;
+                    return true;
+                }
+                continue;
+            }
+
+            // CASE 2: Slot needs ITEM
+>>>>>>> main
             boolean isSameItem = !currentStack.isEmpty() && currentId.equals(target.getItemId());
             boolean needsRefill = currentStack.isEmpty() || 
                                  (isSameItem && currentStack.getCount() < currentStack.getMaxStackSize());
             
             if (needsRefill) {
+<<<<<<< HEAD
                 // A. If wrong item, remove it first
                 if (!currentStack.isEmpty() && !isSameItem) {
                     mc.gameMode.handleInventoryMouseClick(menu.containerId, slotIndex, 0, 
@@ -220,6 +293,25 @@ public class MultiblockAutomationHandler {
                                                          ClickType.PICKUP, player);
                     
                     currentSlotIndex = (slotIndex + 1) % 9;
+=======
+                // Remove wrong item first
+                if (!currentStack.isEmpty() && !isSameItem) {
+                    mc.gameMode.handleInventoryMouseClick(menu.containerId, i, 0, ClickType.QUICK_MOVE, player);
+                    nextSlotIndex = (i + 1) % 9;
+                    return true;
+                }
+
+                // Find item in player inventory
+                int sourceSlot = findItemInPlayerInventory(menu, player, target.getItemId());
+                
+                if (sourceSlot != -1) {
+                    // ✅ TECHNIQUE: 1-by-1 distribution (PICK - PLACE ONE - RETURN)
+                    mc.gameMode.handleInventoryMouseClick(menu.containerId, sourceSlot, 0, ClickType.PICKUP, player);
+                    mc.gameMode.handleInventoryMouseClick(menu.containerId, i, 1, ClickType.PICKUP, player); // Right-click = 1 item
+                    mc.gameMode.handleInventoryMouseClick(menu.containerId, sourceSlot, 0, ClickType.PICKUP, player);
+                    
+                    nextSlotIndex = (i + 1) % 9;
+>>>>>>> main
                     return true;
                 }
                 
@@ -295,11 +387,18 @@ public class MultiblockAutomationHandler {
     }
     
     /**
+<<<<<<< HEAD
      * Find item in player inventory slots (9-44 for Dispenser GUI)
      */
     private static int findItemInPlayerInventory(AbstractContainerMenu menu, LocalPlayer player, 
                                                  String targetItemId) {
         int startSlot = 9; // Skip dispenser slots (0-8)
+=======
+     * Find item in player inventory slots (skip dispenser slots 0-8)
+     */
+    private static int findItemInPlayerInventory(AbstractContainerMenu menu, LocalPlayer player, String targetItemId) {
+        int startSlot = 9; // Skip dispenser slots
+>>>>>>> main
         int endSlot = menu.slots.size();
         
         for (int i = startSlot; i < endSlot; i++) {
@@ -317,6 +416,7 @@ public class MultiblockAutomationHandler {
         return -1;
     }
     
+<<<<<<< HEAD
     /**
      * Reset automation state when recipe changes
      */
@@ -326,6 +426,8 @@ public class MultiblockAutomationHandler {
         allSlotsFilled = false;
     }
     
+=======
+>>>>>>> main
     /**
      * Get player inventory as list
      */
@@ -338,6 +440,47 @@ public class MultiblockAutomationHandler {
     }
     
     /**
+<<<<<<< HEAD
+=======
+     * Check if we can process recipe with current dispenser contents
+     */
+    public static boolean canProcess(SlimefunMachineData machine, BlockPos dispenserPos, Level level) {
+        if (selectedRecipeId == null) return false;
+        
+        RecipeData recipe = RecipeDatabase.getRecipe(selectedRecipeId);
+        if (recipe == null) return false;
+        
+        BlockEntity blockEntity = level.getBlockEntity(dispenserPos);
+        if (!(blockEntity instanceof DispenserBlockEntity)) return false;
+        
+        DispenserBlockEntity dispenser = (DispenserBlockEntity) blockEntity;
+        
+        // Check if dispenser has all required items
+        Map<String, Integer> requirements = recipe.getGroupedInputs();
+        Map<String, Integer> available = new HashMap<>();
+        
+        for (int i = 0; i < dispenser.getContainerSize(); i++) {
+            ItemStack stack = dispenser.getItem(i);
+            if (!stack.isEmpty()) {
+                String itemId = AutomationUtils.getItemId(stack);
+                available.put(itemId, available.getOrDefault(itemId, 0) + stack.getCount());
+            }
+        }
+        
+        // Check if all requirements are met
+        for (Map.Entry<String, Integer> entry : requirements.entrySet()) {
+            int needed = entry.getValue();
+            int has = available.getOrDefault(entry.getKey(), 0);
+            if (has < needed) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    
+    /**
+>>>>>>> main
      * Reset handler
      */
     public static void reset() {
@@ -362,6 +505,10 @@ public class MultiblockAutomationHandler {
             if (player == null) return null;
             
             List<ItemStack> inventory = getPlayerInventory(player);
+<<<<<<< HEAD
+=======
+            List<RecipeHandler.RecipeIngredient> recipeIngredients = recipe.getInputs();
+>>>>>>> main
             
             // âœ… Use padded inputs
             List<RecipeHandler.RecipeIngredient> paddedInputs = padInputsTo9(recipe.getInputs());
