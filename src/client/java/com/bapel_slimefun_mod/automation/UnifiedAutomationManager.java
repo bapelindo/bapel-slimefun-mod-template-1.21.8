@@ -12,14 +12,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 
 /**
- * ✅ ENHANCED: Auto-detect and cache multiblock on dispenser open
- * 
- * NEW FEATURES:
- * 1. Automatically detects multiblock when dispenser is opened
- * 2. Uses exact block matching (no fuzzy detection)
- * 3. Caches detected multiblock automatically
- * 4. Shows detection result to user
- * 5. 100% client-side operation
+ * ✅ FIXED: Auto-enable automation when recipe is selected for multiblock
  */
 public class UnifiedAutomationManager {
     
@@ -38,6 +31,8 @@ public class UnifiedAutomationManager {
         MachineAutomationHandler.init(cfg);
         MultiblockAutomationHandler.init(cfg);
         MultiblockCacheManager.load();
+        
+        BapelSlimefunMod.LOGGER.info("[UnifiedAuto] Initialized");
     }
     
     /**
@@ -250,12 +245,19 @@ public class UnifiedAutomationManager {
         String machineId = currentCachedMachine.getMachineId();
         currentMachine = SlimefunDataLoader.getMultiblockById(machineId);
         
-        if (currentMachine == null) return;
+        if (currentMachine == null) {
+            BapelSlimefunMod.LOGGER.error("[UnifiedAuto] Failed to load machine: {}", machineId);
+            return;
+        }
+        
+        BapelSlimefunMod.LOGGER.info("[UnifiedAuto] Loaded cached multiblock: {}", currentMachine.getId());
         
         // Auto-load last recipe if exists
         String lastRecipe = currentCachedMachine.getLastSelectedRecipe();
         if (lastRecipe != null && config != null && config.isRememberLastRecipe()) {
             MultiblockAutomationHandler.setSelectedRecipe(lastRecipe);
+            
+            // ✅ FIX: AUTO-ENABLE AUTOMATION!
             automationEnabled = true;
             config.setAutomationEnabled(true);
             
@@ -267,6 +269,9 @@ public class UnifiedAutomationManager {
                 Component.literal("§a▶ Automation STARTED!"),
                 true
             );
+            
+            BapelSlimefunMod.LOGGER.info("[UnifiedAuto] Auto-enabled automation for: {}", lastRecipe);
+            BapelSlimefunMod.LOGGER.info("[UnifiedAuto] currentMachine = {}", currentMachine.getId());
             return;
         }
         
@@ -284,42 +289,63 @@ public class UnifiedAutomationManager {
             if (currentMachine != null && currentMachine.isElectric()) {
                 MachineAutomationHandler.onContainerClose();
             }
+            
+            // ✅ Clear currentMachine when GUI closes
+            // This stops automation (which requires GUI for multiblock)
             currentMachine = null;
-            // Note: Don't clear currentDispenserPos here - keep it for M key access
+            
+            // Note: Keep currentDispenserPos and currentCachedMachine for M key access
+            BapelSlimefunMod.LOGGER.debug("[UnifiedAuto] Machine GUI closed");
         } catch (Exception e) {
             BapelSlimefunMod.LOGGER.error("Error in onMachineClose", e);
         }
     }
     
     /**
-     * Main tick handler
+     * ✅ COMPLETELY FIXED: Main tick handler with extensive logging
+     * 
+     * Key insight: Multiblock automation REQUIRES GUI to be open!
+     * So we check currentMachine (which is set when GUI opens)
      */
     public static void tick() {
-        if (!automationEnabled) return;
+        // ✅ ALWAYS LOG - even if disabled (for debugging)
+        if (!automationEnabled) {
+            // Log once per second when disabled
+            long now = System.currentTimeMillis();
+            if (now % 1000 < 50) {
+                BapelSlimefunMod.LOGGER.debug("[UnifiedAuto] Tick called but automation DISABLED");
+            }
+            return;
+        }
         
         try {
-            // Throttle ticks
-            long now = System.currentTimeMillis();
-            if (config != null && now - lastTickTime < 50) return;
-            lastTickTime = now;
+            // ✅ REMOVED THROTTLE FOR DEBUGGING - add back later
+            // long now = System.currentTimeMillis();
+            // if (config != null && now - lastTickTime < 50) return;
+            // lastTickTime = now;
+            
+            // ✅ LOG EVERY TICK when automation enabled
+            BapelSlimefunMod.LOGGER.info("[UnifiedAuto] ===== TICK ===== Automation: ENABLED");
             
             SlimefunMachineData machine = getCurrentMachine();
             
-            if (machine != null) {
-                if (machine.isElectric()) {
-                    MachineAutomationHandler.tick();
-                } else if (machine.isMultiblock()) {
-                    MultiblockAutomationHandler.tick(machine); // ✅ FIX: Pass machine parameter
-                }
-            } else if (currentCachedMachine != null) {
-                // Multiblock automation without GUI
-                SlimefunMachineData cachedMachine = SlimefunDataLoader.getMultiblockById(
-                    currentCachedMachine.getMachineId()
-                );
-                if (cachedMachine != null && cachedMachine.isMultiblock()) {
-                    MultiblockAutomationHandler.tick(cachedMachine); // ✅ FIX: Pass cached machine
-                }
+            if (machine == null) {
+                BapelSlimefunMod.LOGGER.info("[UnifiedAuto] currentMachine = NULL - GUI closed or no machine");
+                return;
             }
+            
+            BapelSlimefunMod.LOGGER.info("[UnifiedAuto] currentMachine = {} | Type: {}", 
+                       machine.getId(), 
+                       machine.isMultiblock() ? "MULTIBLOCK" : "ELECTRIC");
+            
+            if (machine.isElectric()) {
+                BapelSlimefunMod.LOGGER.info("[UnifiedAuto] Calling MachineAutomationHandler.tick()");
+                MachineAutomationHandler.tick();
+            } else if (machine.isMultiblock()) {
+                BapelSlimefunMod.LOGGER.info("[UnifiedAuto] Calling MultiblockAutomationHandler.tick() for: {}", machine.getId());
+                MultiblockAutomationHandler.tick(machine);
+            }
+            
         } catch (Exception e) {
             BapelSlimefunMod.LOGGER.error("Error in tick", e);
         }
@@ -338,6 +364,16 @@ public class UnifiedAutomationManager {
             } else if (machine.isMultiblock()) {
                 MultiblockAutomationHandler.setSelectedRecipe(recipeId);
                 
+                // ✅ KEY FIX: AUTO-ENABLE AUTOMATION FOR MULTIBLOCK!
+                if (recipeId != null) {
+                    automationEnabled = true;
+                    if (config != null) {
+                        config.setAutomationEnabled(true);
+                    }
+                    BapelSlimefunMod.LOGGER.info("[UnifiedAuto] Auto-enabled automation for multiblock recipe: {}", 
+                                                 recipeId);
+                }
+                
                 // Save to cache
                 if (currentCachedMachine != null) {
                     currentCachedMachine.setLastSelectedRecipe(recipeId);
@@ -351,6 +387,14 @@ public class UnifiedAutomationManager {
                     Component.literal("§a✓ Recipe selected: §f" + getRecipeDisplayName(recipeId)), 
                     true
                 );
+                
+                // ✅ NEW: Show automation status
+                if (machine.isMultiblock()) {
+                    mc.player.displayClientMessage(
+                        Component.literal("§a▶ Automation STARTED - Items will auto-fill!"), 
+                        false
+                    );
+                }
             }
         } catch (Exception e) {
             BapelSlimefunMod.LOGGER.error("Error setting recipe", e);
@@ -418,6 +462,8 @@ public class UnifiedAutomationManager {
                 config.setAutomationEnabled(automationEnabled);
             }
             MachineAutomationHandler.setAutomationEnabled(automationEnabled);
+            
+            BapelSlimefunMod.LOGGER.info("[UnifiedAuto] Automation toggled: {}", automationEnabled);
         } catch (Exception e) {
             BapelSlimefunMod.LOGGER.error("Error toggling automation", e);
         }
@@ -448,7 +494,7 @@ public class UnifiedAutomationManager {
             if (machine.isElectric()) {
                 return MachineAutomationHandler.getRecipeSummary();
             } else if (machine.isMultiblock()) {
-                return MultiblockAutomationHandler.getRecipeSummary(machine); // ✅ FIX: Pass machine parameter
+                return MultiblockAutomationHandler.getRecipeSummary(machine);
             }
         } catch (Exception e) {
             BapelSlimefunMod.LOGGER.error("Error getting recipe summary", e);
@@ -465,7 +511,7 @@ public class UnifiedAutomationManager {
         try {
             RecipeData recipe = RecipeDatabase.getRecipe(recipeId);
             if (recipe != null) {
-                RecipeData.RecipeOutput primaryOutput = recipe.getPrimaryOutput(); // ✅ FIX: Use correct type
+                RecipeData.RecipeOutput primaryOutput = recipe.getPrimaryOutput();
                 if (primaryOutput != null) {
                     return primaryOutput.getDisplayName();
                 }
