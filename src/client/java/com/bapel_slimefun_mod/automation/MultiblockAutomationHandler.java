@@ -5,19 +5,24 @@ import com.bapel_slimefun_mod.config.ModConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.DispenserMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.DispenserBlockEntity;
 
 import java.util.*;
 
 /**
- * âœ… FIXED: Auto-pad recipes with AIR to reach 9 inputs for multiblock automation
+ * ✅ MULTIBLOCK AUTO-FILL dengan KALKULASI CLICK COUNT
+ * 
+ * Features:
+ * 1. Aktif saat user pilih recipe di overlay
+ * 2. Round-robin menaruh item sampai habis atau 1 stack
+ * 3. Kalkulasi berapa kali click dibutuhkan (untuk auto-stopper)
  */
 public class MultiblockAutomationHandler {
     
@@ -30,17 +35,23 @@ public class MultiblockAutomationHandler {
     private static int emptySlotCount = 0;
     private static boolean allSlotsFilled = false;
     
+    // ✅ KALKULASI CLICK COUNT untuk auto-stopper
+    private static int calculatedClickCount = 0;
+    
     public static void init(ModConfig cfg) {
         config = cfg;
         BapelSlimefunMod.LOGGER.info("[MultiblockAuto] Initialized with config");
     }
     
+    /**
+     * EVENT: Recipe selected - aktifkan auto-fill
+     */
     public static void setSelectedRecipe(String recipeId) {
         selectedRecipeId = recipeId;
         resetAutomationState();
         
         if (recipeId != null) {
-            BapelSlimefunMod.LOGGER.info("[MultiblockAuto] âœ“ Recipe selected: {}", recipeId);
+            BapelSlimefunMod.LOGGER.info("[MultiblockAuto] ✓ Recipe selected: {}", recipeId);
         } else {
             BapelSlimefunMod.LOGGER.info("[MultiblockAuto] Recipe deselected (null)");
         }
@@ -50,6 +61,16 @@ public class MultiblockAutomationHandler {
         return selectedRecipeId;
     }
     
+    /**
+     * ✅ GET CALCULATED CLICK COUNT untuk auto-clicker
+     */
+    public static int getCalculatedClickCount() {
+        return calculatedClickCount;
+    }
+    
+    /**
+     * Main tick - auto-fill dengan round-robin
+     */
     public static void tick(SlimefunMachineData machine) {
         if (machine == null) {
             return;
@@ -88,7 +109,7 @@ public class MultiblockAutomationHandler {
         
         RecipeData recipe = RecipeDatabase.getRecipe(selectedRecipeId);
         if (recipe == null) {
-            BapelSlimefunMod.LOGGER.warn("[MultiblockAuto] âœ– Recipe not found in database: {}", selectedRecipeId);
+            BapelSlimefunMod.LOGGER.warn("[MultiblockAuto] ✗ Recipe not found in database: {}", selectedRecipeId);
             return;
         }
         
@@ -121,7 +142,7 @@ public class MultiblockAutomationHandler {
     }
     
     /**
-     * âœ… FIXED: Auto-pad recipe inputs to 9 if needed
+     * ✅ AUTO-FILL dengan ROUND-ROBIN + KALKULASI CLICK COUNT
      */
     private static boolean autoFillDispenserRoundRobin(LocalPlayer player, Level level, 
                                                        BlockPos pos, RecipeData recipe) {
@@ -133,16 +154,11 @@ public class MultiblockAutomationHandler {
         AbstractContainerMenu menu = player.containerMenu;
         List<RecipeHandler.RecipeIngredient> inputs = recipe.getInputs();
         
-        BapelSlimefunMod.LOGGER.info("[MultiblockAuto] Recipe '{}' has {} raw inputs", 
-            recipe.getRecipeId(), inputs.size());
-        
-        // âœ… CRITICAL FIX: Auto-pad inputs to 9 if needed
+        // Pad inputs to 9
         List<RecipeHandler.RecipeIngredient> paddedInputs = padInputsTo9(inputs);
         
-        BapelSlimefunMod.LOGGER.info("[MultiblockAuto] After padding: {} inputs", paddedInputs.size());
-        
         if (paddedInputs.size() != 9) {
-            BapelSlimefunMod.LOGGER.error("[MultiblockAuto] ERROR: After padding still got {} inputs", 
+            BapelSlimefunMod.LOGGER.error("[MultiblockAuto] ERROR: After padding got {} inputs", 
                 paddedInputs.size());
             return false;
         }
@@ -163,7 +179,23 @@ public class MultiblockAutomationHandler {
             }
         }
         
+        // ✅ KALKULASI CLICK COUNT saat dispenser penuh
         if (allSlotsFilled) {
+            calculatedClickCount = calculateClickCount(menu, paddedInputs);
+            
+            if (calculatedClickCount > 0) {
+                player.displayClientMessage(
+                    Component.literal(String.format(
+                        "§a✓ Dispenser ready! Can process §b%d times",
+                        calculatedClickCount
+                    )),
+                    true
+                );
+                
+                BapelSlimefunMod.LOGGER.info("[MultiblockAuto] ✓ Calculated {} clicks needed", 
+                    calculatedClickCount);
+            }
+            
             return false;
         }
         
@@ -234,26 +266,73 @@ public class MultiblockAutomationHandler {
     }
     
     /**
-     * âœ… NEW: Pad recipe inputs to exactly 9 entries with AIR
+     * ✅ KALKULASI: Berapa kali bisa click berdasarkan item di dispenser
+     * 
+     * Contoh:
+     * - Recipe: 3 copper, 3 copper, 4 copper (total 10 per proses)
+     * - Dispenser: slot 0 = 30, slot 1 = 30, slot 2 = 40
+     * - Hasil: min(30/3, 30/3, 40/4) = min(10, 10, 10) = 10 clicks
+     */
+    private static int calculateClickCount(AbstractContainerMenu menu, 
+                                           List<RecipeHandler.RecipeIngredient> paddedInputs) {
+        int minClicks = Integer.MAX_VALUE;
+        boolean hasValidItems = false;
+        
+        for (int i = 0; i < 9; i++) {
+            RecipeHandler.RecipeIngredient target = paddedInputs.get(i);
+            
+            // Skip AIR slots
+            if (target.getItemId().equals("AIR") || target.getAmount() == 0) {
+                continue;
+            }
+            
+            ItemStack currentStack = menu.getSlot(i).getItem();
+            
+            if (currentStack.isEmpty()) {
+                // Slot kosong tapi butuh item = 0 clicks
+                return 0;
+            }
+            
+            int currentCount = currentStack.getCount();
+            int requiredPerClick = target.getAmount();
+            
+            if (requiredPerClick <= 0) {
+                continue;
+            }
+            
+            // Berapa kali bisa proses dengan jumlah item ini?
+            int possibleClicks = currentCount / requiredPerClick;
+            
+            minClicks = Math.min(minClicks, possibleClicks);
+            hasValidItems = true;
+            
+            BapelSlimefunMod.LOGGER.debug("[ClickCalc] Slot {}: {} items / {} per click = {} clicks", 
+                i, currentCount, requiredPerClick, possibleClicks);
+        }
+        
+        if (!hasValidItems) {
+            return 0;
+        }
+        
+        BapelSlimefunMod.LOGGER.info("[ClickCalc] ✓ Final calculation: {} clicks possible", minClicks);
+        return minClicks == Integer.MAX_VALUE ? 0 : minClicks;
+    }
+    
+    /**
+     * Pad inputs to exactly 9 slots
      */
     private static List<RecipeHandler.RecipeIngredient> padInputsTo9(List<RecipeHandler.RecipeIngredient> inputs) {
         List<RecipeHandler.RecipeIngredient> padded = new ArrayList<>(inputs);
         
-        // If already 9, return as-is
         if (padded.size() == 9) {
             return padded;
         }
         
-        // If more than 9, trim to 9 (shouldn't happen)
         if (padded.size() > 9) {
             BapelSlimefunMod.LOGGER.warn("[MultiblockAuto] Recipe has {} inputs, trimming to 9", 
                 padded.size());
             return new ArrayList<>(padded.subList(0, 9));
         }
-        
-        // Pad with AIR to reach 9
-        BapelSlimefunMod.LOGGER.info("[MultiblockAuto] Padding recipe from {} to 9 inputs with AIR", 
-            padded.size());
         
         while (padded.size() < 9) {
             padded.add(new RecipeHandler.RecipeIngredient("AIR", 0));
@@ -324,6 +403,7 @@ public class MultiblockAutomationHandler {
         currentSlotIndex = 0;
         emptySlotCount = 0;
         allSlotsFilled = false;
+        calculatedClickCount = 0;
     }
     
     /**
@@ -362,8 +442,6 @@ public class MultiblockAutomationHandler {
             if (player == null) return null;
             
             List<ItemStack> inventory = getPlayerInventory(player);
-            
-            // âœ… Use padded inputs
             List<RecipeHandler.RecipeIngredient> paddedInputs = padInputsTo9(recipe.getInputs());
             
             return new RecipeHandler.RecipeSummary(inventory, paddedInputs);
@@ -377,8 +455,9 @@ public class MultiblockAutomationHandler {
      * Get automation status for debugging
      */
     public static String getAutomationStatus() {
-        return String.format("Slot: %d/9 | Empty: %d | Filled: %s | Recipe: %s", 
+        return String.format("Slot: %d/9 | Empty: %d | Filled: %s | Recipe: %s | Clicks: %d", 
                            currentSlotIndex, emptySlotCount, allSlotsFilled, 
-                           selectedRecipeId != null ? selectedRecipeId : "NONE");
+                           selectedRecipeId != null ? selectedRecipeId : "NONE",
+                           calculatedClickCount);
     }
 }

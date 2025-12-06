@@ -12,7 +12,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 
 /**
- * ✅ FIXED: Auto-enable automation when recipe is selected for multiblock
+ * âœ… FIXED: Auto-enable automation when recipe is selected for multiblock
  */
 public class UnifiedAutomationManager {
     
@@ -56,7 +56,7 @@ public class UnifiedAutomationManager {
             
             // Show confirmation
             player.displayClientMessage(
-                Component.literal("§a✓ " + machine.getName() + " cached! Press R for recipes."),
+                Component.literal("Â§aâœ“ " + machine.getName() + " cached! Press R for recipes."),
                 false
             );
             
@@ -67,7 +67,7 @@ public class UnifiedAutomationManager {
                 try {
                     RecipeOverlayRenderer.show(machine);
                     player.displayClientMessage(
-                        Component.literal("§e⚡ Last recipe: " + getRecipeDisplayName(rememberedRecipe)),
+                        Component.literal("Â§eâš¡ Last recipe: " + getRecipeDisplayName(rememberedRecipe)),
                         true
                     );
                 } catch (Exception e) {
@@ -108,7 +108,7 @@ public class UnifiedAutomationManager {
     }
     
     /**
-     * 🆕 AUTO-DETECT & CACHE: Handle dispenser opening with automatic detection
+     * ðŸ†• AUTO-DETECT & CACHE: Handle dispenser opening with automatic detection
      */
     private static void handleDispenserOpenWithAutoDetect() {
         try {
@@ -118,7 +118,7 @@ public class UnifiedAutomationManager {
             
             if (player == null || level == null) return;
             
-            // 🔍 GET DISPENSER POSITION using HitResult (what player is looking at)
+            // ðŸ” GET DISPENSER POSITION using HitResult (what player is looking at)
             BlockPos dispenserPos = getDispenserPosition(mc, level);
             
             if (dispenserPos == null) {
@@ -129,7 +129,7 @@ public class UnifiedAutomationManager {
             // Save position for M key access
             currentDispenserPos = dispenserPos;
             
-            // 📦 CHECK IF ALREADY CACHED
+            // ðŸ“¦ CHECK IF ALREADY CACHED
             currentCachedMachine = MultiblockCacheManager.getMachineAt(dispenserPos);
             
             if (currentCachedMachine != null) {
@@ -138,13 +138,13 @@ public class UnifiedAutomationManager {
                 return;
             }
             
-            // 🔎 NOT CACHED - AUTO DETECT MULTIBLOCK
+            // ðŸ”Ž NOT CACHED - AUTO DETECT MULTIBLOCK
             BapelSlimefunMod.LOGGER.info("[AutoDetect] Running multiblock detection at {}", dispenserPos);
             
             MultiblockDetector.DetectionResult result = MultiblockDetector.detect(level, dispenserPos);
             
             if (result != null) {
-                // ✅ MULTIBLOCK DETECTED - AUTO CACHE IT
+                // âœ… MULTIBLOCK DETECTED - AUTO CACHE IT
                 String machineId = result.getMachineId();
                 SlimefunMachineData machine = SlimefunDataLoader.getMultiblockById(machineId);
                 
@@ -157,7 +157,7 @@ public class UnifiedAutomationManager {
                     // Notify user
                     player.displayClientMessage(
                         Component.literal(String.format(
-                            "§a✓ Detected & Cached: §f%s §7(%.0f%% match)",
+                            "Â§aâœ“ Detected & Cached: Â§f%s Â§7(%.0f%% match)",
                             machine.getName(),
                             result.getConfidence() * 100
                         )),
@@ -165,7 +165,7 @@ public class UnifiedAutomationManager {
                     );
                     
                     player.displayClientMessage(
-                        Component.literal("§7Press R to view recipes"),
+                        Component.literal("Â§7Press R to view recipes"),
                         true
                     );
                     
@@ -174,7 +174,7 @@ public class UnifiedAutomationManager {
                         RecipeOverlayRenderer.show(machine);
                     }
                     
-                    BapelSlimefunMod.LOGGER.info("[AutoDetect] ✓ Successfully detected and cached: {}", machineId);
+                    BapelSlimefunMod.LOGGER.info("[AutoDetect] âœ“ Successfully detected and cached: {}", machineId);
                 } else {
                     BapelSlimefunMod.LOGGER.error("[AutoDetect] Machine data not found for: {}", machineId);
                 }
@@ -190,7 +190,7 @@ public class UnifiedAutomationManager {
     }
     
     /**
-     * 🆕 GET DISPENSER POSITION from player's crosshair or nearby search
+     * ðŸ†• GET DISPENSER POSITION from player's crosshair or nearby search
      */
     private static BlockPos getDispenserPosition(Minecraft mc, Level level) {
         // Method 1: Try to get from player's crosshair (most accurate)
@@ -257,18 +257,8 @@ public class UnifiedAutomationManager {
         if (lastRecipe != null && config != null && config.isRememberLastRecipe()) {
             MultiblockAutomationHandler.setSelectedRecipe(lastRecipe);
             
-            // ✅ FIX: AUTO-ENABLE AUTOMATION!
-            automationEnabled = true;
-            config.setAutomationEnabled(true);
-            
-            player.displayClientMessage(
-                Component.literal("§a✓ Auto-loaded: " + getRecipeDisplayName(lastRecipe)),
-                false
-            );
-            player.displayClientMessage(
-                Component.literal("§a▶ Automation STARTED!"),
-                true
-            );
+            // Event-driven: JANGAN auto-enable automation
+            // Biarkan user pilih recipe manual untuk trigger
             
             BapelSlimefunMod.LOGGER.info("[UnifiedAuto] Auto-enabled automation for: {}", lastRecipe);
             BapelSlimefunMod.LOGGER.info("[UnifiedAuto] currentMachine = {}", currentMachine.getId());
@@ -294,7 +284,7 @@ public class UnifiedAutomationManager {
                 MachineAutomationHandler.onContainerClose();
             }
             
-            // 2. 🆕 CHAIN TO AUTO-CLICKER (Mata Rantai Otomatisasi)
+            // 2. ðŸ†• CHAIN TO AUTO-CLICKER (Mata Rantai Otomatisasi)
             // Jika kita punya data mesin multiblock, posisi dispenser, dan resep yang dipilih...
             if (currentCachedMachine != null && currentDispenserPos != null) {
                 String selectedRecipe = MultiblockAutomationHandler.getSelectedRecipe();
@@ -302,7 +292,10 @@ public class UnifiedAutomationManager {
                 // Hanya jalankan auto-click jika automation dinyalakan secara global
                 if (selectedRecipe != null && automationEnabled) {
                     BapelSlimefunMod.LOGGER.info("[UnifiedAuto] GUI Closed -> Starting Auto-Clicker chain");
-                    MultiblockAutoClicker.enable(currentDispenserPos, currentCachedMachine.getMachineId());
+                    int calculatedClicks = MultiblockAutomationHandler.getCalculatedClickCount();
+                    if (calculatedClicks > 0) {
+                        MultiblockAutoClicker.enable(currentDispenserPos, currentCachedMachine.getMachineId(), calculatedClicks);
+                    }
                 }
             }
             
@@ -319,7 +312,7 @@ public class UnifiedAutomationManager {
      * Main tick handler
      */
     public static void tick() {
-        // 1. 🆕 ALWAYS TICK AUTO-CLICKER
+        // 1. ðŸ†• ALWAYS TICK AUTO-CLICKER
         // Auto-clicker berjalan saat GUI tertutup, jadi harus dipanggil di luar logic GUI
         try {
             MultiblockAutoClicker.tick();
@@ -365,12 +358,12 @@ public class UnifiedAutomationManager {
             if (player != null) {
                 if (automationEnabled) {
                     player.displayClientMessage(
-                        Component.literal("§a[Slimefun] Automation STARTED ▶"), 
+                        Component.literal("Â§a[Slimefun] Automation STARTED â–¶"), 
                         false
                     );
                 } else {
                     player.displayClientMessage(
-                        Component.literal("§c[Slimefun] Automation STOPPED ■"), 
+                        Component.literal("Â§c[Slimefun] Automation STOPPED â– "), 
                         false
                     );
                 }
@@ -381,7 +374,7 @@ public class UnifiedAutomationManager {
             }
             MachineAutomationHandler.setAutomationEnabled(automationEnabled);
             
-            // 🆕 MATIKAN AUTO-CLICKER JUGA SAAT TOGGLE OFF
+            // ðŸ†• MATIKAN AUTO-CLICKER JUGA SAAT TOGGLE OFF
             if (!automationEnabled) {
                 MultiblockAutoClicker.disable();
             }
@@ -405,7 +398,7 @@ public class UnifiedAutomationManager {
             } else if (machine.isMultiblock()) {
                 MultiblockAutomationHandler.setSelectedRecipe(recipeId);
                 
-                // ✅ KEY FIX: AUTO-ENABLE AUTOMATION FOR MULTIBLOCK!
+                // âœ… KEY FIX: AUTO-ENABLE AUTOMATION FOR MULTIBLOCK!
                 if (recipeId != null) {
                     automationEnabled = true;
                     if (config != null) {
@@ -425,14 +418,14 @@ public class UnifiedAutomationManager {
             Minecraft mc = Minecraft.getInstance();
             if (mc.player != null) {
                 mc.player.displayClientMessage(
-                    Component.literal("§a✓ Recipe selected: §f" + getRecipeDisplayName(recipeId)), 
+                    Component.literal("Â§aâœ“ Recipe selected: Â§f" + getRecipeDisplayName(recipeId)), 
                     true
                 );
                 
-                // ✅ NEW: Show automation status
+                // âœ… NEW: Show automation status
                 if (machine.isMultiblock()) {
                     mc.player.displayClientMessage(
-                        Component.literal("§a▶ Automation STARTED - Items will auto-fill!"), 
+                        Component.literal("Â§aâ–¶ Automation STARTED - Items will auto-fill!"), 
                         false
                     );
                 }
