@@ -20,6 +20,11 @@ import net.minecraft.world.phys.Vec3;
  * 1. Otomatis aktif saat user keluar dispenser
  * 2. Click sejumlah calculated click count
  * 3. Auto-stop setelah mencapai target click
+ * 
+ * Bug Fixes:
+ * - Works with ANY click count > 0 (not just full stacks)
+ * - Doesn't restart when user opens other containers
+ * - Proper state cleanup after completion
  */
 public class MultiblockAutoClicker {
     
@@ -64,6 +69,7 @@ public class MultiblockAutoClicker {
     
     /**
      * Disable auto-click
+     * 🆕 FIXED: Proper state cleanup
      */
     public static void disable() {
         if (!autoClickEnabled) return;
@@ -86,6 +92,8 @@ public class MultiblockAutoClicker {
         BapelSlimefunMod.LOGGER.info("[AutoClick] Disabled - Completed {}/{} clicks", 
             currentClickCount, targetClickCount);
         
+        // 🆕 CLEAR MACHINE REFERENCE after auto-clicker finishes
+        // This prevents interference with next machine
         dispenserPos = null;
         machineId = null;
         targetClickCount = 0;
@@ -276,20 +284,21 @@ public class MultiblockAutoClicker {
             case "GRIND_STONE":
                 return Blocks.OAK_FENCE;
             case "MAGIC_WORKBENCH":
-                return Blocks.BOOKSHELF;
+                return Blocks.CRAFTING_TABLE;
             case "ENHANCED_CRAFTING_TABLE":
                 return Blocks.CRAFTING_TABLE;
             case "ORE_CRUSHER":
-                return Blocks.IRON_BARS;
+                return Blocks.NETHER_BRICK_FENCE;
             case "COMPRESSOR":
-                return Blocks.PISTON;
+                return Blocks.NETHER_BRICK_FENCE;
             case "SMELTERY":
                 return Blocks.NETHER_BRICK_FENCE;
             case "MAKESHIFT_SMELTERY":
-                return Blocks.FURNACE;
+                return Blocks.OAK_FENCE;
             case "PRESSURE_CHAMBER":
-                return Blocks.SMOOTH_STONE_SLAB;
+                return Blocks.CAULDRON;
             case "ORE_WASHER":
+                return Blocks.OAK_FENCE;
             case "AUTOMATED_PANNING_MACHINE":
                 return Blocks.CAULDRON;
             case "JUICER":

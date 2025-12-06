@@ -17,12 +17,12 @@ import net.minecraft.world.level.block.entity.DispenserBlockEntity;
 import java.util.*;
 
 /**
- * ✅ MULTIBLOCK AUTO-FILL dengan KALKULASI CLICK COUNT
+ * ✅ FIXED: Multiblock automation with proper click calculation
  * 
- * Features:
- * 1. Aktif saat user pilih recipe di overlay
- * 2. Round-robin menaruh item sampai habis atau 1 stack
- * 3. Kalkulasi berapa kali click dibutuhkan (untuk auto-stopper)
+ * Bug Fixes:
+ * 1. Auto-click works with partial fills (not just full stacks)
+ * 2. Click calculation happens every tick (not just when full)
+ * 3. User can close dispenser anytime and auto-click will start
  */
 public class MultiblockAutomationHandler {
     
@@ -143,6 +143,7 @@ public class MultiblockAutomationHandler {
     
     /**
      * ✅ AUTO-FILL dengan ROUND-ROBIN + KALKULASI CLICK COUNT
+     * 🆕 FIXED: Calculate click count every tick (not just when full)
      */
     private static boolean autoFillDispenserRoundRobin(LocalPlayer player, Level level, 
                                                        BlockPos pos, RecipeData recipe) {
@@ -163,6 +164,9 @@ public class MultiblockAutomationHandler {
             return false;
         }
         
+        // 🆕 ALWAYS calculate click count (even if not full)
+        calculatedClickCount = calculateClickCount(menu, paddedInputs);
+        
         // Count how many slots still need work
         emptySlotCount = 0;
         allSlotsFilled = true;
@@ -179,22 +183,18 @@ public class MultiblockAutomationHandler {
             }
         }
         
-        // ✅ KALKULASI CLICK COUNT saat dispenser penuh
-        if (allSlotsFilled) {
-            calculatedClickCount = calculateClickCount(menu, paddedInputs);
+        // ✅ Show message when dispenser is ready (has at least 1 click)
+        if (allSlotsFilled && calculatedClickCount > 0) {
+            player.displayClientMessage(
+                Component.literal(String.format(
+                    "§a✓ Dispenser ready! Can process §b%d times",
+                    calculatedClickCount
+                )),
+                true
+            );
             
-            if (calculatedClickCount > 0) {
-                player.displayClientMessage(
-                    Component.literal(String.format(
-                        "§a✓ Dispenser ready! Can process §b%d times",
-                        calculatedClickCount
-                    )),
-                    true
-                );
-                
-                BapelSlimefunMod.LOGGER.info("[MultiblockAuto] ✓ Calculated {} clicks needed", 
-                    calculatedClickCount);
-            }
+            BapelSlimefunMod.LOGGER.info("[MultiblockAuto] ✓ Calculated {} clicks needed", 
+                calculatedClickCount);
             
             return false;
         }
@@ -267,11 +267,17 @@ public class MultiblockAutomationHandler {
     
     /**
      * ✅ KALKULASI: Berapa kali bisa click berdasarkan item di dispenser
+     * 🆕 FIXED: Work with partial stacks (not just full 64)
      * 
      * Contoh:
      * - Recipe: 3 copper, 3 copper, 4 copper (total 10 per proses)
      * - Dispenser: slot 0 = 30, slot 1 = 30, slot 2 = 40
      * - Hasil: min(30/3, 30/3, 40/4) = min(10, 10, 10) = 10 clicks
+     * 
+     * 🆕 PARTIAL EXAMPLE:
+     * - Recipe: 3 copper, 3 copper, 4 copper
+     * - Dispenser: slot 0 = 15, slot 1 = 15, slot 2 = 20
+     * - Hasil: min(15/3, 15/3, 20/4) = min(5, 5, 5) = 5 clicks
      */
     private static int calculateClickCount(AbstractContainerMenu menu, 
                                            List<RecipeHandler.RecipeIngredient> paddedInputs) {
@@ -314,8 +320,9 @@ public class MultiblockAutomationHandler {
             return 0;
         }
         
-        BapelSlimefunMod.LOGGER.info("[ClickCalc] ✓ Final calculation: {} clicks possible", minClicks);
-        return minClicks == Integer.MAX_VALUE ? 0 : minClicks;
+        int finalClicks = minClicks == Integer.MAX_VALUE ? 0 : minClicks;
+        BapelSlimefunMod.LOGGER.info("[ClickCalc] ✓ Final calculation: {} clicks possible", finalClicks);
+        return finalClicks;
     }
     
     /**
