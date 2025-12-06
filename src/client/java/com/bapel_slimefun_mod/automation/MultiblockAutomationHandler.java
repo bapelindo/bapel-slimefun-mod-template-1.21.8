@@ -17,7 +17,7 @@ import net.minecraft.world.level.block.entity.DispenserBlockEntity;
 import java.util.*;
 
 /**
- * ✅ COMPLETE FIX: Auto-fill now correctly calculates clicks and stops when ready
+ * ✅ COMPLETE FIX: Clear dispenser when changing recipes + validate recipe before filling
  */
 public class MultiblockAutomationHandler {
     
@@ -33,27 +33,71 @@ public class MultiblockAutomationHandler {
     private static int calculatedClickCount = 0;
     private static boolean hasShownReadyMessage = false;
     
+    // ✅ NEW: Track current machine ID to detect machine changes
+    private static String currentMachineId = null;
+    
     public static void init(ModConfig cfg) {
         config = cfg;
         BapelSlimefunMod.LOGGER.info("[MultiblockAuto] Initialized with config");
     }
     
     /**
-     * ✅ FIXED: Clear dispenser only when changing to different recipe (not when clearing)
+     * ✅ CRITICAL FIX: Validate + don't clear if opening SAME machine with SAME recipe
      */
     public static void setSelectedRecipe(String recipeId) {
-        // ✅ Clear dispenser only if changing from one recipe to another (not to null)
-        if (recipeId != null && selectedRecipeId != null && !recipeId.equals(selectedRecipeId)) {
+        // Get current machine from UnifiedAutomationManager
+        SlimefunMachineData currentMachine = UnifiedAutomationManager.getCurrentMachine();
+        
+        if (recipeId != null && currentMachine != null) {
+            // Validate recipe belongs to this machine
+            RecipeData recipe = RecipeDatabase.getRecipe(recipeId);
+            if (recipe != null) {
+                String recipeMachineId = recipe.getMachineId();
+                String machineId = currentMachine.getId();
+                
+                if (!recipeMachineId.equals(machineId)) {
+                    BapelSlimefunMod.LOGGER.error(
+                        "[MultiblockAuto] ❌ BLOCKED: Recipe {} belongs to {}, not {}",
+                        recipeId, recipeMachineId, machineId
+                    );
+                    
+                    Minecraft mc = Minecraft.getInstance();
+                    if (mc.player != null) {
+                        mc.player.displayClientMessage(
+                            Component.literal("§c✗ Recipe does not belong to this machine!"),
+                            true
+                        );
+                    }
+                    return; // Don't set invalid recipe
+                }
+            }
+        }
+        
+        // ✅ FIX: Detect if this is the SAME recipe being re-selected
+        boolean isSameRecipe = recipeId != null && 
+                               selectedRecipeId != null && 
+                               recipeId.equals(selectedRecipeId);
+        
+        // ✅ FIX: Only clear dispenser if CHANGING to DIFFERENT recipe
+        boolean isChangingRecipe = recipeId != null && 
+                                    selectedRecipeId != null && 
+                                    !recipeId.equals(selectedRecipeId);
+        
+        if (isChangingRecipe) {
             clearDispenserForNewRecipe();
+            resetAutomationState(); // Reset only when changing
+        }
+        
+        // ✅ Update current machine ID
+        if (currentMachine != null) {
+            currentMachineId = currentMachine.getId();
         }
         
         selectedRecipeId = recipeId;
-        resetAutomationState();
         
-        if (recipeId != null) {
-            BapelSlimefunMod.LOGGER.info("[MultiblockAuto] ✓ Recipe selected: {}", recipeId);
-        } else {
-            BapelSlimefunMod.LOGGER.info("[MultiblockAuto] Recipe cleared");
+        // ✅ CRITICAL: Don't reset if re-selecting same recipe (allows auto-fill to continue)
+        if (recipeId == null) {
+            resetAutomationState(); // Only reset when clearing
         }
     }
     
@@ -73,8 +117,6 @@ public class MultiblockAutomationHandler {
                 return;
             }
             
-            BapelSlimefunMod.LOGGER.info("[MultiblockAuto] Clearing dispenser for new recipe...");
-            
             int clearedCount = 0;
             
             // Clear all 9 dispenser slots
@@ -82,7 +124,6 @@ public class MultiblockAutomationHandler {
                 ItemStack stack = menu.getSlot(i).getItem();
                 
                 if (!stack.isEmpty()) {
-                    // Quick move to player inventory
                     mc.gameMode.handleInventoryMouseClick(
                         menu.containerId, i, 0, ClickType.QUICK_MOVE, player
                     );
@@ -95,8 +136,6 @@ public class MultiblockAutomationHandler {
                     Component.literal(String.format("§e⚠ Cleared %d items from dispenser", clearedCount)),
                     true
                 );
-                
-                BapelSlimefunMod.LOGGER.info("[MultiblockAuto] ✓ Cleared {} items", clearedCount);
             }
             
         } catch (Exception e) {
@@ -113,10 +152,24 @@ public class MultiblockAutomationHandler {
     }
     
     /**
-     * ✅ FIXED: Main tick with proper completion detection
+     * ✅ OPTIMIZED: Fast validation without logging spam
      */
     public static void tick(SlimefunMachineData machine) {
         if (machine == null || !machine.isMultiblock() || selectedRecipeId == null) {
+            return;
+        }
+        
+        // ✅ FAST CHECK: Only compare machine IDs
+        if (currentMachineId != null && !currentMachineId.equals(machine.getId())) {
+            selectedRecipeId = null;
+            currentMachineId = null;
+            resetAutomationState();
+            return;
+        }
+        
+        RecipeData recipe = RecipeDatabase.getRecipe(selectedRecipeId);
+        if (recipe == null) {
+            selectedRecipeId = null;
             return;
         }
         
@@ -137,16 +190,9 @@ public class MultiblockAutomationHandler {
         
         long now = System.currentTimeMillis();
         long timeSinceLastProcess = now - lastProcessTime;
-        // ✅ FASTEST: 25ms delay for rapid 1-item placement
         int delayMs = 25;
         
         if (timeSinceLastProcess < delayMs) {
-            return;
-        }
-        
-        RecipeData recipe = RecipeDatabase.getRecipe(selectedRecipeId);
-        if (recipe == null) {
-            BapelSlimefunMod.LOGGER.warn("[MultiblockAuto] ✗ Recipe not found in database: {}", selectedRecipeId);
             return;
         }
         
@@ -248,10 +294,8 @@ public class MultiblockAutomationHandler {
         
         // ✅ FIXED ROUND-ROBIN: Process multiple slots per tick, evenly distributed
         int actionsThisTick = 0;
-        int maxActionsPerTick = 5; // Process up to 5 different slots per tick
+        int maxActionsPerTick = 5;
         
-        // ✅ KEY FIX: Start from currentSlotIndex and advance it after EACH action
-        // This ensures items are distributed evenly across all slots
         for (int attempt = 0; attempt < 9 && actionsThisTick < maxActionsPerTick; attempt++) {
             int slotIndex = (currentSlotIndex + attempt) % 9;
             RecipeHandler.RecipeIngredient target = paddedInputs.get(slotIndex);
@@ -266,10 +310,9 @@ public class MultiblockAutomationHandler {
                                                          ClickType.QUICK_MOVE, player);
                     
                     actionsThisTick++;
-                    // ✅ Don't update currentSlotIndex here - let it update at the end
                     continue;
                 }
-                continue; // Already correct (empty)
+                continue;
             }
             
             // CASE 2: Slot needs a specific ITEM
@@ -283,7 +326,6 @@ public class MultiblockAutomationHandler {
                     mc.gameMode.handleInventoryMouseClick(menu.containerId, slotIndex, 0, 
                                                          ClickType.QUICK_MOVE, player);
                     actionsThisTick++;
-                    // ✅ Don't update currentSlotIndex here
                     continue;
                 }
                 
@@ -291,39 +333,29 @@ public class MultiblockAutomationHandler {
                 int sourceSlot = findItemInPlayerInventory(menu, player, target.getItemId());
                 
                 if (sourceSlot != -1) {
-                    // ✅ Place 1 item at a time (no shift-click)
-                    
-                    // 1. Pick up stack from inventory
+                    // Place 1 item at a time
                     mc.gameMode.handleInventoryMouseClick(menu.containerId, sourceSlot, 0, 
                                                          ClickType.PICKUP, player);
-                    
-                    // 2. Place 1 item in dispenser (Right Click = Button 1)
                     mc.gameMode.handleInventoryMouseClick(menu.containerId, slotIndex, 1, 
                                                          ClickType.PICKUP, player);
-                    
-                    // 3. Return remaining items to inventory
                     mc.gameMode.handleInventoryMouseClick(menu.containerId, sourceSlot, 0, 
                                                          ClickType.PICKUP, player);
                     
                     actionsThisTick++;
-                    // ✅ Don't update currentSlotIndex here
                     continue;
                 }
                 
-                // No items available - try next slot
                 continue;
             }
         }
         
-        // ✅ KEY FIX: Update currentSlotIndex by the number of actions taken
-        // This ensures we continue from where we left off, creating true round-robin
         currentSlotIndex = (currentSlotIndex + actionsThisTick) % 9;
         
         return actionsThisTick > 0;
     }
     
     /**
-     * ✅ FIXED: Calculate click count - works with ANY stack size
+     * ✅ Calculate click count
      */
     private static int calculateClickCount(AbstractContainerMenu menu, 
                                            List<RecipeHandler.RecipeIngredient> paddedInputs) {
@@ -333,7 +365,6 @@ public class MultiblockAutomationHandler {
         for (int i = 0; i < 9; i++) {
             RecipeHandler.RecipeIngredient target = paddedInputs.get(i);
             
-            // Skip AIR slots
             if (target.getItemId().equals("AIR") || target.getAmount() == 0) {
                 continue;
             }
@@ -341,7 +372,6 @@ public class MultiblockAutomationHandler {
             ItemStack currentStack = menu.getSlot(i).getItem();
             
             if (currentStack.isEmpty()) {
-                // Empty slot but needs item = 0 clicks
                 return 0;
             }
             
@@ -352,7 +382,6 @@ public class MultiblockAutomationHandler {
                 continue;
             }
             
-            // How many times can we process with this item count?
             int possibleClicks = currentCount / requiredPerClick;
             
             minClicks = Math.min(minClicks, possibleClicks);
@@ -375,8 +404,6 @@ public class MultiblockAutomationHandler {
         }
         
         if (padded.size() > 9) {
-            BapelSlimefunMod.LOGGER.warn("[MultiblockAuto] Recipe has {} inputs, trimming to 9", 
-                padded.size());
             return new ArrayList<>(padded.subList(0, 9));
         }
         
@@ -390,24 +417,19 @@ public class MultiblockAutomationHandler {
     private static boolean needsWorkOnSlot(ItemStack currentStack, RecipeHandler.RecipeIngredient target) {
         String currentId = AutomationUtils.getItemId(currentStack);
         
-        // Should be empty but isn't
         if ((target.getItemId().equals("AIR") || target.getAmount() == 0) && !currentStack.isEmpty()) {
             return true;
         }
         
-        // Should have item but doesn't
         if (!target.getItemId().equals("AIR") && target.getAmount() > 0) {
-            // Empty slot that needs item
             if (currentStack.isEmpty()) {
                 return true;
             }
             
-            // Wrong item
             if (!currentId.equals(target.getItemId())) {
                 return true;
             }
             
-            // Right item but not full stack yet
             if (currentStack.getCount() < currentStack.getMaxStackSize()) {
                 return true;
             }
@@ -418,7 +440,7 @@ public class MultiblockAutomationHandler {
     
     private static int findItemInPlayerInventory(AbstractContainerMenu menu, LocalPlayer player, 
                                                  String targetItemId) {
-        int startSlot = 9; // Skip dispenser slots (0-8)
+        int startSlot = 9;
         int endSlot = menu.slots.size();
         
         for (int i = startSlot; i < endSlot; i++) {
@@ -444,16 +466,9 @@ public class MultiblockAutomationHandler {
         hasShownReadyMessage = false;
     }
     
-    private static List<ItemStack> getPlayerInventory(LocalPlayer player) {
-        List<ItemStack> items = new ArrayList<>();
-        for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
-            items.add(player.getInventory().getItem(i));
-        }
-        return items;
-    }
-    
     public static void reset() {
         selectedRecipeId = null;
+        currentMachineId = null;
         lastProcessTime = 0;
         resetAutomationState();
     }
@@ -470,7 +485,11 @@ public class MultiblockAutomationHandler {
             LocalPlayer player = mc.player;
             if (player == null) return null;
             
-            List<ItemStack> inventory = getPlayerInventory(player);
+            List<ItemStack> inventory = new ArrayList<>();
+            for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+                inventory.add(player.getInventory().getItem(i));
+            }
+            
             List<RecipeHandler.RecipeIngredient> paddedInputs = padInputsTo9(recipe.getInputs());
             
             return new RecipeHandler.RecipeSummary(inventory, paddedInputs);
