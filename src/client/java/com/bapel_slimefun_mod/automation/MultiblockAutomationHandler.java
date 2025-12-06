@@ -17,12 +17,7 @@ import net.minecraft.world.level.block.entity.DispenserBlockEntity;
 import java.util.*;
 
 /**
- * ✅ FIXED: Multiblock automation with proper click calculation
- * 
- * Bug Fixes:
- * 1. Auto-click works with partial fills (not just full stacks)
- * 2. Click calculation happens every tick (not just when full)
- * 3. User can close dispenser anytime and auto-click will start
+ * ✅ COMPLETE FIX: Auto-fill now correctly calculates clicks and stops when ready
  */
 public class MultiblockAutomationHandler {
     
@@ -35,8 +30,8 @@ public class MultiblockAutomationHandler {
     private static int emptySlotCount = 0;
     private static boolean allSlotsFilled = false;
     
-    // ✅ KALKULASI CLICK COUNT untuk auto-stopper
     private static int calculatedClickCount = 0;
+    private static boolean hasShownReadyMessage = false;
     
     public static void init(ModConfig cfg) {
         config = cfg;
@@ -44,16 +39,68 @@ public class MultiblockAutomationHandler {
     }
     
     /**
-     * EVENT: Recipe selected - aktifkan auto-fill
+     * ✅ FIXED: Clear dispenser only when changing to different recipe (not when clearing)
      */
     public static void setSelectedRecipe(String recipeId) {
+        // ✅ Clear dispenser only if changing from one recipe to another (not to null)
+        if (recipeId != null && selectedRecipeId != null && !recipeId.equals(selectedRecipeId)) {
+            clearDispenserForNewRecipe();
+        }
+        
         selectedRecipeId = recipeId;
         resetAutomationState();
         
         if (recipeId != null) {
             BapelSlimefunMod.LOGGER.info("[MultiblockAuto] ✓ Recipe selected: {}", recipeId);
         } else {
-            BapelSlimefunMod.LOGGER.info("[MultiblockAuto] Recipe deselected (null)");
+            BapelSlimefunMod.LOGGER.info("[MultiblockAuto] Recipe cleared");
+        }
+    }
+    
+    /**
+     * ✅ NEW: Clear all items from dispenser when changing recipe
+     */
+    private static void clearDispenserForNewRecipe() {
+        try {
+            Minecraft mc = Minecraft.getInstance();
+            LocalPlayer player = mc.player;
+            
+            if (player == null) return;
+            
+            AbstractContainerMenu menu = player.containerMenu;
+            
+            if (!(menu instanceof DispenserMenu)) {
+                return;
+            }
+            
+            BapelSlimefunMod.LOGGER.info("[MultiblockAuto] Clearing dispenser for new recipe...");
+            
+            int clearedCount = 0;
+            
+            // Clear all 9 dispenser slots
+            for (int i = 0; i < 9; i++) {
+                ItemStack stack = menu.getSlot(i).getItem();
+                
+                if (!stack.isEmpty()) {
+                    // Quick move to player inventory
+                    mc.gameMode.handleInventoryMouseClick(
+                        menu.containerId, i, 0, ClickType.QUICK_MOVE, player
+                    );
+                    clearedCount++;
+                }
+            }
+            
+            if (clearedCount > 0) {
+                player.displayClientMessage(
+                    Component.literal(String.format("§e⚠ Cleared %d items from dispenser", clearedCount)),
+                    true
+                );
+                
+                BapelSlimefunMod.LOGGER.info("[MultiblockAuto] ✓ Cleared {} items", clearedCount);
+            }
+            
+        } catch (Exception e) {
+            BapelSlimefunMod.LOGGER.error("[MultiblockAuto] Error clearing dispenser", e);
         }
     }
     
@@ -61,26 +108,15 @@ public class MultiblockAutomationHandler {
         return selectedRecipeId;
     }
     
-    /**
-     * ✅ GET CALCULATED CLICK COUNT untuk auto-clicker
-     */
     public static int getCalculatedClickCount() {
         return calculatedClickCount;
     }
     
     /**
-     * Main tick - auto-fill dengan round-robin
+     * ✅ FIXED: Main tick with proper completion detection
      */
     public static void tick(SlimefunMachineData machine) {
-        if (machine == null) {
-            return;
-        }
-        
-        if (!machine.isMultiblock()) {
-            return;
-        }
-        
-        if (selectedRecipeId == null) {
+        if (machine == null || !machine.isMultiblock() || selectedRecipeId == null) {
             return;
         }
         
@@ -101,7 +137,8 @@ public class MultiblockAutomationHandler {
         
         long now = System.currentTimeMillis();
         long timeSinceLastProcess = now - lastProcessTime;
-        int delayMs = (config != null) ? config.getAutomationDelayMs() : 100;
+        // ✅ FASTEST: 25ms delay for rapid 1-item placement
+        int delayMs = 25;
         
         if (timeSinceLastProcess < delayMs) {
             return;
@@ -142,8 +179,7 @@ public class MultiblockAutomationHandler {
     }
     
     /**
-     * ✅ AUTO-FILL dengan ROUND-ROBIN + KALKULASI CLICK COUNT
-     * 🆕 FIXED: Calculate click count every tick (not just when full)
+     * ✅ FIXED: Auto-fill with FASTER round-robin (multiple slots per tick)
      */
     private static boolean autoFillDispenserRoundRobin(LocalPlayer player, Level level, 
                                                        BlockPos pos, RecipeData recipe) {
@@ -155,7 +191,6 @@ public class MultiblockAutomationHandler {
         AbstractContainerMenu menu = player.containerMenu;
         List<RecipeHandler.RecipeIngredient> inputs = recipe.getInputs();
         
-        // Pad inputs to 9
         List<RecipeHandler.RecipeIngredient> paddedInputs = padInputsTo9(inputs);
         
         if (paddedInputs.size() != 9) {
@@ -164,10 +199,11 @@ public class MultiblockAutomationHandler {
             return false;
         }
         
-        // 🆕 ALWAYS calculate click count (even if not full)
+        // ✅ ALWAYS calculate click count
+        int previousClickCount = calculatedClickCount;
         calculatedClickCount = calculateClickCount(menu, paddedInputs);
         
-        // Count how many slots still need work
+        // ✅ Check if dispenser is ready (all slots filled correctly)
         emptySlotCount = 0;
         allSlotsFilled = true;
         
@@ -183,24 +219,40 @@ public class MultiblockAutomationHandler {
             }
         }
         
-        // ✅ Show message when dispenser is ready (has at least 1 click)
-        if (allSlotsFilled && calculatedClickCount > 0) {
+        // ✅ Show ready message only ONCE when dispenser becomes ready
+        if (allSlotsFilled && calculatedClickCount > 0 && !hasShownReadyMessage) {
             player.displayClientMessage(
                 Component.literal(String.format(
-                    "§a✓ Dispenser ready! Can process §b%d times",
+                    "§a✓ Dispenser ready! Can process §b%d §atimes",
                     calculatedClickCount
                 )),
+                false
+            );
+            
+            player.displayClientMessage(
+                Component.literal("§7Close dispenser to start auto-clicking"),
                 true
             );
             
-            BapelSlimefunMod.LOGGER.info("[MultiblockAuto] ✓ Calculated {} clicks needed", 
+            BapelSlimefunMod.LOGGER.info("[MultiblockAuto] ✓ Dispenser ready! Calculated {} clicks", 
                 calculatedClickCount);
             
-            return false;
+            hasShownReadyMessage = true;
+            return false; // Stop filling
         }
         
-        // Try to work on current slot (round-robin)
-        for (int attempt = 0; attempt < 9; attempt++) {
+        // ✅ Reset message flag if dispenser becomes not ready
+        if (!allSlotsFilled || calculatedClickCount == 0) {
+            hasShownReadyMessage = false;
+        }
+        
+        // ✅ FIXED ROUND-ROBIN: Process multiple slots per tick, evenly distributed
+        int actionsThisTick = 0;
+        int maxActionsPerTick = 5; // Process up to 5 different slots per tick
+        
+        // ✅ KEY FIX: Start from currentSlotIndex and advance it after EACH action
+        // This ensures items are distributed evenly across all slots
+        for (int attempt = 0; attempt < 9 && actionsThisTick < maxActionsPerTick; attempt++) {
             int slotIndex = (currentSlotIndex + attempt) % 9;
             RecipeHandler.RecipeIngredient target = paddedInputs.get(slotIndex);
             ItemStack currentStack = menu.getSlot(slotIndex).getItem();
@@ -213,8 +265,9 @@ public class MultiblockAutomationHandler {
                     mc.gameMode.handleInventoryMouseClick(menu.containerId, slotIndex, 0, 
                                                          ClickType.QUICK_MOVE, player);
                     
-                    currentSlotIndex = (slotIndex + 1) % 9;
-                    return true;
+                    actionsThisTick++;
+                    // ✅ Don't update currentSlotIndex here - let it update at the end
+                    continue;
                 }
                 continue; // Already correct (empty)
             }
@@ -229,15 +282,16 @@ public class MultiblockAutomationHandler {
                 if (!currentStack.isEmpty() && !isSameItem) {
                     mc.gameMode.handleInventoryMouseClick(menu.containerId, slotIndex, 0, 
                                                          ClickType.QUICK_MOVE, player);
-                    currentSlotIndex = (slotIndex + 1) % 9;
-                    return true;
+                    actionsThisTick++;
+                    // ✅ Don't update currentSlotIndex here
+                    continue;
                 }
                 
                 // B. Find item in player inventory
                 int sourceSlot = findItemInPlayerInventory(menu, player, target.getItemId());
                 
                 if (sourceSlot != -1) {
-                    // Place 1 item at a time
+                    // ✅ Place 1 item at a time (no shift-click)
                     
                     // 1. Pick up stack from inventory
                     mc.gameMode.handleInventoryMouseClick(menu.containerId, sourceSlot, 0, 
@@ -251,8 +305,9 @@ public class MultiblockAutomationHandler {
                     mc.gameMode.handleInventoryMouseClick(menu.containerId, sourceSlot, 0, 
                                                          ClickType.PICKUP, player);
                     
-                    currentSlotIndex = (slotIndex + 1) % 9;
-                    return true;
+                    actionsThisTick++;
+                    // ✅ Don't update currentSlotIndex here
+                    continue;
                 }
                 
                 // No items available - try next slot
@@ -260,24 +315,15 @@ public class MultiblockAutomationHandler {
             }
         }
         
-        // Completed full cycle - move to next slot anyway
-        currentSlotIndex = (currentSlotIndex + 1) % 9;
-        return false;
+        // ✅ KEY FIX: Update currentSlotIndex by the number of actions taken
+        // This ensures we continue from where we left off, creating true round-robin
+        currentSlotIndex = (currentSlotIndex + actionsThisTick) % 9;
+        
+        return actionsThisTick > 0;
     }
     
     /**
-     * ✅ KALKULASI: Berapa kali bisa click berdasarkan item di dispenser
-     * 🆕 FIXED: Work with partial stacks (not just full 64)
-     * 
-     * Contoh:
-     * - Recipe: 3 copper, 3 copper, 4 copper (total 10 per proses)
-     * - Dispenser: slot 0 = 30, slot 1 = 30, slot 2 = 40
-     * - Hasil: min(30/3, 30/3, 40/4) = min(10, 10, 10) = 10 clicks
-     * 
-     * 🆕 PARTIAL EXAMPLE:
-     * - Recipe: 3 copper, 3 copper, 4 copper
-     * - Dispenser: slot 0 = 15, slot 1 = 15, slot 2 = 20
-     * - Hasil: min(15/3, 15/3, 20/4) = min(5, 5, 5) = 5 clicks
+     * ✅ FIXED: Calculate click count - works with ANY stack size
      */
     private static int calculateClickCount(AbstractContainerMenu menu, 
                                            List<RecipeHandler.RecipeIngredient> paddedInputs) {
@@ -295,7 +341,7 @@ public class MultiblockAutomationHandler {
             ItemStack currentStack = menu.getSlot(i).getItem();
             
             if (currentStack.isEmpty()) {
-                // Slot kosong tapi butuh item = 0 clicks
+                // Empty slot but needs item = 0 clicks
                 return 0;
             }
             
@@ -306,14 +352,11 @@ public class MultiblockAutomationHandler {
                 continue;
             }
             
-            // Berapa kali bisa proses dengan jumlah item ini?
+            // How many times can we process with this item count?
             int possibleClicks = currentCount / requiredPerClick;
             
             minClicks = Math.min(minClicks, possibleClicks);
             hasValidItems = true;
-            
-            BapelSlimefunMod.LOGGER.debug("[ClickCalc] Slot {}: {} items / {} per click = {} clicks", 
-                i, currentCount, requiredPerClick, possibleClicks);
         }
         
         if (!hasValidItems) {
@@ -321,13 +364,9 @@ public class MultiblockAutomationHandler {
         }
         
         int finalClicks = minClicks == Integer.MAX_VALUE ? 0 : minClicks;
-        BapelSlimefunMod.LOGGER.info("[ClickCalc] ✓ Final calculation: {} clicks possible", finalClicks);
         return finalClicks;
     }
     
-    /**
-     * Pad inputs to exactly 9 slots
-     */
     private static List<RecipeHandler.RecipeIngredient> padInputsTo9(List<RecipeHandler.RecipeIngredient> inputs) {
         List<RecipeHandler.RecipeIngredient> padded = new ArrayList<>(inputs);
         
@@ -348,9 +387,6 @@ public class MultiblockAutomationHandler {
         return padded;
     }
     
-    /**
-     * Check if a slot needs work
-     */
     private static boolean needsWorkOnSlot(ItemStack currentStack, RecipeHandler.RecipeIngredient target) {
         String currentId = AutomationUtils.getItemId(currentStack);
         
@@ -380,9 +416,6 @@ public class MultiblockAutomationHandler {
         return false;
     }
     
-    /**
-     * Find item in player inventory slots (9-44 for Dispenser GUI)
-     */
     private static int findItemInPlayerInventory(AbstractContainerMenu menu, LocalPlayer player, 
                                                  String targetItemId) {
         int startSlot = 9; // Skip dispenser slots (0-8)
@@ -403,19 +436,14 @@ public class MultiblockAutomationHandler {
         return -1;
     }
     
-    /**
-     * Reset automation state when recipe changes
-     */
     private static void resetAutomationState() {
         currentSlotIndex = 0;
         emptySlotCount = 0;
         allSlotsFilled = false;
         calculatedClickCount = 0;
+        hasShownReadyMessage = false;
     }
     
-    /**
-     * Get player inventory as list
-     */
     private static List<ItemStack> getPlayerInventory(LocalPlayer player) {
         List<ItemStack> items = new ArrayList<>();
         for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
@@ -424,18 +452,12 @@ public class MultiblockAutomationHandler {
         return items;
     }
     
-    /**
-     * Reset handler
-     */
     public static void reset() {
         selectedRecipeId = null;
         lastProcessTime = 0;
         resetAutomationState();
     }
     
-    /**
-     * Get recipe summary for multiblock
-     */
     public static RecipeHandler.RecipeSummary getRecipeSummary(SlimefunMachineData machine) {
         if (machine == null || !machine.isMultiblock()) return null;
         if (selectedRecipeId == null) return null;
@@ -458,9 +480,6 @@ public class MultiblockAutomationHandler {
         }
     }
     
-    /**
-     * Get automation status for debugging
-     */
     public static String getAutomationStatus() {
         return String.format("Slot: %d/9 | Empty: %d | Filled: %s | Recipe: %s | Clicks: %d", 
                            currentSlotIndex, emptySlotCount, allSlotsFilled, 
