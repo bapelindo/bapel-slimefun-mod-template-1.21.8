@@ -64,22 +64,25 @@ public class MachineAutomationHandler {
         setSelectedRecipe(recipeId, true);
     }
     
-    public static void setSelectedRecipe(String recipeId, boolean rememberRecipe) {
-        selectedRecipeId = recipeId;
+public static void setSelectedRecipe(String recipeId, boolean rememberRecipe) {
+    selectedRecipeId = recipeId;
+    
+    if (rememberRecipe && config != null && config.isRememberLastRecipe() && 
+        currentMachine != null && recipeId != null) {
         
-        if (rememberRecipe && config != null && config.isRememberLastRecipe() && 
-            currentMachine != null && recipeId != null) {
+        RecipeMemoryManager.rememberRecipe(currentMachine.getId(), recipeId);
+    }
+    
+    if (RecipeDatabase.isInitialized() && recipeId != null) {
+        RecipeData recipe = RecipeDatabase.getRecipe(recipeId);
+        if (recipe != null) {
+            cachedRecipeRequirements = recipe.getGroupedInputs();
             
-            RecipeMemoryManager.rememberRecipe(currentMachine.getId(), recipeId);
-        }
-        
-        if (RecipeDatabase.isInitialized() && recipeId != null) {
-            RecipeData recipe = RecipeDatabase.getRecipe(recipeId);
-            if (recipe != null) {
-                cachedRecipeRequirements = recipe.getGroupedInputs();
-            }
+            // ✅ CRITICAL FIX: Auto-enable automation when recipe is selected
+            automationEnabled = true;
         }
     }
+}
     
     public static String getSelectedRecipe() {
         return selectedRecipeId;

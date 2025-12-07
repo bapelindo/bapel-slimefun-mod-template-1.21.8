@@ -174,16 +174,15 @@ public class UnifiedAutomationManager {
                     needsTick = true;
                     return;
                 }
-                
-                // ✅ Handle normal machines
-                if (currentMachine != null) {
-                    if (currentMachine.isElectric()) {
-                        MachineAutomationHandler.onContainerOpen(title);
-                        needsTick = true;
-                    } else if (currentMachine.isMultiblock() && config != null && config.isAutoShowOverlay()) {
-                        RecipeOverlayRenderer.show(currentMachine);
-                    }
-                }
+// ✅ Handle normal machines
+if (currentMachine != null) {
+    if (currentMachine.isElectric()) {
+        MachineAutomationHandler.onContainerOpen(title);
+        needsTick = true; // ← Tambahkan ini
+    } else if (currentMachine.isMultiblock() && config != null && config.isAutoShowOverlay()) {
+        RecipeOverlayRenderer.show(currentMachine);
+    }
+}
             } finally {
                 isProcessingMachineOpen = false;
             }
@@ -514,78 +513,95 @@ public class UnifiedAutomationManager {
         }
     }
     
-    /**
-     * ✅ OPTIMIZED: Set recipe with validation
-     */
-    public static void setSelectedRecipe(String recipeId) {
-        PerformanceMonitor.start("UnifiedAuto.setSelectedRecipe");
-        try {
-            SlimefunMachineData machine = getCurrentMachine();
-            if (machine == null) {
-                return;
-            }
-            
-            // ✅ Validate recipe belongs to this machine
-            if (recipeId != null) {
-                RecipeData recipe = RecipeDatabase.getRecipe(recipeId);
-                if (recipe != null) {
-                    String recipeMachineId = recipe.getMachineId();
-                    String currentMachineId = machine.getId();
-                    
-                    if (!recipeMachineId.equals(currentMachineId)) {
-                        Minecraft mc = Minecraft.getInstance();
-                        if (mc.player != null) {
-                            mc.player.displayClientMessage(
-                                Component.literal("§c✗ Recipe does not belong to this machine!"),
-                                true
-                            );
-                        }
-                        return;
-                    }
-                }
-            }
-            
-            // ✅ Delegate to appropriate handler
-            if (machine.isElectric()) {
-                MachineAutomationHandler.setSelectedRecipe(recipeId);
-            } else if (machine.isMultiblock()) {
-                MultiblockAutomationHandler.setSelectedRecipe(recipeId);
+/**
+ * ✅ OPTIMIZED: Set recipe with validation
+ */
+public static void setSelectedRecipe(String recipeId) {
+    PerformanceMonitor.start("UnifiedAuto.setSelectedRecipe");
+    try {
+        SlimefunMachineData machine = getCurrentMachine();
+        if (machine == null) {
+            return;
+        }
+        
+        // ✅ Validate recipe belongs to this machine
+        if (recipeId != null) {
+            RecipeData recipe = RecipeDatabase.getRecipe(recipeId);
+            if (recipe != null) {
+                String recipeMachineId = recipe.getMachineId();
+                String currentMachineId = machine.getId();
                 
-                if (recipeId != null) {
-                    automationEnabled = true;
-                    needsTick = true;
-                    if (config != null) {
-                        config.setAutomationEnabled(true);
-                    }
-                }
-                
-                if (currentCachedMachine != null) {
-                    currentCachedMachine.setLastSelectedRecipe(recipeId);
-                    MultiblockCacheManager.save();
-                }
-            }
-            
-            // ✅ Show message only if recipe was set
-            if (recipeId != null) {
-                Minecraft mc = Minecraft.getInstance();
-                if (mc.player != null) {
-                    mc.player.displayClientMessage(
-                        Component.literal("§a✓ Recipe selected: §f" + getRecipeDisplayName(recipeId)), 
-                        true
-                    );
-                    
-                    if (machine.isMultiblock()) {
+                if (!recipeMachineId.equals(currentMachineId)) {
+                    Minecraft mc = Minecraft.getInstance();
+                    if (mc.player != null) {
                         mc.player.displayClientMessage(
-                            Component.literal("§a▶ Automation STARTED - Items will auto-fill!"), 
-                            false
+                            Component.literal("§c✗ Recipe does not belong to this machine!"),
+                            true
                         );
                     }
+                    return;
                 }
             }
-        } finally {
-            PerformanceMonitor.end("UnifiedAuto.setSelectedRecipe");
         }
+        
+        // ✅ Delegate to appropriate handler
+        if (machine.isElectric()) {
+            MachineAutomationHandler.setSelectedRecipe(recipeId);
+            
+            // ✅ CRITICAL FIX: Enable automation and set needsTick for electric machines
+            if (recipeId != null) {
+                automationEnabled = true;
+                needsTick = true; // ← INI YANG PENTING!
+                if (config != null) {
+                    config.setAutomationEnabled(true);
+                }
+                MachineAutomationHandler.setAutomationEnabled(true);
+            }
+            
+        } else if (machine.isMultiblock()) {
+            MultiblockAutomationHandler.setSelectedRecipe(recipeId);
+            
+            if (recipeId != null) {
+                automationEnabled = true;
+                needsTick = true;
+                if (config != null) {
+                    config.setAutomationEnabled(true);
+                }
+            }
+            
+            if (currentCachedMachine != null) {
+                currentCachedMachine.setLastSelectedRecipe(recipeId);
+                MultiblockCacheManager.save();
+            }
+        }
+        
+        // ✅ Show message only if recipe was set
+        if (recipeId != null) {
+            Minecraft mc = Minecraft.getInstance();
+            if (mc.player != null) {
+                mc.player.displayClientMessage(
+                    Component.literal("§a✓ Recipe selected: §f" + getRecipeDisplayName(recipeId)), 
+                    true
+                );
+                
+                // ✅ Different message for electric vs multiblock
+                if (machine.isElectric()) {
+                    mc.player.displayClientMessage(
+                        Component.literal("§a▶ Automation STARTED - Items will auto-fill!"), 
+                        false
+                    );
+                } else if (machine.isMultiblock()) {
+                    mc.player.displayClientMessage(
+                        Component.literal("§a▶ Automation STARTED - Fill dispenser!"), 
+                        false
+                    );
+                }
+            }
+        }
+    } finally {
+        PerformanceMonitor.end("UnifiedAuto.setSelectedRecipe");
     }
+}
     
     public static String getSelectedRecipe() {
         try {
