@@ -1,6 +1,7 @@
 {
   "key.bapel-slimefun-mod.toggle_automation": "Toggle Automation (K)",
   "key.bapel-slimefun-mod.recipe_overlay": "Recipe Overlay (R)",
+  "key.bapel-slimefun-mod.performance_monitor": "Toggle Performance Monitor (F8)",
   "category.bapel-slimefun-mod.automation": "Slimefun Automation",
   
   "message.bapel-slimefun-mod.automation_enabled": "§a§lAutomation Enabled",

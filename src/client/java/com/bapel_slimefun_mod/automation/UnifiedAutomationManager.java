@@ -10,6 +10,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import com.bapel_slimefun_mod.debug.PerformanceMonitor;
 
 /**
  * ✅ CRITICAL FIX: Clear recipe when switching between machines
@@ -410,6 +411,8 @@ public class UnifiedAutomationManager {
     }
     
     public static void tick() {
+        PerformanceMonitor.start("UnifiedAuto.tick");
+        try {
         if (!automationEnabled && !MultiblockAutoClicker.isEnabled()) {
             return;
         }
@@ -447,7 +450,10 @@ public class UnifiedAutomationManager {
         } catch (Exception e) {
             BapelSlimefunMod.LOGGER.error("Error in tick", e);
         }
-    }
+    
+        } finally {
+            PerformanceMonitor.end("UnifiedAuto.tick");
+        }}
     
     public static void toggleAutomation() {
         try {

@@ -3,6 +3,7 @@ package com.bapel_slimefun_mod.automation;
 import com.bapel_slimefun_mod.BapelSlimefunMod;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.glfw.GLFW;
+import com.bapel_slimefun_mod.debug.PerformanceMonitor;
 
 public class RecipeOverlayInputHandler {
     
@@ -12,6 +13,8 @@ public class RecipeOverlayInputHandler {
     private static final long TOGGLE_COOLDOWN = 200;
     
     public static boolean handleKeyPress(int key, int scancode, int action, int modifiers) {
+        PerformanceMonitor.start("InputHandler.handleKeyPress");
+        try {
         if (action != GLFW.GLFW_PRESS && action != GLFW.GLFW_REPEAT) {
             return false;
         }
@@ -93,7 +96,10 @@ public class RecipeOverlayInputHandler {
         }
         
         return handled;
-    }
+    
+        } finally {
+            PerformanceMonitor.end("InputHandler.handleKeyPress");
+        }}
     
     private static boolean handleToggleKey() {
         long now = System.currentTimeMillis();
@@ -113,6 +119,8 @@ public class RecipeOverlayInputHandler {
     }
     
     public static boolean handleMouseScroll(double scrollDelta) {
+        PerformanceMonitor.start("InputHandler.handleMouseScroll");
+        try {
         if (!RecipeOverlayRenderer.isVisible()) {
             return false;
         }
@@ -126,7 +134,10 @@ public class RecipeOverlayInputHandler {
         }
         
         return false;
-    }
+    
+        } finally {
+            PerformanceMonitor.end("InputHandler.handleMouseScroll");
+        }}
     
     public static boolean handleMouseClick(double mouseX, double mouseY, int button) {
         if (!RecipeOverlayRenderer.isVisible()) {

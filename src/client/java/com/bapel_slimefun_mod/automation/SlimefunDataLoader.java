@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import com.bapel_slimefun_mod.debug.PerformanceMonitor;
 
 /**
  * Loads machine data from slimefun_machines.json

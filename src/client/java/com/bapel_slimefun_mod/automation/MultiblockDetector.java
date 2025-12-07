@@ -8,6 +8,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.*;
+import com.bapel_slimefun_mod.debug.PerformanceMonitor;
 
 /**
  * Ã¢Å“â€¦ COMPLETE FIX: Enhanced multiblock detection with detailed logging
@@ -290,6 +291,8 @@ public class MultiblockDetector {
      * Filter out natural/common blocks that aren't part of structures
      */
     private static StructureSnapshot scanStructure(Level level, BlockPos dispenserPos) {
+        PerformanceMonitor.start("Detector.scanStructure");
+        try {
         Map<String, Integer> blockCounts = new HashMap<>();
         Set<String> uniqueBlocks = new HashSet<>();
         List<BlockPos> allPositions = new ArrayList<>();
@@ -324,7 +327,10 @@ public class MultiblockDetector {
         }
         
         return new StructureSnapshot(blockCounts, uniqueBlocks, allPositions);
-    }
+    
+        } finally {
+            PerformanceMonitor.end("Detector.scanStructure");
+        }}
     
     /**
      * Ã¢Å“â€¦ IMPROVED: Calculate confidence with stricter rules

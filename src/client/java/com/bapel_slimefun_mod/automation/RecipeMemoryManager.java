@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import com.bapel_slimefun_mod.debug.PerformanceMonitor;
 
 /**
  * Manager untuk menyimpan dan mengingat recipe yang terakhir dipilih per machine
@@ -81,6 +82,8 @@ public class RecipeMemoryManager {
      * @param recipeId ID dari recipe yang dipilih
      */
     public static void rememberRecipe(String machineId, String recipeId) {
+        PerformanceMonitor.start("Memory.rememberRecipe");
+        try {
         if (!isLoaded) {
             load();
         }
@@ -92,7 +95,10 @@ public class RecipeMemoryManager {
         
         recipeMemory.put(machineId, recipeId);
         save();
-    }
+    
+        } finally {
+            PerformanceMonitor.end("Memory.rememberRecipe");
+        }}
     
     /**
      * Get recipe yang terakhir diingat untuk machine tertentu

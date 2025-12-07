@@ -3,8 +3,10 @@ package com.bapel_slimefun_mod;
 import com.bapel_slimefun_mod.automation.*;
 import com.bapel_slimefun_mod.client.ModKeybinds;
 import com.bapel_slimefun_mod.config.ModConfig;
+import com.bapel_slimefun_mod.debug.PerformanceMonitor;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,13 +48,23 @@ public class BapelSlimefunMod implements ClientModInitializer {
         try {
             ClientTickEvents.END_CLIENT_TICK.register(client -> {
                 try {
+                    PerformanceMonitor.trackFrame();
                     UnifiedAutomationManager.tick();
                 } catch (Exception e) {
                     LOGGER.error("Error in client tick handler", e);
                 }
             });
             
+            HudRenderCallback.EVENT.register((graphics, tickDelta) -> {
+                try {
+                    PerformanceMonitor.render(graphics);
+                } catch (Exception e) {
+                    LOGGER.error("ERROR IN PERFORMANCE MONITOR RENDER!", e);
+                }
+            });
+            
             LOGGER.info("Event handlers registered successfully");
+            LOGGER.info("Performance Monitor installed! Press F3 to toggle.");
         } catch (Exception e) {
             LOGGER.error("Error registering event handlers", e);
         }

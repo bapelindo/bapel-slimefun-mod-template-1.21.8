@@ -8,6 +8,7 @@ import com.bapel_slimefun_mod.automation.UnifiedAutomationManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
+import com.bapel_slimefun_mod.debug.PerformanceMonitor;
 
 /**
  * Manager untuk mengelola automation dengan mudah dari client side
@@ -22,6 +23,8 @@ public class AutomationManager {
      * @return true jika berhasil dimulai, false jika gagal
      */
     public static boolean startAutomation(String recipeId, boolean showMessage) {
+        PerformanceMonitor.start("AutoManager.startAutomation");
+        try {
         try {
             // Validasi recipe ID
             if (recipeId == null || recipeId.isEmpty()) {
@@ -64,7 +67,10 @@ public class AutomationManager {
             }
             return false;
         }
-    }
+    
+        } finally {
+            PerformanceMonitor.end("AutoManager.startAutomation");
+        }}
     
     /**
      * Mulai automation dengan recipe yang dipilih (dengan pesan default)
@@ -77,13 +83,18 @@ public class AutomationManager {
      * Stop automation
      */
     public static void stopAutomation(boolean showMessage) {
+        PerformanceMonitor.start("AutoManager.stopAutomation");
+        try {
         MachineAutomationHandler.setAutomationEnabled(false);
         
         
         if (showMessage) {
             showPlayerMessage("§e Automation Stopped", true);
         }
-    }
+    
+        } finally {
+            PerformanceMonitor.end("AutoManager.stopAutomation");
+        }}
     
     /**
      * Stop automation (dengan pesan default)

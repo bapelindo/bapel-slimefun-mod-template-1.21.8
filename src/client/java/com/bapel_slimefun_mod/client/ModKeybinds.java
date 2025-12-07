@@ -3,6 +3,7 @@ package com.bapel_slimefun_mod.client;
 import com.bapel_slimefun_mod.automation.MachineAutomationHandler;
 import com.bapel_slimefun_mod.client.gui.AutomationModeScreen;
 import com.bapel_slimefun_mod.config.ModConfig;
+import com.bapel_slimefun_mod.debug.PerformanceMonitor;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.KeyMapping;
@@ -11,7 +12,7 @@ import org.lwjgl.glfw.GLFW;
 
 /**
  * Handles keybind registration and input
- * K = Toggle automation, R = Recipe overlay, M = Mode settings
+ * K = Toggle automation, R = Recipe overlay, M = Mode settings, F3 = Performance Monitor
  */
 public class ModKeybinds {
     
@@ -23,6 +24,9 @@ public class ModKeybinds {
     
     // M = Open mode settings
     private static KeyMapping modeSettingsKey;
+    
+    // F3 = Toggle performance monitor
+    private static KeyMapping performanceMonitorKey;
     
     /**
      * Register all keybinds
@@ -49,6 +53,13 @@ public class ModKeybinds {
             "category.bapel-slimefun-mod.automation"
         ));
         
+        // F8 = Toggle performance monitor
+        performanceMonitorKey = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+            "key.bapel-slimefun-mod.performance_monitor",
+            GLFW.GLFW_KEY_F8,
+            "category.bapel-slimefun-mod.automation"
+        ));
+        
         // Register tick event to handle key presses
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             handleKeyPresses(client);
@@ -67,6 +78,11 @@ public class ModKeybinds {
         // M = Mode settings
         while (modeSettingsKey.consumeClick()) {
             handleModeSettings(mc);
+        }
+        
+        // F3 = Performance monitor
+        while (performanceMonitorKey.consumeClick()) {
+            handlePerformanceMonitor();
         }
         
         // R is handled in RecipeOverlayInputHandler mixin
@@ -103,6 +119,22 @@ public class ModKeybinds {
         }
     }
     
+    /**
+     * Handle F3 = Performance monitor toggle
+     */
+    private static void handlePerformanceMonitor() {
+        PerformanceMonitor.toggle();
+        
+        String status = PerformanceMonitor.isVisible() ? "§aON" : "§cOFF";
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.player != null) {
+            mc.player.displayClientMessage(
+                net.minecraft.network.chat.Component.literal("§ePerformance Monitor: " + status), 
+                true
+            );
+        }
+    }
+    
     // ========================================
     // GETTER METHODS (for Mixin access)
     // ========================================
@@ -126,5 +158,12 @@ public class ModKeybinds {
      */
     public static KeyMapping getModeSettingsKey() {
         return modeSettingsKey;
+    }
+    
+    /**
+     * Get the performance monitor keybind (for mixin access)
+     */
+    public static KeyMapping getPerformanceMonitorKey() {
+        return performanceMonitorKey;
     }
 }

@@ -15,6 +15,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.DispenserBlockEntity;
 
 import java.util.*;
+import com.bapel_slimefun_mod.debug.PerformanceMonitor;
 
 /**
  * ✅ COMPLETE FIX: Clear dispenser when changing recipes + validate recipe before filling
@@ -155,6 +156,8 @@ public class MultiblockAutomationHandler {
      * ✅ OPTIMIZED: Fast validation without logging spam
      */
     public static void tick(SlimefunMachineData machine) {
+        PerformanceMonitor.start("Automation.tick");
+        try {
         if (machine == null || !machine.isMultiblock() || selectedRecipeId == null) {
             return;
         }
@@ -206,7 +209,10 @@ public class MultiblockAutomationHandler {
         if (actionTaken) {
             lastProcessTime = now;
         }
-    }
+    
+        } finally {
+            PerformanceMonitor.end("Automation.tick");
+        }}
     
     private static BlockPos findNearbyDispenser(LocalPlayer player, Level level) {
         BlockPos playerPos = player.blockPosition();

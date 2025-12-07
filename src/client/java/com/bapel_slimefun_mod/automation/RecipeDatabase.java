@@ -11,6 +11,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import com.bapel_slimefun_mod.debug.PerformanceMonitor;
 
 /**
  * âœ… FIXED: Keep AIR items in recipe parsing for multiblock automation

@@ -12,6 +12,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import com.bapel_slimefun_mod.debug.PerformanceMonitor;
 
 /**
  * âœ… FIXED: Machine Detector Screen
@@ -44,6 +45,8 @@ public class MachineDetectorScreen extends Screen {
     
     @Override
     protected void init() {
+        PerformanceMonitor.start("DetectorScreen.init");
+        try {
         int centerX = this.width / 2;
         int startY = this.height / 2 - 40;
         
@@ -86,7 +89,10 @@ public class MachineDetectorScreen extends Screen {
         this.addRenderableWidget(verifyButton);
         this.addRenderableWidget(clearCacheButton);
         this.addRenderableWidget(backButton);
-    }
+    
+        } finally {
+            PerformanceMonitor.end("DetectorScreen.init");
+        }}
     
     private void verifyMultiblock() {
         if (minecraft == null || minecraft.level == null || minecraft.player == null) {
@@ -199,6 +205,8 @@ public class MachineDetectorScreen extends Screen {
     
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        PerformanceMonitor.start("DetectorScreen.render");
+        try {
         // Draw background
         graphics.fill(0, 0, this.width, this.height, 0xC0101010);
         
@@ -274,7 +282,10 @@ public class MachineDetectorScreen extends Screen {
         
         // Render buttons
         super.render(graphics, mouseX, mouseY, partialTick);
-    }
+    
+        } finally {
+            PerformanceMonitor.end("DetectorScreen.render");
+        }}
     
     @Override
     public boolean isPauseScreen() {

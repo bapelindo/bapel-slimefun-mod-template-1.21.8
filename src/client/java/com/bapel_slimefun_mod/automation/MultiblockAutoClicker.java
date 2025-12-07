@@ -12,6 +12,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+import com.bapel_slimefun_mod.debug.PerformanceMonitor;
 
 /**
  * OPTIMIZED VERSION - Reduced CPU overhead
@@ -107,6 +108,8 @@ public class MultiblockAutoClicker {
      * OPTIMIZED: Main tick with cached signature position
      */
     public static void tick() {
+        PerformanceMonitor.start("AutoClicker.tick");
+        try {
         // OPTIMIZATION: Fast-path early exit
         if (!autoClickEnabled || dispenserPos == null || machineId == null) {
             return;
@@ -203,7 +206,10 @@ public class MultiblockAutoClicker {
                 disable();
             }
         }
-    }
+    
+        } finally {
+            PerformanceMonitor.end("AutoClicker.tick");
+        }}
     
     /**
      * OPTIMIZATION: Reduced search area with early exit

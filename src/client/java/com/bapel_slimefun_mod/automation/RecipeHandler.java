@@ -2,6 +2,7 @@ package com.bapel_slimefun_mod.automation;
 
 import net.minecraft.world.item.ItemStack;
 import java.util.*;
+import com.bapel_slimefun_mod.debug.PerformanceMonitor;
 
 /**
  * Handles complex recipe matching including multi-item recipes

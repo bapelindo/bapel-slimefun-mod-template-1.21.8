@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import com.bapel_slimefun_mod.debug.PerformanceMonitor;
 
 /**
  * OPTIMIZED VERSION - Reduced CPU/RAM usage
@@ -120,6 +121,8 @@ public class RecipeOverlayRenderer {
     }
     
     public static void show(SlimefunMachineData machine) {
+        PerformanceMonitor.start("RecipeOverlay.show");
+        try {
         if (machine == null) return;
         currentMachine = machine;
         loadRecipesForMachine(machine);
@@ -136,15 +139,23 @@ public class RecipeOverlayRenderer {
         fadeStartTime = System.currentTimeMillis();
         fadingIn = true;
         cachedInventory = null; // Clear cache
-    }
+    
+        } finally {
+            PerformanceMonitor.end("RecipeOverlay.show");
+        }}
     
     public static void hide() {
+        PerformanceMonitor.start("RecipeOverlay.hide");
+        try {
         if (!overlayVisible) return;
         overlayVisible = false;
         currentMachine = null;
         availableRecipes = new ArrayList<>();
         cachedInventory = null; // Clear cache
-    }
+    
+        } finally {
+            PerformanceMonitor.end("RecipeOverlay.hide");
+        }}
     
     public static void toggle() {
         long now = System.currentTimeMillis();
@@ -203,6 +214,8 @@ public class RecipeOverlayRenderer {
      * OPTIMIZED: Main render with cached calculations
      */
     public static void render(GuiGraphics graphics, float partialTicks) {
+        PerformanceMonitor.start("RecipeOverlay.render");
+        try {
         // Fast-path checks
         Minecraft mc = Minecraft.getInstance();
         if (mc.screen == null) {
@@ -235,7 +248,10 @@ public class RecipeOverlayRenderer {
         } catch (Exception e) {
             // Ignore render errors
         }
-    }
+    
+        } finally {
+            PerformanceMonitor.end("RecipeOverlay.render");
+        }}
     
     /**
      * OPTIMIZATION: Cached alpha calculation

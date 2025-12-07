@@ -10,6 +10,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import com.bapel_slimefun_mod.debug.PerformanceMonitor;
 
 /**
  * âœ… FIXED: GUI Screen with Multiblock Automation Management + Machine Detector
@@ -43,6 +44,8 @@ public class AutomationModeScreen extends Screen {
     
     @Override
     protected void init() {
+        PerformanceMonitor.start("AutoModeScreen.init");
+        try {
         int centerX = this.width / 2;
         int startY = this.height / 2 - 90;
         
@@ -105,7 +108,10 @@ public class AutomationModeScreen extends Screen {
         this.addRenderableWidget(doneButton);
         
         updateButtonStates();
-    }
+    
+        } finally {
+            PerformanceMonitor.end("AutoModeScreen.init");
+        }}
     
     private void setAutoMode(boolean auto) {
         config.setRememberLastRecipe(auto);
@@ -186,6 +192,8 @@ public class AutomationModeScreen extends Screen {
     
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        PerformanceMonitor.start("AutoModeScreen.render");
+        try {
         // Draw background
         graphics.fill(0, 0, this.width, this.height, 0xC0101010);
         
@@ -280,7 +288,10 @@ public class AutomationModeScreen extends Screen {
         
         // Render buttons
         super.render(graphics, mouseX, mouseY, partialTick);
-    }
+    
+        } finally {
+            PerformanceMonitor.end("AutoModeScreen.render");
+        }}
     
     @Override
     public boolean isPauseScreen() {

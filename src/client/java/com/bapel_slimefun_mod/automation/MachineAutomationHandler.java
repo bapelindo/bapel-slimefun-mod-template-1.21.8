@@ -14,6 +14,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 import java.util.*;
+import com.bapel_slimefun_mod.debug.PerformanceMonitor;
 
 /**
  * ✅ FIXED: Clear recipe when changing machines
@@ -180,6 +181,8 @@ public class MachineAutomationHandler {
     }
     
     public static void tick() {
+        PerformanceMonitor.start("MachineAuto.tick");
+        try {
         if (config == null || !config.isAutomationEnabled() || currentMachine == null) {
             return;
         }
@@ -214,7 +217,10 @@ public class MachineAutomationHandler {
         } catch (Exception e) {
             BapelSlimefunMod.LOGGER.error("[Automation] Error in automation tick", e);
         }
-    }
+    
+        } finally {
+            PerformanceMonitor.end("MachineAuto.tick");
+        }}
     
     private static boolean isRecipeValidForCurrentMachine() {
         if (selectedRecipeId == null || currentMachine == null) {
