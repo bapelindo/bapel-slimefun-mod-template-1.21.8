@@ -26,7 +26,11 @@ import com.bapel_slimefun_mod.debug.PerformanceMonitor;
 public class MultiblockCacheManager {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final String CACHE_FILE = "multiblock_cache.json";
-    private static final int DETECTION_RADIUS = 10; // Blocks
+    // ✅ OPTIMIZED: Reduced detection radius for adjacent multiblock support
+    // When exact position match fails, search within smaller radius
+    // Old: 10 blocks - too large, caused confusion with distant multiblocks  
+    // New: 3 blocks - only check immediate vicinity for better precision
+    private static final int DETECTION_RADIUS = 3; // Blocks (for fallback only)
     
     // Map: Position Key -> Cached Machine Data
     private static final Map<String, CachedMultiblock> machineCache = new ConcurrentHashMap<>();
@@ -143,11 +147,21 @@ public class MultiblockCacheManager {
     }
     
     /**
-     * Find nearest machine to player position
+     * ✅ IMPROVED: Find nearest machine with exact position priority
+     * First tries exact match, then searches within small radius
      */
     public static CachedMultiblock findNearestMachine(BlockPos playerPos) {
         if (!isLoaded) load();
         
+        // ✅ STEP 1: Try exact position match first (most accurate)
+        String exactKey = getPositionKey(playerPos);
+        CachedMultiblock exact = machineCache.get(exactKey);
+        if (exact != null) {
+            return exact;
+        }
+        
+        // ✅ STEP 2: Search within reduced radius (only immediate neighbors)
+        // This prevents confusion when multiple multiblocks are placed close together
         CachedMultiblock nearest = null;
         double nearestDistance = Double.MAX_VALUE;
         
@@ -158,6 +172,11 @@ public class MultiblockCacheManager {
                 nearest = machine;
                 nearestDistance = distance;
             }
+        }
+        
+        if (nearest != null) {
+            BapelSlimefunMod.LOGGER.info("[Cache] Found nearby machine at distance {}: {} at {}", 
+                Math.sqrt(nearestDistance), nearest.getMachineName(), nearest.getPosition());
         }
         
         return nearest;

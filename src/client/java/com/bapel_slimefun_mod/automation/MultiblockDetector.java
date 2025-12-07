@@ -11,7 +11,7 @@ import java.util.*;
 import com.bapel_slimefun_mod.debug.PerformanceMonitor;
 
 /**
- * Ã¢Å“â€¦ COMPLETE FIX: Enhanced multiblock detection with detailed logging
+ * ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ COMPLETE FIX: Enhanced multiblock detection with detailed logging
  * 
  * KEY FIXES:
  * 1. Added DEBUG_MODE for detailed pattern matching logs
@@ -21,7 +21,7 @@ import com.bapel_slimefun_mod.debug.PerformanceMonitor;
  */
 public class MultiblockDetector {
     
-    // Ã¢Å“â€¦ NEW: Enable debug logging
+    // ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ NEW: Enable debug logging
     private static final boolean DEBUG_MODE = false;
     
     /**
@@ -70,7 +70,7 @@ public class MultiblockDetector {
     }
     
     /**
-     * Ã¢Å“â€¦ FIXED: Detect from OPENED dispenser position
+     * ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ FIXED: Detect from OPENED dispenser position
      */
     public static DetectionResult detect(Level level, BlockPos dispenserPos) {
         BapelSlimefunMod.LOGGER.info("[Detector] Starting detection at dispenser [{},{},{}]", 
@@ -82,10 +82,18 @@ public class MultiblockDetector {
             return null;
         }
         
+        // ✅ NEW: Check for adjacent multiblocks (multiple dispensers nearby)
+        int nearbyDispensers = countNearbyDispensers(level, dispenserPos);
+        if (nearbyDispensers > 1) {
+            BapelSlimefunMod.LOGGER.info("[Detector] ⚠️ ADJACENT MULTIBLOCKS DETECTED: {} dispensers in 3x3x3 area", 
+                nearbyDispensers);
+            BapelSlimefunMod.LOGGER.info("[Detector] Using isolated 3x3x3 scan to prevent overlap");
+        }
+        
         // Get all machine definitions
         Map<String, SlimefunMachineData> machines = SlimefunDataLoader.getAllMachines();
         
-        // Ã¢Å“â€¦ STEP 1: Try EXACT pattern matching first (3x3x3 with dispenser at center)
+        // ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ STEP 1: Try EXACT pattern matching first (3x3x3 with dispenser at center)
         for (SlimefunMachineData machine : machines.values()) {
             if (!machine.isMultiblock() || machine.getStructure() == null) continue;
             
@@ -94,7 +102,7 @@ public class MultiblockDetector {
             }
             
             if (testExactPattern(level, dispenserPos, machine)) {
-                BapelSlimefunMod.LOGGER.info("[Detector] Ã¢Å“â€œ EXACT MATCH: {} (100%)", machine.getId());
+                BapelSlimefunMod.LOGGER.info("[Detector] ÃƒÂ¢Ã…â€œÃ¢â‚¬Å“ EXACT MATCH: {} (100%)", machine.getId());
                 
                 StructureSnapshot snapshot = scanStructure(level, dispenserPos);
                 return new DetectionResult(
@@ -106,7 +114,7 @@ public class MultiblockDetector {
             }
         }
         
-        // Ã¢Å“â€¦ STEP 2: FALLBACK - Fuzzy matching (5x5x5 scan)
+        // ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ STEP 2: FALLBACK - Fuzzy matching (5x5x5 scan)
         BapelSlimefunMod.LOGGER.info("[Detector] No exact match, trying fuzzy matching...");
         
         StructureSnapshot snapshot = scanStructure(level, dispenserPos);
@@ -117,7 +125,7 @@ public class MultiblockDetector {
             
             double confidence = calculateConfidence(machine, snapshot);
             
-            // âœ… INCREASED THRESHOLD: 0.7 instead of 0.5 for better accuracy
+            // Ã¢Å“â€¦ INCREASED THRESHOLD: 0.7 instead of 0.5 for better accuracy
             if (confidence >= 0.7) {
                 candidates.add(new DetectionResult(
                     machine.getId(), 
@@ -146,14 +154,14 @@ public class MultiblockDetector {
             .orElse(null);
         
         if (best != null) {
-            BapelSlimefunMod.LOGGER.info("[Detector] Ã¢Å“â€œ BEST MATCH: {}", best.toString());
+            BapelSlimefunMod.LOGGER.info("[Detector] ÃƒÂ¢Ã…â€œÃ¢â‚¬Å“ BEST MATCH: {}", best.toString());
         }
         
         return best;
     }
     
     /**
-     * Ã¢Å“â€¦ COMPLETELY REWRITTEN: Test exact 3x3x3 pattern with detailed logging
+     * ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ COMPLETELY REWRITTEN: Test exact 3x3x3 pattern with detailed logging
      */
     private static boolean testExactPattern(Level level, BlockPos dispenserPos, SlimefunMachineData machine) {
         List<SlimefunMachineData.MultiblockStructure> structure = machine.getStructure();
@@ -186,7 +194,7 @@ public class MultiblockDetector {
             printPattern(expectedPattern);
         }
         
-        // Ã¢Å“â€¦ FIX: Scan 3x3x3 cube with dispenser as center
+        // ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ FIX: Scan 3x3x3 cube with dispenser as center
         // Order MUST match structure order: [y=-1 to 1][z=-1 to 1][x=-1 to 1]
         int index = 0;
         int mismatches = 0;
@@ -204,7 +212,7 @@ public class MultiblockDetector {
                     
                     actualPattern.put(index, actualMaterial);
                     
-                    // Ã¢Å“â€¦ NEW: Try fuzzy match for similar blocks
+                    // ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ NEW: Try fuzzy match for similar blocks
                     boolean matches = actualMaterial.equals(expectedMaterial) || 
                                     areSimilarBlocks(actualMaterial, expectedMaterial);
                     
@@ -227,12 +235,12 @@ public class MultiblockDetector {
             BapelSlimefunMod.LOGGER.info("[Detector] Total mismatches: {} / 27", mismatches);
         }
         
-        // Ã¢Å“â€¦ LENIENT: Allow up to 2 mismatches for blocks that might have variants
+        // ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ LENIENT: Allow up to 2 mismatches for blocks that might have variants
         return mismatches <= 2;
     }
     
     /**
-     * Ã¢Å“â€¦ NEW: Check if two blocks are similar enough to match
+     * ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ NEW: Check if two blocks are similar enough to match
      */
     private static boolean areSimilarBlocks(String actual, String expected) {
         // Fences - all wood fences match
@@ -269,7 +277,7 @@ public class MultiblockDetector {
     }
     
     /**
-     * Ã¢Å“â€¦ NEW: Print pattern for debugging
+     * ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ NEW: Print pattern for debugging
      */
     private static void printPattern(Map<Integer, String> pattern) {
         for (int y = -1; y <= 1; y++) {
@@ -287,7 +295,7 @@ public class MultiblockDetector {
     }
     
     /**
-     * âœ… IMPROVED: Scan 5x5x5 area centered on dispenser
+     * Ã¢Å“â€¦ IMPROVED: Scan 5x5x5 area centered on dispenser
      * Filter out natural/common blocks that aren't part of structures
      */
     private static StructureSnapshot scanStructure(Level level, BlockPos dispenserPos) {
@@ -297,17 +305,20 @@ public class MultiblockDetector {
         Set<String> uniqueBlocks = new HashSet<>();
         List<BlockPos> allPositions = new ArrayList<>();
         
-        // âœ… Blocks to IGNORE (natural terrain, not part of structures)
+        // Ã¢Å“â€¦ Blocks to IGNORE (natural terrain, not part of structures)
         Set<String> ignoredBlocks = Set.of(
             "DIRT", "GRASS_BLOCK", "STONE", "COBBLESTONE", "SAND", "GRAVEL",
             "DEEPSLATE", "TUFF", "DIORITE", "ANDESITE", "GRANITE",
             "WATER", "LAVA", "SNOW", "ICE", "BEDROCK"
         );
         
-        // Scan 5x5x5 cube centered on dispenser
-        for (int x = -2; x <= 2; x++) {
-            for (int y = -2; y <= 2; y++) {
-                for (int z = -2; z <= 2; z++) {
+        // ✅ CRITICAL CHANGE: Scan only 3x3x3 (immediate neighbors)
+        // This prevents overlap when multiblocks are placed side-by-side or with 1 block gap
+        // Old: 5x5x5 (radius 2) - caused overlap with adjacent multiblocks
+        // New: 3x3x3 (radius 1) - isolated detection perfect for adjacent placement
+        for (int x = -1; x <= 1; x++) {
+            for (int y = -1; y <= 1; y++) {
+                for (int z = -1; z <= 1; z++) {
                     BlockPos pos = dispenserPos.offset(x, y, z);
                     BlockState state = level.getBlockState(pos);
                     Block block = state.getBlock();
@@ -315,7 +326,7 @@ public class MultiblockDetector {
                     if (!state.isAir()) {
                         String blockId = normalizeBlockId(block);
                         
-                        // âœ… Skip natural/common blocks
+                        // Ã¢Å“â€¦ Skip natural/common blocks
                         if (!ignoredBlocks.contains(blockId)) {
                             blockCounts.merge(blockId, 1, Integer::sum);
                             uniqueBlocks.add(blockId);
@@ -332,8 +343,38 @@ public class MultiblockDetector {
             PerformanceMonitor.end("Detector.scanStructure");
         }}
     
+
     /**
-     * Ã¢Å“â€¦ IMPROVED: Calculate confidence with stricter rules
+     * ✅ NEW: Check if there are multiple dispensers nearby (adjacent multiblock indicator)
+     * Returns the count of dispensers in the immediate 3x3x3 area
+     */
+    private static int countNearbyDispensers(Level level, BlockPos centerPos) {
+        int count = 0;
+        for (int x = -1; x <= 1; x++) {
+            for (int y = -1; y <= 1; y++) {
+                for (int z = -1; z <= 1; z++) {
+                    BlockPos pos = centerPos.offset(x, y, z);
+                    if (level.getBlockState(pos).getBlock() == Blocks.DISPENSER) {
+                        count++;
+                    }
+                }
+            }
+        }
+        return count;
+    }
+    
+    /**
+     * ✅ NEW: Get the exact structure bounds to avoid scanning neighbor multiblocks
+     */
+    private static boolean isWithinStructureBounds(BlockPos centerPos, BlockPos checkPos, int radius) {
+        int dx = Math.abs(checkPos.getX() - centerPos.getX());
+        int dy = Math.abs(checkPos.getY() - centerPos.getY());
+        int dz = Math.abs(checkPos.getZ() - centerPos.getZ());
+        return dx <= radius && dy <= radius && dz <= radius;
+    }
+
+    /**
+     * ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ IMPROVED: Calculate confidence with stricter rules
      */
     private static double calculateConfidence(SlimefunMachineData machine, StructureSnapshot snapshot) {
         List<SlimefunMachineData.MultiblockStructure> structure = machine.getStructure();
@@ -366,13 +407,15 @@ public class MultiblockDetector {
         // Base score
         double baseScore = (double) matched / totalRequired;
         
-        // Penalty for excess blocks (more strict)
-        double excessPenalty = Math.min(0.4, excess * 0.08);
+        // ✅ STRICTER PENALTY for excess blocks (critical for adjacent multiblocks)
+        // When multiblocks are side-by-side, we must be very strict about extra blocks
+        // Increased penalty from 0.08 to 0.15 per excess block
+        double excessPenalty = Math.min(0.5, excess * 0.15);
         
         // Bonus for signature blocks
         double signatureBonus = calculateSignatureBonus(machine.getId(), snapshot);
         
-        // âœ… SPECIAL RULES (more strict)
+        // Ã¢Å“â€¦ SPECIAL RULES (more strict)
         
         // GRIND_STONE: Must have fence, but NO anvil, NO crafting table, NO bookshelf
         if (machine.getId().equals("GRIND_STONE")) {
@@ -396,7 +439,7 @@ public class MultiblockDetector {
             if (craftingTableCount < 1) {
                 return 0;
             }
-            // âœ… STRICT: Must NOT have ANY signature blocks from other machines
+            // Ã¢Å“â€¦ STRICT: Must NOT have ANY signature blocks from other machines
             if (snapshot.uniqueBlocks.contains("BOOKSHELF") ||
                 snapshot.uniqueBlocks.contains("FENCE") ||
                 snapshot.uniqueBlocks.contains("ANVIL") ||
@@ -431,7 +474,7 @@ public class MultiblockDetector {
             if (!hasIronBars || !hasNetherFence) {
                 return 0;
             }
-            // Ã¢Å“â€¦ STRICT: Must NOT have anvil (that's ARMOR_FORGE)
+            // ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ STRICT: Must NOT have anvil (that's ARMOR_FORGE)
             if (snapshot.uniqueBlocks.contains("ANVIL") ||
                 snapshot.uniqueBlocks.contains("CRAFTING_TABLE")) {
                 return 0;
@@ -443,7 +486,7 @@ public class MultiblockDetector {
             if (!snapshot.uniqueBlocks.contains("PISTON")) {
                 return 0;
             }
-            // Ã¢Å“â€¦ STRICT: Must NOT have other machine signatures
+            // ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ STRICT: Must NOT have other machine signatures
             if (snapshot.uniqueBlocks.contains("BOOKSHELF") || 
                 snapshot.uniqueBlocks.contains("CAULDRON") ||
                 snapshot.uniqueBlocks.contains("ANVIL") ||
@@ -459,7 +502,7 @@ public class MultiblockDetector {
                 !snapshot.uniqueBlocks.contains("NETHER_BRICK")) {
                 return 0;
             }
-            // Ã¢Å“â€¦ STRICT: Must NOT have furnace or brick (that's MAKESHIFT_SMELTERY)
+            // ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ STRICT: Must NOT have furnace or brick (that's MAKESHIFT_SMELTERY)
             if (snapshot.uniqueBlocks.contains("FURNACE") ||
                 snapshot.uniqueBlocks.contains("BRICK_BLOCK")) {
                 return 0;
@@ -473,7 +516,7 @@ public class MultiblockDetector {
                 !snapshot.uniqueBlocks.contains("PISTON")) {
                 return 0;
             }
-            // âœ… STRICT: Must NOT have CAULDRON (that's ORE_WASHER or Automated Panning)
+            // Ã¢Å“â€¦ STRICT: Must NOT have CAULDRON (that's ORE_WASHER or Automated Panning)
             // Must NOT have ONLY glass + nether brick fence (that's JUICER)
             if (snapshot.uniqueBlocks.contains("CAULDRON")) {
                 return 0;
@@ -490,7 +533,7 @@ public class MultiblockDetector {
             if (!snapshot.uniqueBlocks.contains("ANVIL")) {
                 return 0;
             }
-            // Ã¢Å“â€¦ STRICT: Must NOT have ANY other machine signatures
+            // ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ STRICT: Must NOT have ANY other machine signatures
             if (snapshot.uniqueBlocks.contains("FENCE") ||
                 snapshot.uniqueBlocks.contains("CRAFTING_TABLE") ||
                 snapshot.uniqueBlocks.contains("BOOKSHELF") ||
@@ -522,19 +565,19 @@ public class MultiblockDetector {
             if (!snapshot.uniqueBlocks.contains("NETHER_BRICK_FENCE")) {
                 return 0;
             }
-            // âœ… STRICT: Must NOT have PISTON (that's PRESSURE_CHAMBER or COMPRESSOR)
+            // Ã¢Å“â€¦ STRICT: Must NOT have PISTON (that's PRESSURE_CHAMBER or COMPRESSOR)
             if (snapshot.uniqueBlocks.contains("PISTON")) {
                 return 0;
             }
-            // âœ… Must NOT have CAULDRON (that's ORE_WASHER or AUTOMATED_PANNING)
+            // Ã¢Å“â€¦ Must NOT have CAULDRON (that's ORE_WASHER or AUTOMATED_PANNING)
             if (snapshot.uniqueBlocks.contains("CAULDRON")) {
                 return 0;
             }
-            // âœ… Must NOT have SMOOTH_STONE_SLAB (that's PRESSURE_CHAMBER or TABLE_SAW)
+            // Ã¢Å“â€¦ Must NOT have SMOOTH_STONE_SLAB (that's PRESSURE_CHAMBER or TABLE_SAW)
             if (snapshot.uniqueBlocks.contains("SMOOTH_STONE_SLAB")) {
                 return 0;
             }
-            // âœ… Must NOT have NETHER_BRICK (that's SMELTERY)
+            // Ã¢Å“â€¦ Must NOT have NETHER_BRICK (that's SMELTERY)
             if (snapshot.uniqueBlocks.contains("NETHER_BRICK")) {
                 return 0;
             }
@@ -545,18 +588,18 @@ public class MultiblockDetector {
             if (!snapshot.uniqueBlocks.contains("CAULDRON")) {
                 return 0;
             }
-            // âœ… STRICT: Should not have iron bars + nether brick fence together (that's ORE_CRUSHER)
+            // Ã¢Å“â€¦ STRICT: Should not have iron bars + nether brick fence together (that's ORE_CRUSHER)
             if (snapshot.uniqueBlocks.contains("IRON_BARS") &&
                 snapshot.uniqueBlocks.contains("NETHER_BRICK_FENCE")) {
                 return 0;
             }
-            // âœ… STRICT: Should NOT have PISTON + SMOOTH_STONE_SLAB + GLASS (that's PRESSURE_CHAMBER)
+            // Ã¢Å“â€¦ STRICT: Should NOT have PISTON + SMOOTH_STONE_SLAB + GLASS (that's PRESSURE_CHAMBER)
             if (snapshot.uniqueBlocks.contains("PISTON") &&
                 snapshot.uniqueBlocks.contains("SMOOTH_STONE_SLAB") &&
                 snapshot.uniqueBlocks.contains("GLASS")) {
                 return 0;
             }
-            // âœ… Must NOT have TRAPDOOR (that's AUTOMATED_PANNING_MACHINE)
+            // Ã¢Å“â€¦ Must NOT have TRAPDOOR (that's AUTOMATED_PANNING_MACHINE)
             if (snapshot.uniqueBlocks.contains("TRAP_DOOR")) {
                 return 0;
             }
@@ -631,7 +674,7 @@ public class MultiblockDetector {
     }
     
     /**
-     * Ã¢Å“â€¦ ENHANCED: Normalize material name with comprehensive mappings
+     * ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ ENHANCED: Normalize material name with comprehensive mappings
      */
     private static String normalizeMaterial(String material) {
         // Clean up block name format
