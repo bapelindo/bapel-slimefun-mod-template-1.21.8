@@ -51,7 +51,7 @@ public class MultiblockAutoClicker {
         if (level != null) {
             Block signatureBlock = getSignatureBlock(machine);
             if (signatureBlock != null) {
-                cachedSignaturePos = findSignatureBlock(level, pos, signatureBlock);
+                cachedSignaturePos = findSignatureBlock(level, pos, signatureBlock, machine);
                 cachedSignatureBlock = signatureBlock;
             }
         }
@@ -110,111 +110,121 @@ public class MultiblockAutoClicker {
     public static void tick() {
         PerformanceMonitor.start("AutoClicker.tick");
         try {
-        // OPTIMIZATION: Fast-path early exit
-        if (!autoClickEnabled || dispenserPos == null || machineId == null) {
-            return;
-        }
-        
-        Minecraft mc = Minecraft.getInstance();
-        LocalPlayer player = mc.player;
-        Level level = mc.level;
-        
-        if (player == null || level == null) {
-            return;
-        }
-        
-        // Check if target reached
-        if (currentClickCount >= targetClickCount) {
-            BapelSlimefunMod.LOGGER.info("[AutoClick] ✓ Target reached! ({}/{})", 
-                currentClickCount, targetClickCount);
-            disable();
-            return;
-        }
-        
-        // Check automation status
-        if (!UnifiedAutomationManager.isAutomationEnabled()) {
-            BapelSlimefunMod.LOGGER.info("[AutoClick] Stopped: automation disabled");
-            disable();
-            return;
-        }
-        
-        // Check recipe selection
-        String selectedRecipe = MultiblockAutomationHandler.getSelectedRecipe();
-        if (selectedRecipe == null) {
-            BapelSlimefunMod.LOGGER.info("[AutoClick] Stopped: no recipe selected");
-            disable();
-            return;
-        }
-        
-        // Throttle clicking
-        long now = System.currentTimeMillis();
-        if (now - lastClickTime < CLICK_INTERVAL) {
-            return;
-        }
-        
-        // OPTIMIZATION: Validate cached position before searching
-        BlockPos targetPos = cachedSignaturePos;
-        
-        if (targetPos != null) {
-            // Verify cached position is still valid
-            Block currentBlock = level.getBlockState(targetPos).getBlock();
-            if (!isMatchingBlock(currentBlock, cachedSignatureBlock)) {
-                // Cache invalidated - search again
-                BapelSlimefunMod.LOGGER.warn("[AutoClick] Cached position invalid, searching...");
-                cachedSignaturePos = findSignatureBlock(level, dispenserPos, cachedSignatureBlock);
-                targetPos = cachedSignaturePos;
+            // OPTIMIZATION: Fast-path early exit
+            if (!autoClickEnabled || dispenserPos == null || machineId == null) {
+                return;
             }
-        } else {
-            // No cache - find signature block
-            Block signatureBlock = getSignatureBlock(machineId);
-            if (signatureBlock == null) {
-                BapelSlimefunMod.LOGGER.warn("[AutoClick] Unknown signature block for: {}", machineId);
+            
+            Minecraft mc = Minecraft.getInstance();
+            LocalPlayer player = mc.player;
+            Level level = mc.level;
+            
+            if (player == null || level == null) {
+                return;
+            }
+            
+            // Check if target reached
+            if (currentClickCount >= targetClickCount) {
+                BapelSlimefunMod.LOGGER.info("[AutoClick] ✓ Target reached! ({}/{})", 
+                    currentClickCount, targetClickCount);
                 disable();
                 return;
             }
             
-            cachedSignatureBlock = signatureBlock;
-            cachedSignaturePos = findSignatureBlock(level, dispenserPos, signatureBlock);
-            targetPos = cachedSignaturePos;
-        }
-        
-        if (targetPos == null) {
-            BapelSlimefunMod.LOGGER.warn("[AutoClick] Signature block not found near {}", dispenserPos);
-            return; // Don't disable - might be temporary
-        }
-        
-        // Perform right-click
-        boolean success = clickBlock(mc, player, level, targetPos);
-        
-        if (success) {
-            lastClickTime = now;
-            currentClickCount++;
-            
-            BapelSlimefunMod.LOGGER.info("[AutoClick] ✓ Click {}/{} on {} at {}", 
-                currentClickCount, targetClickCount, cachedSignatureBlock, targetPos);
-            
-            player.displayClientMessage(
-                Component.literal(String.format(
-                    "§a✓ Auto-Click: %d/%d",
-                    currentClickCount, targetClickCount
-                )),
-                true
-            );
-            
-            if (currentClickCount >= targetClickCount) {
-                BapelSlimefunMod.LOGGER.info("[AutoClick] ✅ All clicks completed!");
+            // Check automation status
+            if (!UnifiedAutomationManager.isAutomationEnabled()) {
+                BapelSlimefunMod.LOGGER.info("[AutoClick] Stopped: automation disabled");
                 disable();
+                return;
             }
-        }
-    
+            
+            // Check recipe selection
+            String selectedRecipe = MultiblockAutomationHandler.getSelectedRecipe();
+            if (selectedRecipe == null) {
+                BapelSlimefunMod.LOGGER.info("[AutoClick] Stopped: no recipe selected");
+                disable();
+                return;
+            }
+            
+            // Throttle clicking
+            long now = System.currentTimeMillis();
+            if (now - lastClickTime < CLICK_INTERVAL) {
+                return;
+            }
+            
+            // OPTIMIZATION: Validate cached position before searching
+            BlockPos targetPos = cachedSignaturePos;
+            
+            if (targetPos != null) {
+                // Verify cached position is still valid
+                Block currentBlock = level.getBlockState(targetPos).getBlock();
+                if (!isMatchingBlock(currentBlock, cachedSignatureBlock)) {
+                    // Cache invalidated - search again
+                    BapelSlimefunMod.LOGGER.warn("[AutoClick] Cached position invalid, searching...");
+                    cachedSignaturePos = findSignatureBlock(level, dispenserPos, cachedSignatureBlock, machineId);
+                    targetPos = cachedSignaturePos;
+                }
+            } else {
+                // No cache - find signature block
+                Block signatureBlock = getSignatureBlock(machineId);
+                if (signatureBlock == null) {
+                    BapelSlimefunMod.LOGGER.warn("[AutoClick] Unknown signature block for: {}", machineId);
+                    disable();
+                    return;
+                }
+                
+                cachedSignatureBlock = signatureBlock;
+                cachedSignaturePos = findSignatureBlock(level, dispenserPos, signatureBlock, machineId);
+                targetPos = cachedSignaturePos;
+            }
+            
+            if (targetPos == null) {
+                BapelSlimefunMod.LOGGER.warn("[AutoClick] Signature block not found near {}", dispenserPos);
+                return; // Don't disable - might be temporary
+            }
+            
+            // Perform right-click
+            boolean success = clickBlock(mc, player, level, targetPos);
+            
+            if (success) {
+                lastClickTime = now;
+                currentClickCount++;
+                
+                BapelSlimefunMod.LOGGER.info("[AutoClick] ✓ Click {}/{} on {} at {}", 
+                    currentClickCount, targetClickCount, cachedSignatureBlock, targetPos);
+                
+                player.displayClientMessage(
+                    Component.literal(String.format(
+                        "§a✓ Auto-Click: %d/%d",
+                        currentClickCount, targetClickCount
+                    )),
+                    true
+                );
+                
+                if (currentClickCount >= targetClickCount) {
+                    BapelSlimefunMod.LOGGER.info("[AutoClick] ✅ All clicks completed!");
+                    disable();
+                }
+            }
+        
         } finally {
             PerformanceMonitor.end("AutoClicker.tick");
-        }}
+        }
+    }
     
     /**
-     * OPTIMIZATION: Reduced search area with early exit
+     * ✅ FIXED: Enhanced search with machine-specific logic
      */
-    private static BlockPos findSignatureBlock(Level level, BlockPos center, Block targetBlock) {
+    private static BlockPos findSignatureBlock(Level level, BlockPos center, Block targetBlock, String machineId) {
+        // ✅ SPECIAL CASE: PRESSURE_CHAMBER - cauldron is 2 blocks below dispenser
+        if ("PRESSURE_CHAMBER".equals(machineId)) {
+            BlockPos cauldronPos = center.below(2); // Y-2
+            Block block = level.getBlockState(cauldronPos).getBlock();
+            if (isMatchingBlock(block, targetBlock)) {
+                return cauldronPos;
+            }
+        }
+        
         // OPTIMIZATION: Check center first (most common case)
         Block centerBlock = level.getBlockState(center).getBlock();
         if (isMatchingBlock(centerBlock, targetBlock)) {
@@ -231,7 +241,7 @@ public class MultiblockAutoClicker {
             }
         }
         
-        // Then check diagonal and corners
+        // Then check diagonal and corners (within 3x3x3)
         for (int x = -1; x <= 1; x++) {
             for (int y = -1; y <= 1; y++) {
                 for (int z = -1; z <= 1; z++) {
@@ -249,6 +259,18 @@ public class MultiblockAutoClicker {
                     }
                 }
             }
+        }
+        
+        // ✅ EXTENDED SEARCH: For machines with signature blocks further away
+        // Check Y-2 and Y+2 explicitly (for vertical multiblocks)
+        BlockPos down2 = center.below(2);
+        if (isMatchingBlock(level.getBlockState(down2).getBlock(), targetBlock)) {
+            return down2;
+        }
+        
+        BlockPos up2 = center.above(2);
+        if (isMatchingBlock(level.getBlockState(up2).getBlock(), targetBlock)) {
+            return up2;
         }
         
         return null;
@@ -336,7 +358,7 @@ public class MultiblockAutoClicker {
             case "MAKESHIFT_SMELTERY":
                 return Blocks.OAK_FENCE;
             case "PRESSURE_CHAMBER":
-                return Blocks.CAULDRON;
+                return Blocks.CAULDRON; // ✅ This is correct
             case "ORE_WASHER":
                 return Blocks.OAK_FENCE;
             case "AUTOMATED_PANNING_MACHINE":
