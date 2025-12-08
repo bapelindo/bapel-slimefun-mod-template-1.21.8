@@ -89,6 +89,12 @@ public class RecipeOverlayInputHandler {
                 }
                 handled = true;
                 break;
+            case GLFW.GLFW_KEY_BACKSPACE:
+                if (RecipeOverlayRenderer.isSearchMode()) {
+                    RecipeOverlayRenderer.handleBackspace();
+                    handled = true;
+                }
+                break;
         }
         
         if (handled) {
@@ -209,5 +215,9 @@ public class RecipeOverlayInputHandler {
     public static void reset() {
         lastInputTime = 0;
         lastToggleTime = 0;
+    }
+    public static boolean handleCharTyped(char chr, int modifiers) {
+        // Meneruskan input ke Renderer
+        return RecipeOverlayRenderer.handleCharTyped(chr, modifiers);
     }
 }
