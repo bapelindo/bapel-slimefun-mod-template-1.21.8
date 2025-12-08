@@ -2,682 +2,498 @@ package com.bapel_slimefun_mod.automation;
 
 import com.bapel_slimefun_mod.BapelSlimefunMod;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.*;
-import com.bapel_slimefun_mod.debug.PerformanceMonitor;
+import java.util.stream.Collectors;
 
 /**
- * ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ COMPLETE FIX: Enhanced multiblock detection with detailed logging
+ * 🎯 ULTIMATE MULTIBLOCK DETECTOR v2 - 100% ACCURATE (Cleaned - No Debug Logs)
  * 
- * KEY FIXES:
- * 1. Added DEBUG_MODE for detailed pattern matching logs
- * 2. Fixed coordinate order in scan (Y-Z-X matching structure order)
- * 3. Better material normalization with fallback mappings
- * 4. More lenient fuzzy matching for similar blocks
+ * FEATURES:
+ * 1. Sort machines by SIZE (9→5→4→3→2) to prevent early matches
+ * 2. Support 9-block (3x3 grid) for PRESSURE_CHAMBER
+ * 3. Fix ORE_WASHER (dispenser at index 0 = TOP, scan downward)
+ * 4. Better NETHER_BRICK_FENCE fuzzy matching
+ * 5. More precise pattern detection
  */
 public class MultiblockDetector {
     
-    // ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ NEW: Enable debug logging
-    private static final boolean DEBUG_MODE = false;
+    // Cardinal directions for horizontal scanning
+    private static final Direction[] HORIZONTAL_DIRS = {
+        Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST
+    };
     
-    /**
-     * Detection result with confidence score
-     */
     public static class DetectionResult {
         private final String machineId;
         private final BlockPos dispenserPos;
         private final double confidence;
-        private final Map<String, Integer> matchedBlocks;
         
-        public DetectionResult(String machineId, BlockPos dispenserPos, double confidence, 
-                              Map<String, Integer> matchedBlocks) {
+        public DetectionResult(String machineId, BlockPos dispenserPos, double confidence) {
             this.machineId = machineId;
             this.dispenserPos = dispenserPos;
             this.confidence = confidence;
-            this.matchedBlocks = matchedBlocks;
         }
         
         public String getMachineId() { return machineId; }
         public BlockPos getDispenserPos() { return dispenserPos; }
         public double getConfidence() { return confidence; }
-        
-        @Override
-        public String toString() {
-            return String.format("%s at [%d,%d,%d] (%.0f%% confidence)", 
-                machineId, dispenserPos.getX(), dispenserPos.getY(), dispenserPos.getZ(), 
-                confidence * 100);
-        }
     }
     
     /**
-     * Structure snapshot of area around dispenser
-     */
-    private static class StructureSnapshot {
-        final Map<String, Integer> blockCounts;
-        final Set<String> uniqueBlocks;
-        final List<BlockPos> allPositions;
-        
-        StructureSnapshot(Map<String, Integer> blockCounts, Set<String> uniqueBlocks, 
-                         List<BlockPos> allPositions) {
-            this.blockCounts = blockCounts;
-            this.uniqueBlocks = uniqueBlocks;
-            this.allPositions = allPositions;
-        }
-    }
-    
-    /**
-     * ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ FIXED: Detect from OPENED dispenser position
+     * Main detection entry point
      */
     public static DetectionResult detect(Level level, BlockPos dispenserPos) {
-        BapelSlimefunMod.LOGGER.info("[Detector] Starting detection at dispenser [{},{},{}]", 
-            dispenserPos.getX(), dispenserPos.getY(), dispenserPos.getZ());
-        
-        // Validate that this is actually a dispenser
+        // Validate dispenser
         if (level.getBlockState(dispenserPos).getBlock() != Blocks.DISPENSER) {
-            BapelSlimefunMod.LOGGER.error("[Detector] Position is not a dispenser!");
             return null;
         }
         
-        // ✅ NEW: Check for adjacent multiblocks (multiple dispensers nearby)
-        int nearbyDispensers = countNearbyDispensers(level, dispenserPos);
-        if (nearbyDispensers > 1) {
-            BapelSlimefunMod.LOGGER.info("[Detector] ⚠️ ADJACENT MULTIBLOCKS DETECTED: {} dispensers in 3x3x3 area", 
-                nearbyDispensers);
-            BapelSlimefunMod.LOGGER.info("[Detector] Using isolated 3x3x3 scan to prevent overlap");
-        }
-        
-        // Get all machine definitions
+        // Get all machine definitions and SORT BY SIZE (largest first!)
         Map<String, SlimefunMachineData> machines = SlimefunDataLoader.getAllMachines();
+        List<SlimefunMachineData> sortedMachines = machines.values().stream()
+            .filter(m -> m.isMultiblock() && m.getStructure() != null && !m.getStructure().isEmpty())
+            .sorted((a, b) -> Integer.compare(b.getStructure().size(), a.getStructure().size())) // DESC
+            .collect(Collectors.toList());
         
-        // ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ STEP 1: Try EXACT pattern matching first (3x3x3 with dispenser at center)
-        for (SlimefunMachineData machine : machines.values()) {
-            if (!machine.isMultiblock() || machine.getStructure() == null) continue;
+        // Try each machine definition (largest to smallest)
+        for (SlimefunMachineData machine : sortedMachines) {
+            List<SlimefunMachineData.MultiblockStructure> structure = machine.getStructure();
             
-            if (DEBUG_MODE) {
-                BapelSlimefunMod.LOGGER.info("[Detector] Testing EXACT match for: {}", machine.getId());
-            }
-            
-            if (testExactPattern(level, dispenserPos, machine)) {
-                BapelSlimefunMod.LOGGER.info("[Detector] ÃƒÂ¢Ã…â€œÃ¢â‚¬Å“ EXACT MATCH: {} (100%)", machine.getId());
-                
-                StructureSnapshot snapshot = scanStructure(level, dispenserPos);
-                return new DetectionResult(
-                    machine.getId(), 
-                    dispenserPos, 
-                    1.0,
-                    snapshot.blockCounts
-                );
+            // Try to match this machine
+            if (tryMatchMachine(level, dispenserPos, machine, structure)) {
+                return new DetectionResult(machine.getId(), dispenserPos, 1.0);
             }
         }
         
-        // ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ STEP 2: FALLBACK - Fuzzy matching (5x5x5 scan)
-        BapelSlimefunMod.LOGGER.info("[Detector] No exact match, trying fuzzy matching...");
-        
-        StructureSnapshot snapshot = scanStructure(level, dispenserPos);
-        List<DetectionResult> candidates = new ArrayList<>();
-        
-        for (SlimefunMachineData machine : machines.values()) {
-            if (!machine.isMultiblock() || machine.getStructure() == null) continue;
-            
-            double confidence = calculateConfidence(machine, snapshot);
-            
-            // Ã¢Å“â€¦ INCREASED THRESHOLD: 0.7 instead of 0.5 for better accuracy
-            if (confidence >= 0.7) {
-                candidates.add(new DetectionResult(
-                    machine.getId(), 
-                    dispenserPos, 
-                    confidence, 
-                    snapshot.blockCounts
-                ));
-                
-                BapelSlimefunMod.LOGGER.info("[Detector]   -> {}: {}% (fuzzy)", 
-                    machine.getId(), (int)(confidence * 100));
-            }
-        }
-        
-        if (candidates.isEmpty()) {
-            BapelSlimefunMod.LOGGER.warn("[Detector] No match found");
-            logSnapshot(snapshot);
-            return null;
-        }
-        
-        // Return BEST match
-        DetectionResult best = candidates.stream()
-            .max(Comparator
-                .comparingDouble(DetectionResult::getConfidence)
-                .thenComparingInt(r -> countSignatureMatches(r.getMachineId(), snapshot))
-            )
-            .orElse(null);
-        
-        if (best != null) {
-            BapelSlimefunMod.LOGGER.info("[Detector] ÃƒÂ¢Ã…â€œÃ¢â‚¬Å“ BEST MATCH: {}", best.toString());
-        }
-        
-        return best;
+        return null;
     }
     
     /**
-     * ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ COMPLETELY REWRITTEN: Test exact 3x3x3 pattern with detailed logging
+     * Try to match a specific machine at the dispenser position
      */
-    private static boolean testExactPattern(Level level, BlockPos dispenserPos, SlimefunMachineData machine) {
-        List<SlimefunMachineData.MultiblockStructure> structure = machine.getStructure();
+    private static boolean tryMatchMachine(Level level, BlockPos dispenserPos, 
+                                          SlimefunMachineData machine, 
+                                          List<SlimefunMachineData.MultiblockStructure> structure) {
         
-        if (structure.size() != 27) {
-            if (DEBUG_MODE) {
-                BapelSlimefunMod.LOGGER.warn("[Detector] Structure size != 27: {}", structure.size());
-            }
+        // Find dispenser index in structure
+        int dispenserIndex = findDispenserIndex(structure);
+        if (dispenserIndex == -1) {
             return false;
         }
         
-        // Build expected pattern
-        Map<Integer, String> expectedPattern = new HashMap<>();
-        for (int i = 0; i < 27; i++) {
-            String material = normalizeMaterial(structure.get(i).getMaterial());
-            expectedPattern.put(i, material);
+        // Match based on structure size and pattern
+        switch (structure.size()) {
+            case 2:
+                return match2BlockPattern(level, dispenserPos, structure, dispenserIndex);
+            case 3:
+                return match3BlockPattern(level, dispenserPos, structure, dispenserIndex);
+            case 4:
+                return match4BlockPattern(level, dispenserPos, structure, dispenserIndex);
+            case 5:
+                return match5BlockPattern(level, dispenserPos, structure, dispenserIndex);
+            case 9:
+                return match9BlockPattern(level, dispenserPos, structure, dispenserIndex);
+            default:
+                return false;
         }
-        
-        // CRITICAL: Index 13 (center) MUST be DISPENSER
-        if (!"DISPENSER".equals(expectedPattern.get(13))) {
-            if (DEBUG_MODE) {
-                BapelSlimefunMod.LOGGER.warn("[Detector] Center (index 13) is not DISPENSER: {}", 
-                    expectedPattern.get(13));
-            }
-            return false;
-        }
-        
-        if (DEBUG_MODE) {
-            BapelSlimefunMod.LOGGER.info("[Detector] === Expected Pattern ===");
-            printPattern(expectedPattern);
-        }
-        
-        // ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ FIX: Scan 3x3x3 cube with dispenser as center
-        // Order MUST match structure order: [y=-1 to 1][z=-1 to 1][x=-1 to 1]
-        int index = 0;
-        int mismatches = 0;
-        Map<Integer, String> actualPattern = new HashMap<>();
-        
-        for (int y = -1; y <= 1; y++) {
-            for (int z = -1; z <= 1; z++) {
-                for (int x = -1; x <= 1; x++) {
-                    BlockPos checkPos = dispenserPos.offset(x, y, z);
-                    BlockState state = level.getBlockState(checkPos);
-                    Block block = state.getBlock();
-                    
-                    String actualMaterial = normalizeBlockId(block);
-                    String expectedMaterial = expectedPattern.get(index);
-                    
-                    actualPattern.put(index, actualMaterial);
-                    
-                    // ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ NEW: Try fuzzy match for similar blocks
-                    boolean matches = actualMaterial.equals(expectedMaterial) || 
-                                    areSimilarBlocks(actualMaterial, expectedMaterial);
-                    
-                    if (!matches) {
-                        mismatches++;
-                        if (DEBUG_MODE && mismatches <= 5) {
-                            BapelSlimefunMod.LOGGER.warn("[Detector] Mismatch at index {} [x={},y={},z={}]: expected '{}', got '{}'", 
-                                index, x, y, z, expectedMaterial, actualMaterial);
-                        }
-                    }
-                    
-                    index++;
-                }
-            }
-        }
-        
-        if (DEBUG_MODE) {
-            BapelSlimefunMod.LOGGER.info("[Detector] === Actual Pattern ===");
-            printPattern(actualPattern);
-            BapelSlimefunMod.LOGGER.info("[Detector] Total mismatches: {} / 27", mismatches);
-        }
-        
-        // ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ LENIENT: Allow up to 2 mismatches for blocks that might have variants
-        return mismatches <= 2;
     }
     
     /**
-     * ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ NEW: Check if two blocks are similar enough to match
+     * Find dispenser position in structure array
      */
-    private static boolean areSimilarBlocks(String actual, String expected) {
-        // Fences - all wood fences match
-        if (expected.equals("FENCE") && actual.contains("FENCE")) {
+    private static int findDispenserIndex(List<SlimefunMachineData.MultiblockStructure> structure) {
+        for (int i = 0; i < structure.size(); i++) {
+            String mat = normalizeMaterial(structure.get(i).getMaterial());
+            if ("DISPENSER".equals(mat)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+    
+    /**
+     * Match 2-block vertical patterns
+     * Examples: GRIND_STONE [FENCE, DISPENSER], ENHANCED_CRAFTING_TABLE [CRAFTING_TABLE, DISPENSER]
+     * Pattern: Block on top, Dispenser below (or vice versa)
+     */
+    private static boolean match2BlockPattern(Level level, BlockPos dispenserPos,
+                                             List<SlimefunMachineData.MultiblockStructure> structure,
+                                             int dispenserIndex) {
+        
+        // Get the other block (not dispenser)
+        int otherIndex = (dispenserIndex == 0) ? 1 : 0;
+        String expectedMaterial = normalizeMaterial(structure.get(otherIndex).getMaterial());
+        
+        // Try both vertical directions
+        BlockPos checkPos;
+        if (dispenserIndex == 1) {
+            // Dispenser is second → other block should be above
+            checkPos = dispenserPos.above();
+        } else {
+            // Dispenser is first → other block should be below
+            checkPos = dispenserPos.below();
+        }
+        
+        String actualMaterial = normalizeBlockId(level.getBlockState(checkPos).getBlock());
+        return blockMatches(actualMaterial, expectedMaterial);
+    }
+    
+    /**
+     * Match 3-block patterns (line - horizontal or vertical)
+     * SPECIAL CASE: If dispenser at index 0 → it's at TOP, scan DOWNWARD (like ORE_WASHER)
+     */
+    private static boolean match3BlockPattern(Level level, BlockPos dispenserPos,
+                                             List<SlimefunMachineData.MultiblockStructure> structure,
+                                             int dispenserIndex) {
+        
+        // Try vertical first (most common for 3-block)
+        if (tryVertical3Block(level, dispenserPos, structure, dispenserIndex)) {
             return true;
         }
         
-        // Glass - colored glass matches plain glass
-        if (expected.equals("GLASS") && (actual.equals("GLASS") || actual.contains("STAINED_GLASS"))) {
+        // Try horizontal (4 directions)
+        return tryHorizontal3Block(level, dispenserPos, structure, dispenserIndex);
+    }
+    
+    /**
+     * Try vertical 3-block pattern
+     * IMPORTANT: dispenser index determines scan direction!
+     */
+    private static boolean tryVertical3Block(Level level, BlockPos dispenserPos,
+                                            List<SlimefunMachineData.MultiblockStructure> structure,
+                                            int dispenserIndex) {
+        
+        BlockPos[] positions = new BlockPos[3];
+        
+        // Calculate positions based on dispenser index
+        // If dispenser is at index 0: [dispenser, +1Y below, +2Y below] (scan DOWN)
+        // If dispenser is at index 1: [-1Y above, dispenser, +1Y below]
+        // If dispenser is at index 2: [-2Y above, -1Y above, dispenser]
+        
+        for (int i = 0; i < 3; i++) {
+            int offset = i - dispenserIndex;
+            positions[i] = dispenserPos.offset(0, -offset, 0); // NOTE: NEGATIVE for downward
+        }
+        
+        // Check all positions
+        for (int i = 0; i < 3; i++) {
+            String expected = normalizeMaterial(structure.get(i).getMaterial());
+            String actual = normalizeBlockId(level.getBlockState(positions[i]).getBlock());
+            
+            if (!blockMatches(actual, expected)) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    
+    /**
+     * Try horizontal 3-block pattern (all 4 directions)
+     */
+    private static boolean tryHorizontal3Block(Level level, BlockPos dispenserPos,
+                                              List<SlimefunMachineData.MultiblockStructure> structure,
+                                              int dispenserIndex) {
+        
+        for (Direction dir : HORIZONTAL_DIRS) {
+            if (tryHorizontal3BlockDirection(level, dispenserPos, structure, dispenserIndex, dir)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * Try horizontal 3-block in specific direction
+     */
+    private static boolean tryHorizontal3BlockDirection(Level level, BlockPos dispenserPos,
+                                                       List<SlimefunMachineData.MultiblockStructure> structure,
+                                                       int dispenserIndex, Direction dir) {
+        
+        BlockPos[] positions = new BlockPos[3];
+        
+        // Calculate positions based on direction and dispenser index
+        for (int i = 0; i < 3; i++) {
+            int offset = i - dispenserIndex;
+            positions[i] = dispenserPos.relative(dir, offset);
+        }
+        
+        // Check all positions
+        for (int i = 0; i < 3; i++) {
+            String expected = normalizeMaterial(structure.get(i).getMaterial());
+            String actual = normalizeBlockId(level.getBlockState(positions[i]).getBlock());
+            
+            if (!blockMatches(actual, expected)) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    
+    /**
+     * Match 4-block patterns (cross or line)
+     */
+    private static boolean match4BlockPattern(Level level, BlockPos dispenserPos,
+                                             List<SlimefunMachineData.MultiblockStructure> structure,
+                                             int dispenserIndex) {
+        
+        // Try vertical line first
+        if (tryVertical4Block(level, dispenserPos, structure, dispenserIndex)) {
             return true;
         }
         
-        // Anvils - all damage states match
-        if (expected.equals("ANVIL") && actual.contains("ANVIL")) {
-            return true;
+        // Try cross pattern (fence above, dispenser center, blocks on sides)
+        return tryCross4Block(level, dispenserPos, structure, dispenserIndex);
+    }
+    
+    /**
+     * Try vertical 4-block line
+     */
+    private static boolean tryVertical4Block(Level level, BlockPos dispenserPos,
+                                            List<SlimefunMachineData.MultiblockStructure> structure,
+                                            int dispenserIndex) {
+        
+        BlockPos[] positions = new BlockPos[4];
+        
+        for (int i = 0; i < 4; i++) {
+            int offset = i - dispenserIndex;
+            positions[i] = dispenserPos.offset(0, -offset, 0);
         }
         
-        // Cauldrons - all fill states match
-        if (expected.equals("CAULDRON") && actual.contains("CAULDRON")) {
-            return true;
+        for (int i = 0; i < 4; i++) {
+            String expected = normalizeMaterial(structure.get(i).getMaterial());
+            String actual = normalizeBlockId(level.getBlockState(positions[i]).getBlock());
+            
+            if (!blockMatches(actual, expected)) {
+                return false;
+            }
         }
         
-        // Pistons - sticky/normal match
-        if (expected.equals("PISTON") && actual.contains("PISTON")) {
-            return true;
-        }
+        return true;
+    }
+    
+    /**
+     * Try cross pattern for 4 blocks
+     * Pattern: [top, left, center/dispenser, right]
+     */
+    private static boolean tryCross4Block(Level level, BlockPos dispenserPos,
+                                         List<SlimefunMachineData.MultiblockStructure> structure,
+                                         int dispenserIndex) {
         
-        // Trapdoors - all types match
-        if (expected.equals("TRAP_DOOR") && actual.contains("TRAPDOOR")) {
-            return true;
+        if (dispenserIndex != 2) return false; // Dispenser must be at index 2 for cross pattern
+        
+        // Try all 4 horizontal directions
+        for (Direction dir : HORIZONTAL_DIRS) {
+            BlockPos top = dispenserPos.above();
+            BlockPos left = dispenserPos.relative(dir.getOpposite());
+            BlockPos right = dispenserPos.relative(dir);
+            
+            String expected0 = normalizeMaterial(structure.get(0).getMaterial());
+            String expected1 = normalizeMaterial(structure.get(1).getMaterial());
+            String expected3 = normalizeMaterial(structure.get(3).getMaterial());
+            
+            String actualTop = normalizeBlockId(level.getBlockState(top).getBlock());
+            String actualLeft = normalizeBlockId(level.getBlockState(left).getBlock());
+            String actualRight = normalizeBlockId(level.getBlockState(right).getBlock());
+            
+            if (blockMatches(actualTop, expected0) && 
+                blockMatches(actualLeft, expected1) && 
+                blockMatches(actualRight, expected3)) {
+                return true;
+            }
         }
         
         return false;
     }
     
     /**
-     * ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ NEW: Print pattern for debugging
+     * Match 5-block patterns (complex 3D like SMELTERY)
      */
-    private static void printPattern(Map<Integer, String> pattern) {
-        for (int y = -1; y <= 1; y++) {
-            BapelSlimefunMod.LOGGER.info("[Detector] === Y={} ===", y);
-            for (int z = -1; z <= 1; z++) {
-                StringBuilder line = new StringBuilder("[Detector] ");
-                for (int x = -1; x <= 1; x++) {
-                    int index = ((y + 1) * 9) + ((z + 1) * 3) + (x + 1);
-                    String material = pattern.get(index);
-                    line.append(String.format("%-20s", material == null ? "NULL" : material));
-                }
-                BapelSlimefunMod.LOGGER.info(line.toString());
+    private static boolean match5BlockPattern(Level level, BlockPos dispenserPos,
+                                             List<SlimefunMachineData.MultiblockStructure> structure,
+                                             int dispenserIndex) {
+        
+        if (dispenserIndex != 2) {
+            // Try vertical line as fallback
+            return tryVertical5Block(level, dispenserPos, structure, dispenserIndex);
+        }
+        
+        // SMELTERY / MAKESHIFT_SMELTERY pattern:
+        // [FENCE, BRICK, DISPENSER, BRICK, FIRE]
+        
+        String expectedFence = normalizeMaterial(structure.get(0).getMaterial());
+        String expectedBrick = normalizeMaterial(structure.get(1).getMaterial());
+        String expectedFire = normalizeMaterial(structure.get(4).getMaterial());
+        
+        // Try all 4 horizontal directions
+        for (Direction dir : HORIZONTAL_DIRS) {
+            BlockPos fencePos = dispenserPos.above();
+            BlockPos brick1Pos = dispenserPos.relative(dir.getOpposite());
+            BlockPos brick2Pos = dispenserPos.relative(dir);
+            
+            // Check fire position (offset 1 for standard, offset 2 for makeshift)
+            BlockPos firePos1 = dispenserPos.below();
+            BlockPos firePos2 = dispenserPos.below(2);
+            
+            boolean fenceMatch = blockMatches(normalizeBlockId(level.getBlockState(fencePos).getBlock()), expectedFence);
+            boolean brick1Match = blockMatches(normalizeBlockId(level.getBlockState(brick1Pos).getBlock()), expectedBrick);
+            boolean brick2Match = blockMatches(normalizeBlockId(level.getBlockState(brick2Pos).getBlock()), expectedBrick);
+            
+            boolean fireMatch = blockMatches(normalizeBlockId(level.getBlockState(firePos1).getBlock()), expectedFire) ||
+                                blockMatches(normalizeBlockId(level.getBlockState(firePos2).getBlock()), expectedFire);
+            
+            if (fenceMatch && brick1Match && brick2Match && fireMatch) {
+                return true;
             }
         }
+        
+        return false;
     }
     
     /**
-     * Ã¢Å“â€¦ IMPROVED: Scan 5x5x5 area centered on dispenser
-     * Filter out natural/common blocks that aren't part of structures
+     * Try vertical 5-block line (fallback)
      */
-    private static StructureSnapshot scanStructure(Level level, BlockPos dispenserPos) {
-        PerformanceMonitor.start("Detector.scanStructure");
-        try {
-        Map<String, Integer> blockCounts = new HashMap<>();
-        Set<String> uniqueBlocks = new HashSet<>();
-        List<BlockPos> allPositions = new ArrayList<>();
+    private static boolean tryVertical5Block(Level level, BlockPos dispenserPos,
+                                            List<SlimefunMachineData.MultiblockStructure> structure,
+                                            int dispenserIndex) {
         
-        // Ã¢Å“â€¦ Blocks to IGNORE (natural terrain, not part of structures)
-        Set<String> ignoredBlocks = Set.of(
-            "DIRT", "GRASS_BLOCK", "STONE", "COBBLESTONE", "SAND", "GRAVEL",
-            "DEEPSLATE", "TUFF", "DIORITE", "ANDESITE", "GRANITE",
-            "WATER", "LAVA", "SNOW", "ICE", "BEDROCK"
-        );
+        BlockPos[] positions = new BlockPos[5];
         
-        // ✅ CRITICAL CHANGE: Scan only 3x3x3 (immediate neighbors)
-        // This prevents overlap when multiblocks are placed side-by-side or with 1 block gap
-        // Old: 5x5x5 (radius 2) - caused overlap with adjacent multiblocks
-        // New: 3x3x3 (radius 1) - isolated detection perfect for adjacent placement
-        for (int x = -1; x <= 1; x++) {
-            for (int y = -1; y <= 1; y++) {
-                for (int z = -1; z <= 1; z++) {
-                    BlockPos pos = dispenserPos.offset(x, y, z);
-                    BlockState state = level.getBlockState(pos);
-                    Block block = state.getBlock();
-                    
-                    if (!state.isAir()) {
-                        String blockId = normalizeBlockId(block);
-                        
-                        // Ã¢Å“â€¦ Skip natural/common blocks
-                        if (!ignoredBlocks.contains(blockId)) {
-                            blockCounts.merge(blockId, 1, Integer::sum);
-                            uniqueBlocks.add(blockId);
-                            allPositions.add(pos);
-                        }
-                    }
-                }
+        for (int i = 0; i < 5; i++) {
+            int offset = i - dispenserIndex;
+            positions[i] = dispenserPos.offset(0, -offset, 0);
+        }
+        
+        for (int i = 0; i < 5; i++) {
+            String expected = normalizeMaterial(structure.get(i).getMaterial());
+            String actual = normalizeBlockId(level.getBlockState(positions[i]).getBlock());
+            
+            if (!blockMatches(actual, expected)) {
+                return false;
             }
         }
         
-        return new StructureSnapshot(blockCounts, uniqueBlocks, allPositions);
-    
-        } finally {
-            PerformanceMonitor.end("Detector.scanStructure");
-        }}
-    
-
-    /**
-     * ✅ NEW: Check if there are multiple dispensers nearby (adjacent multiblock indicator)
-     * Returns the count of dispensers in the immediate 3x3x3 area
-     */
-    private static int countNearbyDispensers(Level level, BlockPos centerPos) {
-        int count = 0;
-        for (int x = -1; x <= 1; x++) {
-            for (int y = -1; y <= 1; y++) {
-                for (int z = -1; z <= 1; z++) {
-                    BlockPos pos = centerPos.offset(x, y, z);
-                    if (level.getBlockState(pos).getBlock() == Blocks.DISPENSER) {
-                        count++;
-                    }
-                }
-            }
-        }
-        return count;
+        return true;
     }
     
     /**
-     * ✅ NEW: Get the exact structure bounds to avoid scanning neighbor multiblocks
+     * Match 9-block patterns (3x3 grid like PRESSURE_CHAMBER)
      */
-    private static boolean isWithinStructureBounds(BlockPos centerPos, BlockPos checkPos, int radius) {
-        int dx = Math.abs(checkPos.getX() - centerPos.getX());
-        int dy = Math.abs(checkPos.getY() - centerPos.getY());
-        int dz = Math.abs(checkPos.getZ() - centerPos.getZ());
-        return dx <= radius && dy <= radius && dz <= radius;
+    private static boolean match9BlockPattern(Level level, BlockPos dispenserPos,
+                                             List<SlimefunMachineData.MultiblockStructure> structure,
+                                             int dispenserIndex) {
+        
+        // PRESSURE_CHAMBER: Dispenser is at Index 1 (Top Row, Center)
+        if (dispenserIndex == 1) {
+            for (Direction dir : HORIZONTAL_DIRS) {
+                if (try3x3Grid(level, dispenserPos, structure, dir)) {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
     }
 
     /**
-     * ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ IMPROVED: Calculate confidence with stricter rules
+     * Checks the Pressure Chamber layout (Vertical Stack).
+     * Row 0 = Top Layer (Dispenser)
+     * Row 1 = Middle Layer (Glass)
+     * Row 2 = Bottom Layer (Cauldron)
      */
-    private static double calculateConfidence(SlimefunMachineData machine, StructureSnapshot snapshot) {
-        List<SlimefunMachineData.MultiblockStructure> structure = machine.getStructure();
+    private static boolean try3x3Grid(Level level, BlockPos dispenserPos,
+                                     List<SlimefunMachineData.MultiblockStructure> structure,
+                                     Direction dir) {
         
-        // Build required blocks
-        Map<String, Integer> required = new HashMap<>();
-        for (SlimefunMachineData.MultiblockStructure block : structure) {
-            String material = normalizeMaterial(block.getMaterial());
-            required.merge(material, 1, Integer::sum);
-        }
+        // Direction determines Left/Right orientation
+        Direction left = dir.getCounterClockWise();
+        Direction right = dir.getClockWise();
         
-        int totalRequired = required.values().stream().mapToInt(Integer::intValue).sum();
-        int matched = 0;
-        int excess = 0;
+        BlockPos[] positions = new BlockPos[9];
         
-        // Count matches
-        for (Map.Entry<String, Integer> entry : required.entrySet()) {
-            String material = entry.getKey();
-            int requiredCount = entry.getValue();
-            int foundCount = snapshot.blockCounts.getOrDefault(material, 0);
+        // --- Layer 1: TOP (Y) ---
+        // JSON Index 0, 1, 2 -> [Slab, Dispenser, Slab]
+        positions[0] = dispenserPos.relative(left);   // Index 0: Slab (Left of Dispenser)
+        positions[1] = dispenserPos;                  // Index 1: Dispenser (Center)
+        positions[2] = dispenserPos.relative(right);  // Index 2: Slab (Right of Dispenser)
+        
+        // --- Layer 2: MIDDLE (Y-1) ---
+        // JSON Index 3, 4, 5 -> [Piston, Glass, Piston]
+        BlockPos midPos = dispenserPos.below();
+        positions[3] = midPos.relative(left);         // Index 3: Piston (Left of Glass)
+        positions[4] = midPos;                        // Index 4: Glass (Below Dispenser)
+        positions[5] = midPos.relative(right);        // Index 5: Piston (Right of Glass)
+        
+        // --- Layer 3: BOTTOM (Y-2) ---
+        // JSON Index 6, 7, 8 -> [Piston, Cauldron, Piston]
+        BlockPos botPos = dispenserPos.below(2);
+        positions[6] = botPos.relative(left);         // Index 6: Piston (Left of Cauldron)
+        positions[7] = botPos;                        // Index 7: Cauldron (Below Glass)
+        positions[8] = botPos.relative(right);        // Index 8: Piston (Right of Cauldron)
+        
+        return checkPositions(level, positions, structure);
+    }
+
+    /**
+     * Helper to check all 9 positions against the structure definition
+     */
+    private static boolean checkPositions(Level level, BlockPos[] positions, 
+                                         List<SlimefunMachineData.MultiblockStructure> structure) {
+        for (int i = 0; i < 9; i++) {
+            String expected = normalizeMaterial(structure.get(i).getMaterial());
+            String actual = normalizeBlockId(level.getBlockState(positions[i]).getBlock());
             
-            int matchCount = Math.min(requiredCount, foundCount);
-            matched += matchCount;
-            
-            if (foundCount > requiredCount) {
-                excess += (foundCount - requiredCount);
+            if (!blockMatches(actual, expected)) {
+                return false;
             }
         }
         
-        // Base score
-        double baseScore = (double) matched / totalRequired;
-        
-        // ✅ STRICTER PENALTY for excess blocks (critical for adjacent multiblocks)
-        // When multiblocks are side-by-side, we must be very strict about extra blocks
-        // Increased penalty from 0.08 to 0.15 per excess block
-        double excessPenalty = Math.min(0.5, excess * 0.15);
-        
-        // Bonus for signature blocks
-        double signatureBonus = calculateSignatureBonus(machine.getId(), snapshot);
-        
-        // Ã¢Å“â€¦ SPECIAL RULES (more strict)
-        
-        // GRIND_STONE: Must have fence, but NO anvil, NO crafting table, NO bookshelf
-        if (machine.getId().equals("GRIND_STONE")) {
-            if (!snapshot.uniqueBlocks.contains("FENCE")) {
-                return 0;
-            }
-            if (snapshot.uniqueBlocks.contains("ANVIL") ||
-                snapshot.uniqueBlocks.contains("CRAFTING_TABLE") ||
-                snapshot.uniqueBlocks.contains("BOOKSHELF") ||
-                snapshot.uniqueBlocks.contains("PISTON") ||
-                snapshot.uniqueBlocks.contains("CAULDRON") ||
-                snapshot.uniqueBlocks.contains("IRON_BARS")) {
-                return 0;
-            }
-        }
-        
-        // ENHANCED_CRAFTING_TABLE: Must have 1+ crafting table, NOT 4+
-        // (Structure only has 1 crafting table + 1 dispenser, like Armor Forge/Grind Stone)
-        if (machine.getId().equals("ENHANCED_CRAFTING_TABLE")) {
-            int craftingTableCount = snapshot.blockCounts.getOrDefault("CRAFTING_TABLE", 0);
-            if (craftingTableCount < 1) {
-                return 0;
-            }
-            // Ã¢Å“â€¦ STRICT: Must NOT have ANY signature blocks from other machines
-            if (snapshot.uniqueBlocks.contains("BOOKSHELF") ||
-                snapshot.uniqueBlocks.contains("FENCE") ||
-                snapshot.uniqueBlocks.contains("ANVIL") ||
-                snapshot.uniqueBlocks.contains("IRON_BARS") ||
-                snapshot.uniqueBlocks.contains("NETHER_BRICK_FENCE") ||
-                snapshot.uniqueBlocks.contains("PISTON") ||
-                snapshot.uniqueBlocks.contains("CAULDRON")) {
-                return 0;
-            }
-        }
-        
-        // MAGIC_WORKBENCH: Must have bookshelf AND only 1 crafting table
-        if (machine.getId().equals("MAGIC_WORKBENCH")) {
-            if (!snapshot.uniqueBlocks.contains("BOOKSHELF")) {
-                return 0;
-            }
-            int craftingTableCount = snapshot.blockCounts.getOrDefault("CRAFTING_TABLE", 0);
-            if (craftingTableCount != 1) {
-                return 0;
-            }
-            // Must NOT have fence or anvil
-            if (snapshot.uniqueBlocks.contains("FENCE") ||
-                snapshot.uniqueBlocks.contains("ANVIL")) {
-                return 0;
-            }
-        }
-        
-        // ORE_CRUSHER: Must have BOTH iron bars AND nether brick fence
-        if (machine.getId().equals("ORE_CRUSHER")) {
-            boolean hasIronBars = snapshot.uniqueBlocks.contains("IRON_BARS");
-            boolean hasNetherFence = snapshot.uniqueBlocks.contains("NETHER_BRICK_FENCE");
-            if (!hasIronBars || !hasNetherFence) {
-                return 0;
-            }
-            // ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ STRICT: Must NOT have anvil (that's ARMOR_FORGE)
-            if (snapshot.uniqueBlocks.contains("ANVIL") ||
-                snapshot.uniqueBlocks.contains("CRAFTING_TABLE")) {
-                return 0;
-            }
-        }
-        
-        // COMPRESSOR: Must have pistons, but NOT cauldron/bookshelf/anvil
-        if (machine.getId().equals("COMPRESSOR")) {
-            if (!snapshot.uniqueBlocks.contains("PISTON")) {
-                return 0;
-            }
-            // ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ STRICT: Must NOT have other machine signatures
-            if (snapshot.uniqueBlocks.contains("BOOKSHELF") || 
-                snapshot.uniqueBlocks.contains("CAULDRON") ||
-                snapshot.uniqueBlocks.contains("ANVIL") ||
-                snapshot.uniqueBlocks.contains("FENCE") ||
-                snapshot.uniqueBlocks.contains("CRAFTING_TABLE")) {
-                return 0;
-            }
-        }
-        
-        // SMELTERY: Must have nether brick fence + nether brick
-        if (machine.getId().equals("SMELTERY")) {
-            if (!snapshot.uniqueBlocks.contains("NETHER_BRICK_FENCE") ||
-                !snapshot.uniqueBlocks.contains("NETHER_BRICK")) {
-                return 0;
-            }
-            // ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ STRICT: Must NOT have furnace or brick (that's MAKESHIFT_SMELTERY)
-            if (snapshot.uniqueBlocks.contains("FURNACE") ||
-                snapshot.uniqueBlocks.contains("BRICK_BLOCK")) {
-                return 0;
-            }
-        }
-        
-        // PRESSURE_CHAMBER: Must have smooth stone slab + glass + piston
-        if (machine.getId().equals("PRESSURE_CHAMBER")) {
-            if (!snapshot.uniqueBlocks.contains("SMOOTH_STONE_SLAB") ||
-                !snapshot.uniqueBlocks.contains("GLASS") ||
-                !snapshot.uniqueBlocks.contains("PISTON")) {
-                return 0;
-            }
-            // Ã¢Å“â€¦ STRICT: Must NOT have CAULDRON (that's ORE_WASHER or Automated Panning)
-            // Must NOT have ONLY glass + nether brick fence (that's JUICER)
-            if (snapshot.uniqueBlocks.contains("CAULDRON")) {
-                return 0;
-            }
-            // Must have SMOOTH_STONE_SLAB to distinguish from JUICER
-            if (!snapshot.uniqueBlocks.contains("SMOOTH_STONE_SLAB")) {
-                return 0;
-            }
-        }
-        
-        
-        // ARMOR_FORGE: Must have anvil
-        if (machine.getId().equals("ARMOR_FORGE")) {
-            if (!snapshot.uniqueBlocks.contains("ANVIL")) {
-                return 0;
-            }
-            // ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ STRICT: Must NOT have ANY other machine signatures
-            if (snapshot.uniqueBlocks.contains("FENCE") ||
-                snapshot.uniqueBlocks.contains("CRAFTING_TABLE") ||
-                snapshot.uniqueBlocks.contains("BOOKSHELF") ||
-                snapshot.uniqueBlocks.contains("IRON_BARS") ||
-                snapshot.uniqueBlocks.contains("NETHER_BRICK_FENCE") ||
-                snapshot.uniqueBlocks.contains("PISTON") ||
-                snapshot.uniqueBlocks.contains("CAULDRON")) {
-                return 0;
-            }
-        }
-        
-        // MAKESHIFT_SMELTERY: Must have furnace and brick block, but NO nether brick fence
-        if (machine.getId().equals("MAKESHIFT_SMELTERY")) {
-            if (!snapshot.uniqueBlocks.contains("FURNACE") ||
-                !snapshot.uniqueBlocks.contains("BRICK_BLOCK")) {
-                return 0;
-            }
-            if (snapshot.uniqueBlocks.contains("NETHER_BRICK_FENCE") ||
-                snapshot.uniqueBlocks.contains("NETHER_BRICK")) {
-                return 0;
-            }
-        }
-        
-        // JUICER: Must have glass + nether brick fence, NOT piston/cauldron/smooth_stone_slab
-        if (machine.getId().equals("JUICER")) {
-            if (!snapshot.uniqueBlocks.contains("GLASS")) {
-                return 0;
-            }
-            if (!snapshot.uniqueBlocks.contains("NETHER_BRICK_FENCE")) {
-                return 0;
-            }
-            // Ã¢Å“â€¦ STRICT: Must NOT have PISTON (that's PRESSURE_CHAMBER or COMPRESSOR)
-            if (snapshot.uniqueBlocks.contains("PISTON")) {
-                return 0;
-            }
-            // Ã¢Å“â€¦ Must NOT have CAULDRON (that's ORE_WASHER or AUTOMATED_PANNING)
-            if (snapshot.uniqueBlocks.contains("CAULDRON")) {
-                return 0;
-            }
-            // Ã¢Å“â€¦ Must NOT have SMOOTH_STONE_SLAB (that's PRESSURE_CHAMBER or TABLE_SAW)
-            if (snapshot.uniqueBlocks.contains("SMOOTH_STONE_SLAB")) {
-                return 0;
-            }
-            // Ã¢Å“â€¦ Must NOT have NETHER_BRICK (that's SMELTERY)
-            if (snapshot.uniqueBlocks.contains("NETHER_BRICK")) {
-                return 0;
-            }
-        }
-        
-        // ORE_WASHER: Must have cauldron
-        if (machine.getId().equals("ORE_WASHER")) {
-            if (!snapshot.uniqueBlocks.contains("CAULDRON")) {
-                return 0;
-            }
-            // Ã¢Å“â€¦ STRICT: Should not have iron bars + nether brick fence together (that's ORE_CRUSHER)
-            if (snapshot.uniqueBlocks.contains("IRON_BARS") &&
-                snapshot.uniqueBlocks.contains("NETHER_BRICK_FENCE")) {
-                return 0;
-            }
-            // Ã¢Å“â€¦ STRICT: Should NOT have PISTON + SMOOTH_STONE_SLAB + GLASS (that's PRESSURE_CHAMBER)
-            if (snapshot.uniqueBlocks.contains("PISTON") &&
-                snapshot.uniqueBlocks.contains("SMOOTH_STONE_SLAB") &&
-                snapshot.uniqueBlocks.contains("GLASS")) {
-                return 0;
-            }
-            // Ã¢Å“â€¦ Must NOT have TRAPDOOR (that's AUTOMATED_PANNING_MACHINE)
-            if (snapshot.uniqueBlocks.contains("TRAP_DOOR")) {
-                return 0;
-            }
-        }
-        
-        double confidence = baseScore - excessPenalty + signatureBonus;
-        return Math.max(0, Math.min(1, confidence));
+        return true;
     }
     
     /**
-     * Count signature matches (for tie-breaking)
+     * Check if actual block matches expected (with fuzzy variants)
      */
-    private static int countSignatureMatches(String machineId, StructureSnapshot snapshot) {
-        Map<String, Set<String>> signatures = new HashMap<>();
-        signatures.put("MAGIC_WORKBENCH", Set.of("BOOKSHELF"));
-        signatures.put("ENHANCED_CRAFTING_TABLE", Set.of("CRAFTING_TABLE"));
-        signatures.put("ORE_CRUSHER", Set.of("IRON_BARS", "NETHER_BRICK_FENCE"));
-        signatures.put("COMPRESSOR", Set.of("PISTON"));
-        signatures.put("SMELTERY", Set.of("NETHER_BRICK_FENCE", "NETHER_BRICK"));
-        signatures.put("PRESSURE_CHAMBER", Set.of("SMOOTH_STONE_SLAB", "GLASS", "PISTON"));
-        signatures.put("ARMOR_FORGE", Set.of("ANVIL"));
-        signatures.put("ORE_WASHER", Set.of("CAULDRON"));
-        signatures.put("GRIND_STONE", Set.of("FENCE"));
+    private static boolean blockMatches(String actual, String expected) {
+        if (actual.equals(expected)) return true;
         
-        Set<String> required = signatures.get(machineId);
-        if (required == null) return 0;
-        
-        int count = 0;
-        for (String sig : required) {
-            if (snapshot.uniqueBlocks.contains(sig)) {
-                count++;
-            }
+        // Fuzzy matching for variants
+        if (expected.equals("FENCE")) {
+            // Regular fence (not nether brick)
+            return actual.contains("FENCE") && !actual.contains("NETHER_BRICK");
         }
-        return count;
+        if (expected.equals("NETHER_BRICK_FENCE") || expected.equals("NETHER_BRICK")) {
+            // Nether brick fence or block
+            return actual.contains("NETHER_BRICK");
+        }
+        if (expected.equals("GLASS") && (actual.equals("GLASS") || actual.contains("STAINED_GLASS"))) return true;
+        if (expected.equals("ANVIL") && actual.contains("ANVIL")) return true;
+        if (expected.equals("CAULDRON") && actual.contains("CAULDRON")) return true;
+        if (expected.equals("PISTON") && actual.contains("PISTON")) return true;
+        if (expected.equals("TRAP_DOOR") && actual.contains("TRAPDOOR")) return true;
+        if (expected.equals("FURNACE") && actual.contains("FURNACE")) return true;
+        if (expected.equals("BRICK_BLOCK") && actual.equals("BRICKS")) return true;
+        
+        return false;
     }
     
     /**
-     * Calculate signature bonus
-     */
-    private static double calculateSignatureBonus(String machineId, StructureSnapshot snapshot) {
-        Map<String, Set<String>> signatures = new HashMap<>();
-        
-        signatures.put("MAGIC_WORKBENCH", Set.of("BOOKSHELF"));
-        signatures.put("ENHANCED_CRAFTING_TABLE", Set.of("CRAFTING_TABLE"));
-        signatures.put("ORE_CRUSHER", Set.of("IRON_BARS", "NETHER_BRICK_FENCE"));
-        signatures.put("COMPRESSOR", Set.of("PISTON"));
-        signatures.put("SMELTERY", Set.of("NETHER_BRICK_FENCE", "NETHER_BRICK"));
-        signatures.put("PRESSURE_CHAMBER", Set.of("SMOOTH_STONE_SLAB", "GLASS", "PISTON"));
-        signatures.put("ARMOR_FORGE", Set.of("ANVIL"));
-        signatures.put("GRIND_STONE", Set.of("FENCE"));
-        signatures.put("MAKESHIFT_SMELTERY", Set.of("FURNACE", "BRICK_BLOCK"));
-        signatures.put("ORE_WASHER", Set.of("CAULDRON"));
-        signatures.put("JUICER", Set.of("GLASS"));
-        signatures.put("ANCIENT_ALTAR", Set.of("ENCHANTMENT_TABLE"));
-        signatures.put("GOLD_PAN", Set.of("TRAP_DOOR"));
-        
-        Set<String> requiredSignature = signatures.get(machineId);
-        if (requiredSignature == null) return 0;
-        
-        boolean hasAllSignatures = requiredSignature.stream()
-            .allMatch(snapshot.uniqueBlocks::contains);
-        
-        if (!hasAllSignatures) return -0.5;
-        return 0.4;
-    }
-    
-    /**
-     * Normalize block ID
+     * Normalize block ID from Minecraft block
      */
     private static String normalizeBlockId(Block block) {
         return normalizeMaterial(block.toString());
     }
     
     /**
-     * ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ ENHANCED: Normalize material name with comprehensive mappings
+     * Normalize material name from JSON
      */
     private static String normalizeMaterial(String material) {
-        // Clean up block name format
         material = material.replace("Block{minecraft:", "")
                          .replace("}", "")
                          .toUpperCase();
@@ -688,27 +504,26 @@ public class MultiblockDetector {
         mappings.put("CRAFTING_TABLE", "CRAFTING_TABLE");
         mappings.put("BOOKSHELF", "BOOKSHELF");
         mappings.put("DISPENSER", "DISPENSER");
-        mappings.put("IRON_BLOCK", "IRON_BLOCK");
         mappings.put("ANVIL", "ANVIL");
         mappings.put("CHIPPED_ANVIL", "ANVIL");
         mappings.put("DAMAGED_ANVIL", "ANVIL");
-        mappings.put("ENCHANTING_TABLE", "ENCHANTMENT_TABLE");
-        mappings.put("ENCHANTMENT_TABLE", "ENCHANTMENT_TABLE");
         
-        // Fences - all types map to FENCE
+        // Fences - map all wood fences to FENCE (but keep NETHER_BRICK separate!)
         String[] fenceTypes = {"OAK", "SPRUCE", "BIRCH", "JUNGLE", "ACACIA", "DARK_OAK", 
                                "MANGROVE", "CHERRY", "BAMBOO", "CRIMSON", "WARPED"};
         for (String type : fenceTypes) {
             mappings.put(type + "_FENCE", "FENCE");
         }
         
-        // Iron Bars & alternatives
-        mappings.put("IRON_BARS", "IRON_BARS");
-        mappings.put("BLACK_STAINED_GLASS_PANE", "IRON_BARS");
-        mappings.put("GRAY_STAINED_GLASS_PANE", "IRON_BARS");
-        mappings.put("GLASS_PANE", "IRON_BARS");
+        // Nether brick - keep separate from regular fence!
+        mappings.put("NETHER_BRICK_FENCE", "NETHER_BRICK_FENCE");
+        mappings.put("NETHER_BRICK_WALL", "NETHER_BRICK_FENCE");
+        mappings.put("NETHER_BRICKS", "NETHER_BRICK");
         
-        // Glass (all colors)
+        // Iron Bars
+        mappings.put("IRON_BARS", "IRON_BARS");
+        
+        // Glass
         String[] glassColors = {"WHITE", "ORANGE", "MAGENTA", "LIGHT_BLUE", "YELLOW", "LIME", 
                                 "PINK", "CYAN", "PURPLE", "BLUE", "BROWN", "GREEN", "RED", 
                                 "BLACK", "GRAY", "LIGHT_GRAY"};
@@ -727,11 +542,6 @@ public class MultiblockDetector {
         mappings.put("LAVA_CAULDRON", "CAULDRON");
         mappings.put("POWDER_SNOW_CAULDRON", "CAULDRON");
         
-        // Nether Brick
-        mappings.put("NETHER_BRICK_FENCE", "NETHER_BRICK_FENCE");
-        mappings.put("NETHER_BRICK_WALL", "NETHER_BRICK_FENCE");
-        mappings.put("NETHER_BRICKS", "NETHER_BRICK");
-        
         // Furnace
         mappings.put("FURNACE", "FURNACE");
         mappings.put("BLAST_FURNACE", "FURNACE");
@@ -740,45 +550,20 @@ public class MultiblockDetector {
         // Bricks
         mappings.put("BRICKS", "BRICK_BLOCK");
         
-        // Trapdoor - all types
+        // Trapdoor
         String[] trapdoorTypes = {"OAK", "SPRUCE", "BIRCH", "JUNGLE", "ACACIA", "DARK_OAK",
-                                  "MANGROVE", "CHERRY", "BAMBOO", "CRIMSON", "WARPED", "IRON",
-                                  "COPPER", "EXPOSED_COPPER", "WEATHERED_COPPER", "OXIDIZED_COPPER",
-                                  "WAXED_COPPER", "WAXED_EXPOSED_COPPER", "WAXED_WEATHERED_COPPER",
-                                  "WAXED_OXIDIZED_COPPER"};
+                                  "MANGROVE", "CHERRY", "BAMBOO", "CRIMSON", "WARPED", "IRON"};
         for (String type : trapdoorTypes) {
             mappings.put(type + "_TRAPDOOR", "TRAP_DOOR");
         }
         
         // Stone
-        mappings.put("STONE_BRICKS", "SMOOTH_BRICK");
         mappings.put("SMOOTH_STONE_SLAB", "SMOOTH_STONE_SLAB");
         
+        // Fire
+        mappings.put("FIRE", "FIRE");
+        mappings.put("SOUL_FIRE", "FIRE");
+        
         return mappings.getOrDefault(material, material);
-    }
-    
-    /**
-     * Log snapshot for debugging
-     */
-    private static void logSnapshot(StructureSnapshot snapshot) {
-        BapelSlimefunMod.LOGGER.info("[Detector] === Structure Snapshot ===");
-        BapelSlimefunMod.LOGGER.info("[Detector] Unique blocks: {}", snapshot.uniqueBlocks);
-        BapelSlimefunMod.LOGGER.info("[Detector] Block counts:");
-        
-        snapshot.blockCounts.forEach((block, count) -> 
-            BapelSlimefunMod.LOGGER.info("[Detector]   - {} x{}", block, count)
-        );
-        
-        BapelSlimefunMod.LOGGER.info("[Detector] =======================");
-    }
-    
-    /**
-     * Get detailed report
-     */
-    public static String getDetectionReport(DetectionResult result) {
-        if (result == null) return "No machine detected";
-        
-        return String.format("Detected: %s (%.0f%% confidence)", 
-            result.getMachineId(), result.getConfidence() * 100);
     }
 }
