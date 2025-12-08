@@ -22,7 +22,6 @@ public abstract class ContainerScreenMixin {
     @Inject(method = "init", at = @At("RETURN"))
     private void onInit(CallbackInfo ci) {
         try {
-            // FIX: Force hide overlay from previous container
             RecipeOverlayRenderer.hide();
             
             AbstractContainerScreen<?> screen = (AbstractContainerScreen<?>) (Object) this;
@@ -30,8 +29,6 @@ public abstract class ContainerScreenMixin {
             
             if (title != null) {
                 String titleString = title.getString();
-                
-                // UPDATED: Use UnifiedAutomationManager instead of MachineAutomationHandler
                 UnifiedAutomationManager.onMachineOpen(titleString);
             }
         } catch (Exception e) {
@@ -42,10 +39,7 @@ public abstract class ContainerScreenMixin {
     @Inject(method = "removed", at = @At("HEAD"))
     private void onRemoved(CallbackInfo ci) {
         try {
-            // Hide overlay
             RecipeOverlayRenderer.hide();
-            
-            // UPDATED: Use UnifiedAutomationManager instead of MachineAutomationHandler
             UnifiedAutomationManager.onMachineClose();
         } catch (Exception e) {
             BapelSlimefunMod.LOGGER.error("ERROR in onRemoved mixin", e);
@@ -55,8 +49,6 @@ public abstract class ContainerScreenMixin {
     @Inject(method = "render", at = @At("TAIL"))
     private void onRender(GuiGraphics graphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
         try {
-            // CRITICAL FIX: Render overlay at TAIL (after everything else)
-            // This ensures it appears on top of all GUI elements including tooltips
             RecipeOverlayRenderer.render(graphics, partialTick);
         } catch (Exception e) {
             BapelSlimefunMod.LOGGER.error("ERROR rendering recipe overlay", e);
@@ -67,7 +59,6 @@ public abstract class ContainerScreenMixin {
     private void onKeyPressed(int keyCode, int scanCode, int modifiers, 
                              CallbackInfoReturnable<Boolean> cir) {
         try {
-            // UPDATED: Use UnifiedAutomationManager for automation toggle
             if (ModKeybinds.getToggleAutomationKey().matches(keyCode, scanCode)) {
                 UnifiedAutomationManager.toggleAutomation();
                 cir.setReturnValue(true);
@@ -85,6 +76,21 @@ public abstract class ContainerScreenMixin {
             }
         } catch (Exception e) {
             BapelSlimefunMod.LOGGER.error("ERROR in onKeyPressed mixin", e);
+        }
+    }
+    
+    // ✅ NEW: Handle character input for search
+    @Inject(method = "charTyped", at = @At("HEAD"), cancellable = true)
+    private void onCharTyped(char chr, int modifiers, CallbackInfoReturnable<Boolean> cir) {
+        try {
+            boolean handled = RecipeOverlayInputHandler.handleCharTyped(chr, modifiers);
+            
+            if (handled) {
+                cir.setReturnValue(true);
+                cir.cancel();
+            }
+        } catch (Exception e) {
+            BapelSlimefunMod.LOGGER.error("ERROR in onCharTyped mixin", e);
         }
     }
     
