@@ -1,6 +1,5 @@
 package com.bapel_slimefun_mod.automation;
 
-import com.bapel_slimefun_mod.BapelSlimefunMod;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.glfw.GLFW;
 import com.bapel_slimefun_mod.debug.PerformanceMonitor;
@@ -19,14 +18,15 @@ public class RecipeOverlayInputHandler {
                 return false;
             }
             
-            if (key == GLFW.GLFW_KEY_R) {
-                return handleToggleKey();
-            }
-            
+            // 1. Jika overlay tidak terlihat, hanya tombol R yang bisa membukanya
             if (!RecipeOverlayRenderer.isVisible()) {
+                if (key == GLFW.GLFW_KEY_R) {
+                    return handleToggleKey();
+                }
                 return false;
             }
             
+            // 2. Tombol ESCAPE selalu prioritas untuk menutup/keluar
             if (key == GLFW.GLFW_KEY_ESCAPE) {
                 if (RecipeOverlayRenderer.isSearchMode()) {
                     RecipeOverlayRenderer.toggleSearchMode();
@@ -36,21 +36,28 @@ public class RecipeOverlayInputHandler {
                 return true;
             }
             
-            if (key == GLFW.GLFW_KEY_BACKSPACE && RecipeOverlayRenderer.isSearchMode()) {
-                RecipeOverlayRenderer.handleBackspace();
-                return true;
-            }
-            
+            // 3. PRIORITAS UTAMA: Handle Input Search
+            // Wajib ditaruh SEBELUM cek tombol R atau Navigasi (W, S, dll)
+            // agar huruf R, S, C, dll masuk sebagai teks search.
             if (RecipeOverlayRenderer.isSearchMode()) {
+                // Handle Backspace
+                if (key == GLFW.GLFW_KEY_BACKSPACE) {
+                    RecipeOverlayRenderer.handleBackspace();
+                    return true;
+                }
+                
+                // Handle huruf A-Z
                 if (key >= GLFW.GLFW_KEY_A && key <= GLFW.GLFW_KEY_Z) {
                     boolean shift = (modifiers & GLFW.GLFW_MOD_SHIFT) != 0;
                     char chr = (char) (key - GLFW.GLFW_KEY_A + (shift ? 'A' : 'a'));
                     RecipeOverlayRenderer.handleCharTyped(chr, modifiers);
                     return true;
+                // Handle angka 0-9
                 } else if (key >= GLFW.GLFW_KEY_0 && key <= GLFW.GLFW_KEY_9) {
                     char chr = (char) (key - GLFW.GLFW_KEY_0 + '0');
                     RecipeOverlayRenderer.handleCharTyped(chr, modifiers);
                     return true;
+                // Handle spasi dan minus
                 } else if (key == GLFW.GLFW_KEY_SPACE) {
                     RecipeOverlayRenderer.handleCharTyped(' ', modifiers);
                     return true;
@@ -58,9 +65,17 @@ public class RecipeOverlayInputHandler {
                     RecipeOverlayRenderer.handleCharTyped('-', modifiers);
                     return true;
                 }
+                
+                // Konsumsi semua tombol lain saat mode search agar tidak memicu navigasi
                 return true;
             }
             
+            // 4. Handle Toggle (R) - Hanya dieksekusi jika TIDAK sedang search
+            if (key == GLFW.GLFW_KEY_R) {
+                return handleToggleKey();
+            }
+            
+            // 5. Navigasi (Scroll/Select) - Hanya jika TIDAK sedang search
             long now = System.currentTimeMillis();
             if (now - lastInputTime < INPUT_COOLDOWN) {
                 return true;
@@ -89,25 +104,33 @@ public class RecipeOverlayInputHandler {
                     break;
                     
                 case GLFW.GLFW_KEY_PAGE_UP:
-                    for (int i = 0; i < 5; i++) RecipeOverlayRenderer.moveUp();
+                    for (int i = 0; i < 5; i++) {
+                        RecipeOverlayRenderer.moveUp();
+                    }
                     handled = true;
                     break;
                     
                 case GLFW.GLFW_KEY_PAGE_DOWN:
-                    for (int i = 0; i < 5; i++) RecipeOverlayRenderer.moveDown();
+                    for (int i = 0; i < 5; i++) {
+                        RecipeOverlayRenderer.moveDown();
+                    }
                     handled = true;
                     break;
                     
                 case GLFW.GLFW_KEY_HOME:
                     int currentIndex = RecipeOverlayRenderer.getSelectedIndex();
-                    for (int i = 0; i < currentIndex; i++) RecipeOverlayRenderer.moveUp();
+                    for (int i = 0; i < currentIndex; i++) {
+                        RecipeOverlayRenderer.moveUp();
+                    }
                     handled = true;
                     break;
                     
                 case GLFW.GLFW_KEY_END:
                     int recipesCount = RecipeOverlayRenderer.getFilteredRecipes().size();
                     currentIndex = RecipeOverlayRenderer.getSelectedIndex();
-                    for (int i = currentIndex; i < recipesCount - 1; i++) RecipeOverlayRenderer.moveDown();
+                    for (int i = currentIndex; i < recipesCount - 1; i++) {
+                        RecipeOverlayRenderer.moveDown();
+                    }
                     handled = true;
                     break;
             }

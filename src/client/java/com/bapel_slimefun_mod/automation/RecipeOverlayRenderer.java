@@ -265,10 +265,10 @@ public class RecipeOverlayRenderer {
         
         searchMode = !searchMode;
         if (searchMode) {
-            // Entering search mode - keep existing query if any
+            searchQuery = "";
             sendPlayerMessage("§e[Search] Type to filter recipes...");
         } else {
-            // Exiting search mode - keep query but reapply all recipes
+            searchQuery = "";
             applyFilterAndSort();
             sendPlayerMessage("§7[Search] Search mode disabled");
         }
@@ -432,7 +432,8 @@ public class RecipeOverlayRenderer {
                 return;
             }
             
-            if (!overlayVisible || currentMachine == null || filteredRecipes.isEmpty()) {
+            // Allow overlay to show even with empty results (for search mode)
+            if (!overlayVisible || currentMachine == null) {
                 return;
             }
             
