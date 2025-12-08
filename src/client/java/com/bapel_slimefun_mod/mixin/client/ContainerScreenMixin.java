@@ -9,7 +9,6 @@ import com.bapel_slimefun_mod.automation.RecipeOverlayRenderer;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
-import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -79,18 +78,22 @@ public abstract class ContainerScreenMixin {
         }
     }
     
-    // ✅ NEW: Handle character input for search
-    @Inject(method = "charTyped", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "charTyped", at = @At("HEAD"), cancellable = true, require = 0)
     private void onCharTyped(char chr, int modifiers, CallbackInfoReturnable<Boolean> cir) {
         try {
-            boolean handled = RecipeOverlayInputHandler.handleCharTyped(chr, modifiers);
+            if (!RecipeOverlayRenderer.isVisible()) {
+                return;
+            }
             
-            if (handled) {
-                cir.setReturnValue(true);
-                cir.cancel();
+            if (RecipeOverlayRenderer.isSearchMode()) {
+                boolean handled = RecipeOverlayRenderer.handleCharTyped(chr, modifiers);
+                if (handled) {
+                    cir.setReturnValue(true);
+                    cir.cancel();
+                }
             }
         } catch (Exception e) {
-            BapelSlimefunMod.LOGGER.error("ERROR in onCharTyped mixin", e);
+            // Silent fail if method not available
         }
     }
     

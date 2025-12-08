@@ -16,34 +16,26 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * ✅ ENHANCED: Recipe Overlay with Search/Filter and Compact Mode
- * 
- * NEW FEATURES:
- * 1. Search/Filter: Type to filter recipes by name
- * 2. Compact Mode: Toggle between normal and compact view
- * 3. Sort Options: Sort by name, completion, craftable
- */
 public class RecipeOverlayRenderer {
     private static final Gson GSON = new Gson();
     
     // State
     private static boolean overlayVisible = false;
     private static List<RecipeData> availableRecipes = new ArrayList<>();
-    private static List<RecipeData> filteredRecipes = new ArrayList<>(); // ✅ NEW: Filtered list
+    private static List<RecipeData> filteredRecipes = new ArrayList<>();
     private static int selectedIndex = 0;
     private static int scrollOffset = 0;
     private static SlimefunMachineData currentMachine = null;
     
-    // ✅ NEW: Search state
+    // Search state
     private static String searchQuery = "";
     private static boolean searchMode = false;
     private static long lastSearchInput = 0;
     
-    // ✅ NEW: Compact mode
+    // Compact mode
     private static boolean compactMode = false;
     
-    // ✅ NEW: Sort mode
+    // Sort mode
     private static SortMode sortMode = SortMode.DEFAULT;
     
     public enum SortMode {
@@ -138,7 +130,7 @@ public class RecipeOverlayRenderer {
         bgColor = 0xE0000000;
         borderColor = 0xFF000000;
         selectedBgColor = 0xC8329632;
-        searchBgColor = 0xE0001540; // ✅ NEW: Dark blue for search
+        searchBgColor = 0xE0001540;
         colorsLoaded = true;
     }
     
@@ -195,7 +187,6 @@ public class RecipeOverlayRenderer {
             int selA = selBg.get("a").getAsInt();
             selectedBgColor = (selA << 24) | (selR << 16) | (selG << 8) | selB;
             
-            // ✅ NEW: Search background color
             searchBgColor = 0xE0001540;
             
             colorsLoaded = true;
@@ -218,7 +209,6 @@ public class RecipeOverlayRenderer {
                 return;
             }
             
-            // ✅ Apply initial filter and sort
             applyFilterAndSort();
             
             overlayVisible = true;
@@ -227,7 +217,6 @@ public class RecipeOverlayRenderer {
             fadeStartTime = System.currentTimeMillis();
             fadingIn = true;
             
-            // ✅ Reset search
             searchQuery = "";
             searchMode = false;
             
@@ -247,7 +236,6 @@ public class RecipeOverlayRenderer {
         availableRecipes = new ArrayList<>();
         filteredRecipes = new ArrayList<>();
         
-        // ✅ Reset search
         searchQuery = "";
         searchMode = false;
         
@@ -272,33 +260,31 @@ public class RecipeOverlayRenderer {
         }
     }
     
-    // ✅ NEW: Toggle search mode
     public static void toggleSearchMode() {
         if (!overlayVisible) return;
         
         searchMode = !searchMode;
         if (searchMode) {
-            searchQuery = "";
+            // Entering search mode - keep existing query if any
             sendPlayerMessage("§e[Search] Type to filter recipes...");
         } else {
-            searchQuery = "";
+            // Exiting search mode - keep query but reapply all recipes
             applyFilterAndSort();
             sendPlayerMessage("§7[Search] Search mode disabled");
         }
     }
     
-    // ✅ NEW: Toggle compact mode
     public static void toggleCompactMode() {
         if (!overlayVisible) return;
         
         compactMode = !compactMode;
         
         if (compactMode) {
-            entryHeight = 20; // Compact: 20px
-            maxVisible = 15; // Show more items
+            entryHeight = 20;
+            maxVisible = 15;
             sendPlayerMessage("§a[View] Compact mode enabled");
         } else {
-            entryHeight = 40; // Normal: 40px
+            entryHeight = 40;
             maxVisible = 8;
             sendPlayerMessage("§7[View] Normal mode enabled");
         }
@@ -306,7 +292,6 @@ public class RecipeOverlayRenderer {
         updateScrollOffset();
     }
     
-    // ✅ NEW: Cycle sort mode
     public static void cycleSortMode() {
         if (!overlayVisible) return;
         
@@ -319,12 +304,12 @@ public class RecipeOverlayRenderer {
         sendPlayerMessage("§b[Sort] " + sortMode.getDisplayName());
     }
     
-    // ✅ NEW: Handle text input for search
     public static boolean handleCharTyped(char chr, int modifiers) {
-        if (!overlayVisible || !searchMode) return false;
+        if (!overlayVisible || !searchMode) {
+            return false;
+        }
         
-        // Valid characters for search
-        if (Character.isLetterOrDigit(chr) || chr == ' ' || chr == '_' || chr == '-') {
+        if (chr >= 32 && chr <= 126) {
             searchQuery += chr;
             applyFilterAndSort();
             lastSearchInput = System.currentTimeMillis();
@@ -334,7 +319,6 @@ public class RecipeOverlayRenderer {
         return false;
     }
     
-    // ✅ NEW: Handle backspace in search
     public static boolean handleBackspace() {
         if (!overlayVisible || !searchMode) return false;
         
@@ -348,12 +332,9 @@ public class RecipeOverlayRenderer {
         return false;
     }
     
-    // ✅ NEW: Apply filter and sort
     private static void applyFilterAndSort() {
-        // Start with all recipes
         filteredRecipes = new ArrayList<>(availableRecipes);
         
-        // Apply search filter
         if (!searchQuery.isEmpty()) {
             String query = searchQuery.toLowerCase();
             filteredRecipes = filteredRecipes.stream()
@@ -364,7 +345,6 @@ public class RecipeOverlayRenderer {
                 .collect(Collectors.toList());
         }
         
-        // Apply sort
         Minecraft mc = Minecraft.getInstance();
         LocalPlayer player = mc.player;
         List<ItemStack> inventory = (player != null) ? getCachedPlayerInventory(player) : new ArrayList<>();
@@ -399,11 +379,9 @@ public class RecipeOverlayRenderer {
                 
             case DEFAULT:
             default:
-                // Keep original order
                 break;
         }
         
-        // Reset selection if out of bounds
         if (selectedIndex >= filteredRecipes.size()) {
             selectedIndex = Math.max(0, filteredRecipes.size() - 1);
         }
@@ -466,99 +444,93 @@ public class RecipeOverlayRenderer {
                 
                 renderBackground(graphics, yPos, alpha);
                 yPos += padding;
+                
                 yPos = renderTitle(graphics, yPos, alpha);
                 yPos += spacing;
                 
-                // ✅ ALWAYS render search bar (click to activate)
-                yPos = renderSearchBar(graphics, yPos, alpha);
+                yPos = renderControlButtons(graphics, yPos, alpha);
                 yPos += spacing;
                 
                 yPos = renderRecipeList(graphics, yPos, alpha);
                 
-                // ✅ Render clickable status bar
-                renderStatusBar(graphics, yPos, alpha);
-                
-                if (showKeybinds) {
-                    renderKeybindHints(graphics, yPos + 12, alpha);
-                }
             } catch (Exception ignored) {}
         } finally {
             PerformanceMonitor.end("RecipeOverlay.render");
         }
     }
     
-    // ✅ NEW: Render search bar (always visible, click to activate)
-    private static int renderSearchBar(GuiGraphics graphics, int yPos, int alpha) {
+    private static int renderControlButtons(GuiGraphics graphics, int yPos, int alpha) {
         try {
             Minecraft mc = Minecraft.getInstance();
+            int buttonHeight = 20;
+            int buttonY = yPos;
+            int currentX = posX + 4;
+            int buttonSpacing = 4;
             
-            // Background (darker if active, lighter if inactive)
-            int searchAlpha = Math.max(200, alpha);
-            int bgColor = searchMode ? searchBgColor : 0xE0002050; // Blue if active, purple if inactive
-            int finalSearchBg = applyAlpha(bgColor, searchAlpha);
-            graphics.fill(posX + 4, yPos, posX + width - 4, yPos + 20, finalSearchBg);
+            // Search button - full width
+            int searchBgColor = searchMode ? 0xE0004080 : 0xE0002050;
+            int searchWidth = width - 8;
+            int finalSearchBg = applyAlpha(searchBgColor, alpha);
+            graphics.fill(currentX, buttonY, currentX + searchWidth, buttonY + buttonHeight, finalSearchBg);
             
-            // Search icon
-            String searchIcon = "🔍";
-            graphics.drawString(mc.font, searchIcon, posX + 8, yPos + 6, 0xFFFFFFFF);
-            
-            // Search text or hint
             String displayText;
             int textColor;
             
             if (searchMode) {
-                // Active: show current query or placeholder
-                displayText = searchQuery.isEmpty() ? "Type to search..." : searchQuery;
-                textColor = searchQuery.isEmpty() ? 0xFF888888 : 0xFFFFFFFF;
-                
-                // Cursor blink
-                boolean showCursor = (System.currentTimeMillis() % 1000) < 500;
-                if (showCursor && !searchQuery.isEmpty()) {
-                    displayText += "_";
+                if (searchQuery.isEmpty()) {
+                    displayText = "Type to search...";
+                    textColor = 0xFF888888;
+                } else {
+                    displayText = searchQuery;
+                    textColor = 0xFFFFFFFF;
+                    
+                    // Add cursor blink
+                    boolean showCursor = (System.currentTimeMillis() % 1000) < 500;
+                    if (showCursor) {
+                        displayText += "_";
+                    }
                 }
             } else {
-                // Inactive: show click hint
-                displayText = "Click to search...";
+                displayText = "Search";
                 textColor = 0xFF888888;
             }
             
-            graphics.drawString(mc.font, displayText, posX + 24, yPos + 6, textColor);
+            graphics.drawString(mc.font, displayText, currentX + 6, buttonY + 6, textColor);
             
-            return yPos + 20;
+            buttonY += buttonHeight + buttonSpacing;
+            currentX = posX + 4;
+            
+            // Compact button
+            String compactText = compactMode ? "Compact" : "Normal";
+            int compactColor = compactMode ? 0xFF00FF00 : 0xFF888888;
+            int compactBgColor = compactMode ? 0xE0003030 : 0xE0202020;
+            int compactWidth = mc.font.width(compactText) + 12;
+            
+            graphics.fill(currentX, buttonY, currentX + compactWidth, buttonY + buttonHeight, 
+                         applyAlpha(compactBgColor, alpha));
+            graphics.drawString(mc.font, compactText, currentX + 6, buttonY + 6, compactColor);
+            
+            currentX += compactWidth + buttonSpacing;
+            
+            // Sort button
+            String sortText = sortMode.getDisplayName();
+            int sortWidth = mc.font.width(sortText) + 12;
+            int sortBgColor = 0xE0202020;
+            
+            graphics.fill(currentX, buttonY, currentX + sortWidth, buttonY + buttonHeight,
+                         applyAlpha(sortBgColor, alpha));
+            graphics.drawString(mc.font, sortText, currentX + 6, buttonY + 6, 0xFF5599FF);
+            
+            currentX += sortWidth + buttonSpacing;
+            
+            // Recipe count
+            String countText = "(" + filteredRecipes.size() + "/" + availableRecipes.size() + ")";
+            graphics.drawString(mc.font, countText, currentX, buttonY + 6, 0xFF888888);
+            
+            return buttonY + buttonHeight;
         } catch (Exception e) {
-            return yPos + 20;
+            return yPos + 44;
         }
-    }
-    
-    // ✅ NEW: Render clickable status bar
-    private static void renderStatusBar(GuiGraphics graphics, int yPos, int alpha) {
-        try {
-            Minecraft mc = Minecraft.getInstance();
-            
-            int textX = posX + 8;
-            
-            // ✅ Compact Mode Button (clickable)
-            String modeText = compactMode ? "§a[Compact]" : "§7[Normal]";
-            graphics.drawString(mc.font, modeText, textX, yPos, compactMode ? 0xFF00FF00 : 0xFF888888);
-            int modeWidth = mc.font.width(compactMode ? "[Compact]" : "[Normal]");
-            
-            // Separator
-            textX += modeWidth + 8;
-            graphics.drawString(mc.font, "§7|", textX, yPos, 0xFF888888);
-            textX += 8;
-            
-            // ✅ Sort Button (clickable)
-            String sortText = "§b[Sort: " + sortMode.getDisplayName() + "]";
-            graphics.drawString(mc.font, sortText, textX, yPos, 0xFF5599FF);
-            int sortWidth = mc.font.width("[Sort: " + sortMode.getDisplayName() + "]");
-            
-            textX += sortWidth + 8;
-            
-            // ✅ Recipe Count (not clickable)
-            String countText = "§7(" + filteredRecipes.size() + "/" + availableRecipes.size() + ")";
-            graphics.drawString(mc.font, countText, textX, yPos, 0xFF888888);
-            
-        } catch (Exception ignored) {}
     }
     
     private static int getCachedAlpha() {
@@ -626,7 +598,6 @@ public class RecipeOverlayRenderer {
     
     private static int renderRecipeList(GuiGraphics graphics, int yPos, int alpha) {
         if (filteredRecipes == null || filteredRecipes.isEmpty()) {
-            // Show "No results" message
             Minecraft mc = Minecraft.getInstance();
             String noResults = searchQuery.isEmpty() ? "No recipes available" : "No recipes match: " + searchQuery;
             graphics.drawCenteredString(mc.font, noResults, posX + width / 2, yPos + 20, 0xFFFF5555);
@@ -693,7 +664,6 @@ public class RecipeOverlayRenderer {
             
             String displayName = recipe.getDisplayString();
             
-            // ✅ Highlight search matches
             if (!searchQuery.isEmpty() && displayName.toLowerCase().contains(searchQuery.toLowerCase())) {
                 displayName = highlightMatch(displayName, searchQuery);
             }
@@ -702,7 +672,6 @@ public class RecipeOverlayRenderer {
             graphics.drawString(mc.font, displayName, textX, textY, nameColor);
             textY += mc.font.lineHeight;
             
-            // ✅ Compact mode: Skip input details
             if (!compactMode && showInputCount) {
                 Map<String, Integer> inputs = recipe.getGroupedInputs();
                 StringBuilder inputStr = new StringBuilder();
@@ -733,7 +702,6 @@ public class RecipeOverlayRenderer {
                 int completionColor = completion >= 1.0f ? 0xFF00FF00 : 0xFFFF5555;
                 String completionText = String.format("%.0f%%", completion * 100);
                 
-                // ✅ Compact mode: Show on same line as name
                 if (compactMode) {
                     int textWidth = mc.font.width(displayName);
                     graphics.drawString(mc.font, completionText, textX + textWidth + 8, yPos + 4, completionColor);
@@ -748,9 +716,7 @@ public class RecipeOverlayRenderer {
         }
     }
     
-    // ✅ NEW: Highlight matching text
     private static String highlightMatch(String text, String query) {
-        // Simple highlight - wrap match with color codes
         int index = text.toLowerCase().indexOf(query.toLowerCase());
         if (index >= 0) {
             String before = text.substring(0, index);
@@ -761,33 +727,17 @@ public class RecipeOverlayRenderer {
         return text;
     }
     
-    private static void renderKeybindHints(GuiGraphics graphics, int yPos, int alpha) {
-        try {
-            Minecraft mc = Minecraft.getInstance();
-            int textColor = 0xFFFFFFFF;
-            
-            // ✅ NEW: Simplified hints (click on UI elements)
-            String hints = searchMode ? 
-                "[ESC] Exit Search  [Backspace] Clear" :
-                "[↑↓] Navigate  [Enter] Select  [C] Compact  [S] Sort";
-            
-            graphics.drawCenteredString(mc.font, hints, posX + width / 2 + 1, yPos + 1, 0xFF000000);
-            graphics.drawCenteredString(mc.font, hints, posX + width / 2, yPos, textColor);
-        } catch (Exception ignored) {}
-    }
-    
     private static int calculateTotalHeight() {
         try {
             Minecraft mc = Minecraft.getInstance();
             int height = padding * 2;
+            
             height += mc.font.lineHeight + spacing;
             
-            // ✅ Add status bar + keybinds
-            height += 12; // Status bar
+            height += 20 + spacing + 20 + spacing;
             
-            if (showKeybinds) {
-                height += mc.font.lineHeight + spacing;
-            }
+            int visibleRecipes = Math.min(maxVisible, filteredRecipes.size());
+            height += visibleRecipes * (entryHeight + spacing);
             
             return Math.min(height, maxHeight);
         } catch (Exception e) { 
@@ -892,78 +842,61 @@ public class RecipeOverlayRenderer {
     public static List<RecipeData> getAvailableRecipes() { 
         return availableRecipes == null ? new ArrayList<>() : new ArrayList<>(availableRecipes); 
     }
+    public static List<RecipeData> getFilteredRecipes() { 
+        return filteredRecipes == null ? new ArrayList<>() : new ArrayList<>(filteredRecipes); 
+    }
     public static SlimefunMachineData getCurrentMachine() { return currentMachine; }
     public static int getScrollOffset() { return scrollOffset; }
     public static int getPosX() { return posX; }
     public static int getPosY() { return posY; }
     public static int getEntryHeight() { return entryHeight; }
     
-    // ✅ NEW: Getters for new features
     public static boolean isSearchMode() { return searchMode; }
     public static boolean isCompactMode() { return compactMode; }
     public static String getSearchQuery() { return searchQuery; }
     public static SortMode getSortMode() { return sortMode; }
     
-    // ✅ NEW: Click detection methods for UI buttons
-    public static boolean isClickInSearchBar(double mouseX, double mouseY) {
+    public static boolean isClickInSearchButton(double mouseX, double mouseY) {
         if (!overlayVisible) return false;
         
-        // Search bar area (below title, before recipe list)
-        int searchY = posY + padding + 9 + spacing + spacing;
-        int searchHeight = 20;
+        Minecraft mc = Minecraft.getInstance();
+        int buttonY = posY + padding + mc.font.lineHeight + spacing;
+        int buttonHeight = 20;
+        int searchWidth = width - 8;
         
-        return mouseX >= posX + 4 && mouseX <= posX + width - 4 &&
-               mouseY >= searchY && mouseY <= searchY + searchHeight;
+        return mouseX >= posX + 4 && mouseX <= posX + 4 + searchWidth &&
+               mouseY >= buttonY && mouseY <= buttonY + buttonHeight;
     }
     
     public static boolean isClickInCompactButton(double mouseX, double mouseY) {
         if (!overlayVisible) return false;
         
-        // Compact button (bottom left of status bar)
-        int statusY = calculateStatusBarY();
-        
         Minecraft mc = Minecraft.getInstance();
-        String compactText = compactMode ? "Compact" : "Normal";
-        int textWidth = mc.font.width(compactText);
+        int buttonY = posY + padding + mc.font.lineHeight + spacing + 20 + 4;
+        int buttonHeight = 20;
         
-        return mouseX >= posX + 8 && mouseX <= posX + 8 + textWidth &&
-               mouseY >= statusY && mouseY <= statusY + 9;
+        String compactText = compactMode ? "Compact" : "Normal";
+        int compactWidth = mc.font.width(compactText) + 12;
+        
+        return mouseX >= posX + 4 && mouseX <= posX + 4 + compactWidth &&
+               mouseY >= buttonY && mouseY <= buttonY + buttonHeight;
     }
     
     public static boolean isClickInSortButton(double mouseX, double mouseY) {
         if (!overlayVisible) return false;
         
-        // Sort button (middle of status bar)
-        int statusY = calculateStatusBarY();
-        
         Minecraft mc = Minecraft.getInstance();
-        String sortText = "Sort: " + sortMode.getDisplayName();
-        int compactWidth = mc.font.width(compactMode ? "Compact" : "Normal");
-        int sortX = posX + 8 + compactWidth + 20; // After compact text
-        int sortWidth = mc.font.width(sortText);
+        int buttonY = posY + padding + mc.font.lineHeight + spacing + 20 + 4;
+        int buttonHeight = 20;
+        
+        String compactText = compactMode ? "Compact" : "Normal";
+        int compactWidth = mc.font.width(compactText) + 12;
+        int sortX = posX + 4 + compactWidth + 4;
+        
+        String sortText = sortMode.getDisplayName();
+        int sortWidth = mc.font.width(sortText) + 12;
         
         return mouseX >= sortX && mouseX <= sortX + sortWidth &&
-               mouseY >= statusY && mouseY <= statusY + 9;
-    }
-    
-    private static int calculateStatusBarY() {
-        try {
-            Minecraft mc = Minecraft.getInstance();
-            int yPos = posY + padding;
-            yPos += mc.font.lineHeight + spacing;
-            
-            if (searchMode) {
-                yPos += 20 + spacing;
-            }
-            
-            yPos += spacing;
-            
-            int visibleRecipes = Math.min(maxVisible, filteredRecipes.size());
-            yPos += visibleRecipes * (entryHeight + spacing);
-            
-            return yPos;
-        } catch (Exception e) {
-            return posY + 200;
-        }
+               mouseY >= buttonY && mouseY <= buttonY + buttonHeight;
     }
 }
