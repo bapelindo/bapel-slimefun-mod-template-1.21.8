@@ -29,7 +29,7 @@ public class MultiblockAutoClicker {
     private static BlockPos dispenserPos = null;
     private static String machineId = null;
     private static long lastClickTime = 0;
-    private static final long CLICK_INTERVAL = 1000; // 1 second
+    private static final long CLICK_INTERVAL = 100; // 1 second
     
     private static int targetClickCount = 0;
     private static int currentClickCount = 0;
