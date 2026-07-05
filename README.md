@@ -1,6 +1,7 @@
 # Bapel Slimefun Addon 🚀
 
-![Java](https://img.shields.io/badge/Java-21%2B-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
+![Java](https://img.shields.io/badge/Java-25%2B-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
+![Minecraft](https://img.shields.io/badge/Minecraft-26.1.2-62B47A?style=for-the-badge&logo=minecraft&logoColor=white)
 ![Fabric](https://img.shields.io/badge/Fabric-Modloader-CAA698?style=for-the-badge&logo=fabric&logoColor=white)
 ![Slimefun](https://img.shields.io/badge/Slimefun-Addon-brightgreen?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Status-Active_Development-blue?style=for-the-badge)
@@ -32,14 +33,14 @@ Proyek ini dibangun menggunakan teknologi berikut:
 
 | Komponen | Deskripsi |
 | :--- | :--- |
-| **Language** | Java 21 |
+| **Language** | Java 25 |
 | **Build Tool** | Gradle (Kotlin DSL) |
 | **Platform** | Fabric / PaperMC |
 | **Dependency** | Slimefun4 API, Dough API |
 
 ## 🚀 Installation & Setup
 
-1.  Pastikan server Anda menjalankan **Java 21**.
+1.  Pastikan server/klien Anda menjalankan **Java 25** (wajib untuk Minecraft 26.1.2) dan Minecraft **26.1.2**.
 2.  Install **Slimefun4** versi terbaru.
 3.  Download rilis terbaru `bapel-slimefun.jar` dari halaman [Releases](#).
 4.  Masukkan ke folder `/plugins` atau `/mods`.
