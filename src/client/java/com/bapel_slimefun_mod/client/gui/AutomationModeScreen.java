@@ -123,7 +123,7 @@ public class AutomationModeScreen extends Screen {
             String message = auto ? 
                 "§aâœ“ Auto Mode Enabled - Recipes will be remembered" :
                 "§eâœ“ Manual Mode Enabled - Select recipes manually";
-            minecraft.player.sendSystemMessage(Component.literal(message), true);
+            minecraft.player.sendOverlayMessage(Component.literal(message));
         }
     }
     
@@ -150,14 +150,10 @@ public class AutomationModeScreen extends Screen {
             minecraft.setScreen(new MachineDetectorScreen(this, dispenserPos));
         } else {
             // No position - show helpful message
+            minecraft.player.sendOverlayMessage(
+                Component.literal("§e[Detector] Please open a multiblock dispenser first!"));
             minecraft.player.sendSystemMessage(
-                Component.literal("§e[Detector] Please open a multiblock dispenser first!"),
-                true
-            );
-            minecraft.player.sendSystemMessage(
-                Component.literal("§7Tip: Right-click a multiblock dispenser, then press M"),
-                false
-            );
+                Component.literal("§7Tip: Right-click a multiblock dispenser, then press M"));
         }
     }
     
@@ -172,10 +168,8 @@ public class AutomationModeScreen extends Screen {
         
         // Show confirmation
         if (minecraft != null && minecraft.player != null) {
-            minecraft.player.sendSystemMessage(
-                Component.literal("§eâœ“ Cleared " + count + " recipe memories"), 
-                true
-            );
+            minecraft.player.sendOverlayMessage(
+                Component.literal("§eâœ“ Cleared " + count + " recipe memories"));
         }
     }
     
@@ -367,16 +361,12 @@ class MultiblockCacheScreen extends Screen {
             
             if (machines.isEmpty()) {
                 minecraft.player.sendSystemMessage(
-                    Component.literal("§eNo multiblocks cached yet"), 
-                    false
-                );
+                    Component.literal("§eNo multiblocks cached yet"));
                 return;
             }
             
             minecraft.player.sendSystemMessage(
-                Component.literal("§6§l=== Cached Multiblocks ==="), 
-                false
-            );
+                Component.literal("§6§l=== Cached Multiblocks ==="));
             
             int index = 1;
             for (var machine : machines) {
@@ -392,15 +382,11 @@ class MultiblockCacheScreen extends Screen {
                         machine.getPosition().getX(),
                         machine.getPosition().getY(),
                         machine.getPosition().getZ()
-                    )), 
-                    false
-                );
+                    )));
             }
             
             minecraft.player.sendSystemMessage(
-                Component.literal("§6§l======================"), 
-                false
-            );
+                Component.literal("§6§l======================"));
         }
     }
     
@@ -415,10 +401,8 @@ class MultiblockCacheScreen extends Screen {
         
         // Show confirmation
         if (minecraft != null && minecraft.player != null) {
-            minecraft.player.sendSystemMessage(
-                Component.literal("§eâœ“ Cleared " + count + " cached multiblocks"), 
-                true
-            );
+            minecraft.player.sendOverlayMessage(
+                Component.literal("§eâœ“ Cleared " + count + " cached multiblocks"));
         }
     }
     

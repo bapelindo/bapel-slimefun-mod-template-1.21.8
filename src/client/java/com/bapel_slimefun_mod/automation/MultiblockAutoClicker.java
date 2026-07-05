@@ -64,13 +64,9 @@ public class MultiblockAutoClicker {
                 Component.literal(String.format(
                     "§a▶ Auto-Click STARTED - Will click §b%d times",
                     targetClicks
-                )),
-                false
-            );
-            mc.player.sendSystemMessage(
-                Component.literal("§7" + getMachineName(machine)),
-                true
-            );
+                )));
+            mc.player.sendOverlayMessage(
+                Component.literal("§7" + getMachineName(machine)));
         }
     }
     
@@ -87,9 +83,7 @@ public class MultiblockAutoClicker {
                 Component.literal(String.format(
                     "§c■ Auto-Click STOPPED - %s (%d/%d clicks)",
                     reason, currentClickCount, targetClickCount
-                )),
-                false
-            );
+                )));
         }
         
         BapelSlimefunMod.LOGGER.info("[AutoClick] Disabled - Completed {}/{} clicks", 
@@ -193,13 +187,11 @@ public class MultiblockAutoClicker {
                 BapelSlimefunMod.LOGGER.info("[AutoClick] ✓ Click {}/{} on {} at {}", 
                     currentClickCount, targetClickCount, cachedSignatureBlock, targetPos);
                 
-                player.sendSystemMessage(
+                player.sendOverlayMessage(
                     Component.literal(String.format(
                         "§a✓ Auto-Click: %d/%d",
                         currentClickCount, targetClickCount
-                    )),
-                    true
-                );
+                    )));
                 
                 if (currentClickCount >= targetClickCount) {
                     BapelSlimefunMod.LOGGER.info("[AutoClick] ✅ All clicks completed!");
@@ -414,9 +406,7 @@ public class MultiblockAutoClicker {
             Minecraft mc = Minecraft.getInstance();
             if (mc.player != null) {
                 mc.player.sendSystemMessage(
-                    Component.literal("§e⚠ Auto-Click manually stopped"),
-                    false
-                );
+                    Component.literal("§e⚠ Auto-Click manually stopped"));
             }
             
             disable();

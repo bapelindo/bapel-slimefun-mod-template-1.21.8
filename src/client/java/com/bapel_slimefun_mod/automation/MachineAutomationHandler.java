@@ -106,10 +106,8 @@ public static void setSelectedRecipe(String recipeId, boolean rememberRecipe) {
                 
                 Minecraft mc = Minecraft.getInstance();
                 if (mc.player != null) {
-                    mc.player.sendSystemMessage(
-                        Component.literal("§e⚠ Different machine - recipe cleared"), 
-                        true
-                    );
+                    mc.player.sendOverlayMessage(
+                        Component.literal("§e⚠ Different machine - recipe cleared"));
                 }
             }
             
@@ -130,10 +128,8 @@ public static void setSelectedRecipe(String recipeId, boolean rememberRecipe) {
                     Minecraft mc = Minecraft.getInstance();
                     if (mc.player != null) {
                         String displayName = getRecipeDisplayName(rememberedRecipe);
-                        mc.player.sendSystemMessage(
-                            Component.literal("§a✓ Auto Mode: Loaded recipe '" + displayName + "'"), 
-                            true
-                        );
+                        mc.player.sendOverlayMessage(
+                            Component.literal("§a✓ Auto Mode: Loaded recipe '" + displayName + "'"));
                     }
                     
                     return;
@@ -455,7 +451,7 @@ public static void setSelectedRecipe(String recipeId, boolean rememberRecipe) {
         try {
             Minecraft mc = Minecraft.getInstance();
             if (mc.player != null) {
-                mc.player.sendSystemMessage(Component.literal(message), true);
+                mc.player.sendOverlayMessage(Component.literal(message));
             }
         } catch (Exception ignored) {}
     }

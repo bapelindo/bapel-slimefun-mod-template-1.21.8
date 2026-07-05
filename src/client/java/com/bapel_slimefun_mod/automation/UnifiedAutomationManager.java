@@ -78,19 +78,15 @@ public class UnifiedAutomationManager {
             lastMachineTitle = machine.getName();
             
             player.sendSystemMessage(
-                Component.literal("§a✓ " + machine.getName() + " cached! Press R for recipes."),
-                false
-            );
+                Component.literal("§a✓ " + machine.getName() + " cached! Press R for recipes."));
             
             if (currentCachedMachine != null && currentCachedMachine.getLastSelectedRecipe() != null) {
                 String rememberedRecipe = currentCachedMachine.getLastSelectedRecipe();
                 
                 try {
                     RecipeOverlayRenderer.show(machine);
-                    player.sendSystemMessage(
-                        Component.literal("§e⚡ Last recipe: " + getRecipeDisplayName(rememberedRecipe)),
-                        true
-                    );
+                    player.sendOverlayMessage(
+                        Component.literal("§e⚡ Last recipe: " + getRecipeDisplayName(rememberedRecipe)));
                 } catch (Exception e) {
                     BapelSlimefunMod.LOGGER.error("Failed to show overlay", e);
                 }
@@ -149,10 +145,8 @@ public class UnifiedAutomationManager {
                     
                     Minecraft mc = Minecraft.getInstance();
                     if (mc.player != null) {
-                        mc.player.sendSystemMessage(
-                            Component.literal("§e⚠ Different machine - recipe cleared"),
-                            true
-                        );
+                        mc.player.sendOverlayMessage(
+                            Component.literal("§e⚠ Different machine - recipe cleared"));
                     }
                 }
                 
@@ -253,24 +247,18 @@ if (currentMachine != null) {
                             "§a✓ Detected & Cached: §f%s §7(%.0f%% match)",
                             machine.getName(),
                             result.getConfidence() * 100
-                        )),
-                        false
-                    );
+                        )));
                     
-                    player.sendSystemMessage(
-                        Component.literal("§7Press R to view recipes"),
-                        true
-                    );
+                    player.sendOverlayMessage(
+                        Component.literal("§7Press R to view recipes"));
                     
                     if (config != null && config.isAutoShowOverlay()) {
                         RecipeOverlayRenderer.show(machine);
                     }
                 }
             } else {
-                player.sendSystemMessage(
-                    Component.literal("§7No multiblock detected. Use /mdetect to identify."),
-                    true
-                );
+                player.sendOverlayMessage(
+                    Component.literal("§7No multiblock detected. Use /mdetect to identify."));
             }
         } finally {
             PerformanceMonitor.end("AutoDetect.handle");
@@ -295,21 +283,15 @@ if (currentMachine != null) {
                 Component.literal(String.format(
                     "§a✓ Loaded: §f%s §7(cached)",
                     currentMachine.getName()
-                )),
-                false
-            );
+                )));
             
             String lastRecipe = currentCachedMachine.getLastSelectedRecipe();
             if (lastRecipe != null) {
-                player.sendSystemMessage(
-                    Component.literal("§7Last recipe: " + getRecipeDisplayName(lastRecipe)),
-                    true
-                );
+                player.sendOverlayMessage(
+                    Component.literal("§7Last recipe: " + getRecipeDisplayName(lastRecipe)));
             } else {
-                player.sendSystemMessage(
-                    Component.literal("§7Press R to view recipes"),
-                    true
-                );
+                player.sendOverlayMessage(
+                    Component.literal("§7Press R to view recipes"));
             }
             
             if (config != null && config.isAutoShowOverlay()) {
@@ -389,10 +371,8 @@ if (currentMachine != null) {
                             
                             Minecraft mc = Minecraft.getInstance();
                             if (mc.player != null) {
-                                mc.player.sendSystemMessage(
-                                    Component.literal("§c✗ Recipe mismatch - cleared"),
-                                    true
-                                );
+                                mc.player.sendOverlayMessage(
+                                    Component.literal("§c✗ Recipe mismatch - cleared"));
                             }
                             
                             currentDispenserPos = null;
@@ -488,15 +468,11 @@ if (currentMachine != null) {
             if (player != null) {
                 if (automationEnabled) {
                     player.sendSystemMessage(
-                        Component.literal("§a[Slimefun] Automation STARTED ▶"), 
-                        false
-                    );
+                        Component.literal("§a[Slimefun] Automation STARTED ▶"));
                     needsTick = true;
                 } else {
                     player.sendSystemMessage(
-                        Component.literal("§c[Slimefun] Automation STOPPED ■"), 
-                        false
-                    );
+                        Component.literal("§c[Slimefun] Automation STOPPED ■"));
                 }
             }
             
@@ -534,10 +510,8 @@ public static void setSelectedRecipe(String recipeId) {
                 if (!recipeMachineId.equals(currentMachineId)) {
                     Minecraft mc = Minecraft.getInstance();
                     if (mc.player != null) {
-                        mc.player.sendSystemMessage(
-                            Component.literal("§c✗ Recipe does not belong to this machine!"),
-                            true
-                        );
+                        mc.player.sendOverlayMessage(
+                            Component.literal("§c✗ Recipe does not belong to this machine!"));
                     }
                     return;
                 }
@@ -579,22 +553,16 @@ public static void setSelectedRecipe(String recipeId) {
         if (recipeId != null) {
             Minecraft mc = Minecraft.getInstance();
             if (mc.player != null) {
-                mc.player.sendSystemMessage(
-                    Component.literal("§a✓ Recipe selected: §f" + getRecipeDisplayName(recipeId)), 
-                    true
-                );
+                mc.player.sendOverlayMessage(
+                    Component.literal("§a✓ Recipe selected: §f" + getRecipeDisplayName(recipeId)));
                 
                 // ✅ Different message for electric vs multiblock
                 if (machine.isElectric()) {
                     mc.player.sendSystemMessage(
-                        Component.literal("§a▶ Automation STARTED - Items will auto-fill!"), 
-                        false
-                    );
+                        Component.literal("§a▶ Automation STARTED - Items will auto-fill!"));
                 } else if (machine.isMultiblock()) {
                     mc.player.sendSystemMessage(
-                        Component.literal("§a▶ Automation STARTED - Fill dispenser!"), 
-                        false
-                    );
+                        Component.literal("§a▶ Automation STARTED - Fill dispenser!"));
                 }
             }
         }

@@ -64,10 +64,8 @@ public class MultiblockAutomationHandler {
                     
                     Minecraft mc = Minecraft.getInstance();
                     if (mc.player != null) {
-                        mc.player.sendSystemMessage(
-                            Component.literal("§c✗ Recipe does not belong to this machine!"),
-                            true
-                        );
+                        mc.player.sendOverlayMessage(
+                            Component.literal("§c✗ Recipe does not belong to this machine!"));
                     }
                     return; // Don't set invalid recipe
                 }
@@ -133,10 +131,8 @@ public class MultiblockAutomationHandler {
             }
             
             if (clearedCount > 0) {
-                player.sendSystemMessage(
-                    Component.literal(String.format("§e⚠ Cleared %d items from dispenser", clearedCount)),
-                    true
-                );
+                player.sendOverlayMessage(
+                    Component.literal(String.format("§e⚠ Cleared %d items from dispenser", clearedCount)));
             }
             
         } catch (Exception e) {
@@ -277,14 +273,10 @@ public class MultiblockAutomationHandler {
                 Component.literal(String.format(
                     "§a✓ Dispenser ready! Can process §b%d §atimes",
                     calculatedClickCount
-                )),
-                false
-            );
+                )));
             
-            player.sendSystemMessage(
-                Component.literal("§7Close dispenser to start auto-clicking"),
-                true
-            );
+            player.sendOverlayMessage(
+                Component.literal("§7Close dispenser to start auto-clicking"));
             
             BapelSlimefunMod.LOGGER.info("[MultiblockAuto] ✓ Dispenser ready! Calculated {} clicks", 
                 calculatedClickCount);

@@ -394,7 +394,7 @@ public class RecipeOverlayRenderer {
         try {
             Minecraft mc = Minecraft.getInstance();
             if (mc.player != null) {
-                mc.player.sendSystemMessage(Component.literal(message), true);
+                mc.player.sendOverlayMessage(Component.literal(message));
             }
         } catch (Exception ignored) {}
     }
@@ -829,10 +829,8 @@ public class RecipeOverlayRenderer {
         UnifiedAutomationManager.setSelectedRecipe(selected.getRecipeId());
         
         try {
-            Minecraft.getInstance().player.sendSystemMessage(
-                Component.literal("§a[Slimefun] Selected: §f" + selected.getDisplayString()), 
-                true
-            );
+            Minecraft.getInstance().player.sendOverlayMessage(
+                Component.literal("§a[Slimefun] Selected: §f" + selected.getDisplayString()));
         } catch(Exception ignored) {}
         
         hide();

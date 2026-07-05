@@ -141,9 +141,7 @@ public class MachineDetectorScreen extends Screen {
                         "§a[Detector] âœ“ Detected: §f%s §7(%.0f%% confidence)",
                         machine.getName(),
                         result.getConfidence() * 100
-                    )),
-                    false
-                );
+                    )));
                 
                 // Update clear cache button
                 updateClearCacheButton();
@@ -154,9 +152,7 @@ public class MachineDetectorScreen extends Screen {
             detectionResult = "§câœ– No multiblock detected\n§7Make sure structure is complete";
             
             minecraft.player.sendSystemMessage(
-                Component.literal("§c[Detector] âœ– No multiblock detected"),
-                false
-            );
+                Component.literal("§c[Detector] âœ– No multiblock detected"));
         }
         
         verifyButton.active = true;
@@ -177,10 +173,8 @@ public class MachineDetectorScreen extends Screen {
             
             detectionResult = "§eâœ“ Cache cleared: §f" + machineName;
             
-            minecraft.player.sendSystemMessage(
-                Component.literal("§e[Detector] âœ“ Cache cleared: §f" + machineName),
-                true
-            );
+            minecraft.player.sendOverlayMessage(
+                Component.literal("§e[Detector] âœ“ Cache cleared: §f" + machineName));
             
             // Update clear cache button
             updateClearCacheButton();
