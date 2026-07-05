@@ -165,10 +165,10 @@ public class AutomationManager {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null) return;
         
-        mc.player.displayClientMessage(Component.literal("§6§l=== Automation Status ==="), false);
+        mc.player.sendSystemMessage(Component.literal("§6§l=== Automation Status ==="), false);
         
         if (!MachineAutomationHandler.isActive()) {
-            mc.player.displayClientMessage(Component.literal("§cNo machine detected"), false);
+            mc.player.sendSystemMessage(Component.literal("§cNo machine detected"), false);
             return;
         }
         
@@ -176,31 +176,31 @@ public class AutomationManager {
         SlimefunMachineData machine = MachineAutomationHandler.getCurrentMachine();
         String selectedRecipe = MachineAutomationHandler.getSelectedRecipe();
         
-        mc.player.displayClientMessage(
+        mc.player.sendSystemMessage(
             Component.literal("§7Status: " + (enabled ? "§aENABLED" : "§cDISABLED")), 
             false
         );
         
         if (machine != null) {
-            mc.player.displayClientMessage(
+            mc.player.sendSystemMessage(
                 Component.literal("§7Machine: §f" + machine.getName()), 
                 false
             );
         }
         
         if (selectedRecipe != null) {
-            mc.player.displayClientMessage(
+            mc.player.sendSystemMessage(
                 Component.literal("§7Recipe: §f" + selectedRecipe), 
                 false
             );
         } else {
-            mc.player.displayClientMessage(
+            mc.player.sendSystemMessage(
                 Component.literal("§7Recipe: §eNo recipe selected"), 
                 false
             );
         }
         
-        mc.player.displayClientMessage(Component.literal("§6§l===================="), false);
+        mc.player.sendSystemMessage(Component.literal("§6§l===================="), false);
     }
     
     /**
@@ -210,7 +210,7 @@ public class AutomationManager {
         try {
             Minecraft mc = Minecraft.getInstance();
             if (mc.player != null) {
-                mc.player.displayClientMessage(Component.literal(message), actionBar);
+                mc.player.sendSystemMessage(Component.literal(message), actionBar);
             }
         } catch (Exception e) {
             BapelSlimefunMod.LOGGER.error("[AutomationManager] Failed to show player message", e);

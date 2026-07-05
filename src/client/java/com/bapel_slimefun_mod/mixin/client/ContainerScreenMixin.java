@@ -10,6 +10,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -115,13 +116,13 @@ public abstract class ContainerScreenMixin {
     }
     
     @Inject(method = "mouseClicked", at = @At("HEAD"), cancellable = true)
-    private void onMouseClicked(double mouseX, double mouseY, int button,
+    private void onMouseClicked(MouseButtonEvent event, boolean doubleClick,
                                CallbackInfoReturnable<Boolean> cir) {
         try {
             boolean handled = RecipeOverlayInputHandler.handleMouseClick(
-                mouseX, mouseY, button
+                event.x(), event.y(), event.buttonInfo().button()
             );
-            
+
             if (handled) {
                 cir.setReturnValue(true);
                 cir.cancel();

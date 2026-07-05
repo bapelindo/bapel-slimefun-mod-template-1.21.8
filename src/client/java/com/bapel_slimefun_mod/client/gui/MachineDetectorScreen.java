@@ -135,7 +135,7 @@ public class MachineDetectorScreen extends Screen {
                 );
                 
                 // Send player message
-                minecraft.player.displayClientMessage(
+                minecraft.player.sendSystemMessage(
                     Component.literal(String.format(
                         "§a[Detector] âœ“ Detected: §f%s §7(%.0f%% confidence)",
                         machine.getName(),
@@ -152,7 +152,7 @@ public class MachineDetectorScreen extends Screen {
         } else {
             detectionResult = "§câœ– No multiblock detected\n§7Make sure structure is complete";
             
-            minecraft.player.displayClientMessage(
+            minecraft.player.sendSystemMessage(
                 Component.literal("§c[Detector] âœ– No multiblock detected"),
                 false
             );
@@ -176,7 +176,7 @@ public class MachineDetectorScreen extends Screen {
             
             detectionResult = "§eâœ“ Cache cleared: §f" + machineName;
             
-            minecraft.player.displayClientMessage(
+            minecraft.player.sendSystemMessage(
                 Component.literal("§e[Detector] âœ“ Cache cleared: §f" + machineName),
                 true
             );

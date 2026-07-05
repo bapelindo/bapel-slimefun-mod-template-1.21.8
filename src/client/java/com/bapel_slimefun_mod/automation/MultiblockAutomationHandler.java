@@ -7,7 +7,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.util.ClickType;
 import net.minecraft.world.inventory.DispenserMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -64,7 +64,7 @@ public class MultiblockAutomationHandler {
                     
                     Minecraft mc = Minecraft.getInstance();
                     if (mc.player != null) {
-                        mc.player.displayClientMessage(
+                        mc.player.sendSystemMessage(
                             Component.literal("§c✗ Recipe does not belong to this machine!"),
                             true
                         );
@@ -133,7 +133,7 @@ public class MultiblockAutomationHandler {
             }
             
             if (clearedCount > 0) {
-                player.displayClientMessage(
+                player.sendSystemMessage(
                     Component.literal(String.format("§e⚠ Cleared %d items from dispenser", clearedCount)),
                     true
                 );
@@ -273,7 +273,7 @@ public class MultiblockAutomationHandler {
         
         // ✅ Show ready message only ONCE when dispenser becomes ready
         if (allSlotsFilled && calculatedClickCount > 0 && !hasShownReadyMessage) {
-            player.displayClientMessage(
+            player.sendSystemMessage(
                 Component.literal(String.format(
                     "§a✓ Dispenser ready! Can process §b%d §atimes",
                     calculatedClickCount
@@ -281,7 +281,7 @@ public class MultiblockAutomationHandler {
                 false
             );
             
-            player.displayClientMessage(
+            player.sendSystemMessage(
                 Component.literal("§7Close dispenser to start auto-clicking"),
                 true
             );

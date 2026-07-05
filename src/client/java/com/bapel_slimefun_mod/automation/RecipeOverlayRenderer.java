@@ -393,7 +393,7 @@ public class RecipeOverlayRenderer {
         try {
             Minecraft mc = Minecraft.getInstance();
             if (mc.player != null) {
-                mc.player.displayClientMessage(Component.literal(message), true);
+                mc.player.sendSystemMessage(Component.literal(message), true);
             }
         } catch (Exception ignored) {}
     }
@@ -828,7 +828,7 @@ public class RecipeOverlayRenderer {
         UnifiedAutomationManager.setSelectedRecipe(selected.getRecipeId());
         
         try {
-            Minecraft.getInstance().player.displayClientMessage(
+            Minecraft.getInstance().player.sendSystemMessage(
                 Component.literal("§a[Slimefun] Selected: §f" + selected.getDisplayString()), 
                 true
             );

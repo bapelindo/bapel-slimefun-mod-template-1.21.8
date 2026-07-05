@@ -8,7 +8,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.util.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -106,7 +106,7 @@ public static void setSelectedRecipe(String recipeId, boolean rememberRecipe) {
                 
                 Minecraft mc = Minecraft.getInstance();
                 if (mc.player != null) {
-                    mc.player.displayClientMessage(
+                    mc.player.sendSystemMessage(
                         Component.literal("§e⚠ Different machine - recipe cleared"), 
                         true
                     );
@@ -130,7 +130,7 @@ public static void setSelectedRecipe(String recipeId, boolean rememberRecipe) {
                     Minecraft mc = Minecraft.getInstance();
                     if (mc.player != null) {
                         String displayName = getRecipeDisplayName(rememberedRecipe);
-                        mc.player.displayClientMessage(
+                        mc.player.sendSystemMessage(
                             Component.literal("§a✓ Auto Mode: Loaded recipe '" + displayName + "'"), 
                             true
                         );
@@ -455,7 +455,7 @@ public static void setSelectedRecipe(String recipeId, boolean rememberRecipe) {
         try {
             Minecraft mc = Minecraft.getInstance();
             if (mc.player != null) {
-                mc.player.displayClientMessage(Component.literal(message), true);
+                mc.player.sendSystemMessage(Component.literal(message), true);
             }
         } catch (Exception ignored) {}
     }

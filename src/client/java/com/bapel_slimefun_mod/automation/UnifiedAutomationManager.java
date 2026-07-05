@@ -77,7 +77,7 @@ public class UnifiedAutomationManager {
             lastMachineId = machine.getId();
             lastMachineTitle = machine.getName();
             
-            player.displayClientMessage(
+            player.sendSystemMessage(
                 Component.literal("§a✓ " + machine.getName() + " cached! Press R for recipes."),
                 false
             );
@@ -87,7 +87,7 @@ public class UnifiedAutomationManager {
                 
                 try {
                     RecipeOverlayRenderer.show(machine);
-                    player.displayClientMessage(
+                    player.sendSystemMessage(
                         Component.literal("§e⚡ Last recipe: " + getRecipeDisplayName(rememberedRecipe)),
                         true
                     );
@@ -149,7 +149,7 @@ public class UnifiedAutomationManager {
                     
                     Minecraft mc = Minecraft.getInstance();
                     if (mc.player != null) {
-                        mc.player.displayClientMessage(
+                        mc.player.sendSystemMessage(
                             Component.literal("§e⚠ Different machine - recipe cleared"),
                             true
                         );
@@ -248,7 +248,7 @@ if (currentMachine != null) {
                     lastMachineId = machine.getId();
                     lastMachineTitle = machine.getName();
                     
-                    player.displayClientMessage(
+                    player.sendSystemMessage(
                         Component.literal(String.format(
                             "§a✓ Detected & Cached: §f%s §7(%.0f%% match)",
                             machine.getName(),
@@ -257,7 +257,7 @@ if (currentMachine != null) {
                         false
                     );
                     
-                    player.displayClientMessage(
+                    player.sendSystemMessage(
                         Component.literal("§7Press R to view recipes"),
                         true
                     );
@@ -267,7 +267,7 @@ if (currentMachine != null) {
                     }
                 }
             } else {
-                player.displayClientMessage(
+                player.sendSystemMessage(
                     Component.literal("§7No multiblock detected. Use /mdetect to identify."),
                     true
                 );
@@ -291,7 +291,7 @@ if (currentMachine != null) {
             lastMachineId = currentMachine.getId();
             lastMachineTitle = currentMachine.getName();
             
-            player.displayClientMessage(
+            player.sendSystemMessage(
                 Component.literal(String.format(
                     "§a✓ Loaded: §f%s §7(cached)",
                     currentMachine.getName()
@@ -301,12 +301,12 @@ if (currentMachine != null) {
             
             String lastRecipe = currentCachedMachine.getLastSelectedRecipe();
             if (lastRecipe != null) {
-                player.displayClientMessage(
+                player.sendSystemMessage(
                     Component.literal("§7Last recipe: " + getRecipeDisplayName(lastRecipe)),
                     true
                 );
             } else {
-                player.displayClientMessage(
+                player.sendSystemMessage(
                     Component.literal("§7Press R to view recipes"),
                     true
                 );
@@ -389,7 +389,7 @@ if (currentMachine != null) {
                             
                             Minecraft mc = Minecraft.getInstance();
                             if (mc.player != null) {
-                                mc.player.displayClientMessage(
+                                mc.player.sendSystemMessage(
                                     Component.literal("§c✗ Recipe mismatch - cleared"),
                                     true
                                 );
@@ -487,13 +487,13 @@ if (currentMachine != null) {
             
             if (player != null) {
                 if (automationEnabled) {
-                    player.displayClientMessage(
+                    player.sendSystemMessage(
                         Component.literal("§a[Slimefun] Automation STARTED ▶"), 
                         false
                     );
                     needsTick = true;
                 } else {
-                    player.displayClientMessage(
+                    player.sendSystemMessage(
                         Component.literal("§c[Slimefun] Automation STOPPED ■"), 
                         false
                     );
@@ -534,7 +534,7 @@ public static void setSelectedRecipe(String recipeId) {
                 if (!recipeMachineId.equals(currentMachineId)) {
                     Minecraft mc = Minecraft.getInstance();
                     if (mc.player != null) {
-                        mc.player.displayClientMessage(
+                        mc.player.sendSystemMessage(
                             Component.literal("§c✗ Recipe does not belong to this machine!"),
                             true
                         );
@@ -579,19 +579,19 @@ public static void setSelectedRecipe(String recipeId) {
         if (recipeId != null) {
             Minecraft mc = Minecraft.getInstance();
             if (mc.player != null) {
-                mc.player.displayClientMessage(
+                mc.player.sendSystemMessage(
                     Component.literal("§a✓ Recipe selected: §f" + getRecipeDisplayName(recipeId)), 
                     true
                 );
                 
                 // ✅ Different message for electric vs multiblock
                 if (machine.isElectric()) {
-                    mc.player.displayClientMessage(
+                    mc.player.sendSystemMessage(
                         Component.literal("§a▶ Automation STARTED - Items will auto-fill!"), 
                         false
                     );
                 } else if (machine.isMultiblock()) {
-                    mc.player.displayClientMessage(
+                    mc.player.sendSystemMessage(
                         Component.literal("§a▶ Automation STARTED - Fill dispenser!"), 
                         false
                     );

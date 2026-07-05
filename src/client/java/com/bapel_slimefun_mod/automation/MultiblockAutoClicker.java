@@ -60,14 +60,14 @@ public class MultiblockAutoClicker {
             targetClicks, machine, pos);
         
         if (mc.player != null) {
-            mc.player.displayClientMessage(
+            mc.player.sendSystemMessage(
                 Component.literal(String.format(
                     "§a▶ Auto-Click STARTED - Will click §b%d times",
                     targetClicks
                 )),
                 false
             );
-            mc.player.displayClientMessage(
+            mc.player.sendSystemMessage(
                 Component.literal("§7" + getMachineName(machine)),
                 true
             );
@@ -83,7 +83,7 @@ public class MultiblockAutoClicker {
         if (mc.player != null) {
             String reason = currentClickCount >= targetClickCount ? "Target reached" : "Stopped";
             
-            mc.player.displayClientMessage(
+            mc.player.sendSystemMessage(
                 Component.literal(String.format(
                     "§c■ Auto-Click STOPPED - %s (%d/%d clicks)",
                     reason, currentClickCount, targetClickCount
@@ -193,7 +193,7 @@ public class MultiblockAutoClicker {
                 BapelSlimefunMod.LOGGER.info("[AutoClick] ✓ Click {}/{} on {} at {}", 
                     currentClickCount, targetClickCount, cachedSignatureBlock, targetPos);
                 
-                player.displayClientMessage(
+                player.sendSystemMessage(
                     Component.literal(String.format(
                         "§a✓ Auto-Click: %d/%d",
                         currentClickCount, targetClickCount
@@ -413,7 +413,7 @@ public class MultiblockAutoClicker {
             
             Minecraft mc = Minecraft.getInstance();
             if (mc.player != null) {
-                mc.player.displayClientMessage(
+                mc.player.sendSystemMessage(
                     Component.literal("§e⚠ Auto-Click manually stopped"),
                     false
                 );

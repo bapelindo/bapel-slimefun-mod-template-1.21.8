@@ -122,7 +122,7 @@ public class AutomationModeScreen extends Screen {
             String message = auto ? 
                 "§aâœ“ Auto Mode Enabled - Recipes will be remembered" :
                 "§eâœ“ Manual Mode Enabled - Select recipes manually";
-            minecraft.player.displayClientMessage(Component.literal(message), true);
+            minecraft.player.sendSystemMessage(Component.literal(message), true);
         }
     }
     
@@ -149,11 +149,11 @@ public class AutomationModeScreen extends Screen {
             minecraft.setScreen(new MachineDetectorScreen(this, dispenserPos));
         } else {
             // No position - show helpful message
-            minecraft.player.displayClientMessage(
+            minecraft.player.sendSystemMessage(
                 Component.literal("§e[Detector] Please open a multiblock dispenser first!"),
                 true
             );
-            minecraft.player.displayClientMessage(
+            minecraft.player.sendSystemMessage(
                 Component.literal("§7Tip: Right-click a multiblock dispenser, then press M"),
                 false
             );
@@ -171,7 +171,7 @@ public class AutomationModeScreen extends Screen {
         
         // Show confirmation
         if (minecraft != null && minecraft.player != null) {
-            minecraft.player.displayClientMessage(
+            minecraft.player.sendSystemMessage(
                 Component.literal("§eâœ“ Cleared " + count + " recipe memories"), 
                 true
             );
@@ -365,14 +365,14 @@ class MultiblockCacheScreen extends Screen {
             var machines = MultiblockCacheManager.getAllMachines();
             
             if (machines.isEmpty()) {
-                minecraft.player.displayClientMessage(
+                minecraft.player.sendSystemMessage(
                     Component.literal("§eNo multiblocks cached yet"), 
                     false
                 );
                 return;
             }
             
-            minecraft.player.displayClientMessage(
+            minecraft.player.sendSystemMessage(
                 Component.literal("§6§l=== Cached Multiblocks ==="), 
                 false
             );
@@ -382,7 +382,7 @@ class MultiblockCacheScreen extends Screen {
                 String lastRecipe = machine.getLastSelectedRecipe() != null ? 
                     "§aâœ“" : "§7âœ—";
                 
-                minecraft.player.displayClientMessage(
+                minecraft.player.sendSystemMessage(
                     Component.literal(String.format(
                         "§7%d. §f%s %s §7at [%d, %d, %d]",
                         index++,
@@ -396,7 +396,7 @@ class MultiblockCacheScreen extends Screen {
                 );
             }
             
-            minecraft.player.displayClientMessage(
+            minecraft.player.sendSystemMessage(
                 Component.literal("§6§l======================"), 
                 false
             );
@@ -414,7 +414,7 @@ class MultiblockCacheScreen extends Screen {
         
         // Show confirmation
         if (minecraft != null && minecraft.player != null) {
-            minecraft.player.displayClientMessage(
+            minecraft.player.sendSystemMessage(
                 Component.literal("§eâœ“ Cleared " + count + " cached multiblocks"), 
                 true
             );

@@ -81,7 +81,7 @@ public class MultiblockEventHandler {
         
         Minecraft mc = Minecraft.getInstance();
         if (mc.player != null && isFull) {
-            mc.player.displayClientMessage(
+            mc.player.sendSystemMessage(
                 Component.literal("§a✓ Dispenser Full - Ready to process!"),
                 true
             );
@@ -96,7 +96,7 @@ public class MultiblockEventHandler {
         
         Minecraft mc = Minecraft.getInstance();
         if (mc.player != null && isEmpty) {
-            mc.player.displayClientMessage(
+            mc.player.sendSystemMessage(
                 Component.literal("§e⚠ No more items in inventory!"),
                 true
             );

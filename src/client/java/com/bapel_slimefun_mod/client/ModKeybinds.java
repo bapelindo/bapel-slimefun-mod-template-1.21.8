@@ -112,7 +112,7 @@ public class ModKeybinds {
         String status = !currentState ? "§aENABLED" : "§cDISABLED";
         Minecraft mc = Minecraft.getInstance();
         if (mc.player != null) {
-            mc.player.displayClientMessage(
+            mc.player.sendSystemMessage(
                 net.minecraft.network.chat.Component.literal("§eAutomation: " + status), 
                 true
             );
@@ -138,7 +138,7 @@ public class ModKeybinds {
         String status = PerformanceMonitor.isVisible() ? "§aON" : "§cOFF";
         Minecraft mc = Minecraft.getInstance();
         if (mc.player != null) {
-            mc.player.displayClientMessage(
+            mc.player.sendSystemMessage(
                 net.minecraft.network.chat.Component.literal("§ePerformance Monitor: " + status), 
                 true
             );
