@@ -1,6 +1,7 @@
 package com.bapel_slimefun_mod.automation;
 
 import com.bapel_slimefun_mod.BapelSlimefunMod;
+import com.bapel_slimefun_mod.client.TextDrawing;
 import com.bapel_slimefun_mod.debug.PerformanceMonitor;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -496,7 +497,7 @@ public class RecipeOverlayRenderer {
                 textColor = 0xFF888888;
             }
             
-            graphics.drawString(mc.font, displayText, currentX + 6, buttonY + 6, textColor);
+            TextDrawing.drawString(graphics, mc.font, displayText, currentX + 6, buttonY + 6, textColor);
             
             buttonY += buttonHeight + buttonSpacing;
             currentX = posX + 4;
@@ -509,7 +510,7 @@ public class RecipeOverlayRenderer {
             
             graphics.fill(currentX, buttonY, currentX + compactWidth, buttonY + buttonHeight, 
                          applyAlpha(compactBgColor, alpha));
-            graphics.drawString(mc.font, compactText, currentX + 6, buttonY + 6, compactColor);
+            TextDrawing.drawString(graphics, mc.font, compactText, currentX + 6, buttonY + 6, compactColor);
             
             currentX += compactWidth + buttonSpacing;
             
@@ -520,13 +521,13 @@ public class RecipeOverlayRenderer {
             
             graphics.fill(currentX, buttonY, currentX + sortWidth, buttonY + buttonHeight,
                          applyAlpha(sortBgColor, alpha));
-            graphics.drawString(mc.font, sortText, currentX + 6, buttonY + 6, 0xFF5599FF);
+            TextDrawing.drawString(graphics, mc.font, sortText, currentX + 6, buttonY + 6, 0xFF5599FF);
             
             currentX += sortWidth + buttonSpacing;
             
             // Recipe count
             String countText = "(" + filteredRecipes.size() + "/" + availableRecipes.size() + ")";
-            graphics.drawString(mc.font, countText, currentX, buttonY + 6, 0xFF888888);
+            TextDrawing.drawString(graphics, mc.font, countText, currentX, buttonY + 6, 0xFF888888);
             
             return buttonY + buttonHeight;
         } catch (Exception e) {
@@ -588,8 +589,8 @@ public class RecipeOverlayRenderer {
             String title = currentMachine.getName() + " Recipes";
             int titleColor = 0xFFFFFF00;
             
-            graphics.drawCenteredString(mc.font, title, posX + width / 2 + 1, yPos + 1, 0xFF000000);
-            graphics.drawCenteredString(mc.font, title, posX + width / 2, yPos, titleColor);
+            TextDrawing.drawCenteredString(graphics, mc.font, title, posX + width / 2 + 1, yPos + 1, 0xFF000000);
+            TextDrawing.drawCenteredString(graphics, mc.font, title, posX + width / 2, yPos, titleColor);
             
             return yPos + mc.font.lineHeight + spacing;
         } catch (Exception e) { 
@@ -601,7 +602,7 @@ public class RecipeOverlayRenderer {
         if (filteredRecipes == null || filteredRecipes.isEmpty()) {
             Minecraft mc = Minecraft.getInstance();
             String noResults = searchQuery.isEmpty() ? "No recipes available" : "No recipes match: " + searchQuery;
-            graphics.drawCenteredString(mc.font, noResults, posX + width / 2, yPos + 20, 0xFFFF5555);
+            TextDrawing.drawCenteredString(graphics, mc.font, noResults, posX + width / 2, yPos + 20, 0xFFFF5555);
             return yPos + 40;
         }
         
@@ -670,7 +671,7 @@ public class RecipeOverlayRenderer {
             }
             
             int nameColor = isSelected ? 0xFFFFFF00 : 0xFFFFFFFF;
-            graphics.drawString(mc.font, displayName, textX, textY, nameColor);
+            TextDrawing.drawString(graphics, mc.font, displayName, textX, textY, nameColor);
             textY += mc.font.lineHeight;
             
             if (!compactMode && showInputCount) {
@@ -692,7 +693,7 @@ public class RecipeOverlayRenderer {
                 }
                 
                 int grayColor = isSelected ? 0xFFAAAAAA : 0xFF888888;
-                graphics.drawString(mc.font, inputStr.toString(), textX + 10, textY, grayColor);
+                TextDrawing.drawString(graphics, mc.font, inputStr.toString(), textX + 10, textY, grayColor);
                 textY += mc.font.lineHeight;
             }
             
@@ -705,9 +706,9 @@ public class RecipeOverlayRenderer {
                 
                 if (compactMode) {
                     int textWidth = mc.font.width(displayName);
-                    graphics.drawString(mc.font, completionText, textX + textWidth + 8, yPos + 4, completionColor);
+                    TextDrawing.drawString(graphics, mc.font, completionText, textX + textWidth + 8, yPos + 4, completionColor);
                 } else {
-                    graphics.drawString(mc.font, completionText, textX + 10, textY, completionColor);
+                    TextDrawing.drawString(graphics, mc.font, completionText, textX + 10, textY, completionColor);
                 }
             }
             

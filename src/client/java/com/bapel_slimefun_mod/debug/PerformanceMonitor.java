@@ -230,7 +230,7 @@ public class PerformanceMonitor {
             
             // ✅ OPTIMIZATION: Draw all cached lines
             for (int i = 0; i < cachedLineCount; i++) {
-                g.drawString(mc.font, cachedLines[i], leftX, lineYPositions[i], 0xFFFFFFFF, false);
+                g.text(mc.font, cachedLines[i], leftX, lineYPositions[i], 0xFFFFFFFF, false);
             }
             
         } catch (Exception e) {

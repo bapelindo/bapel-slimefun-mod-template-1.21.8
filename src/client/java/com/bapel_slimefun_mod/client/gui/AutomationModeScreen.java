@@ -1,5 +1,6 @@
 package com.bapel_slimefun_mod.client.gui;
 
+import com.bapel_slimefun_mod.client.TextDrawing;
 import com.bapel_slimefun_mod.automation.MultiblockCacheManager;
 import com.bapel_slimefun_mod.automation.RecipeMemoryManager;
 import com.bapel_slimefun_mod.automation.UnifiedAutomationManager;
@@ -198,7 +199,7 @@ public class AutomationModeScreen extends Screen {
         graphics.fill(0, 0, this.width, this.height, 0xC0101010);
         
         // Title
-        graphics.drawCenteredString(
+        TextDrawing.drawCenteredString(graphics, 
             this.font, 
             this.title, 
             this.width / 2, 
@@ -209,7 +210,7 @@ public class AutomationModeScreen extends Screen {
         // Current mode
         int descY = this.height / 2 - 105;
         String currentMode = config.isRememberLastRecipe() ? "§aAuto Mode" : "§eManual Mode";
-        graphics.drawCenteredString(
+        TextDrawing.drawCenteredString(graphics, 
             this.font,
             Component.literal("Current: " + currentMode),
             this.width / 2,
@@ -221,14 +222,14 @@ public class AutomationModeScreen extends Screen {
         int explainY = this.height / 2 - 20;
         
         if (config.isRememberLastRecipe()) {
-            graphics.drawCenteredString(
+            TextDrawing.drawCenteredString(graphics, 
                 this.font,
                 Component.literal("§7Auto Mode: Recipes remembered per machine"),
                 this.width / 2,
                 explainY,
                 0xAAAAAA
             );
-            graphics.drawCenteredString(
+            TextDrawing.drawCenteredString(graphics, 
                 this.font,
                 Component.literal("§7Auto-insert items when returning to machine"),
                 this.width / 2,
@@ -236,14 +237,14 @@ public class AutomationModeScreen extends Screen {
                 0xAAAAAA
             );
         } else {
-            graphics.drawCenteredString(
+            TextDrawing.drawCenteredString(graphics, 
                 this.font,
                 Component.literal("§7Manual Mode: Select recipe every time"),
                 this.width / 2,
                 explainY,
                 0xAAAAAA
             );
-            graphics.drawCenteredString(
+            TextDrawing.drawCenteredString(graphics, 
                 this.font,
                 Component.literal("§7Overlay shows when opening machine"),
                 this.width / 2,
@@ -255,7 +256,7 @@ public class AutomationModeScreen extends Screen {
         // Multiblock info
         int multiblockY = this.height / 2 + 40;
         int cacheCount = MultiblockCacheManager.size();
-        graphics.drawCenteredString(
+        TextDrawing.drawCenteredString(graphics, 
             this.font,
             Component.literal("§7Cached multiblocks: §b" + cacheCount + " §7machines"),
             this.width / 2,
@@ -266,7 +267,7 @@ public class AutomationModeScreen extends Screen {
         // Machine Detector status (UPDATED: Show helpful info)
         BlockPos dispenserPos = UnifiedAutomationManager.getCurrentDispenserPos();
         if (dispenserPos != null) {
-            graphics.drawCenteredString(
+            TextDrawing.drawCenteredString(graphics, 
                 this.font,
                 Component.literal("§7Last dispenser: §e[" + 
                     dispenserPos.getX() + ", " + 
@@ -277,7 +278,7 @@ public class AutomationModeScreen extends Screen {
                 0xAAAAAA
             );
         } else {
-            graphics.drawCenteredString(
+            TextDrawing.drawCenteredString(graphics, 
                 this.font,
                 Component.literal("§7Tip: Open a dispenser first to use detector"),
                 this.width / 2,
@@ -427,7 +428,7 @@ class MultiblockCacheScreen extends Screen {
         graphics.fill(0, 0, this.width, this.height, 0xC0101010);
         
         // Title
-        graphics.drawCenteredString(
+        TextDrawing.drawCenteredString(graphics, 
             this.font, 
             this.title, 
             this.width / 2, 
@@ -439,7 +440,7 @@ class MultiblockCacheScreen extends Screen {
         int infoY = this.height / 2 - 60;
         int cacheCount = MultiblockCacheManager.size();
         
-        graphics.drawCenteredString(
+        TextDrawing.drawCenteredString(graphics, 
             this.font,
             Component.literal("§7Total Cached: §b" + cacheCount + " §7multiblocks"),
             this.width / 2,
@@ -447,7 +448,7 @@ class MultiblockCacheScreen extends Screen {
             0xAAAAAA
         );
         
-        graphics.drawCenteredString(
+        TextDrawing.drawCenteredString(graphics, 
             this.font,
             Component.literal("§7Cached machines remember their last recipe"),
             this.width / 2,
@@ -455,7 +456,7 @@ class MultiblockCacheScreen extends Screen {
             0x888888
         );
         
-        graphics.drawCenteredString(
+        TextDrawing.drawCenteredString(graphics, 
             this.font,
             Component.literal("§7and auto-load when you return to them"),
             this.width / 2,
@@ -468,7 +469,7 @@ class MultiblockCacheScreen extends Screen {
         var stats = MultiblockCacheManager.getStatistics();
         
         if (!stats.isEmpty()) {
-            graphics.drawCenteredString(
+            TextDrawing.drawCenteredString(graphics, 
                 this.font,
                 Component.literal("§7Most cached: §f" + getMostCachedType(stats)),
                 this.width / 2,

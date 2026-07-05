@@ -1,5 +1,6 @@
 package com.bapel_slimefun_mod.client.gui;
 
+import com.bapel_slimefun_mod.client.TextDrawing;
 import com.bapel_slimefun_mod.automation.MultiblockDetector;
 import com.bapel_slimefun_mod.automation.MultiblockCacheManager;
 import com.bapel_slimefun_mod.automation.SlimefunMachineData;
@@ -211,7 +212,7 @@ public class MachineDetectorScreen extends Screen {
         graphics.fill(0, 0, this.width, this.height, 0xC0101010);
         
         // Title
-        graphics.drawCenteredString(
+        TextDrawing.drawCenteredString(graphics, 
             this.font, 
             this.title, 
             this.width / 2, 
@@ -221,7 +222,7 @@ public class MachineDetectorScreen extends Screen {
         
         // Dispenser position info
         int infoY = this.height / 2 - 60;
-        graphics.drawCenteredString(
+        TextDrawing.drawCenteredString(graphics, 
             this.font,
             Component.literal("§7Dispenser at: §f[" + 
                 dispenserPos.getX() + ", " + 
@@ -237,7 +238,7 @@ public class MachineDetectorScreen extends Screen {
             MultiblockCacheManager.getMachineAt(dispenserPos);
         
         if (cached != null) {
-            graphics.drawCenteredString(
+            TextDrawing.drawCenteredString(graphics, 
                 this.font,
                 Component.literal("§7Currently cached: §a" + cached.getMachineName()),
                 this.width / 2,
@@ -245,7 +246,7 @@ public class MachineDetectorScreen extends Screen {
                 0xAAAAAA
             );
         } else {
-            graphics.drawCenteredString(
+            TextDrawing.drawCenteredString(graphics, 
                 this.font,
                 Component.literal("§7No machine cached at this position"),
                 this.width / 2,
@@ -260,7 +261,7 @@ public class MachineDetectorScreen extends Screen {
             String[] lines = detectionResult.split("\n");
             
             for (int i = 0; i < lines.length; i++) {
-                graphics.drawCenteredString(
+                TextDrawing.drawCenteredString(graphics, 
                     this.font,
                     Component.literal(lines[i]),
                     this.width / 2,
@@ -272,7 +273,7 @@ public class MachineDetectorScreen extends Screen {
         
         // Instructions
         int instructY = this.height - 40;
-        graphics.drawCenteredString(
+        TextDrawing.drawCenteredString(graphics, 
             this.font,
             Component.literal("§7Click 'Verify Multiblock' to detect structure"),
             this.width / 2,
