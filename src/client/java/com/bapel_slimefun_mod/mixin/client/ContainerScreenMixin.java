@@ -120,7 +120,7 @@ public abstract class ContainerScreenMixin {
                                CallbackInfoReturnable<Boolean> cir) {
         try {
             boolean handled = RecipeOverlayInputHandler.handleMouseClick(
-                event.x(), event.y(), event.buttonInfo().button()
+                event.x(), event.y(), event.button()
             );
 
             if (handled) {
