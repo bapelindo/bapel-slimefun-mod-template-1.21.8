@@ -5,7 +5,7 @@ import com.bapel_slimefun_mod.automation.RecipeMemoryManager;
 import com.bapel_slimefun_mod.automation.UnifiedAutomationManager;
 import com.bapel_slimefun_mod.automation.SlimefunMachineData;
 import com.bapel_slimefun_mod.config.ModConfig;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
@@ -191,7 +191,7 @@ public class AutomationModeScreen extends Screen {
     }
     
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         PerformanceMonitor.start("AutoModeScreen.render");
         try {
         // Draw background
@@ -287,7 +287,7 @@ public class AutomationModeScreen extends Screen {
         }
         
         // Render buttons
-        super.render(graphics, mouseX, mouseY, partialTick);
+        super.extractRenderState(graphics, mouseX, mouseY, partialTick);
     
         } finally {
             PerformanceMonitor.end("AutoModeScreen.render");
@@ -422,7 +422,7 @@ class MultiblockCacheScreen extends Screen {
     }
     
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         // Draw background
         graphics.fill(0, 0, this.width, this.height, 0xC0101010);
         
@@ -478,7 +478,7 @@ class MultiblockCacheScreen extends Screen {
         }
         
         // Render buttons
-        super.render(graphics, mouseX, mouseY, partialTick);
+        super.extractRenderState(graphics, mouseX, mouseY, partialTick);
     }
     
     private String getMostCachedType(java.util.Map<String, Integer> stats) {

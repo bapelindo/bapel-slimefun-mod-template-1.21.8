@@ -4,10 +4,12 @@ import com.bapel_slimefun_mod.automation.MachineAutomationHandler;
 import com.bapel_slimefun_mod.client.gui.AutomationModeScreen;
 import com.bapel_slimefun_mod.config.ModConfig;
 import com.bapel_slimefun_mod.debug.PerformanceMonitor;
+import com.mojang.blaze3d.platform.InputConstants;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.resources.Identifier;
 import org.lwjgl.glfw.GLFW;
 
 /**
@@ -15,7 +17,11 @@ import org.lwjgl.glfw.GLFW;
  * K = Toggle automation, R = Recipe overlay, M = Mode settings, F3 = Performance Monitor
  */
 public class ModKeybinds {
-    
+
+    private static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(
+        Identifier.fromNamespaceAndPath("bapel-slimefun-mod", "automation")
+    );
+
     // K = Toggle automation on/off
     private static KeyMapping toggleAutomationKey;
     
@@ -33,31 +39,35 @@ public class ModKeybinds {
      */
     public static void register() {
         // K = Toggle automation on/off
-        toggleAutomationKey = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+        toggleAutomationKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
             "key.bapel-slimefun-mod.toggle_automation",
+            InputConstants.Type.KEYSYM,
             GLFW.GLFW_KEY_K,
-            "category.bapel-slimefun-mod.automation"
+            CATEGORY
         ));
-        
+
         // R = Toggle recipe overlay
-        recipeOverlayKey = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+        recipeOverlayKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
             "key.bapel-slimefun-mod.recipe_overlay",
+            InputConstants.Type.KEYSYM,
             GLFW.GLFW_KEY_R,
-            "category.bapel-slimefun-mod.automation"
+            CATEGORY
         ));
-        
+
         // M = Open mode settings
-        modeSettingsKey = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+        modeSettingsKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
             "key.bapel-slimefun-mod.mode_settings",
+            InputConstants.Type.KEYSYM,
             GLFW.GLFW_KEY_M,
-            "category.bapel-slimefun-mod.automation"
+            CATEGORY
         ));
-        
+
         // F8 = Toggle performance monitor
-        performanceMonitorKey = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+        performanceMonitorKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
             "key.bapel-slimefun-mod.performance_monitor",
+            InputConstants.Type.KEYSYM,
             GLFW.GLFW_KEY_F8,
-            "category.bapel-slimefun-mod.automation"
+            CATEGORY
         ));
         
         // Register tick event to handle key presses

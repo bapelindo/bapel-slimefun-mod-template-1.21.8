@@ -1,7 +1,7 @@
 package com.bapel_slimefun_mod.debug;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -84,7 +84,7 @@ public class PerformanceMonitor {
     /**
      * ✅ ULTRA OPTIMIZED: Throttled render with caching
      */
-    public static void render(GuiGraphics g) {
+    public static void render(GuiGraphicsExtractor g) {
         if (!visible) return;
         
         long now = System.currentTimeMillis();
@@ -205,7 +205,7 @@ public class PerformanceMonitor {
     /**
      * ✅ NEW: Render cached content (FAST)
      */
-    private static void renderCachedContent(GuiGraphics g) {
+    private static void renderCachedContent(GuiGraphicsExtractor g) {
         if (cachedLines == null || cachedLines.length == 0) {
             updateCache();
             if (cachedLines == null) return;

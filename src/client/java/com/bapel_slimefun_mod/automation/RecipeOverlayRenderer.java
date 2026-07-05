@@ -5,7 +5,7 @@ import com.bapel_slimefun_mod.debug.PerformanceMonitor;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -423,7 +423,7 @@ public class RecipeOverlayRenderer {
         availableRecipes = newRecipes;
     }
     
-    public static void render(GuiGraphics graphics, float partialTicks) {
+    public static void render(GuiGraphicsExtractor graphics, float partialTicks) {
         PerformanceMonitor.start("RecipeOverlay.render");
         try {
             Minecraft mc = Minecraft.getInstance();
@@ -460,7 +460,7 @@ public class RecipeOverlayRenderer {
         }
     }
     
-    private static int renderControlButtons(GuiGraphics graphics, int yPos, int alpha) {
+    private static int renderControlButtons(GuiGraphicsExtractor graphics, int yPos, int alpha) {
         try {
             Minecraft mc = Minecraft.getInstance();
             int buttonHeight = 20;
@@ -558,7 +558,7 @@ public class RecipeOverlayRenderer {
         return cachedAlpha;
     }
     
-    private static void renderBackground(GuiGraphics graphics, int yPos, int alpha) {
+    private static void renderBackground(GuiGraphicsExtractor graphics, int yPos, int alpha) {
         try {
             int totalHeight = calculateTotalHeight();
             int bgAlpha = Math.max(220, alpha);
@@ -582,7 +582,7 @@ public class RecipeOverlayRenderer {
         return (alpha << 24) | (r << 16) | (g << 8) | b;
     }
     
-    private static int renderTitle(GuiGraphics graphics, int yPos, int alpha) {
+    private static int renderTitle(GuiGraphicsExtractor graphics, int yPos, int alpha) {
         try {
             Minecraft mc = Minecraft.getInstance();
             String title = currentMachine.getName() + " Recipes";
@@ -597,7 +597,7 @@ public class RecipeOverlayRenderer {
         }
     }
     
-    private static int renderRecipeList(GuiGraphics graphics, int yPos, int alpha) {
+    private static int renderRecipeList(GuiGraphicsExtractor graphics, int yPos, int alpha) {
         if (filteredRecipes == null || filteredRecipes.isEmpty()) {
             Minecraft mc = Minecraft.getInstance();
             String noResults = searchQuery.isEmpty() ? "No recipes available" : "No recipes match: " + searchQuery;
@@ -652,7 +652,7 @@ public class RecipeOverlayRenderer {
         return cachedInventory;
     }
     
-    private static int renderRecipeEntry(GuiGraphics graphics, int yPos, RecipeData recipe, 
+    private static int renderRecipeEntry(GuiGraphicsExtractor graphics, int yPos, RecipeData recipe, 
                                         boolean isSelected, int alpha, List<ItemStack> inventory) {
         try {
             Minecraft mc = Minecraft.getInstance();

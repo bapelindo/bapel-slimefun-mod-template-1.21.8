@@ -6,7 +6,8 @@ import com.bapel_slimefun_mod.config.ModConfig;
 import com.bapel_slimefun_mod.debug.PerformanceMonitor;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
+import net.minecraft.resources.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,7 +56,7 @@ public class BapelSlimefunMod implements ClientModInitializer {
                 }
             });
             
-            HudRenderCallback.EVENT.register((graphics, tickDelta) -> {
+            HudElementRegistry.addLast(Identifier.fromNamespaceAndPath(MOD_ID, "performance_monitor"), (graphics, tickDelta) -> {
                 try {
                     PerformanceMonitor.render(graphics);
                 } catch (Exception e) {

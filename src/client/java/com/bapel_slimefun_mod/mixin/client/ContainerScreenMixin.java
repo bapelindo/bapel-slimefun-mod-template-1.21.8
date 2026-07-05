@@ -6,8 +6,10 @@ import com.bapel_slimefun_mod.automation.UnifiedAutomationManager;
 import com.bapel_slimefun_mod.automation.RecipeOverlayInputHandler;
 import com.bapel_slimefun_mod.automation.RecipeOverlayRenderer;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -45,30 +47,29 @@ public abstract class ContainerScreenMixin {
         }
     }
     
-    @Inject(method = "render", at = @At("TAIL"))
-    private void onRender(GuiGraphics graphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
+    @Inject(method = "extractRenderState", at = @At("TAIL"))
+    private void onRender(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
         try {
             RecipeOverlayRenderer.render(graphics, partialTick);
         } catch (Exception e) {
             BapelSlimefunMod.LOGGER.error("ERROR rendering recipe overlay", e);
         }
     }
-    
+
     @Inject(method = "keyPressed", at = @At("HEAD"), cancellable = true)
-    private void onKeyPressed(int keyCode, int scanCode, int modifiers, 
-                             CallbackInfoReturnable<Boolean> cir) {
+    private void onKeyPressed(KeyEvent event, CallbackInfoReturnable<Boolean> cir) {
         try {
-            if (ModKeybinds.getToggleAutomationKey().matches(keyCode, scanCode)) {
+            if (ModKeybinds.getToggleAutomationKey().matches(event)) {
                 UnifiedAutomationManager.toggleAutomation();
                 cir.setReturnValue(true);
                 cir.cancel();
                 return;
             }
-            
+
             boolean handled = RecipeOverlayInputHandler.handleKeyPress(
-                keyCode, scanCode, 1, modifiers
+                event.key(), event.scancode(), 1, event.modifiers()
             );
-            
+
             if (handled) {
                 cir.setReturnValue(true);
                 cir.cancel();
@@ -77,16 +78,17 @@ public abstract class ContainerScreenMixin {
             BapelSlimefunMod.LOGGER.error("ERROR in onKeyPressed mixin", e);
         }
     }
-    
+
     @Inject(method = "charTyped", at = @At("HEAD"), cancellable = true, require = 0)
-    private void onCharTyped(char chr, int modifiers, CallbackInfoReturnable<Boolean> cir) {
+    private void onCharTyped(CharacterEvent event, CallbackInfoReturnable<Boolean> cir) {
         try {
             if (!RecipeOverlayRenderer.isVisible()) {
                 return;
             }
-            
+
             if (RecipeOverlayRenderer.isSearchMode()) {
-                boolean handled = RecipeOverlayRenderer.handleCharTyped(chr, modifiers);
+                char chr = event.codepointAsString().charAt(0);
+                boolean handled = RecipeOverlayRenderer.handleCharTyped(chr, event.modifiers());
                 if (handled) {
                     cir.setReturnValue(true);
                     cir.cancel();

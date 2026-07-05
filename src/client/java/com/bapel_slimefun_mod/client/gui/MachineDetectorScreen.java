@@ -5,7 +5,7 @@ import com.bapel_slimefun_mod.automation.MultiblockCacheManager;
 import com.bapel_slimefun_mod.automation.SlimefunMachineData;
 import com.bapel_slimefun_mod.automation.SlimefunDataLoader;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
@@ -204,7 +204,7 @@ public class MachineDetectorScreen extends Screen {
     }
     
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         PerformanceMonitor.start("DetectorScreen.render");
         try {
         // Draw background
@@ -281,7 +281,7 @@ public class MachineDetectorScreen extends Screen {
         );
         
         // Render buttons
-        super.render(graphics, mouseX, mouseY, partialTick);
+        super.extractRenderState(graphics, mouseX, mouseY, partialTick);
     
         } finally {
             PerformanceMonitor.end("DetectorScreen.render");
