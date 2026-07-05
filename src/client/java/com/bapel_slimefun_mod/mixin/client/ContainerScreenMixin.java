@@ -89,7 +89,7 @@ public abstract class ContainerScreenMixin {
 
             if (RecipeOverlayRenderer.isSearchMode()) {
                 char chr = event.codepointAsString().charAt(0);
-                boolean handled = RecipeOverlayRenderer.handleCharTyped(chr, event.modifiers());
+                boolean handled = RecipeOverlayRenderer.handleCharTyped(chr, 0);
                 if (handled) {
                     cir.setReturnValue(true);
                     cir.cancel();

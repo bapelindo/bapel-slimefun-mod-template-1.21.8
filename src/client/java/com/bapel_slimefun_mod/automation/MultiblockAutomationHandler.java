@@ -123,7 +123,7 @@ public class MultiblockAutomationHandler {
                 ItemStack stack = menu.getSlot(i).getItem();
                 
                 if (!stack.isEmpty()) {
-                    mc.gameMode.handleInventoryMouseClick(
+                    mc.gameMode.handleContainerInput(
                         menu.containerId, i, 0, ContainerInput.QUICK_MOVE, player
                     );
                     clearedCount++;
@@ -304,7 +304,7 @@ public class MultiblockAutomationHandler {
             if (target.getItemId().equals("AIR") || target.getAmount() == 0) {
                 if (!currentStack.isEmpty()) {
                     // Remove wrong item
-                    mc.gameMode.handleInventoryMouseClick(menu.containerId, slotIndex, 0, 
+                    mc.gameMode.handleContainerInput(menu.containerId, slotIndex, 0, 
                                                          ContainerInput.QUICK_MOVE, player);
                     
                     actionsThisTick++;
@@ -321,7 +321,7 @@ public class MultiblockAutomationHandler {
             if (needsRefill) {
                 // A. If wrong item, remove it first
                 if (!currentStack.isEmpty() && !isSameItem) {
-                    mc.gameMode.handleInventoryMouseClick(menu.containerId, slotIndex, 0, 
+                    mc.gameMode.handleContainerInput(menu.containerId, slotIndex, 0, 
                                                          ContainerInput.QUICK_MOVE, player);
                     actionsThisTick++;
                     continue;
@@ -332,11 +332,11 @@ public class MultiblockAutomationHandler {
                 
                 if (sourceSlot != -1) {
                     // Place 1 item at a time
-                    mc.gameMode.handleInventoryMouseClick(menu.containerId, sourceSlot, 0, 
+                    mc.gameMode.handleContainerInput(menu.containerId, sourceSlot, 0, 
                                                          ContainerInput.PICKUP, player);
-                    mc.gameMode.handleInventoryMouseClick(menu.containerId, slotIndex, 1, 
+                    mc.gameMode.handleContainerInput(menu.containerId, slotIndex, 1, 
                                                          ContainerInput.PICKUP, player);
-                    mc.gameMode.handleInventoryMouseClick(menu.containerId, sourceSlot, 0, 
+                    mc.gameMode.handleContainerInput(menu.containerId, sourceSlot, 0, 
                                                          ContainerInput.PICKUP, player);
                     
                     actionsThisTick++;

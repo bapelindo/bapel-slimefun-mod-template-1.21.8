@@ -305,7 +305,7 @@ public static void setSelectedRecipe(String recipeId, boolean rememberRecipe) {
                 Slot slot = menu.slots.get(slotIndex);
                 if (slot == null || slot.getItem().isEmpty()) continue;
                 
-                mc.gameMode.handleInventoryMouseClick(
+                mc.gameMode.handleContainerInput(
                     menu.containerId, slotIndex, 0, ContainerInput.QUICK_MOVE, mc.player
                 );
                 
@@ -407,7 +407,7 @@ public static void setSelectedRecipe(String recipeId, boolean rememberRecipe) {
             Integer emptySlot = knownEmptyInputSlots.stream().findFirst().orElse(-1);
             if (emptySlot == -1) return false;
             
-            mc.gameMode.handleInventoryMouseClick(
+            mc.gameMode.handleContainerInput(
                 menu.containerId, playerSlotIndex, 0, ContainerInput.QUICK_MOVE, player
             );
             
