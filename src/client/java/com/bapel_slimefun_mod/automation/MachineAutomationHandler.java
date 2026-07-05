@@ -8,7 +8,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.util.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -310,7 +310,7 @@ public static void setSelectedRecipe(String recipeId, boolean rememberRecipe) {
                 if (slot == null || slot.getItem().isEmpty()) continue;
                 
                 mc.gameMode.handleInventoryMouseClick(
-                    menu.containerId, slotIndex, 0, ClickType.QUICK_MOVE, mc.player
+                    menu.containerId, slotIndex, 0, ContainerInput.QUICK_MOVE, mc.player
                 );
                 
                 successfulOutputs++;
@@ -412,7 +412,7 @@ public static void setSelectedRecipe(String recipeId, boolean rememberRecipe) {
             if (emptySlot == -1) return false;
             
             mc.gameMode.handleInventoryMouseClick(
-                menu.containerId, playerSlotIndex, 0, ClickType.QUICK_MOVE, player
+                menu.containerId, playerSlotIndex, 0, ContainerInput.QUICK_MOVE, player
             );
             
             knownEmptyInputSlots.remove(emptySlot);
