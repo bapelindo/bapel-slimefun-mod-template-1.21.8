@@ -1,15 +1,14 @@
 {
 	"required": true,
-	"package": "com.bapel_slimefun_mod.mixin.client",
+	"package": "com.bapel_slimefun_mod.mixin",
 	"compatibilityLevel": "JAVA_25",
-	"client": [
-		"AbstractContainerScreenAccessor",
-		"ContainerScreenMixin",
-		"ChatListenerMixin",
+	"mixins": [
 		"ScreenWidgetInvoker"
+	],
+	"client": [
+		"AbstractContainerScreenAccessor"
 	],
 	"injectors": {
 		"defaultRequire": 1
-	},
-	"mixins": []
+	}
 }
