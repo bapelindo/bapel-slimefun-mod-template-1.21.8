@@ -26,6 +26,7 @@ public class BapelSlimefunMod implements ClientModInitializer {
         initializeSystems();
         ModKeybinds.register();
         com.bapel_slimefun_mod.automation.fastmachine.FastMachineChatCommandInterceptor.register();
+        com.bapel_slimefun_mod.automation.fastmachine.FastMachineTestRunner.register();
         registerEventHandlers();
         
         LOGGER.info("Bapel Slimefun Mod Initialized Successfully");

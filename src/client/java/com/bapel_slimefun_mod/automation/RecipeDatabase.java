@@ -243,6 +243,11 @@ public class RecipeDatabase {
         List<RecipeData> recipes = RECIPES_BY_MACHINE.get(machineId);
         return recipes != null ? Collections.unmodifiableList(recipes) : Collections.emptyList();
     }
+
+    public static List<RecipeData> getAllRecipes() {
+        if (!initialized) initialize();
+        return new ArrayList<>(RECIPES_BY_ID.values());
+    }
     
     public static RecipeData getRecipe(String recipeId) {
         return RECIPES_BY_ID.get(recipeId);
@@ -346,8 +351,11 @@ public class RecipeDatabase {
     
     public static List<RecipeData> searchRecipesByOutput(String searchTerm) {
         List<RecipeData> results = new ArrayList<>();
+        if (searchTerm == null) return results;
+        searchTerm = searchTerm.replaceAll("\\s+", " ").trim();
         String searchUpper = searchTerm.toUpperCase();
         
+        // 1. Direct match by Item ID
         Set<String> recipeIds = RECIPES_BY_OUTPUT.get(searchUpper);
         if (recipeIds == null) {
             recipeIds = RECIPES_BY_OUTPUT.get(searchUpper.replace(" ", "_"));
@@ -362,21 +370,37 @@ public class RecipeDatabase {
                     results.add(recipe);
                 }
             }
-            return results;
         }
         
-        String normSearch = searchUpper.replace(" ", "_");
-        for (Map.Entry<String, Set<String>> entry : RECIPES_BY_OUTPUT.entrySet()) {
-            String normKey = entry.getKey().replace(" ", "_");
-            if (normKey.contains(normSearch)) {
-                for (String recipeId : entry.getValue()) {
-                    RecipeData recipe = RECIPES_BY_ID.get(recipeId);
-                    if (recipe != null && !results.contains(recipe)) {
+        // 2. Direct/Contains match by Display Name
+        String cleanSearch = com.bapel_slimefun_mod.automation.AutomationUtils.stripColorCodes(searchTerm).trim().toLowerCase();
+        for (RecipeData recipe : RECIPES_BY_ID.values()) {
+            if (recipe.getPrimaryOutput() != null) {
+                String cleanDisplay = com.bapel_slimefun_mod.automation.AutomationUtils.stripColorCodes(recipe.getPrimaryOutput().getDisplayName()).trim().toLowerCase();
+                if (cleanDisplay.equals(cleanSearch) || cleanDisplay.contains(cleanSearch)) {
+                    if (!results.contains(recipe)) {
                         results.add(recipe);
                     }
                 }
             }
         }
+        
+        // 3. Fallback to Item ID contains mapping
+        if (results.isEmpty()) {
+            String normSearch = searchUpper.replace(" ", "_");
+            for (Map.Entry<String, Set<String>> entry : RECIPES_BY_OUTPUT.entrySet()) {
+                String normKey = entry.getKey().replace(" ", "_");
+                if (normKey.contains(normSearch)) {
+                    for (String recipeId : entry.getValue()) {
+                        RecipeData recipe = RECIPES_BY_ID.get(recipeId);
+                        if (recipe != null && !results.contains(recipe)) {
+                            results.add(recipe);
+                        }
+                    }
+                }
+            }
+        }
+        
         return results;
     }
     

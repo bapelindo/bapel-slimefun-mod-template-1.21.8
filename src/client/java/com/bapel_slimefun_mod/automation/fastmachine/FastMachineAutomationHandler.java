@@ -95,13 +95,13 @@ public final class FastMachineAutomationHandler {
 
     // ── Multi-hop crafting chain (Network Grid → FastMachine 1 → FastMachine 2 → ...) ──
     /** One "produce this item, in this quantity, at this machine" step in a chain. */
-    private static final class CraftJob {
-        final String recipeName;   // display name of the item this job must produce
-        final String sfMachineId;  // Slimefun machine id that produces it
-        final int    qty;          // how many crafts to run
-        boolean triedGrid = false; // whether we already attempted a Network Grid pull for this job
+    public static final class CraftJob {
+        public final String recipeName;   // display name of the item this job must produce
+        public final String sfMachineId;  // Slimefun machine id that produces it
+        public final int    qty;          // how many crafts to run
+        public boolean triedGrid = false; // whether we already attempted a Network Grid pull for this job
 
-        CraftJob(String recipeName, String sfMachineId, int qty) {
+        public CraftJob(String recipeName, String sfMachineId, int qty) {
             this.recipeName = recipeName;
             this.sfMachineId = sfMachineId;
             this.qty = qty;
@@ -743,6 +743,10 @@ public final class FastMachineAutomationHandler {
         }
 
         RecipeData recipe = findRecipeByOutputName(job.recipeName);
+        if (recipe == null) {
+            abortChain("§c✗ Resep " + job.recipeName + " tidak ditemukan di database!");
+            return;
+        }
         java.util.Map<String, Integer> missing = computeMissingIngredients(recipe, job.qty, player);
 
         if (missing.isEmpty()) {
@@ -845,16 +849,26 @@ public final class FastMachineAutomationHandler {
         return candidates.get(0);
     }
 
-    /** Finds a recipe that (a) produces the given item id and (b) runs on a FastMachine we can automate. */
     private static RecipeData findProducibleRecipeForItemId(String itemId) {
         if (!RecipeDatabase.isInitialized()) RecipeDatabase.initialize();
         java.util.List<RecipeData> candidates = RecipeDatabase.searchRecipesByOutput(itemId);
         if (candidates == null) return null;
+        
+        RecipeData fallback = null;
         for (RecipeData r : candidates) {
-            if (getFastMachineIdFromSlimefun(r.getMachineId()) == null) continue; // not an automatable FastMachine
-            if (matchingOutput(r, itemId) != null) return r;
+            String fmId = getFastMachineIdFromSlimefun(r.getMachineId());
+            if (fmId == null) continue;
+            if (matchingOutput(r, itemId) == null) continue;
+            
+            Minecraft mc = Minecraft.getInstance();
+            if (mc.player != null && mc.level != null) {
+                if (FastMachineRecipeMemory.getClosestPosition(fmId, mc.player.position(), mc.level) != null) {
+                    return r;
+                }
+            }
+            if (fallback == null) fallback = r;
         }
-        return null;
+        return fallback;
     }
 
     private static RecipeData.RecipeOutput matchingOutput(RecipeData recipe, String itemId) {
@@ -1020,6 +1034,21 @@ public final class FastMachineAutomationHandler {
         }
     }
 
+    private static boolean hasRoomFor(LocalPlayer player, ItemStack stack) {
+        if (player == null || stack == null || stack.isEmpty()) return false;
+        if (player.getInventory().getFreeSlot() != -1) return true;
+        
+        for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+            ItemStack invStack = player.getInventory().getItem(i);
+            if (!invStack.isEmpty() && ItemStack.isSameItemSameComponents(invStack, stack)) {
+                if (invStack.getCount() < invStack.getMaxStackSize()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public static void tickNetworkGrid(AbstractContainerMenu menu) {
         if (!isExtractingFromNetwork || pendingIngredients.isEmpty()) {
             if (isExtractingFromNetwork) {
@@ -1083,6 +1112,14 @@ public final class FastMachineAutomationHandler {
             }
 
             if (matchedKey != null) {
+                if (!hasRoomFor(player, stack)) {
+                    abortChain("§c✗ Tas penuh! Tidak dapat mengambil " + stack.getHoverName().getString() + " dari Grid.");
+                    if (mc.screen != null) {
+                        mc.screen.onClose();
+                    }
+                    return;
+                }
+
                 int missingAmount = pendingIngredients.get(matchedKey);
                 click(mc, menu, i, 0, ContainerInput.QUICK_MOVE);
                 

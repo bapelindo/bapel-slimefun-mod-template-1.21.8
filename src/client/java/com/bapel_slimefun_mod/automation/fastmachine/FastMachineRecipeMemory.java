@@ -295,7 +295,7 @@ public final class FastMachineRecipeMemory {
         BlockPos closest = null;
         double closestDist = Double.MAX_VALUE;
         for (BlockPos pos : list) {
-            if (level != null && level.getBlockState(pos).isAir()) {
+            if (level != null && level.hasChunkAt(pos) && level.getBlockState(pos).isAir()) {
                 list.remove(pos);
                 savePositions();
                 continue;

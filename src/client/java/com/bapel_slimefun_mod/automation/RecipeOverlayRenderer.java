@@ -277,8 +277,44 @@ public class RecipeOverlayRenderer {
             if (machine != null) {
                 show(machine);
             } else {
-                sendPlayerMessage("§e[Slimefun] Open a Slimefun machine first!");
+                showGlobalSearch();
             }
+        }
+    }
+
+    public static void showGlobalSearch() {
+        PerformanceMonitor.start("RecipeOverlay.showGlobalSearch");
+        try {
+            currentMachine = new SlimefunMachineData("GLOBAL_SEARCH", "Global Search", "All Recipes", new int[0], new int[0], new java.util.ArrayList<>(), 0, 0);
+            
+            java.util.List<RecipeData> allRecipes = new java.util.ArrayList<>();
+            if (RecipeDatabase.isInitialized()) {
+                allRecipes.addAll(RecipeDatabase.getAllRecipes());
+            }
+            availableRecipes = allRecipes;
+            
+            if (availableRecipes.isEmpty()) {
+                sendPlayerMessage("§c[Slimefun] No recipes loaded in database!");
+                currentMachine = null;
+                return;
+            }
+            
+            applyFilterAndSort();
+            
+            overlayVisible = true;
+            selectedIndex = 0;
+            scrollOffset = 0;
+            fadeStartTime = System.currentTimeMillis();
+            fadingIn = true;
+            
+            searchQuery = "";
+            searchMode = true; // Start directly in search mode for typing convenience!
+            
+            cachedInventory = null;
+            cachedAlpha = 0;
+            lastAlphaCalc = 0;
+        } finally {
+            PerformanceMonitor.end("RecipeOverlay.showGlobalSearch");
         }
     }
     

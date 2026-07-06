@@ -50,17 +50,28 @@ public final class FastMachineDetector {
 
     public static boolean isFastMachine(String rawTitle) {
         if (rawTitle == null || rawTitle.isBlank()) return false;
-        String clean = stripColorCodes(rawTitle).trim();
-        if (TITLE_TO_ID.containsKey(clean)) return true;
-        return clean.toLowerCase().startsWith("fast ");
+        String clean = stripColorCodes(rawTitle).trim().toLowerCase();
+        
+        for (String knownTitle : TITLE_TO_ID.keySet()) {
+            if (clean.contains(knownTitle.toLowerCase())) {
+                return true;
+            }
+        }
+        return clean.contains("fast ");
     }
 
     public static String getMachineId(String rawTitle) {
         if (rawTitle == null) return "FAST_UNKNOWN";
-        String clean = stripColorCodes(rawTitle).trim();
-        String known = TITLE_TO_ID.get(clean);
-        if (known != null) return known;
-        return clean.toUpperCase().replaceAll("[^A-Z0-9]+", "_").replaceAll("^_+|_+$", "");
+        String clean = stripColorCodes(rawTitle).trim().toLowerCase();
+        
+        for (Map.Entry<String, String> entry : TITLE_TO_ID.entrySet()) {
+            if (clean.contains(entry.getKey().toLowerCase())) {
+                return entry.getValue();
+            }
+        }
+        
+        String upperClean = stripColorCodes(rawTitle).trim().toUpperCase();
+        return upperClean.replaceAll("[^A-Z0-9]+", "_").replaceAll("^_+|_+$", "");
     }
 
     public static String stripColorCodes(String s) {
