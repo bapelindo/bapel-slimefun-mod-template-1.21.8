@@ -2,8 +2,7 @@
 // ║  FILE 5 — FastMachineAutomationHandler.java  (BARU)                        ║
 // ║  src/client/java/com/bapel_slimefun_mod/automation/                        ║
 // ╚══════════════════════════════════════════════════════════════════════════════╝
-package com.bapel_slimefun_mod.automation;
-
+package com.bapel_slimefun_mod.automation.fastmachine;
 import com.bapel_slimefun_mod.BapelSlimefunMod;
 import com.bapel_slimefun_mod.config.ModConfig;
 import com.bapel_slimefun_mod.debug.PerformanceMonitor;
@@ -11,7 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -183,7 +182,7 @@ public final class FastMachineAutomationHandler {
             ItemStack preview = getSlotItem(menu, slot);
             if (preview == null || preview.isEmpty()) continue;
             if (lockedRecipeName.equalsIgnoreCase(getDisplayName(preview))) {
-                click(mc, menu, slot, 0, ClickType.PICKUP);
+                click(mc, menu, slot, 0, ContainerInput.PICKUP);
                 if (isPausedFor("STOCK") && !manuallyPaused) {
                     paused = false; pauseReason = "";
                     showActionBar("§a✓ Ingredients replenished — resumed");
@@ -191,7 +190,7 @@ public final class FastMachineAutomationHandler {
                 return;
             }
         }
-        click(mc, menu, FastMachineGuiLayout.SCROLL_DOWN_SLOT, 0, ClickType.PICKUP);
+        click(mc, menu, FastMachineGuiLayout.SCROLL_DOWN_SLOT, 0, ContainerInput.PICKUP);
     }
 
     private static void tickCraft(AbstractContainerMenu menu, Minecraft mc) {
@@ -208,14 +207,14 @@ public final class FastMachineAutomationHandler {
 
         int before = countOccupiedInputs(menu);
 
-        int button; ClickType clickType;
+        int button; ContainerInput ContainerInput;
         switch (entry.craftMode) {
-            case SINGLE  -> { button = 0; clickType = ClickType.PICKUP; }
-            case BULK_16 -> { button = 1; clickType = ClickType.PICKUP; }
-            case MAX     -> { button = 1; clickType = ClickType.QUICK_MOVE; }
-            default      -> { button = 0; clickType = ClickType.QUICK_MOVE; }
+            case SINGLE  -> { button = 0; ContainerInput = ContainerInput.PICKUP; }
+            case BULK_16 -> { button = 1; ContainerInput = ContainerInput.PICKUP; }
+            case MAX     -> { button = 1; ContainerInput = ContainerInput.QUICK_MOVE; }
+            default      -> { button = 0; ContainerInput = ContainerInput.QUICK_MOVE; }
         }
-        click(mc, menu, FastMachineGuiLayout.CRAFT_SLOT, button, clickType);
+        click(mc, menu, FastMachineGuiLayout.CRAFT_SLOT, button, ContainerInput);
         statCrafts++;
 
         if (entry.targetCount > 0) {
@@ -244,7 +243,7 @@ public final class FastMachineAutomationHandler {
         for (int i = FastMachineGuiLayout.GUI_SIZE; i < size && clicked < FastMachineGuiLayout.MAX_CLICKS_PER_TICK; i++) {
             Slot slot = getSlot(menu, i);
             if (slot == null || slot.getItem().isEmpty()) continue;
-            click(mc, menu, i, 0, ClickType.QUICK_MOVE);
+            click(mc, menu, i, 0, ContainerInput.QUICK_MOVE);
             clicked++; statRefills++;
         }
 
@@ -360,7 +359,7 @@ public final class FastMachineAutomationHandler {
         return count;
     }
 
-    private static void click(Minecraft mc, AbstractContainerMenu menu, int slot, int button, ClickType type) {
+    private static void click(Minecraft mc, AbstractContainerMenu menu, int slot, int button, ContainerInput type) {
         try {
             mc.gameMode.handleInventoryMouseClick(menu.containerId, slot, button, type, mc.player);
         } catch (Exception e) {

@@ -2,8 +2,7 @@
 // ║  FILE 4 — FastMachineEnergyMonitor.java  (BARU)                            ║
 // ║  src/client/java/com/bapel_slimefun_mod/automation/                        ║
 // ╚══════════════════════════════════════════════════════════════════════════════╝
-package com.bapel_slimefun_mod.automation;
-
+package com.bapel_slimefun_mod.automation.fastmachine;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;

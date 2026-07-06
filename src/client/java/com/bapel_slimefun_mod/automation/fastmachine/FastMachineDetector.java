@@ -2,8 +2,7 @@
 // ║  FILE 2 — FastMachineDetector.java  (BARU)                                 ║
 // ║  src/client/java/com/bapel_slimefun_mod/automation/FastMachineDetector.java ║
 // ╚══════════════════════════════════════════════════════════════════════════════╝
-package com.bapel_slimefun_mod.automation;
-
+package com.bapel_slimefun_mod.automation.fastmachine;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;

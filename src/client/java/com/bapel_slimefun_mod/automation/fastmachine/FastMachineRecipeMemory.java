@@ -3,8 +3,7 @@
 // ║  Gaya persist mengikuti ModConfig.java: Gson sederhana + Paths.get("config")║
 // ║  src/client/java/com/bapel_slimefun_mod/automation/                        ║
 // ╚══════════════════════════════════════════════════════════════════════════════╝
-package com.bapel_slimefun_mod.automation;
-
+package com.bapel_slimefun_mod.automation.fastmachine;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;

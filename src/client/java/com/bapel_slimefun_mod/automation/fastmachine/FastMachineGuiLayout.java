@@ -2,8 +2,7 @@
 // ║  FILE 1 — FastMachineGuiLayout.java  (BARU)                                ║
 // ║  src/client/java/com/bapel_slimefun_mod/automation/FastMachineGuiLayout.java║
 // ╚══════════════════════════════════════════════════════════════════════════════╝
-package com.bapel_slimefun_mod.automation;
-
+package com.bapel_slimefun_mod.automation.fastmachine;
 /**
  * Slot-index constants for the FastMachines (GuizhanCraft) 54-slot chest GUI.
  *

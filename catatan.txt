@@ -1,0 +1,41 @@
+
+// ╔══════════════════════════════════════════════════════════════════════════════╗
+// ║  PATCH FastMachineGuiButtons.java — baris ~98                              ║
+// ║  EditBox.setFilter(...) TERKONFIRMASI TIDAK ADA di source asli 26.1        ║
+// ║  Satu-satunya mekanisme reaktif yang tersedia: setResponder(Consumer<String>)║
+// ╚══════════════════════════════════════════════════════════════════════════════╝
+
+/*
+ * SEBELUM (❌ method tidak ada):
+ *
+ *   targetBox.setFilter(s -> s.isEmpty() || s.matches("\\d+"));
+ *
+ * SESUDAH — filter manual: setiap kali user mengetik, kita cek isinya;
+ * kalau tidak valid (bukan digit), langsung revert ke nilai terakhir yang valid.
+ */
+private static String lastValidTargetInput = "";
+
+private static void attachDigitFilter(EditBox targetBox) {
+    targetBox.setResponder(newValue -> {
+        if (newValue.isEmpty() || newValue.matches("\\d+")) {
+            lastValidTargetInput = newValue; // simpan sebagai nilai valid terakhir
+        } else {
+            // Input tidak valid → revert tanpa memicu responder lagi (hindari infinite loop)
+            targetBox.setValue(lastValidTargetInput);
+        }
+    });
+}
+
+/*
+ * Lalu di tempat targetBox dibuat (sekitar baris 98 sebelumnya), panggil:
+ *
+ *   EditBox targetBox = new EditBox(font, x, y, width, height, Component.literal("Target"));
+ *   targetBox.setMaxLength(9);
+ *   attachDigitFilter(targetBox);   // ★ ganti baris setFilter(...) dengan ini
+ *   targetBox.setValue(entry.targetCount > 0 ? String.valueOf(entry.targetCount) : "");
+ *
+ * CATATAN: setValue() di dalam setResponder AKAN memicu onValueChange() lagi
+ * (karena setValue -> onValueChange -> responder.accept). Ini aman di sini karena
+ * nilai yang di-set (lastValidTargetInput) sudah pasti valid, sehingga tidak akan
+ * loop tak terbatas — responder akan langsung menyimpannya lagi tanpa revert.
+ */

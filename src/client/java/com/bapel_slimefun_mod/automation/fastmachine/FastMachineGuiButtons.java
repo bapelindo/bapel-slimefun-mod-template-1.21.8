@@ -2,8 +2,7 @@
 // ║  FILE 8 — FastMachineGuiButtons.java  (BARU)                               ║
 // ║  src/client/java/com/bapel_slimefun_mod/automation/                        ║
 // ╚══════════════════════════════════════════════════════════════════════════════╝
-package com.bapel_slimefun_mod.automation;
-
+package com.bapel_slimefun_mod.automation.fastmachine;
 import com.bapel_slimefun_mod.mixin.AbstractContainerScreenAccessor;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -25,15 +24,27 @@ import net.minecraft.network.chat.Component;
  *
  * @author bapelindo
  */
-public final class FastMachineGuiButtons {
+    public final class FastMachineGuiButtons {
 
-    private FastMachineGuiButtons() {}
+        private FastMachineGuiButtons() {}
 
-    private static final int PANEL_MARGIN_X = 8;
-    private static final int BUTTON_WIDTH   = 130;
-    private static final int BUTTON_HEIGHT  = 20;
-    private static final int ROW_SPACING    = 24;
-    private static final int SMALL_BUTTON_W = 62;
+        private static final int PANEL_MARGIN_X = 8;
+        private static final int BUTTON_WIDTH   = 130;
+        private static final int BUTTON_HEIGHT  = 20;
+        private static final int ROW_SPACING    = 24;
+        private static final int SMALL_BUTTON_W = 62;
+        private static String lastValidTargetInput = "";
+
+        private static void attachDigitFilter(net.minecraft.client.gui.components.EditBox targetBox) {
+        targetBox.setResponder(newValue -> {
+            if (newValue.isEmpty() || newValue.matches("\\d+")) {
+                lastValidTargetInput = newValue;
+            } else {
+                // Jika input mengandung huruf, paksa revert ke teks angka terakhir yang valid
+                targetBox.setValue(lastValidTargetInput);
+            }
+        });
+    }
 
     public static void register() {
         ScreenEvents.AFTER_INIT.register(FastMachineGuiButtons::onScreenInit);
@@ -96,7 +107,7 @@ public final class FastMachineGuiButtons {
                 x, y + row * ROW_SPACING, BUTTON_WIDTH, BUTTON_HEIGHT,
                 Component.literal("Target"));
         targetBox.setMaxLength(9);
-        targetBox.setFilter(s -> s.isEmpty() || s.matches("\\d+"));
+        attachDigitFilter(targetBox);
         targetBox.setValue(entry.targetCount > 0 ? String.valueOf(entry.targetCount) : "");
         targetBox.setHint(Component.literal("§7Target qty..."));
         screen.addRenderableWidget(targetBox);

@@ -2,8 +2,7 @@
 // ║  FILE 6 — FastMachineHudOverlay.java  (BARU)                               ║
 // ║  src/client/java/com/bapel_slimefun_mod/automation/                        ║
 // ╚══════════════════════════════════════════════════════════════════════════════╝
-package com.bapel_slimefun_mod.automation;
-
+package com.bapel_slimefun_mod.automation.fastmachine;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
