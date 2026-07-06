@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
- * âœ… CLEANED: No more command handling
+ * CLEANED: No more command handling
  * 
  * All machine detection is now handled via GUI (M key â†’ Machine Detector)
  * This mixin only logs Slimefun messages for debugging
@@ -24,7 +24,7 @@ public class ChatListenerMixin {
             Component message = packet.content();
             String text = message.getString();
             
-            // âœ… OPTIONAL: Log Slimefun messages for debugging
+            // OPTIONAL: Log Slimefun messages for debugging
             if (text.contains("Slimefun")) {
                 BapelSlimefunMod.LOGGER.debug("[Chat] Slimefun message: {}", text);
             }

@@ -266,6 +266,14 @@ public class RecipeOverlayRenderer {
             hide();
         } else {
             SlimefunMachineData machine = UnifiedAutomationManager.getCurrentMachine();
+            if (machine == null && com.bapel_slimefun_mod.automation.fastmachine.FastMachineAutomationHandler.isActive()) {
+                String sfId = com.bapel_slimefun_mod.automation.fastmachine.FastMachineAutomationHandler.getSlimefunMachineId(
+                    com.bapel_slimefun_mod.automation.fastmachine.FastMachineAutomationHandler.getCurrentMachineId()
+                );
+                if (sfId != null) {
+                    machine = SlimefunDataLoader.getMachineByTitle(sfId);
+                }
+            }
             if (machine != null) {
                 show(machine);
             } else {
@@ -858,6 +866,19 @@ public class RecipeOverlayRenderer {
         } catch(Exception ignored) {}
         
         hide();
+    }
+
+    public static void requestAutoCraftCurrent() {
+        if (filteredRecipes == null || filteredRecipes.isEmpty()) return;
+        if (selectedIndex < 0 || selectedIndex >= filteredRecipes.size()) return;
+
+        RecipeData selected = filteredRecipes.get(selectedIndex);
+        String recipeName = selected.getPrimaryOutput().getDisplayName();
+        String sfMachine = selected.getMachineId();
+
+        hide();
+
+        com.bapel_slimefun_mod.automation.fastmachine.FastMachineAutomationHandler.requestAutoCraft(recipeName, sfMachine, 64);
     }
     
     // Getters

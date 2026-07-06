@@ -25,6 +25,9 @@ public final class ModKeybinds {
     /** The single registered keybind — physically bound to {@code J} by default. */
     public static KeyMapping FASTMACHINE_KEY;
 
+    /** The registered keybind for pausing/resuming FastMachine automation — physically bound to {@code O} by default. */
+    public static KeyMapping FASTMACHINE_PAUSE_KEY;
+
     /** Tracks whether the physical J key was down last tick (edge-trigger guard). */
     private static boolean wasDownLastTick = false;
 
@@ -46,6 +49,13 @@ public final class ModKeybinds {
             "key.bapel-slimefun-mod.fastmachine_action",
             InputConstants.Type.KEYSYM,
             GLFW.GLFW_KEY_J,
+            CATEGORY
+        ));
+
+        FASTMACHINE_PAUSE_KEY = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+            "key.bapel-slimefun-mod.fastmachine_pause",
+            InputConstants.Type.KEYSYM,
+            GLFW.GLFW_KEY_O,
             CATEGORY
         ));
 
@@ -103,6 +113,13 @@ public final class ModKeybinds {
     private static void onClientTick(Minecraft mc) {
         if (FASTMACHINE_KEY == null || mc.player == null) return;
 
+        // Poll the Pause/Resume key
+        if (FASTMACHINE_PAUSE_KEY != null && FASTMACHINE_PAUSE_KEY.consumeClick()) {
+            if (FastMachineAutomationHandler.isActive()) {
+                FastMachineAutomationHandler.toggleManualPause();
+            }
+        }
+
         boolean isDown = FASTMACHINE_KEY.isDown();
 
         if (isDown && !wasDownLastTick) {
@@ -111,12 +128,7 @@ public final class ModKeybinds {
             boolean ctrl  = isPhysicallyDown(window, GLFW.GLFW_KEY_LEFT_CONTROL, GLFW.GLFW_KEY_RIGHT_CONTROL);
             boolean alt   = isPhysicallyDown(window, GLFW.GLFW_KEY_LEFT_ALT, GLFW.GLFW_KEY_RIGHT_ALT);
 
-            // Jika FastMachine sedang aktif dan player menekan tombol tanpa modifier sama sekali
-            if (!shift && !ctrl && !alt && FastMachineAutomationHandler.isActive()) {
-                FastMachineAutomationHandler.toggleManualPause();
-            } else {
-                dispatch(shift, ctrl, alt);
-            }
+            dispatch(shift, ctrl, alt);
         }
         wasDownLastTick = isDown;
     }

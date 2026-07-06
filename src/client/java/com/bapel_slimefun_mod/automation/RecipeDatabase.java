@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.bapel_slimefun_mod.debug.PerformanceMonitor;
 
 /**
- * âœ… FIXED: Keep AIR items in recipe parsing for multiblock automation
+ * FIXED: Keep AIR items in recipe parsing for multiblock automation
  */
 public class RecipeDatabase {
     private static final Gson GSON = new Gson();
@@ -156,7 +156,7 @@ public class RecipeDatabase {
     }
     
     /**
-     * âœ… FIXED: Keep ALL inputs including AIR for multiblock recipes
+     * FIXED: Keep ALL inputs including AIR for multiblock recipes
      */
     private static RecipeData parseExternalRecipe(JsonObject json) {
         String itemId = json.get("itemId").getAsString();
@@ -171,13 +171,13 @@ public class RecipeDatabase {
                 RecipeHandler.RecipeIngredient ingredient = 
                     RecipeHandler.RecipeIngredient.parse(inputElement.getAsString());
                 
-                // âœ… CRITICAL FIX: Always add ingredient (including AIR)
+                // CRITICAL FIX: Always add ingredient (including AIR)
                 // This preserves the 3x3 grid structure for multiblock automation
                 inputs.add(ingredient);
             }
         }
         
-        // âœ… REMOVED: Don't check if inputs are empty
+        // REMOVED: Don't check if inputs are empty
         // Even if all AIR, we need the structure
         
         // Parse outputs
@@ -199,7 +199,7 @@ public class RecipeDatabase {
     }
     
     /**
-     * âœ… FIXED: Keep ALL inputs including AIR for multiblock recipes
+     * FIXED: Keep ALL inputs including AIR for multiblock recipes
      */
     private static RecipeData parseProcessingRecipe(String machineId, JsonObject json) {
         String recipeId = machineId + "_recipe_" + Math.abs(json.hashCode());
@@ -211,12 +211,12 @@ public class RecipeDatabase {
                 RecipeHandler.RecipeIngredient ingredient = 
                     RecipeHandler.RecipeIngredient.parse(inputElement.getAsString());
                 
-                // âœ… CRITICAL FIX: Always add ingredient (including AIR)
+                // CRITICAL FIX: Always add ingredient (including AIR)
                 inputs.add(ingredient);
             }
         }
         
-        // âœ… REMOVED: Don't check if inputs are empty
+        // REMOVED: Don't check if inputs are empty
         
         // Parse outputs
         List<RecipeData.RecipeOutput> outputs = new ArrayList<>();
@@ -349,6 +349,12 @@ public class RecipeDatabase {
         String searchUpper = searchTerm.toUpperCase();
         
         Set<String> recipeIds = RECIPES_BY_OUTPUT.get(searchUpper);
+        if (recipeIds == null) {
+            recipeIds = RECIPES_BY_OUTPUT.get(searchUpper.replace(" ", "_"));
+        }
+        if (recipeIds == null) {
+            recipeIds = RECIPES_BY_OUTPUT.get(searchUpper.replace("_", " "));
+        }
         if (recipeIds != null) {
             for (String recipeId : recipeIds) {
                 RecipeData recipe = RECIPES_BY_ID.get(recipeId);
@@ -359,8 +365,10 @@ public class RecipeDatabase {
             return results;
         }
         
+        String normSearch = searchUpper.replace(" ", "_");
         for (Map.Entry<String, Set<String>> entry : RECIPES_BY_OUTPUT.entrySet()) {
-            if (entry.getKey().contains(searchUpper)) {
+            String normKey = entry.getKey().replace(" ", "_");
+            if (normKey.contains(normSearch)) {
                 for (String recipeId : entry.getValue()) {
                     RecipeData recipe = RECIPES_BY_ID.get(recipeId);
                     if (recipe != null && !results.contains(recipe)) {
@@ -369,7 +377,6 @@ public class RecipeDatabase {
                 }
             }
         }
-        
         return results;
     }
     

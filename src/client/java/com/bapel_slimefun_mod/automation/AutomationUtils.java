@@ -125,7 +125,45 @@ public class AutomationUtils {
         if (!ItemStack.isSameItemSameComponents(a, b)) return false;
         return a.getCount() + b.getCount() <= a.getMaxStackSize();
     }
-    
+
+    /**
+     * Robust matching for Network Grid items
+     */
+    public static boolean matchesItem(ItemStack stack, String targetId) {
+        if (stack == null || stack.isEmpty()) return false;
+        
+        // 1. Check vanilla ID match (case-insensitive, e.g. "iron_ingot" vs "IRON_INGOT")
+        String vanillaId = stack.getItem().toString().replace("minecraft:", "").toUpperCase();
+        if (vanillaId.equalsIgnoreCase(targetId)) {
+            return true;
+        }
+        
+        // 2. Check Slimefun ID match via custom name
+        if (stack.has(DataComponents.CUSTOM_NAME)) {
+            String displayName = stack.getHoverName().getString();
+            String cleanName = stripColorCodes(displayName).trim();
+            
+            // Try matching by converting cleanName to ID: "Copper Wire" -> "COPPER_WIRE"
+            String customId = cleanName.toUpperCase().replace(" ", "_");
+            if (customId.equalsIgnoreCase(targetId)) {
+                return true;
+            }
+            
+            // Also check if the clean name contains or starts with the target name
+            // (for plugins that append amount like "Iron Ingot (123)" or "Copper Wire x64")
+            String targetName = targetId.replace("_", " ");
+            if (cleanName.equalsIgnoreCase(targetName) || 
+                cleanName.toLowerCase().startsWith(targetName.toLowerCase() + " ") ||
+                cleanName.toLowerCase().contains(" " + targetName.toLowerCase()) ||
+                cleanName.toLowerCase().startsWith(targetName.toLowerCase() + "(") ||
+                cleanName.toLowerCase().startsWith(targetName.toLowerCase() + " x")) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
     /**
      * Remove color codes from string
      */

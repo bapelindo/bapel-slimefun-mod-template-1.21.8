@@ -98,7 +98,12 @@ public class RecipeOverlayInputHandler {
                 case GLFW.GLFW_KEY_ENTER:
                 case GLFW.GLFW_KEY_KP_ENTER:
                 case GLFW.GLFW_KEY_SPACE:
-                    RecipeOverlayRenderer.selectCurrent();
+                    boolean shiftHeld = (modifiers & GLFW.GLFW_MOD_SHIFT) != 0;
+                    if (shiftHeld) {
+                        RecipeOverlayRenderer.requestAutoCraftCurrent();
+                    } else {
+                        RecipeOverlayRenderer.selectCurrent();
+                    }
                     handled = true;
                     break;
                     

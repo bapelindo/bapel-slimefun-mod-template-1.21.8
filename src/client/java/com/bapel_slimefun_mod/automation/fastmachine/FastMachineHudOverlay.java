@@ -54,13 +54,22 @@ public final class FastMachineHudOverlay {
             lines.add(color + "🔋 " + Math.round(fraction * 100) + "% " + buildBar(fraction, 10));
         }
 
-        if (entry != null && entry.targetCount > 0) {
+        if (entry != null && entry.recipeQueue != null && !entry.recipeQueue.isEmpty() && entry.currentQueueIndex < entry.recipeQueue.size()) {
+            FastMachineRecipeMemory.QueueEntry currentQueue = entry.recipeQueue.get(entry.currentQueueIndex);
+            int pct = Math.min(100, (int) ((currentQueue.craftedCount * 100.0) / currentQueue.targetCount));
+            lines.add("§b📋 Queue: §f" + (entry.currentQueueIndex + 1) + "/" + entry.recipeQueue.size());
+            lines.add("§d📦 Progress: §f" + currentQueue.craftedCount + " / " + currentQueue.targetCount + " §7(" + pct + "%)");
+        } else if (entry != null && entry.targetCount > 0) {
             int pct = Math.min(100, (int) ((entry.craftedSinceTarget * 100.0) / entry.targetCount));
             lines.add("§d📦 Target: §f" + entry.craftedSinceTarget + " / " + entry.targetCount + " §7(" + pct + "%)");
         }
 
         if (entry != null && entry.autoRefill) {
             lines.add("§b♻ Auto-Refill: §aON");
+        }
+
+        if (entry != null && entry.autoMatch) {
+            lines.add("§d⚙ Auto-Match: §aON");
         }
 
         if (FastMachineAutomationHandler.isPaused()) {

@@ -110,6 +110,12 @@ public class UnifiedAutomationManager {
         try {
             if (title == null) return;
             
+            if (title.contains("Network Grid") || title.contains("Network Terminal") || title.contains("Jaringan")) {
+                com.bapel_slimefun_mod.automation.fastmachine.FastMachineAutomationHandler.onNetworkGridOpen(title);
+                needsTick = true;
+                return;
+            }
+
             // ══════════════════════════════════════════════════════════════════
             // ★ FAST PATH: GuizhanCraft/FastMachines detection
             //   Must be checked BEFORE SlimefunDataLoader.
@@ -375,6 +381,10 @@ if (currentMachine != null) {
                 FastMachineAutomationHandler.onContainerClose();
             }
             
+            if (com.bapel_slimefun_mod.automation.fastmachine.FastMachineAutomationHandler.isExtractingFromNetwork()) {
+                com.bapel_slimefun_mod.automation.fastmachine.FastMachineAutomationHandler.cancelNetworkExtraction();
+            }
+            
             // ✅ Start auto-click if dispenser is ready
             if (currentMachine != null && currentMachine.isMultiblock()) {
                 String selectedRecipe = MultiblockAutomationHandler.getSelectedRecipe();
@@ -439,6 +449,13 @@ if (currentMachine != null) {
             // opened, with no error or message — it just stopped ticking.
             if (FastMachineAutomationHandler.isActive()) {
                 FastMachineAutomationHandler.tick();
+            }
+
+            if (com.bapel_slimefun_mod.automation.fastmachine.FastMachineAutomationHandler.isExtractingFromNetwork()) {
+                Minecraft mc = Minecraft.getInstance();
+                if (mc.player != null && mc.player.containerMenu != null) {
+                    com.bapel_slimefun_mod.automation.fastmachine.FastMachineAutomationHandler.tickNetworkGrid(mc.player.containerMenu);
+                }
             }
             
             // ✅ FAST PATH: Skip if nothing to do

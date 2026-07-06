@@ -16,7 +16,7 @@ import net.minecraft.world.level.block.Blocks;
 import com.bapel_slimefun_mod.debug.PerformanceMonitor;
 
 /**
- * âœ… FIXED: Machine Detector Screen
+ * FIXED: Machine Detector Screen
  * 
  * Accessible via M key in overlay (similar to Cache Multiblock)
  * Features:

@@ -23,4 +23,7 @@ public interface ScreenWidgetInvoker {
 
     @Invoker("addRenderableWidget")
     <T extends GuiEventListener & Renderable & NarratableEntry> T bapel$addRenderableWidget(T widget);
+
+    @Invoker("removeWidget")
+    void bapel$removeWidget(GuiEventListener widget);
 }

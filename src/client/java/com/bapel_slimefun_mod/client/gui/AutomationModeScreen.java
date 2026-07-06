@@ -14,7 +14,7 @@ import net.minecraft.network.chat.Component;
 import com.bapel_slimefun_mod.debug.PerformanceMonitor;
 
 /**
- * âœ… FIXED: GUI Screen with Multiblock Automation Management + Machine Detector
+ * FIXED: GUI Screen with Multiblock Automation Management + Machine Detector
  * 
  * Features:
  * - Auto/Manual Mode toggle
@@ -300,7 +300,7 @@ public class AutomationModeScreen extends Screen {
 }
 
 /**
- * âœ… Multiblock Cache Management Screen
+ * Multiblock Cache Management Screen
  */
 class MultiblockCacheScreen extends Screen {
     private final Screen parent;
