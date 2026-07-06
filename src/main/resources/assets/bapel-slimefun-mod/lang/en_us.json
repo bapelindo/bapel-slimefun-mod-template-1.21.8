@@ -4,6 +4,9 @@
   "key.bapel-slimefun-mod.performance_monitor": "Toggle Performance Monitor (F8)",
   "key.category.bapel-slimefun-mod.automation": "Slimefun Automation",
   
+  "key.categories.bapel-slimefun-mod": "Bapel Slimefun Mod",
+  "key.bapel-slimefun-mod.fastmachine_action": "FastMachine Action (J / Shift+J / Ctrl+J / Alt+J)",
+
   "message.bapel-slimefun-mod.automation_enabled": "§a§lAutomation Enabled",
   "message.bapel-slimefun-mod.automation_disabled": "§c§lAutomation Disabled",
   "message.bapel-slimefun-mod.automation_started": "§a✓ Automation Started!",
@@ -19,5 +22,19 @@
   
   "overlay.bapel-slimefun-mod.title": "§e§l%s - Recipes",
   "overlay.bapel-slimefun-mod.keybind_hints": "§8[↑↓] §7Navigate  §8[Enter] §7Select  §8[R/Esc] §7Close",
-  "overlay.bapel-slimefun-mod.no_recipes": "§cNo recipes available"
+  "overlay.bapel-slimefun-mod.no_recipes": "§cNo recipes available",
+
+  "text.bapel-slimefun-mod.fastmachine.locked": "Locked recipe: %s",
+  "text.bapel-slimefun-mod.fastmachine.unlocked": "Recipe unlocked",
+  "text.bapel-slimefun-mod.fastmachine.detected": "FastMachine detected: %s",
+  "text.bapel-slimefun-mod.fastmachine.mode": "Craft mode: %s",
+  "text.bapel-slimefun-mod.fastmachine.refill_on": "Auto-Refill ON",
+  "text.bapel-slimefun-mod.fastmachine.refill_off": "Auto-Refill OFF",
+  "text.bapel-slimefun-mod.fastmachine.energy_critical": "Energy critical — automation paused",
+  "text.bapel-slimefun-mod.fastmachine.energy_recovered": "Energy recovered — automation resumed",
+  "text.bapel-slimefun-mod.fastmachine.stock_depleted": "Ingredients likely depleted — automation paused",
+  "text.bapel-slimefun-mod.fastmachine.stock_replenished": "Ingredients replenished — automation resumed",
+  "text.bapel-slimefun-mod.fastmachine.target_set": "Target set: %s items",
+  "text.bapel-slimefun-mod.fastmachine.target_cleared": "Target cleared — unlimited crafting",
+  "text.bapel-slimefun-mod.fastmachine.target_reached": "Target reached! %s items crafted"
 }

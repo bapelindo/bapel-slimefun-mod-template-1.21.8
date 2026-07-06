@@ -57,9 +57,29 @@ public abstract class ContainerScreenMixin {
         }
     }
 
+
     @Inject(method = "keyPressed", at = @At("HEAD"), cancellable = true)
     private void onKeyPressed(KeyEvent event, CallbackInfoReturnable<Boolean> cir) {
         try {
+            if (com.bapel_slimefun_mod.automation.fastmachine.FastMachineAutomationHandler.isActive()) {
+                if (ModKeybinds.getLockRecipeKey().matches(event)) {
+                    com.bapel_slimefun_mod.automation.fastmachine.FastMachineAutomationHandler.lockCurrentRecipe();
+                    cir.setReturnValue(true);
+                    cir.cancel();
+                    return;
+                } else if (ModKeybinds.getCycleCraftModeKey().matches(event)) {
+                    com.bapel_slimefun_mod.automation.fastmachine.FastMachineAutomationHandler.cycleCraftMode();
+                    cir.setReturnValue(true);
+                    cir.cancel();
+                    return;
+                } else if (ModKeybinds.getToggleAutoRefillKey().matches(event)) {
+                    com.bapel_slimefun_mod.automation.fastmachine.FastMachineAutomationHandler.toggleAutoRefill();
+                    cir.setReturnValue(true);
+                    cir.cancel();
+                    return;
+                }
+            }
+
             if (ModKeybinds.getToggleAutomationKey().matches(event)) {
                 UnifiedAutomationManager.toggleAutomation();
                 cir.setReturnValue(true);

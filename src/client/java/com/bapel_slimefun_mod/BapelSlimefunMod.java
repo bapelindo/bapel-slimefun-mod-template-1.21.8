@@ -16,7 +16,7 @@ public class BapelSlimefunMod implements ClientModInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     
     private static ModConfig config;
-    
+
     @Override
     public void onInitializeClient() {
         LOGGER.info("Bapel Slimefun Mod Initializing");
@@ -25,6 +25,7 @@ public class BapelSlimefunMod implements ClientModInitializer {
         
         initializeSystems();
         ModKeybinds.register();
+        com.bapel_slimefun_mod.automation.fastmachine.FastMachineChatCommandInterceptor.register();
         registerEventHandlers();
         
         LOGGER.info("Bapel Slimefun Mod Initialized Successfully");
@@ -61,6 +62,14 @@ public class BapelSlimefunMod implements ClientModInitializer {
                     PerformanceMonitor.render(graphics);
                 } catch (Exception e) {
                     LOGGER.error("ERROR IN PERFORMANCE MONITOR RENDER!", e);
+                }
+            });
+
+            HudElementRegistry.addLast(Identifier.fromNamespaceAndPath(MOD_ID, "fastmachine_hud"), (graphics, tickDelta) -> {
+                try {
+                    com.bapel_slimefun_mod.automation.fastmachine.FastMachineHudOverlay.render(graphics);
+                } catch (Exception e) {
+                    LOGGER.error("ERROR IN FASTMACHINE HUD RENDER!", e);
                 }
             });
             

@@ -11,6 +11,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import com.bapel_slimefun_mod.automation.fastmachine.FastMachineAutomationHandler;
+import com.bapel_slimefun_mod.automation.fastmachine.FastMachineDetector;
 
 /**
  * ✅ PERFORMANCE OPTIMIZED VERSION
@@ -56,7 +58,10 @@ public class UnifiedAutomationManager {
         MultiblockAutomationHandler.init(cfg);
         MultiblockCacheManager.load();
         
-        BapelSlimefunMod.LOGGER.info("[UnifiedAuto] Initialized with optimizations");
+        // ── FastMachine integration ────────────────────────────────────────────
+        FastMachineAutomationHandler.init(cfg);
+        
+        BapelSlimefunMod.LOGGER.info("[UnifiedAuto] Initialized with optimizations (FastMachine support enabled).");
     }
     
     public static void onMultiblockConstructed(SlimefunMachineData machine) {
@@ -103,6 +108,16 @@ public class UnifiedAutomationManager {
         PerformanceMonitor.start("UnifiedAuto.onMachineOpen");
         try {
             if (title == null) return;
+            
+            // ══════════════════════════════════════════════════════════════════
+            // ★ FAST PATH: GuizhanCraft/FastMachines detection
+            //   Must be checked BEFORE SlimefunDataLoader.
+            // ══════════════════════════════════════════════════════════════════
+            if (FastMachineDetector.isFastMachine(title)) {
+                FastMachineAutomationHandler.onContainerOpen(title);
+                needsTick = true;
+                return;
+            }
             
             // ✅ Set flag to prevent redundant processing
             isProcessingMachineOpen = true;
@@ -355,6 +370,10 @@ if (currentMachine != null) {
             cachedDispenserPos = null;
             lastDispenserPosCache = 0;
             
+            if (FastMachineAutomationHandler.isActive()) {
+                FastMachineAutomationHandler.onContainerClose();
+            }
+            
             // ✅ Start auto-click if dispenser is ready
             if (currentMachine != null && currentMachine.isMultiblock()) {
                 String selectedRecipe = MultiblockAutomationHandler.getSelectedRecipe();
@@ -411,6 +430,12 @@ if (currentMachine != null) {
     public static void tick() {
         PerformanceMonitor.start("UnifiedAuto.tick");
         try {
+            // ── FastMachine tick (highest priority, ignores general automationEnabled flag) ──
+            if (FastMachineAutomationHandler.isActive()) {
+                FastMachineAutomationHandler.tick();
+                return;
+            }
+            
             // ✅ FAST PATH: Skip if nothing to do
             if (!automationEnabled && !MultiblockAutoClicker.isEnabled()) {
                 return;
@@ -600,7 +625,23 @@ public static void setSelectedRecipe(String recipeId) {
     }
     
     public static boolean isActive() {
-        return getCurrentMachine() != null || currentCachedMachine != null;
+        return getCurrentMachine() != null || currentCachedMachine != null
+            || FastMachineAutomationHandler.isActive();
+    }
+
+    public static void onFastMachineKeybind(FastMachineKeybindAction action) {
+        if (!FastMachineAutomationHandler.isActive()) return;
+        switch (action) {
+            case LOCK_RECIPE   -> FastMachineAutomationHandler.lockCurrentRecipe();
+            case CYCLE_CRAFT   -> FastMachineAutomationHandler.cycleCraftMode();
+            case TOGGLE_REFILL -> FastMachineAutomationHandler.toggleAutoRefill();
+        }
+    }
+
+    public enum FastMachineKeybindAction {
+        LOCK_RECIPE,
+        CYCLE_CRAFT,
+        TOGGLE_REFILL
     }
     
     public static RecipeHandler.RecipeSummary getRecipeSummary() {
