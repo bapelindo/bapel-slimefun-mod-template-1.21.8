@@ -73,14 +73,8 @@ public class AutomationUtils {
         }
         
         // 2. Fallback: Gunakan ID vanilla jika tidak ada nama khusus
-        String fullId = stack.getItem().toString(); // Output contoh: "gold_nugget"
-        
-        // Di 1.21 toString() biasanya sudah bersih, tapi kita pastikan
-        if (fullId.contains(":")) {
-            fullId = fullId.split(":")[1];
-        }
-        
-        return fullId.toUpperCase();
+        net.minecraft.resources.Identifier location = net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(stack.getItem());
+        return location.getPath().toUpperCase();
     }
     
     /**
@@ -133,7 +127,8 @@ public class AutomationUtils {
         if (stack == null || stack.isEmpty()) return false;
         
         // 1. Check vanilla ID match (case-insensitive, e.g. "iron_ingot" vs "IRON_INGOT")
-        String vanillaId = stack.getItem().toString().replace("minecraft:", "").toUpperCase();
+        net.minecraft.resources.Identifier location = net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(stack.getItem());
+        String vanillaId = location.getPath().toUpperCase();
         if (vanillaId.equalsIgnoreCase(targetId)) {
             return true;
         }
@@ -165,9 +160,10 @@ public class AutomationUtils {
     }
 
     /**
-     * Remove color codes from string
+     * Remove color codes from string (case-insensitive)
      */
     public static String stripColorCodes(String text) {
-        return text.replaceAll("§[0-9a-fk-or]", "");
+        if (text == null) return "";
+        return text.replaceAll("(?i)§[0-9a-fk-or]", "");
     }
 }

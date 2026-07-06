@@ -63,6 +63,20 @@ public class RecipeOverlayInputHandler {
                 } else if (key == GLFW.GLFW_KEY_MINUS) {
                     RecipeOverlayRenderer.handleCharTyped('-', modifiers);
                     return true;
+                } else if (key == GLFW.GLFW_KEY_ENTER || key == GLFW.GLFW_KEY_KP_ENTER) {
+                    boolean shiftHeld = (modifiers & GLFW.GLFW_MOD_SHIFT) != 0;
+                    if (shiftHeld) {
+                        RecipeOverlayRenderer.requestAutoCraftCurrent();
+                    } else {
+                        RecipeOverlayRenderer.selectCurrent();
+                    }
+                    return true;
+                } else if (key == GLFW.GLFW_KEY_UP || key == GLFW.GLFW_KEY_W) {
+                    RecipeOverlayRenderer.moveUp();
+                    return true;
+                } else if (key == GLFW.GLFW_KEY_DOWN || key == GLFW.GLFW_KEY_S) {
+                    RecipeOverlayRenderer.moveDown();
+                    return true;
                 }
                 
                 // Konsumsi semua tombol lain saat mode search agar tidak memicu navigasi

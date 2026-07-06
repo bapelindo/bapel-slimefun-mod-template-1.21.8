@@ -110,7 +110,12 @@ public class UnifiedAutomationManager {
         try {
             if (title == null) return;
             
-            if (title.contains("Network Grid") || title.contains("Network Terminal") || title.contains("Jaringan")) {
+            String lowerTitle = title.toLowerCase();
+            if (lowerTitle.contains("network grid") || 
+                lowerTitle.contains("network terminal") || 
+                lowerTitle.contains("jaringan") || 
+                lowerTitle.contains("grid") || 
+                lowerTitle.contains("terminal")) {
                 com.bapel_slimefun_mod.automation.fastmachine.FastMachineAutomationHandler.onNetworkGridOpen(title);
                 needsTick = true;
                 return;
@@ -453,8 +458,21 @@ if (currentMachine != null) {
 
             if (com.bapel_slimefun_mod.automation.fastmachine.FastMachineAutomationHandler.isExtractingFromNetwork()) {
                 Minecraft mc = Minecraft.getInstance();
-                if (mc.player != null && mc.player.containerMenu != null) {
-                    com.bapel_slimefun_mod.automation.fastmachine.FastMachineAutomationHandler.tickNetworkGrid(mc.player.containerMenu);
+                if (mc.screen instanceof net.minecraft.client.gui.screens.inventory.AbstractContainerScreen<?> containerScreen) {
+                    Component title = containerScreen.getTitle();
+                    if (title != null) {
+                        String lowerTitle = title.getString().toLowerCase();
+                        if (lowerTitle.contains("network grid") || 
+                            lowerTitle.contains("network terminal") || 
+                            lowerTitle.contains("jaringan") || 
+                            lowerTitle.contains("grid") || 
+                            lowerTitle.contains("terminal")) {
+                            
+                            if (mc.player != null && mc.player.containerMenu != null) {
+                                com.bapel_slimefun_mod.automation.fastmachine.FastMachineAutomationHandler.tickNetworkGrid(mc.player.containerMenu);
+                            }
+                        }
+                    }
                 }
             }
             
