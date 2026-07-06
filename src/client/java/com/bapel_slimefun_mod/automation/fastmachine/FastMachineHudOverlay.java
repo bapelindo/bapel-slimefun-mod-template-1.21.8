@@ -5,7 +5,8 @@
 package com.bapel_slimefun_mod.automation.fastmachine;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+// GuiGraphics di-rename jadi GuiGraphicsExtractor di Minecraft 26.1.
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,9 +23,10 @@ public final class FastMachineHudOverlay {
     private FastMachineHudOverlay() {}
 
     private static final int PANEL_X = 6, PANEL_Y = 6, LINE_HEIGHT = 11, PADDING = 4;
-    private static final int BG_COLOR = 0x88000000, TEXT_COLOR = 0xFFFFFF;
+    // Sejak 1.21.6+, warna teks harus ARGB — RGB polos (tanpa alpha) akan render transparan/tidak kelihatan.
+    private static final int BG_COLOR = 0x88000000, TEXT_COLOR = 0xFFFFFFFF;
 
-    public static void render(GuiGraphics graphics) {
+    public static void render(GuiGraphicsExtractor graphics) {
         if (!FastMachineAutomationHandler.isActive()) return;
 
         String title  = FastMachineAutomationHandler.getCurrentMachineTitle();
@@ -68,7 +70,7 @@ public final class FastMachineHudOverlay {
         drawPanel(graphics, lines);
     }
 
-    private static void drawPanel(GuiGraphics graphics, List<String> lines) {
+    private static void drawPanel(GuiGraphicsExtractor graphics, List<String> lines) {
         Font font = Minecraft.getInstance().font;
         int maxWidth = 0;
         for (String line : lines) maxWidth = Math.max(maxWidth, font.width(line));
@@ -80,7 +82,8 @@ public final class FastMachineHudOverlay {
 
         int y = PANEL_Y + PADDING;
         for (String line : lines) {
-            graphics.drawString(font, line, PANEL_X + PADDING, y, TEXT_COLOR, false);
+            // drawString(...) di-rename jadi text(...) di GuiGraphicsExtractor.
+            graphics.text(font, line, PANEL_X + PADDING, y, TEXT_COLOR, false);
             y += LINE_HEIGHT;
         }
     }

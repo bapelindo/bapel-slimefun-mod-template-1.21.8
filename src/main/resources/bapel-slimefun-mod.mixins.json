@@ -5,7 +5,8 @@
 	"client": [
 		"AbstractContainerScreenAccessor",
 		"ContainerScreenMixin",
-		"ChatListenerMixin"
+		"ChatListenerMixin",
+		"ScreenWidgetInvoker"
 	],
 	"injectors": {
 		"defaultRequire": 1

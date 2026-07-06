@@ -207,14 +207,14 @@ public final class FastMachineAutomationHandler {
 
         int before = countOccupiedInputs(menu);
 
-        int button; ContainerInput ContainerInput;
+        int button; ContainerInput inputType;
         switch (entry.craftMode) {
-            case SINGLE  -> { button = 0; ContainerInput = ContainerInput.PICKUP; }
-            case BULK_16 -> { button = 1; ContainerInput = ContainerInput.PICKUP; }
-            case MAX     -> { button = 1; ContainerInput = ContainerInput.QUICK_MOVE; }
-            default      -> { button = 0; ContainerInput = ContainerInput.QUICK_MOVE; }
+            case SINGLE  -> { button = 0; inputType = ContainerInput.PICKUP; }
+            case BULK_16 -> { button = 1; inputType = ContainerInput.PICKUP; }
+            case MAX     -> { button = 1; inputType = ContainerInput.QUICK_MOVE; }
+            default      -> { button = 0; inputType = ContainerInput.QUICK_MOVE; }
         }
-        click(mc, menu, FastMachineGuiLayout.CRAFT_SLOT, button, ContainerInput);
+        click(mc, menu, FastMachineGuiLayout.CRAFT_SLOT, button, inputType);
         statCrafts++;
 
         if (entry.targetCount > 0) {
@@ -361,7 +361,8 @@ public final class FastMachineAutomationHandler {
 
     private static void click(Minecraft mc, AbstractContainerMenu menu, int slot, int button, ContainerInput type) {
         try {
-            mc.gameMode.handleInventoryMouseClick(menu.containerId, slot, button, type, mc.player);
+            // Yarn lama: handleInventoryMouseClick(...). Nama official Mojang di 26.1.2: handleContainerInput(...).
+            mc.gameMode.handleContainerInput(menu.containerId, slot, button, type, mc.player);
         } catch (Exception e) {
             BapelSlimefunMod.LOGGER.error("[FastMachineAuto] Click error (slot={})", slot, e);
         }
@@ -385,7 +386,9 @@ public final class FastMachineAutomationHandler {
 
     private static void showActionBar(String msg) {
         LocalPlayer p = Minecraft.getInstance().player;
-        if (p != null) p.displayClientMessage(Component.literal(msg), true);
+        // sendSystemMessage di 26.1.2 cuma overload 1-argumen (Component) — tidak ada lagi
+        // parameter boolean untuk action-bar seperti displayClientMessage yang lama.
+        if (p != null) p.sendSystemMessage(Component.literal(msg));
     }
 
     private static void resetTickTimers() {

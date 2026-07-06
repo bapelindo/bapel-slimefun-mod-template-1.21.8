@@ -4,6 +4,7 @@
 // ╚══════════════════════════════════════════════════════════════════════════════╝
 package com.bapel_slimefun_mod.automation.fastmachine;
 import com.bapel_slimefun_mod.mixin.AbstractContainerScreenAccessor;
+import com.bapel_slimefun_mod.mixin.ScreenWidgetInvoker;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
@@ -50,6 +51,16 @@ import net.minecraft.network.chat.Component;
         ScreenEvents.AFTER_INIT.register(FastMachineGuiButtons::onScreenInit);
     }
 
+    /**
+     * Wraps {@code Screen#addRenderableWidget}, yang protected, lewat
+     * {@link ScreenWidgetInvoker} karena class ini bukan subclass {@link Screen}.
+     */
+    private static <T extends net.minecraft.client.gui.components.events.GuiEventListener
+            & net.minecraft.client.gui.components.Renderable
+            & net.minecraft.client.gui.narration.NarratableEntry> T addWidget(Screen screen, T widget) {
+        return ((ScreenWidgetInvoker) screen).bapel$addRenderableWidget(widget);
+    }
+
     private static void onScreenInit(net.minecraft.client.Minecraft mc, Screen screen, int width, int height) {
         if (!(screen instanceof AbstractContainerScreen<?> containerScreen)) return;
 
@@ -74,7 +85,7 @@ import net.minecraft.network.chat.Component;
         String lockLabel = (FastMachineAutomationHandler.getLockedRecipeName() != null)
                 ? "§a🔒 " + truncate(FastMachineAutomationHandler.getLockedRecipeName(), 14)
                 : "§7🔓 Lock Recipe";
-        screen.addRenderableWidget(Button.builder(Component.literal(lockLabel), btn -> {
+        addWidget(screen, Button.builder(Component.literal(lockLabel), btn -> {
                     FastMachineAutomationHandler.lockCurrentRecipe();
                     refreshPanel(screen, x, y);
                 })
@@ -83,7 +94,7 @@ import net.minecraft.network.chat.Component;
                 .build());
         row++;
 
-        screen.addRenderableWidget(Button.builder(Component.literal("§b⚙ Mode: §f" + entry.craftMode.label), btn -> {
+        addWidget(screen, Button.builder(Component.literal("§b⚙ Mode: §f" + entry.craftMode.label), btn -> {
                     FastMachineAutomationHandler.cycleCraftMode();
                     refreshPanel(screen, x, y);
                 })
@@ -93,7 +104,7 @@ import net.minecraft.network.chat.Component;
         row++;
 
         String refillLabel = entry.autoRefill ? "§a♻ Refill: ON" : "§7♻ Refill: OFF";
-        screen.addRenderableWidget(Button.builder(Component.literal(refillLabel), btn -> {
+        addWidget(screen, Button.builder(Component.literal(refillLabel), btn -> {
                     FastMachineAutomationHandler.toggleAutoRefill();
                     refreshPanel(screen, x, y);
                 })
@@ -110,10 +121,10 @@ import net.minecraft.network.chat.Component;
         attachDigitFilter(targetBox);
         targetBox.setValue(entry.targetCount > 0 ? String.valueOf(entry.targetCount) : "");
         targetBox.setHint(Component.literal("§7Target qty..."));
-        screen.addRenderableWidget(targetBox);
+        addWidget(screen, targetBox);
         row++;
 
-        screen.addRenderableWidget(Button.builder(Component.literal("§a✔ Set"), btn -> {
+        addWidget(screen, Button.builder(Component.literal("§a✔ Set"), btn -> {
                     String raw = targetBox.getValue().trim();
                     if (!raw.isEmpty()) {
                         try { FastMachineAutomationHandler.setTargetCount(Integer.parseInt(raw)); }
@@ -124,7 +135,7 @@ import net.minecraft.network.chat.Component;
                 .bounds(x, y + row * ROW_SPACING, SMALL_BUTTON_W, BUTTON_HEIGHT)
                 .build());
 
-        screen.addRenderableWidget(Button.builder(Component.literal("§c✗ Clear"), btn -> {
+        addWidget(screen, Button.builder(Component.literal("§c✗ Clear"), btn -> {
                     FastMachineAutomationHandler.clearTargetCount();
                     refreshPanel(screen, x, y);
                 })
@@ -139,7 +150,7 @@ import net.minecraft.network.chat.Component;
                 .bounds(x, y + row * ROW_SPACING, BUTTON_WIDTH, BUTTON_HEIGHT)
                 .build();
             progress.active = false;
-            screen.addRenderableWidget(progress);
+            addWidget(screen, progress);
         }
     }
 
