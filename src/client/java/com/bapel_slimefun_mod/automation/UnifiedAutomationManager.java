@@ -11,9 +11,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+
+// Pastikan import pendukung FastMachine ini terpasang dengan benar
 import com.bapel_slimefun_mod.automation.fastmachine.FastMachineAutomationHandler;
 import com.bapel_slimefun_mod.automation.fastmachine.FastMachineDetector;
-
 /**
  * ✅ PERFORMANCE OPTIMIZED VERSION
  * 

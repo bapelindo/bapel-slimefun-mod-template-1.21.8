@@ -98,15 +98,11 @@ public final class ModKeybinds {
 
     /**
      * Polls the {@code J} key each tick. On a fresh press, inspects currently-held
-     * modifier keys via raw GLFW state and dispatches the corresponding
-     * {@link UnifiedAutomationManager.FastMachineKeybindAction}.
+     * modifier keys via raw GLFW state and dispatches the corresponding actions.
      */
     private static void onClientTick(Minecraft mc) {
         if (FASTMACHINE_KEY == null || mc.player == null) return;
 
-        // Never hijack "J" while any screen (chat, inventory GUI text field, etc.) is open,
-        // EXCEPT the FastMachine's own container screen, where global GUI is active but
-        // no text field has focus
         boolean isDown = FASTMACHINE_KEY.isDown();
 
         if (isDown && !wasDownLastTick) {
@@ -115,7 +111,12 @@ public final class ModKeybinds {
             boolean ctrl  = isPhysicallyDown(window, GLFW.GLFW_KEY_LEFT_CONTROL, GLFW.GLFW_KEY_RIGHT_CONTROL);
             boolean alt   = isPhysicallyDown(window, GLFW.GLFW_KEY_LEFT_ALT, GLFW.GLFW_KEY_RIGHT_ALT);
 
-            dispatch(shift, ctrl, alt);
+            // Jika FastMachine sedang aktif dan player menekan tombol tanpa modifier sama sekali
+            if (!shift && !ctrl && !alt && FastMachineAutomationHandler.isActive()) {
+                FastMachineAutomationHandler.toggleManualPause();
+            } else {
+                dispatch(shift, ctrl, alt);
+            }
         }
         wasDownLastTick = isDown;
     }

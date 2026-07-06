@@ -57,6 +57,9 @@ public class BapelSlimefunMod implements ClientModInitializer {
                 }
             });
             
+            // Register FastMachine GUI Hook Buttons right at system events
+            com.bapel_slimefun_mod.automation.fastmachine.FastMachineGuiButtons.register();
+            
             HudElementRegistry.addLast(Identifier.fromNamespaceAndPath(MOD_ID, "performance_monitor"), (graphics, tickDelta) -> {
                 try {
                     PerformanceMonitor.render(graphics);
@@ -65,6 +68,7 @@ public class BapelSlimefunMod implements ClientModInitializer {
                 }
             });
 
+            // FastMachine HUD Engine Registry integration
             HudElementRegistry.addLast(Identifier.fromNamespaceAndPath(MOD_ID, "fastmachine_hud"), (graphics, tickDelta) -> {
                 try {
                     com.bapel_slimefun_mod.automation.fastmachine.FastMachineHudOverlay.render(graphics);

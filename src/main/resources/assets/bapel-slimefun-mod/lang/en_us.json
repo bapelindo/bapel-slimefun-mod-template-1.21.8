@@ -3,10 +3,9 @@
   "key.bapel-slimefun-mod.recipe_overlay": "Recipe Overlay (R)",
   "key.bapel-slimefun-mod.performance_monitor": "Toggle Performance Monitor (F8)",
   "key.category.bapel-slimefun-mod.automation": "Slimefun Automation",
-  
   "key.categories.bapel-slimefun-mod": "Bapel Slimefun Mod",
   "key.bapel-slimefun-mod.fastmachine_action": "FastMachine Action (J / Shift+J / Ctrl+J / Alt+J)",
-
+  "key.bapel-slimefun-mod.fastmachine_pause": "Pause/Resume FastMachine Automation",
   "message.bapel-slimefun-mod.automation_enabled": "§a§lAutomation Enabled",
   "message.bapel-slimefun-mod.automation_disabled": "§c§lAutomation Disabled",
   "message.bapel-slimefun-mod.automation_started": "§a✓ Automation Started!",
@@ -19,11 +18,11 @@
   "message.bapel-slimefun-mod.recipe_selected": "§aSelected Recipe: §f%s",
   "message.bapel-slimefun-mod.no_machine_active": "§cNo machine active",
   "message.bapel-slimefun-mod.no_recipes_available": "§cNo recipes available for this machine",
-  
   "overlay.bapel-slimefun-mod.title": "§e§l%s - Recipes",
   "overlay.bapel-slimefun-mod.keybind_hints": "§8[↑↓] §7Navigate  §8[Enter] §7Select  §8[R/Esc] §7Close",
   "overlay.bapel-slimefun-mod.no_recipes": "§cNo recipes available",
-
+  "text.bapel-slimefun-mod.fastmachine.manual_paused": "Automation manually paused",
+  "text.bapel-slimefun-mod.fastmachine.manual_resumed": "Automation resumed",
   "text.bapel-slimefun-mod.fastmachine.locked": "Locked recipe: %s",
   "text.bapel-slimefun-mod.fastmachine.unlocked": "Recipe unlocked",
   "text.bapel-slimefun-mod.fastmachine.detected": "FastMachine detected: %s",
