@@ -432,9 +432,13 @@ if (currentMachine != null) {
         PerformanceMonitor.start("UnifiedAuto.tick");
         try {
             // ── FastMachine tick (highest priority, ignores general automationEnabled flag) ──
+            // NOTE: no early `return` here anymore. FastMachine automation (GUI clicks)
+            // and MultiblockAutoClicker (world block right-clicks) are independent
+            // systems. Returning early used to silently freeze an in-progress
+            // multiblock auto-click sequence the moment any FastMachine GUI was
+            // opened, with no error or message — it just stopped ticking.
             if (FastMachineAutomationHandler.isActive()) {
                 FastMachineAutomationHandler.tick();
-                return;
             }
             
             // ✅ FAST PATH: Skip if nothing to do

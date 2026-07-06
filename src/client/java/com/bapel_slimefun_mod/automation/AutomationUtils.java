@@ -110,6 +110,7 @@ public class AutomationUtils {
         }
         
         return String.format("Slot %d: %s x%d", 
+            index,
             getItemId(stack), 
             stack.getCount()
         );

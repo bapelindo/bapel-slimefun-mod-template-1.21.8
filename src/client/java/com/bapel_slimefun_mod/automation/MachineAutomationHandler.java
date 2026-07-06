@@ -407,8 +407,21 @@ public static void setSelectedRecipe(String recipeId, boolean rememberRecipe) {
             Integer emptySlot = knownEmptyInputSlots.stream().findFirst().orElse(-1);
             if (emptySlot == -1) return false;
             
+            // Pick up the stack from the player's slot, place exactly one item
+            // into the specific empty machine slot we already verified, then
+            // return the rest of the stack to the source slot. Using
+            // QUICK_MOVE here (as before) hands the destination choice to the
+            // container's own shift-click routing, which does not necessarily
+            // match knownEmptyInputSlots and can silently misplace the item
+            // into the wrong slot (or drop it if no slot is routable).
             mc.gameMode.handleContainerInput(
-                menu.containerId, playerSlotIndex, 0, ContainerInput.QUICK_MOVE, player
+                menu.containerId, playerSlotIndex, 0, ContainerInput.PICKUP, player
+            );
+            mc.gameMode.handleContainerInput(
+                menu.containerId, emptySlot, 1, ContainerInput.PICKUP, player
+            );
+            mc.gameMode.handleContainerInput(
+                menu.containerId, playerSlotIndex, 0, ContainerInput.PICKUP, player
             );
             
             knownEmptyInputSlots.remove(emptySlot);

@@ -1,6 +1,5 @@
 package com.bapel_slimefun_mod.automation;
 
-import net.minecraft.client.Minecraft;
 import org.lwjgl.glfw.GLFW;
 import com.bapel_slimefun_mod.debug.PerformanceMonitor;
 
@@ -103,19 +102,29 @@ public class RecipeOverlayInputHandler {
                     handled = true;
                     break;
                     
-                case GLFW.GLFW_KEY_PAGE_UP:
-                    for (int i = 0; i < 5; i++) {
+                case GLFW.GLFW_KEY_PAGE_UP: {
+                    // moveUp()/moveDown() wrap around at the list boundaries by
+                    // design (single-step navigation), so calling them in a fixed
+                    // loop here would let Page Up teleport to the bottom of the
+                    // list when starting near the top. Clamp the step count so
+                    // paging never crosses the boundary.
+                    int steps = Math.min(5, RecipeOverlayRenderer.getSelectedIndex());
+                    for (int i = 0; i < steps; i++) {
                         RecipeOverlayRenderer.moveUp();
                     }
                     handled = true;
                     break;
+                }
                     
-                case GLFW.GLFW_KEY_PAGE_DOWN:
-                    for (int i = 0; i < 5; i++) {
+                case GLFW.GLFW_KEY_PAGE_DOWN: {
+                    int lastIndex = RecipeOverlayRenderer.getFilteredRecipes().size() - 1;
+                    int steps = Math.min(5, Math.max(0, lastIndex - RecipeOverlayRenderer.getSelectedIndex()));
+                    for (int i = 0; i < steps; i++) {
                         RecipeOverlayRenderer.moveDown();
                     }
                     handled = true;
                     break;
+                }
                     
                 case GLFW.GLFW_KEY_HOME:
                     int currentIndex = RecipeOverlayRenderer.getSelectedIndex();
@@ -235,12 +244,14 @@ public class RecipeOverlayInputHandler {
     
     private static boolean isClickInRecipeList(double mouseX, double mouseY) {
         int overlayX = RecipeOverlayRenderer.getPosX();
-        int overlayY = RecipeOverlayRenderer.getPosY();
         int overlayWidth = 250;
         
-        Minecraft mc = Minecraft.getInstance();
-        int listStartY = overlayY + 8 + mc.font.lineHeight + 4 + 24 + 4;
-        int listEndY = listStartY + 300;
+        // Read the actual on-screen bounds computed by the renderer this frame,
+        // rather than re-deriving them here. The two used to be calculated
+        // independently and would silently drift apart whenever the layout
+        // above the list (title/buttons) changed size.
+        int listStartY = RecipeOverlayRenderer.getListStartY();
+        int listEndY = RecipeOverlayRenderer.getListEndY();
         
         return mouseX >= overlayX + 4 && mouseX <= overlayX + overlayWidth - 4 &&
                mouseY >= listStartY && mouseY <= listEndY;
@@ -250,8 +261,7 @@ public class RecipeOverlayInputHandler {
         int entryHeight = RecipeOverlayRenderer.getEntryHeight();
         int spacing = 4;
         
-        Minecraft mc = Minecraft.getInstance();
-        int listStartY = RecipeOverlayRenderer.getPosY() + 8 + mc.font.lineHeight + 4 + 24 + 4;
+        int listStartY = RecipeOverlayRenderer.getListStartY();
         
         int relativeY = (int) (mouseY - listStartY);
         

@@ -79,6 +79,19 @@ public class RecipeOverlayRenderer {
     private static int bgColor, borderColor, selectedBgColor, searchBgColor;
     private static boolean colorsLoaded = false;
     
+    // --- Layout cache: single source of truth for hit-testing ---
+    // These are recomputed every render() call. All click/hover detection
+    // MUST read from these fields instead of recalculating layout math,
+    // otherwise hitboxes silently drift out of sync with what's drawn.
+    private static int layoutSearchButtonY;
+    private static int layoutCompactButtonY;
+    private static int layoutCompactButtonWidth;
+    private static int layoutSortButtonX;
+    private static int layoutSortButtonWidth;
+    private static int layoutControlButtonHeight = 20;
+    private static int layoutListStartY;
+    private static int layoutListEndY;
+    
     public static void initialize() {
         if (!configLoaded) {
             loadConfig();
@@ -468,8 +481,10 @@ public class RecipeOverlayRenderer {
             int buttonY = yPos;
             int currentX = posX + 4;
             int buttonSpacing = 4;
+            layoutControlButtonHeight = buttonHeight;
             
             // Search button - full width
+            layoutSearchButtonY = buttonY;
             int searchBgColor = searchMode ? 0xE0004080 : 0xE0002050;
             int searchWidth = width - 8;
             int finalSearchBg = applyAlpha(searchBgColor, alpha);
@@ -501,12 +516,14 @@ public class RecipeOverlayRenderer {
             
             buttonY += buttonHeight + buttonSpacing;
             currentX = posX + 4;
+            layoutCompactButtonY = buttonY;
             
             // Compact button
             String compactText = compactMode ? "Compact" : "Normal";
             int compactColor = compactMode ? 0xFF00FF00 : 0xFF888888;
             int compactBgColor = compactMode ? 0xE0003030 : 0xE0202020;
             int compactWidth = mc.font.width(compactText) + 12;
+            layoutCompactButtonWidth = compactWidth;
             
             graphics.fill(currentX, buttonY, currentX + compactWidth, buttonY + buttonHeight, 
                          applyAlpha(compactBgColor, alpha));
@@ -515,8 +532,10 @@ public class RecipeOverlayRenderer {
             currentX += compactWidth + buttonSpacing;
             
             // Sort button
+            layoutSortButtonX = currentX;
             String sortText = sortMode.getDisplayName();
             int sortWidth = mc.font.width(sortText) + 12;
+            layoutSortButtonWidth = sortWidth;
             int sortBgColor = 0xE0202020;
             
             graphics.fill(currentX, buttonY, currentX + sortWidth, buttonY + buttonHeight,
@@ -599,11 +618,14 @@ public class RecipeOverlayRenderer {
     }
     
     private static int renderRecipeList(GuiGraphicsExtractor graphics, int yPos, int alpha) {
+        layoutListStartY = yPos;
+        
         if (filteredRecipes == null || filteredRecipes.isEmpty()) {
             Minecraft mc = Minecraft.getInstance();
             String noResults = searchQuery.isEmpty() ? "No recipes available" : "No recipes match: " + searchQuery;
             TextDrawing.drawCenteredString(graphics, mc.font, noResults, posX + width / 2, yPos + 20, 0xFFFF5555);
-            return yPos + 40;
+            layoutListEndY = yPos + 40;
+            return layoutListEndY;
         }
         
         try {
@@ -624,8 +646,10 @@ public class RecipeOverlayRenderer {
                 yPos += spacing;
             }
             
+            layoutListEndY = yPos;
             return yPos;
         } catch (Exception e) { 
+            layoutListEndY = yPos;
             return yPos; 
         }
     }
@@ -859,44 +883,30 @@ public class RecipeOverlayRenderer {
     public static boolean isClickInSearchButton(double mouseX, double mouseY) {
         if (!overlayVisible) return false;
         
-        Minecraft mc = Minecraft.getInstance();
-        int buttonY = posY + padding + mc.font.lineHeight + spacing;
-        int buttonHeight = 20;
         int searchWidth = width - 8;
         
         return mouseX >= posX + 4 && mouseX <= posX + 4 + searchWidth &&
-               mouseY >= buttonY && mouseY <= buttonY + buttonHeight;
+               mouseY >= layoutSearchButtonY && mouseY <= layoutSearchButtonY + layoutControlButtonHeight;
     }
     
     public static boolean isClickInCompactButton(double mouseX, double mouseY) {
         if (!overlayVisible) return false;
         
-        Minecraft mc = Minecraft.getInstance();
-        int buttonY = posY + padding + mc.font.lineHeight + spacing + 20 + 4;
-        int buttonHeight = 20;
-        
-        String compactText = compactMode ? "Compact" : "Normal";
-        int compactWidth = mc.font.width(compactText) + 12;
-        
-        return mouseX >= posX + 4 && mouseX <= posX + 4 + compactWidth &&
-               mouseY >= buttonY && mouseY <= buttonY + buttonHeight;
+        return mouseX >= posX + 4 && mouseX <= posX + 4 + layoutCompactButtonWidth &&
+               mouseY >= layoutCompactButtonY && mouseY <= layoutCompactButtonY + layoutControlButtonHeight;
     }
     
     public static boolean isClickInSortButton(double mouseX, double mouseY) {
         if (!overlayVisible) return false;
         
-        Minecraft mc = Minecraft.getInstance();
-        int buttonY = posY + padding + mc.font.lineHeight + spacing + 20 + 4;
-        int buttonHeight = 20;
-        
-        String compactText = compactMode ? "Compact" : "Normal";
-        int compactWidth = mc.font.width(compactText) + 12;
-        int sortX = posX + 4 + compactWidth + 4;
-        
-        String sortText = sortMode.getDisplayName();
-        int sortWidth = mc.font.width(sortText) + 12;
-        
-        return mouseX >= sortX && mouseX <= sortX + sortWidth &&
-               mouseY >= buttonY && mouseY <= buttonY + buttonHeight;
+        return mouseX >= layoutSortButtonX && mouseX <= layoutSortButtonX + layoutSortButtonWidth &&
+               mouseY >= layoutCompactButtonY && mouseY <= layoutCompactButtonY + layoutControlButtonHeight;
     }
+    
+    // Used by RecipeOverlayInputHandler so click hit-testing for the recipe
+    // list always matches what renderRecipeList() actually drew this frame,
+    // instead of re-deriving the Y offset by hand (which drifts out of sync
+    // whenever the layout above it changes).
+    public static int getListStartY() { return layoutListStartY; }
+    public static int getListEndY() { return layoutListEndY; }
 }
