@@ -27,19 +27,25 @@ public final class FastMachineHudOverlay {
     private static final int BG_COLOR = 0x88000000, TEXT_COLOR = 0xFFFFFFFF;
 
     public static void render(GuiGraphicsExtractor graphics) {
-        if (!FastMachineAutomationHandler.isActive()) return;
+        com.bapel_slimefun_mod.automation.AutomationStateMachine sm = com.bapel_slimefun_mod.automation.AutomationStateMachine.getGlobalInstance();
+        boolean smRunning = (sm != null && sm.isRunning());
+        if (!FastMachineAutomationHandler.isActive() && !smRunning) return;
 
         String title  = FastMachineAutomationHandler.getCurrentMachineTitle();
         String id     = FastMachineAutomationHandler.getCurrentMachineId();
         String locked = FastMachineAutomationHandler.getLockedRecipeName();
-        if (title == null || id == null) return;
-
-        FastMachineRecipeMemory.RecipeEntry entry = FastMachineRecipeMemory.get(id);
 
         List<String> lines = new ArrayList<>();
-        lines.add("§b⚡ §f" + title);
+        if (smRunning) {
+            lines.add("§b🤖 Auto State: §e" + sm.getCurrentState().name());
+        }
+        if (title != null) {
+            lines.add("§b⚡ §f" + title);
+        }
 
-                if (locked != null) {
+                FastMachineRecipeMemory.RecipeEntry entry = (id != null) ? FastMachineRecipeMemory.get(id) : null;
+
+        if (locked != null) {
             String modeLabel = (entry != null) ? entry.craftMode.label : "×64";
             lines.add("§a🔒 §f" + locked + " §7[" + modeLabel + "]");
         } else {

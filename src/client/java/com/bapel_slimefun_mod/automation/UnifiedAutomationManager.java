@@ -12,9 +12,10 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 
-// Pastikan import pendukung FastMachine ini terpasang dengan benar
 import com.bapel_slimefun_mod.automation.fastmachine.FastMachineAutomationHandler;
 import com.bapel_slimefun_mod.automation.fastmachine.FastMachineDetector;
+import com.bapel_slimefun_mod.automation.impl.*;
+import com.bapel_slimefun_mod.automation.infra.*;
 /**
  * ✅ PERFORMANCE OPTIMIZED VERSION
  * 
@@ -61,8 +62,24 @@ public class UnifiedAutomationManager {
         
         // ── FastMachine integration ────────────────────────────────────────────
         FastMachineAutomationHandler.init(cfg);
+
+        // ── State Machine initialization ───────────────────────────────────────
+        InventoryCheckerImpl inventoryChecker = new InventoryCheckerImpl();
+        GuiInteractorImpl guiInteractor = new GuiInteractorImpl();
+
+        AutomationStateMachine sm = AutomationStateMachine.builder()
+            .gridLocator(new NetworkGridLocatorImpl())
+            .machineLocator(new FastMachineLocatorImpl())
+            .subRecipeResolver(new SubRecipeResolverImpl(inventoryChecker))
+            .recipeLockExecutor(new RecipeLockExecutorImpl())
+            .inventoryChecker(inventoryChecker)
+            .cameraController(new CameraControllerImpl())
+            .guiInteractor(guiInteractor)
+            .gridScanner(new GridScannerImpl(guiInteractor))
+            .build();
+        AutomationStateMachine.setGlobalInstance(sm);
         
-        BapelSlimefunMod.LOGGER.info("[UnifiedAuto] Initialized with optimizations (FastMachine support enabled).");
+        BapelSlimefunMod.LOGGER.info("[UnifiedAuto] Initialized with optimizations (FastMachine support & State Machine enabled).");
     }
     
     public static void onMultiblockConstructed(SlimefunMachineData machine) {
@@ -460,7 +477,12 @@ if (currentMachine != null) {
         try {
             Minecraft mc = Minecraft.getInstance();
             if (mc.player != null) {
-                com.bapel_slimefun_mod.automation.fastmachine.ChainOrchestrator.get().tick(mc);
+                AutomationStateMachine sm = AutomationStateMachine.getGlobalInstance();
+                if (sm != null && sm.isRunning()) {
+                    sm.onTick();
+                } else {
+                    com.bapel_slimefun_mod.automation.fastmachine.ChainOrchestrator.get().tick(mc);
+                }
             }
 
             // FastMachine GUI tick

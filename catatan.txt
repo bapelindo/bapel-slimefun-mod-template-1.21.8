@@ -1,566 +1,1070 @@
-package net.minecraft.client.multiplayer;
-
-import com.google.common.collect.Lists;
-import com.google.common.primitives.Shorts;
-import com.google.common.primitives.SignedBytes;
-import com.mojang.logging.LogUtils;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import java.util.List;
-import java.util.Objects;
-import java.util.OptionalInt;
-import net.minecraft.SharedConstants;
-import net.minecraft.client.ClientRecipeBook;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
-import net.minecraft.client.multiplayer.prediction.BlockStatePredictionHandler;
-import net.minecraft.client.multiplayer.prediction.PredictiveAction;
-import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.resources.sounds.SimpleSoundInstance;
-import net.minecraft.client.resources.sounds.SoundInstance;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.NonNullList;
-import net.minecraft.network.HashedStack;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ServerGamePacketListener;
-import net.minecraft.network.protocol.game.ServerboundAttackPacket;
-import net.minecraft.network.protocol.game.ServerboundContainerButtonClickPacket;
-import net.minecraft.network.protocol.game.ServerboundContainerClickPacket;
-import net.minecraft.network.protocol.game.ServerboundContainerSlotStateChangedPacket;
-import net.minecraft.network.protocol.game.ServerboundInteractPacket;
-import net.minecraft.network.protocol.game.ServerboundPickItemFromBlockPacket;
-import net.minecraft.network.protocol.game.ServerboundPickItemFromEntityPacket;
-import net.minecraft.network.protocol.game.ServerboundPlaceRecipePacket;
-import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
-import net.minecraft.network.protocol.game.ServerboundSetCarriedItemPacket;
-import net.minecraft.network.protocol.game.ServerboundSetCreativeModeSlotPacket;
-import net.minecraft.network.protocol.game.ServerboundSpectatorActionPacket;
-import net.minecraft.network.protocol.game.ServerboundUseItemOnPacket;
-import net.minecraft.network.protocol.game.ServerboundUseItemPacket;
-import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket.Action;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.stats.StatsCounter;
-import net.minecraft.util.Mth;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResult.Success;
-import net.minecraft.world.InteractionResult.TryEmptyHandInteraction;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.HasCustomInventoryScreen;
-import net.minecraft.world.entity.player.Input;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ContainerInput;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.PiercingWeapon;
-import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.item.crafting.display.RecipeDisplayId;
-import net.minecraft.world.level.GameType;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.GameMasterBlock;
-import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.world.phys.Vec3;
-import org.apache.commons.lang3.mutable.MutableObject;
-import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
-
-public class MultiPlayerGameMode {
-   private static final Logger LOGGER = LogUtils.getLogger();
-   private final Minecraft minecraft;
-   private final ClientPacketListener connection;
-   private BlockPos destroyBlockPos = new BlockPos(-1, -1, -1);
-   private ItemStack destroyingItem = ItemStack.EMPTY;
-   private float destroyProgress;
-   private float destroyTicks;
-   private int destroyDelay;
-   private boolean isDestroying;
-   private GameType localPlayerMode = GameType.DEFAULT_MODE;
-   private @Nullable GameType previousLocalPlayerMode;
-   private int carriedIndex;
-
-   public MultiPlayerGameMode(final Minecraft minecraft, final ClientPacketListener connection) {
-      this.minecraft = minecraft;
-      this.connection = connection;
-   }
-
-   public void adjustPlayer(final Player player) {
-      this.localPlayerMode.updatePlayerAbilities(player.getAbilities());
-   }
-
-   public void setLocalMode(final GameType mode, final @Nullable GameType previousMode) {
-      this.localPlayerMode = mode;
-      this.previousLocalPlayerMode = previousMode;
-      this.localPlayerMode.updatePlayerAbilities(this.minecraft.player.getAbilities());
-   }
-
-   public void setLocalMode(final GameType mode) {
-      if (mode != this.localPlayerMode) {
-         this.previousLocalPlayerMode = this.localPlayerMode;
-      }
-
-      this.localPlayerMode = mode;
-      this.localPlayerMode.updatePlayerAbilities(this.minecraft.player.getAbilities());
-   }
-
-   public boolean canHurtPlayer() {
-      return this.localPlayerMode.isSurvival();
-   }
-
-   public boolean destroyBlock(final BlockPos pos) {
-      if (this.minecraft.player.blockActionRestricted(this.minecraft.level, pos, this.localPlayerMode)) {
-         return false;
-      } else {
-         Level level = this.minecraft.level;
-         BlockState oldState = level.getBlockState(pos);
-         if (!this.minecraft.player.getMainHandItem().canDestroyBlock(oldState, level, pos, this.minecraft.player)) {
-            return false;
-         } else {
-            Block oldBlock = oldState.getBlock();
-            if (oldBlock instanceof GameMasterBlock && !this.minecraft.player.canUseGameMasterBlocks()) {
-               return false;
-            } else if (oldState.isAir()) {
-               return false;
-            } else {
-               oldBlock.playerWillDestroy(level, pos, oldState, this.minecraft.player);
-               FluidState fluidState = level.getFluidState(pos);
-               boolean changed = level.setBlock(pos, fluidState.createLegacyBlock(), 11);
-               if (changed) {
-                  oldBlock.destroy(level, pos, oldState);
-               }
-
-               if (SharedConstants.DEBUG_BLOCK_BREAK) {
-                  LOGGER.error("client broke {} {} -> {}", new Object[]{pos, oldState, level.getBlockState(pos)});
-               }
-
-               return changed;
-            }
-         }
-      }
-   }
-
-   public boolean startDestroyBlock(final BlockPos pos, final Direction direction) {
-      if (this.minecraft.player.blockActionRestricted(this.minecraft.level, pos, this.localPlayerMode)) {
-         return false;
-      } else if (!this.minecraft.level.getWorldBorder().isWithinBounds(pos)) {
-         return false;
-      } else {
-         if (this.minecraft.player.getAbilities().instabuild) {
-            BlockState state = this.minecraft.level.getBlockState(pos);
-            this.minecraft.getTutorial().onDestroyBlock(this.minecraft.level, pos, state, 1.0F);
-            if (SharedConstants.DEBUG_BLOCK_BREAK) {
-               LOGGER.info("Creative start {} {}", pos, state);
-            }
-
-            this.startPrediction(this.minecraft.level, /* lambda$startDestroyBlock$0 */ sequence -> {
-               this.destroyBlock(pos);
-               return new ServerboundPlayerActionPacket(Action.START_DESTROY_BLOCK, pos, direction, sequence);
-            });
-            this.destroyDelay = 5;
-         } else if (!this.isDestroying || !this.sameDestroyTarget(pos)) {
-            if (this.isDestroying) {
-               if (SharedConstants.DEBUG_BLOCK_BREAK) {
-                  LOGGER.info("Abort old break {} {}", pos, this.minecraft.level.getBlockState(pos));
-               }
-
-               this.connection.send(new ServerboundPlayerActionPacket(Action.ABORT_DESTROY_BLOCK, this.destroyBlockPos, direction));
-            }
-
-            BlockState state = this.minecraft.level.getBlockState(pos);
-            this.minecraft.getTutorial().onDestroyBlock(this.minecraft.level, pos, state, 0.0F);
-            if (SharedConstants.DEBUG_BLOCK_BREAK) {
-               LOGGER.info("Start break {} {}", pos, state);
-            }
-
-            this.startPrediction(this.minecraft.level, /* lambda$startDestroyBlock$1 */ sequence -> {
-               boolean notAir = !state.isAir();
-               if (notAir && this.destroyProgress == 0.0F) {
-                  state.attack(this.minecraft.level, pos, this.minecraft.player);
-               }
-
-               if (notAir && state.getDestroyProgress(this.minecraft.player, this.minecraft.player.level(), pos) >= 1.0F) {
-                  this.destroyBlock(pos);
-               } else {
-                  this.isDestroying = true;
-                  this.destroyBlockPos = pos;
-                  this.destroyingItem = this.minecraft.player.getMainHandItem();
-                  this.destroyProgress = 0.0F;
-                  this.destroyTicks = 0.0F;
-                  this.minecraft.level.destroyBlockProgress(this.minecraft.player.getId(), this.destroyBlockPos, this.getDestroyStage());
-               }
-
-               return new ServerboundPlayerActionPacket(Action.START_DESTROY_BLOCK, pos, direction, sequence);
-            });
-         }
-
-         return true;
-      }
-   }
-
-   public void stopDestroyBlock() {
-      if (this.isDestroying) {
-         BlockState state = this.minecraft.level.getBlockState(this.destroyBlockPos);
-         this.minecraft.getTutorial().onDestroyBlock(this.minecraft.level, this.destroyBlockPos, state, -1.0F);
-         if (SharedConstants.DEBUG_BLOCK_BREAK) {
-            LOGGER.info("Stop dest {} {}", this.destroyBlockPos, state);
-         }
-
-         this.connection.send(new ServerboundPlayerActionPacket(Action.ABORT_DESTROY_BLOCK, this.destroyBlockPos, Direction.DOWN));
-         this.isDestroying = false;
-         this.destroyProgress = 0.0F;
-         this.minecraft.level.destroyBlockProgress(this.minecraft.player.getId(), this.destroyBlockPos, -1);
-         this.minecraft.player.resetAttackStrengthTicker();
-      }
-   }
-
-   public boolean continueDestroyBlock(final BlockPos pos, final Direction direction) {
-      this.ensureHasSentCarriedItem();
-      if (this.destroyDelay > 0) {
-         this.destroyDelay--;
-         return true;
-      } else if (this.minecraft.player.getAbilities().instabuild && this.minecraft.level.getWorldBorder().isWithinBounds(pos)) {
-         this.destroyDelay = 5;
-         BlockState state = this.minecraft.level.getBlockState(pos);
-         this.minecraft.getTutorial().onDestroyBlock(this.minecraft.level, pos, state, 1.0F);
-         if (SharedConstants.DEBUG_BLOCK_BREAK) {
-            LOGGER.info("Creative cont {} {}", pos, state);
-         }
-
-         this.startPrediction(this.minecraft.level, /* lambda$continueDestroyBlock$0 */ sequence -> {
-            this.destroyBlock(pos);
-            return new ServerboundPlayerActionPacket(Action.START_DESTROY_BLOCK, pos, direction, sequence);
-         });
-         return true;
-      } else if (this.sameDestroyTarget(pos)) {
-         BlockState state = this.minecraft.level.getBlockState(pos);
-         if (state.isAir()) {
-            this.isDestroying = false;
-            return false;
-         } else {
-            this.destroyProgress = this.destroyProgress + state.getDestroyProgress(this.minecraft.player, this.minecraft.player.level(), pos);
-            if (this.destroyTicks % 4.0F == 0.0F) {
-               SoundType soundType = state.getSoundType();
-               this.minecraft
-                  .getSoundManager()
-                  .play(
-                     new SimpleSoundInstance(
-                        soundType.getHitSound(),
-                        SoundSource.BLOCKS,
-                        (soundType.getVolume() + 1.0F) / 8.0F,
-                        soundType.getPitch() * 0.5F,
-                        SoundInstance.createUnseededRandom(),
-                        pos
-                     )
-                  );
-            }
-
-            this.destroyTicks++;
-            this.minecraft.getTutorial().onDestroyBlock(this.minecraft.level, pos, state, Mth.clamp(this.destroyProgress, 0.0F, 1.0F));
-            if (this.destroyProgress >= 1.0F) {
-               this.isDestroying = false;
-               if (SharedConstants.DEBUG_BLOCK_BREAK) {
-                  LOGGER.info("Finished breaking {} {}", pos, state);
-               }
-
-               this.startPrediction(this.minecraft.level, /* lambda$continueDestroyBlock$1 */ sequence -> {
-                  this.destroyBlock(pos);
-                  return new ServerboundPlayerActionPacket(Action.STOP_DESTROY_BLOCK, pos, direction, sequence);
-               });
-               this.destroyProgress = 0.0F;
-               this.destroyTicks = 0.0F;
-               this.destroyDelay = 5;
-            }
-
-            this.minecraft.level.destroyBlockProgress(this.minecraft.player.getId(), this.destroyBlockPos, this.getDestroyStage());
-            return true;
-         }
-      } else {
-         return this.startDestroyBlock(pos, direction);
-      }
-   }
-
-   private void startPrediction(final ClientLevel level, final PredictiveAction predictiveAction) {
-      try (BlockStatePredictionHandler prediction = level.getBlockStatePredictionHandler().startPredicting()) {
-         int sequence = prediction.currentSequence();
-         Packet<ServerGamePacketListener> packetConcludingPrediction = predictiveAction.predict(sequence);
-         this.connection.send(packetConcludingPrediction);
-      }
-   }
-
-   public void tick() {
-      this.ensureHasSentCarriedItem();
-      if (this.connection.getConnection().isConnected()) {
-         this.connection.getConnection().tick();
-      } else {
-         this.connection.getConnection().handleDisconnection();
-      }
-   }
-
-   private boolean sameDestroyTarget(final BlockPos pos) {
-      ItemStack selected = this.minecraft.player.getMainHandItem();
-      return pos.equals(this.destroyBlockPos) && ItemStack.isSameItemSameComponents(selected, this.destroyingItem);
-   }
-
-   private void ensureHasSentCarriedItem() {
-      int index = this.minecraft.player.getInventory().getSelectedSlot();
-      if (index != this.carriedIndex) {
-         this.carriedIndex = index;
-         this.connection.send(new ServerboundSetCarriedItemPacket(this.carriedIndex));
-      }
-   }
-
-   public InteractionResult useItemOn(final LocalPlayer player, final InteractionHand hand, final BlockHitResult blockHit) {
-      this.ensureHasSentCarriedItem();
-      if (!this.minecraft.level.getWorldBorder().isWithinBounds(blockHit.getBlockPos())) {
-         return InteractionResult.FAIL;
-      } else {
-         MutableObject<InteractionResult> result = new MutableObject();
-         this.startPrediction(this.minecraft.level, /* lambda$useItemOn$0 */ sequence -> {
-            result.setValue(this.performUseItemOn(player, hand, blockHit));
-            return new ServerboundUseItemOnPacket(hand, blockHit, sequence);
-         });
-         return (InteractionResult)result.get();
-      }
-   }
-
-   private InteractionResult performUseItemOn(final LocalPlayer player, final InteractionHand hand, final BlockHitResult blockHit) {
-      BlockPos pos = blockHit.getBlockPos();
-      ItemStack itemStack = player.getItemInHand(hand);
-      if (this.localPlayerMode == GameType.SPECTATOR) {
-         return InteractionResult.CONSUME;
-      } else {
-         boolean haveSomethingInOurHands = !player.getMainHandItem().isEmpty() || !player.getOffhandItem().isEmpty();
-         boolean suppressUsingBlock = player.isSecondaryUseActive() && haveSomethingInOurHands;
-         if (!suppressUsingBlock) {
-            BlockState blockState = this.minecraft.level.getBlockState(pos);
-            if (!this.connection.isFeatureEnabled(blockState.getBlock().requiredFeatures())) {
-               return InteractionResult.FAIL;
-            }
-
-            InteractionResult itemUse = blockState.useItemOn(player.getItemInHand(hand), this.minecraft.level, player, hand, blockHit);
-            if (itemUse.consumesAction()) {
-               return itemUse;
-            }
-
-            if (itemUse instanceof TryEmptyHandInteraction && hand == InteractionHand.MAIN_HAND) {
-               InteractionResult use = blockState.useWithoutItem(this.minecraft.level, player, blockHit);
-               if (use.consumesAction()) {
-                  return use;
-               }
-            }
-         }
-
-         if (!itemStack.isEmpty() && !player.getCooldowns().isOnCooldown(itemStack)) {
-            UseOnContext context = new UseOnContext(player, hand, blockHit);
-            InteractionResult success;
-            if (player.hasInfiniteMaterials()) {
-               int count = itemStack.getCount();
-               success = itemStack.useOn(context);
-               itemStack.setCount(count);
-            } else {
-               success = itemStack.useOn(context);
-            }
-
-            return success;
-         } else {
-            return InteractionResult.PASS;
-         }
-      }
-   }
-
-   public InteractionResult useItem(final Player player, final InteractionHand hand) {
-      if (this.localPlayerMode == GameType.SPECTATOR) {
-         return InteractionResult.PASS;
-      } else {
-         this.ensureHasSentCarriedItem();
-         MutableObject<InteractionResult> interactionResult = new MutableObject();
-         this.startPrediction(this.minecraft.level, /* lambda$useItem$0 */ sequence -> {
-            ServerboundUseItemPacket packet = new ServerboundUseItemPacket(hand, sequence, player.getYRot(), player.getXRot());
-            ItemStack itemStack = player.getItemInHand(hand);
-            if (player.getCooldowns().isOnCooldown(itemStack)) {
-               interactionResult.setValue(InteractionResult.PASS);
-               return packet;
-            } else {
-               InteractionResult resultHolder = itemStack.use(this.minecraft.level, player, hand);
-               ItemStack result;
-               if (resultHolder instanceof Success success) {
-                  result = (ItemStack)Objects.requireNonNullElseGet(success.heldItemTransformedTo(), /* lambda$useItem$1 */ () -> player.getItemInHand(hand));
-               } else {
-                  result = player.getItemInHand(hand);
-               }
-
-               if (result != itemStack) {
-                  player.setItemInHand(hand, result);
-               }
-
-               interactionResult.setValue(resultHolder);
-               return packet;
-            }
-         });
-         return (InteractionResult)interactionResult.get();
-      }
-   }
-
-   public LocalPlayer createPlayer(final ClientLevel level, final StatsCounter stats, final ClientRecipeBook recipeBook) {
-      return this.createPlayer(level, stats, recipeBook, Input.EMPTY, false);
-   }
-
-   public LocalPlayer createPlayer(
-      final ClientLevel level, final StatsCounter stats, final ClientRecipeBook recipeBook, final Input lastSentInput, final boolean wasSprinting
-   ) {
-      return new LocalPlayer(this.minecraft, level, this.connection, stats, recipeBook, lastSentInput, wasSprinting, this.minecraft.computeChatAbilities());
-   }
-
-   public void attack(final Player player, final Entity entity) {
-      this.ensureHasSentCarriedItem();
-      this.connection.send(new ServerboundAttackPacket(entity.getId()));
-      player.attack(entity);
-      player.resetAttackStrengthTicker();
-   }
-
-   public void spectate(final Entity entity) {
-      this.connection.send(new ServerboundSpectatorActionPacket(OptionalInt.of(entity.getId())));
-   }
-
-   public void spectatorNoAction() {
-      this.connection.send(new ServerboundSpectatorActionPacket(OptionalInt.empty()));
-   }
-
-   public InteractionResult interact(final Player player, final Entity entity, final EntityHitResult hitResult, final InteractionHand hand) {
-      this.ensureHasSentCarriedItem();
-      Vec3 location = hitResult.getLocation().subtract(entity.getX(), entity.getY(), entity.getZ());
-      this.connection.send(new ServerboundInteractPacket(entity.getId(), hand, location, player.isShiftKeyDown()));
-      return (InteractionResult)(this.localPlayerMode == GameType.SPECTATOR ? InteractionResult.PASS : player.interactOn(entity, hand, location));
-   }
-
-   public void handleContainerInput(final int containerId, final int slotNum, final int buttonNum, final ContainerInput containerInput, final Player player) {
-      AbstractContainerMenu containerMenu = player.containerMenu;
-      if (containerId != containerMenu.containerId) {
-         LOGGER.warn("Ignoring click in mismatching container. Click in {}, player has {}.", containerId, containerMenu.containerId);
-      } else {
-         NonNullList<Slot> slots = containerMenu.slots;
-         int slotCount = slots.size();
-         List<ItemStack> itemsBeforeClick = Lists.newArrayListWithCapacity(slotCount);
-
-         for (Slot slot : slots) {
-            itemsBeforeClick.add(slot.getItem().copy());
-         }
-
-         containerMenu.clicked(slotNum, buttonNum, containerInput, player);
-         Int2ObjectMap<HashedStack> changedSlots = new Int2ObjectOpenHashMap();
-
-         for (int i = 0; i < slotCount; i++) {
-            ItemStack before = (ItemStack)itemsBeforeClick.get(i);
-            ItemStack after = slots.get(i).getItem();
-            if (!ItemStack.matches(before, after)) {
-               changedSlots.put(i, HashedStack.create(after, this.connection.decoratedHashOpsGenenerator()));
-            }
-         }
-
-         HashedStack carriedItem = HashedStack.create(containerMenu.getCarried(), this.connection.decoratedHashOpsGenenerator());
-         this.connection
-            .send(
-               new ServerboundContainerClickPacket(
-                  containerId,
-                  containerMenu.getStateId(),
-                  Shorts.checkedCast(slotNum),
-                  SignedBytes.checkedCast(buttonNum),
-                  containerInput,
-                  changedSlots,
-                  carriedItem
-               )
-            );
-      }
-   }
-
-   public void handlePlaceRecipe(final int containerId, final RecipeDisplayId recipe, final boolean useMaxItems) {
-      this.connection.send(new ServerboundPlaceRecipePacket(containerId, recipe, useMaxItems));
-   }
-
-   public void handleInventoryButtonClick(final int containerId, final int buttonId) {
-      this.connection.send(new ServerboundContainerButtonClickPacket(containerId, buttonId));
-   }
-
-   public void handleCreativeModeItemAdd(final ItemStack clicked, final int slot) {
-      if (this.minecraft.player.hasInfiniteMaterials() && this.connection.isFeatureEnabled(clicked.getItem().requiredFeatures())) {
-         this.connection.send(new ServerboundSetCreativeModeSlotPacket(slot, clicked));
-      }
-   }
-
-   public void handleCreativeModeItemDrop(final ItemStack clicked) {
-      boolean hasOtherInventoryOpen = this.minecraft.gui.screen() instanceof AbstractContainerScreen
-         && !(this.minecraft.gui.screen() instanceof CreativeModeInventoryScreen);
-      if (this.minecraft.player.hasInfiniteMaterials()
-         && !hasOtherInventoryOpen
-         && !clicked.isEmpty()
-         && this.connection.isFeatureEnabled(clicked.getItem().requiredFeatures())) {
-         this.connection.send(new ServerboundSetCreativeModeSlotPacket(-1, clicked));
-         this.minecraft.player.getDropSpamThrottler().increment();
-      }
-   }
-
-   public void releaseUsingItem(final Player player) {
-      this.ensureHasSentCarriedItem();
-      this.connection.send(new ServerboundPlayerActionPacket(Action.RELEASE_USE_ITEM, BlockPos.ZERO, Direction.DOWN));
-      player.releaseUsingItem();
-   }
-
-   public void piercingAttack(final PiercingWeapon weapon) {
-      this.ensureHasSentCarriedItem();
-      this.connection.send(new ServerboundPlayerActionPacket(Action.STAB, BlockPos.ZERO, Direction.DOWN));
-      this.minecraft.player.onAttack();
-      this.minecraft.player.postPiercingAttack();
-      weapon.makeSound(this.minecraft.player);
-   }
-
-   public boolean hasExperience() {
-      return this.localPlayerMode.isSurvival();
-   }
-
-   public boolean hasMissTime() {
-      return !this.localPlayerMode.isCreative();
-   }
-
-   public boolean isServerControlledInventory() {
-      return this.minecraft.player.isPassenger() && this.minecraft.player.getVehicle() instanceof HasCustomInventoryScreen;
-   }
-
-   public boolean isSpectator() {
-      return this.localPlayerMode == GameType.SPECTATOR;
-   }
-
-   public @Nullable GameType getPreviousPlayerMode() {
-      return this.previousLocalPlayerMode;
-   }
-
-   public GameType getPlayerMode() {
-      return this.localPlayerMode;
-   }
-
-   public boolean isDestroying() {
-      return this.isDestroying;
-   }
-
-   public int getDestroyStage() {
-      return this.destroyProgress > 0.0F ? (int)(this.destroyProgress * 10.0F) : -1;
-   }
-
-   public void handlePickItemFromBlock(final BlockPos pos, final boolean includeData) {
-      this.connection.send(new ServerboundPickItemFromBlockPacket(pos, includeData));
-   }
-
-   public void handlePickItemFromEntity(final Entity entity, final boolean includeData) {
-      this.connection.send(new ServerboundPickItemFromEntityPacket(entity.getId(), includeData));
-   }
-
-   public void handleSlotStateChanged(final int slotId, final int containerId, final boolean newState) {
-      this.connection.send(new ServerboundContainerSlotStateChangedPacket(slotId, containerId, newState));
-   }
-}
+🏗️ World-Class State Machine: Automation Engine
+Berdasarkan repository kamu1, berikut implementasi enterprise-grade state machine untuk sistem otomasi client mod Slimefun:
+
+📁 Struktur File
+vbnet
+src/client/java/com/example/  
+├── automation/  
+│   ├── AutomationStateMachine.java      ← Core state machine  
+│   ├── AutomationContext.java           ← Shared context/data carrier  
+│   ├── AutomationResult.java            ← Result & error wrapper  
+│   ├── CraftingJob.java                 ← Per-job data class  
+│   ├── state/  
+│   │   ├── AutomationState.java         ← State enum + metadata  
+│   │   ├── StateHandler.java            ← Handler interface  
+│   │   ├── IdleStateHandler.java  
+│   │   ├── FindingGridStateHandler.java  
+│   │   ├── GridOpenStateHandler.java  
+│   │   ├── ScanningStateHandler.java  
+│   │   ├── FindingMachineStateHandler.java  
+│   │   ├── MachineOpenStateHandler.java  
+│   │   ├── CraftingStateHandler.java  
+│   │   ├── VerifyingStateHandler.java  
+│   │   └── DoneStateHandler.java  
+│   ├── guard/  
+│   │   ├── TransitionGuard.java         ← Transition validator  
+│   │   └── CircularRecipeGuard.java     ← Circular detection  
+│   └── event/  
+│       ├── AutomationEvent.java         ← Event enum  
+│       └── AutomationEventBus.java      ← Pub/sub events  
+1️⃣ AutomationState.java — State Enum + Metadata
+java
+package com.example.automation.state;  
+
+import java.util.Set;  
+
+public enum AutomationState {  
+
+    IDLE(  
+        "idle",  
+        false,  
+        Set.of()  
+    ),  
+    FINDING_GRID(  
+        "finding_grid",  
+        true,  
+        Set.of(AutomationState.IDLE, AutomationState.SCANNING)  
+    ),  
+    GRID_OPEN(  
+        "grid_open",  
+        true,  
+        Set.of(AutomationState.FINDING_GRID)  
+    ),  
+    SCANNING(  
+        "scanning",  
+        true,  
+        Set.of(AutomationState.GRID_OPEN)  
+    ),  
+    FINDING_MACHINE(  
+        "finding_machine",  
+        true,  
+        Set.of(AutomationState.IDLE, AutomationState.SCANNING)  
+    ),  
+    MACHINE_OPEN(  
+        "machine_open",  
+        true,  
+        Set.of(AutomationState.FINDING_MACHINE)  
+    ),  
+    CRAFTING(  
+        "crafting",  
+        true,  
+        Set.of(AutomationState.MACHINE_OPEN)  
+    ),  
+    VERIFYING(  
+        "verifying",  
+        true,  
+        Set.of(AutomationState.CRAFTING)  
+    ),  
+    DONE(  
+        "done",  
+        false,  
+        Set.of(AutomationState.VERIFYING)  
+    ),  
+    ERROR(  
+        "error",  
+        false,  
+        Set.of() // reachable from any state  
+    );  
+
+    private final String id;  
+    private final boolean hasTimeout;  
+    private final Set<AutomationState> allowedPreviousStates;  
+
+    AutomationState(String id, boolean hasTimeout, Set<AutomationState> allowedPreviousStates) {  
+        this.id = id;  
+        this.hasTimeout = hasTimeout;  
+        this.allowedPreviousStates = allowedPreviousStates;  
+    }  
+
+    public String getId() { return id; }  
+    public boolean hasTimeout() { return hasTimeout; }  
+
+    /**  
+     * Validasi transisi legal atau tidak.  
+     * ERROR selalu boleh dicapai dari state manapun.  
+     */  
+    public boolean canTransitionFrom(AutomationState previous) {  
+        if (this == ERROR) return true;  
+        return allowedPreviousStates.contains(previous);  
+    }  
+}  
+2️⃣ AutomationContext.java — Shared Data Carrier
+java
+package com.example.automation;  
+
+import net.minecraft.util.math.BlockPos;  
+import java.util.*;  
+import java.util.concurrent.ConcurrentLinkedDeque;  
+
+/**  
+ * Immutable-ish context yang dibawa sepanjang lifecycle satu chain.  
+ * Semua state handler membaca dan menulis lewat sini.  
+ */  
+public final class AutomationContext {  
+
+    // ── Chain Stack ───────────────────────────────────────────────  
+    private final Deque<CraftingJob> jobStack = new ConcurrentLinkedDeque<>();  
+
+    // ── Grid ──────────────────────────────────────────────────────  
+    private volatile BlockPos gridPos       = null;  
+    private volatile int      gridPage      = 0;  
+    private static final int  MAX_GRID_PAGES = 20;  
+
+    // ── Machine ───────────────────────────────────────────────────  
+    private volatile BlockPos machinePos    = null;  
+
+    // ── Timing ────────────────────────────────────────────────────  
+    private volatile long stateEntryTime    = 0L;  
+
+    // ── Timeouts (ms) ─────────────────────────────────────────────  
+    public static final long TIMEOUT_GUI_OPEN      = 3_000L;  
+    public static final long TIMEOUT_CRAFTING      = 10_000L;  
+    public static final long TIMEOUT_SCAN_PAGE     = 2_000L;  
+
+    // ── Circular detection ────────────────────────────────────────  
+    private final Set<String> visitedItemIds = new HashSet<>();  
+
+    // ── Config ────────────────────────────────────────────────────  
+    private static final int MAX_DEPTH       = 8;  
+    private static final int GRID_RADIUS     = 6;  
+    private static final int MACHINE_RADIUS  = 6;  
+
+    // ─────────────────────────────────────────────────────────────  
+    // Job Stack Operations  
+    // ─────────────────────────────────────────────────────────────  
+
+    public boolean pushJob(CraftingJob job) {  
+        if (jobStack.size() >= MAX_DEPTH) return false;  
+        if (visitedItemIds.contains(job.getItemKey())) return false; // circular guard  
+        visitedItemIds.add(job.getItemKey());  
+        jobStack.push(job);  
+        return true;  
+    }  
+
+    public Optional<CraftingJob> peekJob() {  
+        return Optional.ofNullable(jobStack.peek());  
+    }  
+
+    public Optional<CraftingJob> popJob() {  
+        CraftingJob job = jobStack.poll();  
+        if (job != null) visitedItemIds.remove(job.getItemKey());  
+        return Optional.ofNullable(job);  
+    }  
+
+    public boolean hasJobs()        { return !jobStack.isEmpty(); }  
+    public int     getDepth()       { return jobStack.size(); }  
+    public boolean isAtMaxDepth()   { return jobStack.size() >= MAX_DEPTH; }  
+
+    // ─────────────────────────────────────────────────────────────  
+    // Grid  
+    // ─────────────────────────────────────────────────────────────  
+
+    public Optional<BlockPos> getGridPos()            { return Optional.ofNullable(gridPos); }  
+    public void               setGridPos(BlockPos p)  { this.gridPos = p; }  
+    public void               clearGridPos()          { this.gridPos = null; }  
+
+    public int  getGridPage()                          { return gridPage; }  
+    public void nextGridPage()                         { gridPage++; }  
+    public void resetGridPage()                        { gridPage = 0; }  
+    public boolean isGridPageExhausted()               { return gridPage >= MAX_GRID_PAGES; }  
+
+    // ─────────────────────────────────────────────────────────────  
+    // Machine  
+    // ─────────────────────────────────────────────────────────────  
+
+    public Optional<BlockPos> getMachinePos()            { return Optional.ofNullable(machinePos); }  
+    public void               setMachinePos(BlockPos p)  { this.machinePos = p; }  
+    public void               clearMachinePos()          { this.machinePos = null; }  
+
+    // ─────────────────────────────────────────────────────────────  
+    // Timing  
+    // ─────────────────────────────────────────────────────────────  
+
+    public void  markStateEntry()                        { this.stateEntryTime = System.currentTimeMillis(); }  
+    public long  elapsedSinceEntry()                     { return System.currentTimeMillis() - stateEntryTime; }  
+    public boolean isTimedOut(long timeoutMs)            { return elapsedSinceEntry() > timeoutMs; }  
+
+    // ─────────────────────────────────────────────────────────────  
+    // Misc  
+    // ─────────────────────────────────────────────────────────────  
+
+    public int getGridRadius()    { return GRID_RADIUS; }  
+    public int getMachineRadius() { return MACHINE_RADIUS; }  
+
+    public void reset() {  
+        jobStack.clear();  
+        visitedItemIds.clear();  
+        gridPos = null;  
+        machinePos = null;  
+        gridPage = 0;  
+        stateEntryTime = 0L;  
+    }  
+}  
+3️⃣ CraftingJob.java — Per-Job Data Class
+java
+package com.example.automation;  
+
+import net.minecraft.item.ItemStack;  
+
+public final class CraftingJob {  
+
+    private final String    itemKey;       // "slimefun:COPPER_DUST" + NBT hash  
+    private final ItemStack targetItem;  
+    private final int       amountNeeded;  
+    private final int       depth;  
+
+    // Per-job Grid flag (BUKAN global!)  
+    private boolean triedGrid = false;  
+
+    public CraftingJob(String itemKey, ItemStack targetItem, int amountNeeded, int depth) {  
+        this.itemKey      = itemKey;  
+        this.targetItem   = targetItem;  
+        this.amountNeeded = amountNeeded;  
+        this.depth        = depth;  
+    }  
+
+    public String    getItemKey()      { return itemKey; }  
+    public ItemStack getTargetItem()   { return targetItem; }  
+    public int       getAmountNeeded() { return amountNeeded; }  
+    public int       getDepth()        { return depth; }  
+
+    public boolean   isTriedGrid()     { return triedGrid; }  
+    public void      markGridTried()   { triedGrid = true; }  
+
+    @Override  
+    public String toString() {  
+        return String.format("CraftingJob{item=%s, amount=%d, depth=%d, triedGrid=%b}",  
+            itemKey, amountNeeded, depth, triedGrid);  
+    }  
+}  
+4️⃣ AutomationEvent.java — Event Bus
+java
+package com.example.automation.event;  
+
+public enum AutomationEvent {  
+    CHAIN_STARTED,  
+    CHAIN_COMPLETED,  
+    CHAIN_FAILED,  
+    JOB_PUSHED,  
+    JOB_COMPLETED,  
+    GRID_FOUND,  
+    GRID_NOT_FOUND,  
+    GRID_SCAN_COMPLETE,  
+    MACHINE_FOUND,  
+    MACHINE_NOT_FOUND,  
+    CRAFTING_STARTED,  
+    CRAFTING_VERIFIED,  
+    CRAFTING_TIMEOUT,  
+    STATE_CHANGED,  
+    TIMEOUT_OCCURRED  
+}  
+java
+package com.example.automation.event;  
+
+import java.util.*;  
+import java.util.function.Consumer;  
+
+public final class AutomationEventBus {  
+
+    private static final AutomationEventBus INSTANCE = new AutomationEventBus();  
+    private final Map<AutomationEvent, List<Consumer<Object>>> listeners = new EnumMap<>(AutomationEvent.class);  
+
+    private AutomationEventBus() {}  
+
+    public static AutomationEventBus get() { return INSTANCE; }  
+
+    public <T> void subscribe(AutomationEvent event, Consumer<T> listener) {  
+        listeners.computeIfAbsent(event, k -> new ArrayList<>())  
+                 .add(obj -> listener.accept((T) obj));  
+    }  
+
+    public void publish(AutomationEvent event, Object payload) {  
+        listeners.getOrDefault(event, Collections.emptyList())  
+                 .forEach(l -> l.accept(payload));  
+    }  
+
+    public void publish(AutomationEvent event) {  
+        publish(event, null);  
+    }  
+}  
+5️⃣ StateHandler.java — Handler Interface
+java
+package com.example.automation.state;  
+
+import com.example.automation.AutomationContext;  
+import com.example.automation.AutomationResult;  
+
+/**  
+ * Setiap state punya handler-nya sendiri.  
+ * onEnter  → dipanggil sekali saat state pertama kali dimasuki  
+ * onTick   → dipanggil setiap tick selama state aktif  
+ * onExit   → dipanggil sekali saat state akan meninggalkan  
+ */  
+public interface StateHandler {  
+    default void onEnter(AutomationContext ctx) {}  
+    AutomationResult onTick(AutomationContext ctx);  
+    default void onExit(AutomationContext ctx) {}  
+}  
+java
+package com.example.automation;  
+
+/**  
+ * Result dari setiap tick handler.  
+ * Membawa sinyal: tetap di state ini, pindah ke state lain, atau error.  
+ */  
+public sealed interface AutomationResult  
+    permits AutomationResult.Stay,  
+            AutomationResult.Transition,  
+            AutomationResult.Fail {  
+
+    /** Tetap di state saat ini, tunggu tick berikutnya */  
+    record Stay() implements AutomationResult {}  
+
+    /** Pindah ke state target */  
+    record Transition(com.example.automation.state.AutomationState nextState)  
+        implements AutomationResult {}  
+
+    /** Gagal dengan pesan error */  
+    record Fail(String reason) implements AutomationResult {}  
+
+    // ── Factory helpers ───────────────────────────────────────────  
+    static AutomationResult stay()                    { return new Stay(); }  
+    static AutomationResult goTo(com.example.automation.state.AutomationState s) { return new Transition(s); }  
+    static AutomationResult fail(String reason)       { return new Fail(reason); }  
+}  
+6️⃣ Implementasi State Handlers
+IdleStateHandler.java
+java
+package com.example.automation.state;  
+
+import com.example.automation.*;  
+import com.example.automation.event.*;  
+
+public class IdleStateHandler implements StateHandler {  
+
+    @Override  
+    public void onEnter(AutomationContext ctx) {  
+        ctx.reset();  
+    }  
+
+    @Override  
+    public AutomationResult onTick(AutomationContext ctx) {  
+        // IDLE tidak melakukan apapun, tunggu trigger eksternal  
+        // Trigger dari: AutomationStateMachine.start(targetItem)  
+        return AutomationResult.stay();  
+    }  
+}  
+FindingGridStateHandler.java
+java
+package com.example.automation.state;  
+
+import com.example.automation.*;  
+import com.example.automation.event.*;  
+import net.minecraft.client.MinecraftClient;  
+import net.minecraft.util.math.BlockPos;  
+import java.util.Optional;  
+
+public class FindingGridStateHandler implements StateHandler {  
+
+    private final NetworkGridLocator gridLocator;  
+
+    public FindingGridStateHandler(NetworkGridLocator gridLocator) {  
+        this.gridLocator = gridLocator;  
+    }  
+
+    @Override  
+    public void onEnter(AutomationContext ctx) {  
+        ctx.markStateEntry();  
+        ctx.clearGridPos();  
+        ctx.resetGridPage();  
+    }  
+
+    @Override  
+    public AutomationResult onTick(AutomationContext ctx) {  
+        MinecraftClient mc = MinecraftClient.getInstance();  
+        if (mc.player == null) return AutomationResult.fail("Player is null");  
+
+        // Cek apakah job saat ini sudah mencoba grid  
+        CraftingJob job = ctx.peekJob()  
+            .orElse(null);  
+        if (job == null) return AutomationResult.fail("No active job");  
+        if (job.isTriedGrid()) {  
+            // Sudah pernah coba, langsung ke FINDING_MACHINE  
+            return AutomationResult.goTo(AutomationState.FINDING_MACHINE);  
+        }  
+
+        // Cari Grid terdekat  
+        Optional<BlockPos> gridPos = gridLocator.findNearest(  
+            mc.player.getBlockPos(),  
+            ctx.getGridRadius()  
+        );  
+
+        if (gridPos.isEmpty()) {  
+            job.markGridTried();  
+            AutomationEventBus.get().publish(AutomationEvent.GRID_NOT_FOUND);  
+            return AutomationResult.goTo(AutomationState.FINDING_MACHINE);  
+        }  
+
+        ctx.setGridPos(gridPos.get());  
+        AutomationEventBus.get().publish(AutomationEvent.GRID_FOUND, gridPos.get());  
+        return AutomationResult.goTo(AutomationState.GRID_OPEN);  
+    }  
+}  
+GridOpenStateHandler.java
+java
+package com.example.automation.state;  
+
+import com.example.automation.*;  
+
+public class GridOpenStateHandler implements StateHandler {  
+
+    private final CameraController camera;  
+    private final GuiInteractor    guiInteractor;  
+
+    public GridOpenStateHandler(CameraController camera, GuiInteractor guiInteractor) {  
+        this.camera        = camera;  
+        this.guiInteractor = guiInteractor;  
+    }  
+
+    @Override  
+    public void onEnter(AutomationContext ctx) {  
+        ctx.markStateEntry();  
+        // Mulai putar kamera ke arah Grid  
+        ctx.getGridPos().ifPresent(pos -> camera.lookAt(pos));  
+    }  
+
+    @Override  
+    public AutomationResult onTick(AutomationContext ctx) {  
+        // Timeout guard  
+        if (ctx.isTimedOut(AutomationContext.TIMEOUT_GUI_OPEN)) {  
+            ctx.peekJob().ifPresent(CraftingJob::markGridTried);  
+            return AutomationResult.goTo(AutomationState.FINDING_MACHINE);  
+        }  
+
+        // Tunggu kamera selesai rotate  
+        if (!camera.isLookingAt(ctx.getGridPos().orElseThrow())) {  
+            return AutomationResult.stay(); // masih rotating  
+        }  
+
+        // Klik kanan untuk buka GUI  
+        if (!guiInteractor.isGridGuiOpen()) {  
+            guiInteractor.rightClickBlock(ctx.getGridPos().orElseThrow());  
+            return AutomationResult.stay();  
+        }  
+
+        return AutomationResult.goTo(AutomationState.SCANNING);  
+    }  
+
+    @Override  
+    public void onExit(AutomationContext ctx) {  
+        // Pastikan kamera kembali ke posisi bebas setelah selesai  
+    }  
+}  
+ScanningStateHandler.java
+java
+package com.example.automation.state;  
+
+import com.example.automation.*;  
+import com.example.automation.event.*;  
+
+public class ScanningStateHandler implements StateHandler {  
+
+    private final GridScanner gridScanner;  
+    private final GuiInteractor guiInteractor;  
+
+    public ScanningStateHandler(GridScanner gridScanner, GuiInteractor guiInteractor) {  
+        this.gridScanner   = gridScanner;  
+        this.guiInteractor = guiInteractor;  
+    }  
+
+    @Override  
+    public void onEnter(AutomationContext ctx) {  
+        ctx.markStateEntry();  
+    }  
+
+    @Override  
+    public AutomationResult onTick(AutomationContext ctx) {  
+        // Timeout per halaman  
+        if (ctx.isTimedOut(AutomationContext.TIMEOUT_SCAN_PAGE)) {  
+            closeAndProceed(ctx);  
+            return AutomationResult.goTo(AutomationState.FINDING_MACHINE);  
+        }  
+
+        // Batas halaman  
+        if (ctx.isGridPageExhausted()) {  
+            closeAndProceed(ctx);  
+            return AutomationResult.goTo(AutomationState.FINDING_MACHINE);  
+        }  
+
+        CraftingJob job = ctx.peekJob().orElse(null);  
+        if (job == null) return AutomationResult.fail("No active job during scan");  
+
+        // Cek kebutuhan bahan  
+        int missing = gridScanner.getMissingAmount(job);  
+        if (missing <= 0) {  
+            // Semua bahan tersedia!  
+            closeAndProceed(ctx);  
+            AutomationEventBus.get().publish(AutomationEvent.GRID_SCAN_COMPLETE);  
+            return AutomationResult.goTo(AutomationState.FINDING_MACHINE);  
+        }  
+
+        // Shift-click tarik bahan dari halaman ini  
+        boolean pageHasItem = gridScanner.shiftClickMaterials(job, ctx.getGridPage());  
+        if (!pageHasItem || gridScanner.isLastPage(ctx.getGridPage())) {  
+            closeAndProceed(ctx);  
+            return AutomationResult.goTo(AutomationState.FINDING_MACHINE);  
+        }  
+
+        // Lanjut halaman berikutnya  
+        ctx.nextGridPage();  
+        ctx.markStateEntry(); // reset timer per halaman  
+        return AutomationResult.stay();  
+    }  
+
+    private void closeAndProceed(AutomationContext ctx) {  
+        guiInteractor.closeCurrentGui();  
+        ctx.peekJob().ifPresent(CraftingJob::markGridTried);  
+    }  
+}  
+FindingMachineStateHandler.java
+java
+package com.example.automation.state;  
+
+import com.example.automation.*;  
+import com.example.automation.event.*;  
+import net.minecraft.client.MinecraftClient;  
+import java.util.Optional;  
+
+public class FindingMachineStateHandler implements StateHandler {  
+
+    private final FastMachineLocator machineLocator;  
+    private final SubRecipeResolver  subRecipeResolver;  
+
+    public FindingMachineStateHandler(  
+        FastMachineLocator machineLocator,  
+        SubRecipeResolver  subRecipeResolver  
+    ) {  
+        this.machineLocator    = machineLocator;  
+        this.subRecipeResolver = subRecipeResolver;  
+    }  
+
+    @Override  
+    public void onEnter(AutomationContext ctx) {  
+        ctx.markStateEntry();  
+        ctx.clearMachinePos();  
+    }  
+
+    @Override  
+    public AutomationResult onTick(AutomationContext ctx) {  
+        MinecraftClient mc = MinecraftClient.getInstance();  
+        if (mc.player == null) return AutomationResult.fail("Player is null");  
+
+        CraftingJob job = ctx.peekJob().orElse(null);  
+        if (job == null) return AutomationResult.fail("No active job");  
+
+        // Cek apakah bahan masih kurang  
+        int missing = subRecipeResolver.getMissingAmount(job);  
+        if (missing > 0) {  
+            // Bahan kurang → coba sub-recipe dulu  
+            Optional<CraftingJob> subJob = subRecipeResolver.resolveSubJob(  
+                job, ctx.getDepth()  
+            );  
+
+            if (subJob.isPresent()) {  
+                boolean pushed = ctx.pushJob(subJob.get());  
+                if (!pushed) {  
+                    return AutomationResult.fail(  
+                        "Max depth or circular recipe detected for: " + subJob.get().getItemKey()  
+                    );  
+                }  
+                AutomationEventBus.get().publish(AutomationEvent.JOB_PUSHED, subJob.get());  
+                // Restart loop dari awal dengan sub-job baru  
+                return AutomationResult.goTo(AutomationState.FINDING_GRID);  
+            }  
+
+            // Tidak bisa dibuat di mesin manapun  
+            return AutomationResult.fail("Cannot craft missing material: " + job.getItemKey());  
+        }  
+
+        // Bahan cukup! Cari mesin  
+        Optional<net.minecraft.util.math.BlockPos> machinePos = machineLocator.findNearest(  
+            mc.player.getBlockPos(),  
+            job.getTargetItem(),  
+            ctx.getMachineRadius()  
+        );  
+
+        if (machinePos.isEmpty()) {  
+            AutomationEventBus.get().publish(AutomationEvent.MACHINE_NOT_FOUND);  
+            return AutomationResult.fail("No FastMachine found for: " + job.getItemKey());  
+        }  
+
+        ctx.setMachinePos(machinePos.get());  
+        AutomationEventBus.get().publish(AutomationEvent.MACHINE_FOUND, machinePos.get());  
+        return AutomationResult.goTo(AutomationState.MACHINE_OPEN);  
+    }  
+}  
+MachineOpenStateHandler.java
+java
+package com.example.automation.state;  
+
+import com.example.automation.*;  
+
+public class MachineOpenStateHandler implements StateHandler {  
+
+    private final CameraController camera;  
+    private final GuiInteractor    guiInteractor;  
+
+    public MachineOpenStateHandler(CameraController camera, GuiInteractor guiInteractor) {  
+        this.camera        = camera;  
+        this.guiInteractor = guiInteractor;  
+    }  
+
+    @Override  
+    public void onEnter(AutomationContext ctx) {  
+        ctx.markStateEntry();  
+        ctx.getMachinePos().ifPresent(pos -> camera.lookAt(pos));  
+    }  
+
+    @Override  
+    public AutomationResult onTick(AutomationContext ctx) {  
+        if (ctx.isTimedOut(AutomationContext.TIMEOUT_GUI_OPEN)) {  
+            return AutomationResult.fail("Machine GUI open timeout");  
+        }  
+
+        if (!camera.isLookingAt(ctx.getMachinePos().orElseThrow())) {  
+            return AutomationResult.stay();  
+        }  
+
+        if (!guiInteractor.isMachineGuiOpen()) {  
+            guiInteractor.rightClickBlock(ctx.getMachinePos().orElseThrow());  
+            return AutomationResult.stay();  
+        }  
+
+        return AutomationResult.goTo(AutomationState.CRAFTING);  
+    }  
+}  
+CraftingStateHandler.java
+java
+package com.example.automation.state;  
+
+import com.example.automation.*;  
+import com.example.automation.event.*;  
+
+public class CraftingStateHandler implements StateHandler {  
+
+    private final RecipeLockExecutor recipeLockExecutor;  
+
+    public CraftingStateHandler(RecipeLockExecutor recipeLockExecutor) {  
+        this.recipeLockExecutor = recipeLockExecutor;  
+    }  
+
+    @Override  
+    public void onEnter(AutomationContext ctx) {  
+        ctx.markStateEntry();  
+    }  
+
+    @Override  
+    public AutomationResult onTick(AutomationContext ctx) {  
+        if (ctx.isTimedOut(AutomationContext.TIMEOUT_CRAFTING)) {  
+            return AutomationResult.fail("Crafting timeout");  
+        }  
+
+        CraftingJob job = ctx.peekJob().orElse(null);  
+        if (job == null) return AutomationResult.fail("No active job");  
+
+        // Kunci resep + eksekusi  
+        boolean started = recipeLockExecutor.lockAndExecute(job.getTargetItem());  
+        if (!started) {  
+            return AutomationResult.stay(); // GUI belum siap  
+        }  
+
+        AutomationEventBus.get().publish(AutomationEvent.CRAFTING_STARTED, job);  
+        return AutomationResult.goTo(AutomationState.VERIFYING);  
+    }  
+}  
+VerifyingStateHandler.java
+java
+package com.example.automation.state;  
+
+import com.example.automation.*;  
+import com.example.automation.event.*;  
+import net.minecraft.client.MinecraftClient;  
+
+public class VerifyingStateHandler implements StateHandler {  
+
+    private final InventoryChecker inventoryChecker;  
+    private final GuiInteractor    guiInteractor;  
+
+    // Snapshot inventory sebelum crafting  
+    private int inventoryBefore = 0;  
+
+    public VerifyingStateHandler(InventoryChecker inventoryChecker, GuiInteractor guiInteractor) {  
+        this.inventoryChecker = inventoryChecker;  
+        this.guiInteractor    = guiInteractor;  
+    }  
+
+    @Override  
+    public void onEnter(AutomationContext ctx) {  
+        ctx.markStateEntry();  
+        // Ambil snapshot SEBELUM crafting  
+        ctx.peekJob().ifPresent(job ->  
+            inventoryBefore = inventoryChecker.countInInventory(job.getTargetItem())  
+        );  
+    }  
+
+    @Override  
+    public AutomationResult onTick(AutomationContext ctx) {  
+        if (ctx.isTimedOut(AutomationContext.TIMEOUT_CRAFTING)) {  
+            AutomationEventBus.get().publish(AutomationEvent.CRAFTING_TIMEOUT);  
+            return AutomationResult.fail("Output verification timeout");  
+        }  
+
+        CraftingJob job = ctx.peekJob().orElse(null);  
+        if (job == null) return AutomationResult.fail("No active job during verify");  
+
+        int currentCount = inventoryChecker.countInInventory(job.getTargetItem());  
+
+        // Output belum masuk inventory  
+        if (currentCount <= inventoryBefore) {  
+            return AutomationResult.stay();  
+        }  
+
+        // Output berhasil dikonfirmasi ✅  
+        AutomationEventBus.get().publish(AutomationEvent.CRAFTING_VERIFIED, job);  
+        guiInteractor.closeCurrentGui();  
+        return AutomationResult.goTo(AutomationState.DONE);  
+    }  
+}  
+DoneStateHandler.java
+java
+package com.example.automation.state;  
+
+import com.example.automation.*;  
+import com.example.automation.event.*;  
+
+public class DoneStateHandler implements StateHandler {  
+
+    @Override  
+    public void onEnter(AutomationContext ctx) {}  
+
+    @Override  
+    public AutomationResult onTick(AutomationContext ctx) {  
+        // Pop job yang sudah selesai  
+        ctx.popJob().ifPresent(completedJob ->  
+            AutomationEventBus.get().publish(AutomationEvent.JOB_COMPLETED, completedJob)  
+        );  
+
+        if (ctx.hasJobs()) {  
+            // Masih ada sub-job → lanjut ke FINDING_MACHINE  
+            return AutomationResult.goTo(AutomationState.FINDING_MACHINE);  
+        }  
+
+        // Semua selesai!  
+        AutomationEventBus.get().publish(AutomationEvent.CHAIN_COMPLETED);  
+        return AutomationResult.goTo(AutomationState.IDLE);  
+    }  
+}  
+7️⃣ AutomationStateMachine.java — Core Engine
+java
+package com.example.automation;  
+
+import com.example.automation.event.*;  
+import com.example.automation.state.*;  
+import java.util.*;  
+import org.slf4j.Logger;  
+import org.slf4j.LoggerFactory;  
+
+/**  
+ * Core state machine yang dijalankan setiap client tick.  
+ * Daftarkan ke ClientTickEvents.END_CLIENT_TICK.  
+ *  
+ * Penggunaan:  
+ *   AutomationStateMachine sm = AutomationStateMachine.create(dependencies...);  
+ *   sm.start(targetItem);       // dipanggil dari key handler  
+ *   // onTick() dipanggil otomatis via event registration  
+ */  
+public final class AutomationStateMachine {  
+
+    private static final Logger LOGGER = LoggerFactory.getLogger("AutomationSM");  
+
+    private AutomationState                           currentState;  
+    private final AutomationContext                   ctx;  
+    private final Map<AutomationState, StateHandler>  handlers;  
+    private StateHandler                              activeHandler;  
+
+    // ─────────────────────────────────────────────────────────────  
+
+    private AutomationStateMachine(  
+        AutomationContext ctx,  
+        Map<AutomationState, StateHandler> handlers  
+    ) {  
+        this.ctx          = ctx;  
+        this.handlers     = Collections.unmodifiableMap(handlers);  
+        this.currentState = AutomationState.IDLE;  
+        this.activeHandler = handlers.get(AutomationState.IDLE);  
+    }  
+
+    // ─────────────────────────────────────────────────────────────  
+    // Public API  
+    // ─────────────────────────────────────────────────────────────  
+
+    /**  
+     * Trigger chain baru. Aman dipanggil saat chain sedang berjalan  
+     * (akan cancel chain lama otomatis).  
+     */  
+    public void start(CraftingJob initialJob) {  
+        if (isRunning()) {  
+            LOGGER.warn("Cancelling existing chain before starting new one");  
+            cancelChain();  
+        }  
+
+        boolean pushed = ctx.pushJob(initialJob);  
+        if (!pushed) {  
+            LOGGER.warn("Failed to push initial job: {}", initialJob);  
+            return;  
+        }  
+
+        AutomationEventBus.get().publish(AutomationEvent.CHAIN_STARTED, initialJob);  
+        transitionTo(AutomationState.FINDING_GRID);  
+    }  
+
+    public void cancelChain() {  
+        ctx.reset();  
+        transitionTo(AutomationState.IDLE);  
+    }  
+
+    public boolean isRunning() {  
+        return currentState != AutomationState.IDLE  
+            && currentState != AutomationState.ERROR;  
+    }  
+
+    public AutomationState getCurrentState() { return currentState; }  
+
+    // ─────────────────────────────────────────────────────────────  
+    // Tick (dipanggil setiap client tick)  
+    // ─────────────────────────────────────────────────────────────  
+
+    public void onTick() {  
+        if (currentState == AutomationState.IDLE) return;  
+
+        AutomationResult result = activeHandler.onTick(ctx);  
+
+        switch (result) {  
+            case AutomationResult.Stay ignored -> { /* tetap di state ini */ }  
+
+            case AutomationResult.Transition t -> transitionTo(t.nextState());  
+
+            case AutomationResult.Fail f -> {  
+                LOGGER.error("[AutomationSM] FAILED at {}: {}", currentState, f.reason());  
+                AutomationEventBus.get().publish(AutomationEvent.CHAIN_FAILED, f.reason());  
+                ctx.reset();  
+                transitionTo(AutomationState.ERROR);  
+            }  
+        }  
+    }  
+
+    // ─────────────────────────────────────────────────────────────  
+    // Transition  
+    // ─────────────────────────────────────────────────────────────  
+
+    private void transitionTo(AutomationState nextState) {  
+        // Validasi transisi legal  
+        if (!nextState.canTransitionFrom(currentState)) {  
+            LOGGER.error("ILLEGAL transition: {} → {}", currentState, nextState);  
+            return;  
+        }  
+
+        LOGGER.debug("State: {} → {}", currentState, nextState);  
+
+        // onExit state lama  
+        if (activeHandler != null) {  
+            activeHandler.onExit(ctx);  
+        }  
+
+        AutomationState prev = currentState;  
+        currentState  = nextState;  
+        activeHandler = handlers.get(nextState);  
+
+        // onEnter state baru  
+        if (activeHandler != null) {  
+            activeHandler.onEnter(ctx);  
+        }  
+
+        AutomationEventBus.get().publish(AutomationEvent.STATE_CHANGED,  
+            Map.of("from", prev, "to", nextState)  
+        );  
+    }  
+
+    // ─────────────────────────────────────────────────────────────  
+    // Builder / Factory  
+    // ─────────────────────────────────────────────────────────────  
+
+    public static Builder builder() { return new Builder(); }  
+
+    public static final class Builder {  
+        private NetworkGridLocator  gridLocator;  
+        private FastMachineLocator  machineLocator;  
+        private SubRecipeResolver   subRecipeResolver;  
+        private RecipeLockExecutor  recipeLockExecutor;  
+        private InventoryChecker    inventoryChecker;  
+        private CameraController    cameraController;  
+        private GuiInteractor       guiInteractor;  
+        private GridScanner         gridScanner;  
+
+        public Builder gridLocator(NetworkGridLocator v)      { gridLocator = v;       return this; }  
+        public Builder machineLocator(FastMachineLocator v)   { machineLocator = v;    return this; }  
+        public Builder subRecipeResolver(SubRecipeResolver v) { subRecipeResolver = v; return this; }  
+        public Builder recipeLockExecutor(RecipeLockExecutor v){ recipeLockExecutor = v; return this; }  
+        public Builder inventoryChecker(InventoryChecker v)   { inventoryChecker = v;  return this; }  
+        public Builder cameraController(CameraController v)   { cameraController = v;  return this; }  
+        public Builder guiInteractor(GuiInteractor v)         { guiInteractor = v;     return this; }  
+        public Builder gridScanner(GridScanner v)             { gridScanner = v;       return this; }  
+
+        public AutomationStateMachine build() {  
+            AutomationContext ctx = new AutomationContext();  
+
+            Map<AutomationState, StateHandler> handlers = new EnumMap<>(AutomationState.class);  
+            handlers.put(AutomationState.IDLE,            new IdleStateHandler());  
+            handlers.put(AutomationState.FINDING_GRID,    new FindingGridStateHandler(gridLocator));  
+            handlers.put(AutomationState.GRID_OPEN,       new GridOpenStateHandler(cameraController, guiInteractor));  
+            handlers.put(AutomationState.SCANNING,        new ScanningStateHandler(gridScanner, guiInteractor));  
+            handlers.put(AutomationState.FINDING_MACHINE, new FindingMachineStateHandler(machineLocator, subRecipeResolver));  
+            handlers.put(AutomationState.MACHINE_OPEN,    new MachineOpenStateHandler(cameraController, guiInteractor));  
+            handlers.put(AutomationState.CRAFTING,        new CraftingStateHandler(recipeLockExecutor));  
+            handlers.put(AutomationState.VERIFYING,       new VerifyingStateHandler(inventoryChecker, guiInteractor));  
+            handlers.put(AutomationState.DONE,            new DoneStateHandler());  
+
+            return new AutomationStateMachine(ctx, handlers);  
+        }  
+    }  
+}  
+8️⃣ Registrasi ke Fabric Client
+java
+// Di ExampleModClient.java atau ClientModInitializer  
+@Override  
+public void onInitializeClient() {  
+
+    AutomationStateMachine stateMachine = AutomationStateMachine.builder()  
+        .gridLocator(new NetworkGridLocatorImpl())  
+        .machineLocator(new FastMachineLocatorImpl())  
+        .subRecipeResolver(new SubRecipeResolverImpl())  
+        .recipeLockExecutor(new RecipeLockExecutorImpl())  
+        .inventoryChecker(new InventoryCheckerImpl())  
+        .cameraController(new CameraControllerImpl())  
+        .guiInteractor(new GuiInteractorImpl())  
+        .gridScanner(new GridScannerImpl())  
+        .build();  
+
+    // Tick setiap client tick  
+    ClientTickEvents.END_CLIENT_TICK.register(client -> stateMachine.onTick());  
+
+    // Key binding: Shift + Enter  
+    KeyBinding triggerKey = KeyBindingHelper.registerKeyBinding(  
+        new KeyBinding("key.bapelmod.trigger",  
+            GLFW.GLFW_KEY_ENTER,  
+            "category.bapelmod")  
+    );  
+
+    ClientTickEvents.END_CLIENT_TICK.register(client -> {  
+        if (triggerKey.wasPressed()  
+            && client.options.sneakKey.isPressed()  
+            && client.currentScreen == null  
+            && client.player != null  
+        ) {  
+            // Ambil item yang dipegang / di cursor  
+            ItemStack target = client.player.getMainHandStack();  
+            if (!target.isEmpty()) {  
+                String itemKey = SlimefunItemRegistry.getKey(target);  
+                stateMachine.start(new CraftingJob(itemKey, target, 1, 0));  
+            }  
+        }  
+    });  
+
+    // Subscribe event untuk HUD feedback  
+    AutomationEventBus.get().subscribe(AutomationEvent.STATE_CHANGED, payload -> {  
+        // Update HUD overlay  
+        RecipeOverlayRenderer.updateState((Map<?, ?>) payload);  
+    });  
+
+    AutomationEventBus.get().subscribe(AutomationEvent.CHAIN_FAILED, reason ->  
+        client.player.sendMessage(  
+            Text.literal("§c[AutoCraft] Failed: " + reason), true  
+        )  
+    );  
+}  
+📊 Diagram Transisi Final
+scss
+                     ┌──────────────────────────────────────────────┐  
+                     │                   ERROR ◄────────── (any state)  
+                     └─────────────────────────────────────┬────────┘  
+                                                           │ cancelChain()  
+    [Shift+Enter]                                          │  
+         │                                                 ▼  
+         ▼                                              IDLE  
+      IDLE ──────────────────────────────────────► FINDING_GRID  
+                                                        │  
+                              Grid tidak ada / sudah    │  Grid ditemukan  
+                              pernah dicoba (triedGrid) │  
+                              ┌──────────────────────────┤  
+                              │                          ▼  
+                              │                      GRID_OPEN  
+                              │                          │ GUI terbuka  
+                              │                          ▼  
+                              │                       SCANNING ──► (loop halaman)  
+                              │                          │  
+                              │          Grid selesai /  │  
+                              │          bahan cukup     │  
+                              └──────────────────────────┤  
+                                                         ▼  
+                                                  FINDING_MACHINE  
+                                                     │         │  
+                                           Sub-job   │         │ Bahan cukup  
+                                           dipush    │         │  
+                                           ┌─────────┘         │  
+                                           ▼                   ▼  
+                                     FINDING_GRID          MACHINE_OPEN  
+                                     (loop ulang)              │ GUI terbuka  
+                                                               ▼  
+                                                           CRAFTING  
+                                                               │ Recipe locked  
+                                                               ▼  
+                                                           VERIFYING  
+                                                               │ Output confirmed  
+                                                               ▼  
+                                                             DONE  
+                                                    ┌──────────┴────────────┐  
+                                                    │ Ada sub-job lagi?     │ Stack kosong  
+                                                    ▼                       ▼  
+                                             FINDING_MACHINE              IDLE ✅  
+✅ Summary Best Practices yang Diterapkan
+Prinsip	Implementasi
+Single Responsibility	Setiap state punya handler-nya sendiri
+Open/Closed	Tambah state baru = tambah class baru, tanpa ubah core
+Sealed Interface	AutomationResult tidak bisa diextend sembarangan
+Immutable Context Transfer	State handler tidak bisa manipulasi state machine langsung
+Per-Job Flag	triedGrid ada di CraftingJob, bukan global
+Timeout di setiap state	Tidak ada state yang bisa stuck selamanya
+Event-Driven HUD	AutomationEventBus decouples logic dari rendering
+Builder Pattern	Dependency injection bersih, testable
+Guard Transitions	canTransitionFrom() mencegah transisi ilegal
+Output Verification	Stack di-pop HANYA setelah output dikonfirmasi

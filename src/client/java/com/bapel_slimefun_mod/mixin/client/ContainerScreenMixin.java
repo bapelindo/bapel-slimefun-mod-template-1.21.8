@@ -151,4 +151,22 @@ public abstract class ContainerScreenMixin {
             BapelSlimefunMod.LOGGER.error("ERROR in onMouseClicked mixin", e);
         }
     }
+
+    @Inject(
+        method = "slotClicked",
+        at = @At("HEAD"),
+        cancellable = true
+    )
+    private void onSlotClicked(
+        net.minecraft.world.inventory.Slot slot,
+        int slotId,
+        int mouseButton,
+        net.minecraft.world.inventory.ContainerInput clickType,
+        CallbackInfo ci
+    ) {
+        com.bapel_slimefun_mod.automation.AutomationStateMachine sm = com.bapel_slimefun_mod.automation.AutomationStateMachine.getGlobalInstance();
+        if (sm != null && sm.isRunning()) {
+            ci.cancel();
+        }
+    }
 }

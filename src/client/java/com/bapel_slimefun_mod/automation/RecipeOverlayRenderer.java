@@ -904,6 +904,16 @@ public class RecipeOverlayRenderer {
         hide();
     }
 
+    private static String stateMachineFrom = "";
+    private static String stateMachineTo = "";
+
+    public static void updateState(Map<?, ?> payload) {
+        if (payload != null) {
+            stateMachineFrom = String.valueOf(payload.get("from"));
+            stateMachineTo = String.valueOf(payload.get("to"));
+        }
+    }
+
     public static void requestAutoCraftCurrent() {
         if (filteredRecipes == null || filteredRecipes.isEmpty()) return;
         if (selectedIndex < 0 || selectedIndex >= filteredRecipes.size()) return;
@@ -915,9 +925,36 @@ public class RecipeOverlayRenderer {
 
         hide();
 
-        // Route through ChainOrchestrator (the new, correct entry point)
-        com.bapel_slimefun_mod.automation.fastmachine.ChainOrchestrator.get()
-            .start(recipeName, sfMachine, 1);
+        String itemId = selected.getPrimaryOutput().getItemId();
+        String itemKey = "slimefun:" + itemId.toUpperCase();
+        
+        String ns = "minecraft";
+        String pt = itemId.toLowerCase();
+        if (itemId.contains(":")) {
+            String[] parts = itemId.split(":", 2);
+            ns = parts[0].toLowerCase();
+            pt = parts[1].toLowerCase();
+        }
+        
+        net.minecraft.world.item.Item itemObj = net.minecraft.core.registries.BuiltInRegistries.ITEM.get(
+            net.minecraft.resources.Identifier.fromNamespaceAndPath(ns, pt)
+        ).map(net.minecraft.core.Holder::value).orElse(null);
+        ItemStack targetItem;
+        if (itemObj != null) {
+            targetItem = new ItemStack(itemObj, 1);
+        } else {
+            targetItem = new ItemStack(net.minecraft.world.item.Items.BARRIER, 1);
+        }
+        targetItem.set(net.minecraft.core.component.DataComponents.CUSTOM_NAME, Component.literal(recipeName));
+        
+        AutomationStateMachine sm = AutomationStateMachine.getGlobalInstance();
+        if (sm != null) {
+            sm.start(new CraftingJob(itemKey, targetItem, 1, 0));
+        } else {
+            // Fallback
+            com.bapel_slimefun_mod.automation.fastmachine.ChainOrchestrator.get()
+                .start(recipeName, sfMachine, 1);
+        }
     }
     
     // Getters

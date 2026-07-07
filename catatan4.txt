@@ -1,0 +1,1188 @@
+🌐 Lanjutan: Custom Packet Handler + Mixin + Testing Suite
+Berdasarkan repo kamu1 yang menggunakan Java 25 + Minecraft 26.1.2 + Fabric, berikut kelanjutan implementasi bagian final — Custom Packet Handler, Mixin, dan Testing Suite.
+
+📁 Struktur Lanjutan
+bash
+src/  
+├── client/java/com/example/  
+│   ├── automation/  
+│   │   └── network/  
+│   │       ├── AutomationPacketHandler.java   ← Client-side packet receiver  
+│   │       └── PacketIds.java                 ← Packet ID registry  
+│   └── mixin/client/  
+│       ├── HandledScreenMixin.java            ← GUI slot intercept  
+│       └── ClientPlayNetworkHandlerMixin.java ← Packet intercept  
+│  
+├── main/java/com/example/  
+│   └── network/  
+│       ├── RecipeSyncPacket.java              ← Packet data model  
+│       └── ServerPacketSender.java            ← Server → Client sender  
+│  
+└── test/java/com/example/  
+    ├── automation/  
+    │   ├── AutomationStateMachineTest.java  
+    │   ├── SubRecipeResolverTest.java  
+    │   ├── CircularRecipeGuardTest.java  
+    │   └── RecipeRegistryTest.java  
+    └── util/  
+        └── ItemKeyUtilTest.java  
+1️⃣ PacketIds.java — Packet ID Registry
+java
+package com.example.automation.network;  
+
+import net.minecraft.util.Identifier;  
+
+/**  
+ * Semua custom packet ID yang digunakan mod ini.  
+ * Format: "namespace:packet_name"  
+ */  
+public final class PacketIds {  
+
+    private PacketIds() {}  
+
+    // ── Server → Client ───────────────────────────────────────────  
+
+    /** Server mengirim seluruh recipe registry ke client saat join */  
+    public static final Identifier RECIPE_SYNC_FULL =  
+        Identifier.of("bapelmod", "recipe_sync_full");  
+
+    /** Server mengirim update satu resep (tambah/hapus) */  
+    public static final Identifier RECIPE_SYNC_DELTA =  
+        Identifier.of("bapelmod", "recipe_sync_delta");  
+
+    /** Server konfirmasi crafting berhasil */  
+    public static final Identifier CRAFT_CONFIRM =  
+        Identifier.of("bapelmod", "craft_confirm");  
+
+    /** Server kirim status mesin (aktif/offline/busy) */  
+    public static final Identifier MACHINE_STATUS =  
+        Identifier.of("bapelmod", "machine_status");  
+
+    // ── Client → Server ───────────────────────────────────────────  
+
+    /** Client minta sync recipe registry */  
+    public static final Identifier REQUEST_RECIPE_SYNC =  
+        Identifier.of("bapelmod", "request_recipe_sync");  
+}  
+2️⃣ RecipeSyncPacket.java — Packet Data Model
+java
+package com.example.network;  
+
+import com.example.automation.recipe.RecipeEntry;  
+import com.example.automation.recipe.RecipeIngredient;  
+import net.minecraft.network.PacketByteBuf;  
+import net.minecraft.network.codec.PacketCodec;  
+import net.minecraft.network.codec.PacketCodecs;  
+
+import java.util.ArrayList;  
+import java.util.List;  
+
+/**  
+ * Packet untuk sync satu RecipeEntry dari server ke client.  
+ * Bisa digunakan untuk full sync (kirim banyak) atau delta (kirim satu).  
+ *  
+ * Wire format:  
+ *   [String] outputKey  
+ *   [int]    outputAmount  
+ *   [String] requiredMachine  
+ *   [int]    ingredientCount  
+ *   repeat ingredientCount:  
+ *     [String] ingredientKey  
+ *     [int]    ingredientAmount  
+ *     [bool]   isOptional  
+ */  
+public record RecipeSyncPacket(  
+    String              outputKey,  
+    int                 outputAmount,  
+    String              requiredMachine,  
+    List<IngredientData> ingredients  
+) {  
+
+    public record IngredientData(  
+        String  itemKey,  
+        int     amount,  
+        boolean optional  
+    ) {}  
+
+    // ── Codec ─────────────────────────────────────────────────────  
+
+    public static final PacketCodec<PacketByteBuf, RecipeSyncPacket> CODEC =  
+        PacketCodec.of(RecipeSyncPacket::encode, RecipeSyncPacket::decode);  
+
+    public static void encode(RecipeSyncPacket packet, PacketByteBuf buf) {  
+        buf.writeString(packet.outputKey());  
+        buf.writeInt(packet.outputAmount());  
+        buf.writeString(packet.requiredMachine());  
+        buf.writeInt(packet.ingredients().size());  
+        for (IngredientData ing : packet.ingredients()) {  
+            buf.writeString(ing.itemKey());  
+            buf.writeInt(ing.amount());  
+            buf.writeBoolean(ing.optional());  
+        }  
+    }  
+
+    public static RecipeSyncPacket decode(PacketByteBuf buf) {  
+        String outputKey       = buf.readString();  
+        int    outputAmount    = buf.readInt();  
+        String requiredMachine = buf.readString();  
+        int    count           = buf.readInt();  
+
+        List<IngredientData> ingredients = new ArrayList<>(count);  
+        for (int i = 0; i < count; i++) {  
+            ingredients.add(new IngredientData(  
+                buf.readString(),  
+                buf.readInt(),  
+                buf.readBoolean()  
+            ));  
+        }  
+
+        return new RecipeSyncPacket(outputKey, outputAmount, requiredMachine, ingredients);  
+    }  
+
+    // ── Convert to RecipeEntry ────────────────────────────────────  
+
+    public RecipeEntry toRecipeEntry() {  
+        List<RecipeIngredient> recipeIngredients = ingredients.stream()  
+            .map(ing -> new RecipeIngredient(ing.itemKey(), ing.amount(), ing.optional()))  
+            .toList();  
+
+        return new RecipeEntry(  
+            outputKey,  
+            net.minecraft.item.ItemStack.EMPTY, // client tidak butuh real ItemStack  
+            outputAmount,  
+            recipeIngredients,  
+            requiredMachine  
+        );  
+    }  
+}  
+3️⃣ AutomationPacketHandler.java — Client-Side Receiver
+java
+package com.example.automation.network;  
+
+import com.example.automation.recipe.SlimefunRecipeRegistry;  
+import com.example.automation.util.ChatFeedback;  
+import com.example.network.RecipeSyncPacket;  
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;  
+import net.minecraft.network.PacketByteBuf;  
+import org.slf4j.Logger;  
+import org.slf4j.LoggerFactory;  
+
+/**  
+ * Mendaftarkan semua custom packet handler di sisi client.  
+ *  
+ * Dipanggil sekali di onInitializeClient().  
+ */  
+public final class AutomationPacketHandler {  
+
+    private static final Logger LOGGER = LoggerFactory.getLogger("AutomationPackets");  
+
+    private AutomationPacketHandler() {}  
+
+    // ─────────────────────────────────────────────────────────────  
+
+    public static void register() {  
+        registerRecipeSyncFull();  
+        registerRecipeSyncDelta();  
+        registerCraftConfirm();  
+        registerMachineStatus();  
+
+        LOGGER.info("[BapelMod] Custom packet handlers registered.");  
+    }  
+
+    // ─────────────────────────────────────────────────────────────  
+    // Handlers  
+    // ─────────────────────────────────────────────────────────────  
+
+    /**  
+     * Terima seluruh recipe registry dari server.  
+     * Dipanggil saat player pertama kali join/respawn.  
+     *  
+     * Wire format:  
+     *   [int]    totalRecipes  
+     *   repeat:  RecipeSyncPacket per resep  
+     */  
+    private static void registerRecipeSyncFull() {  
+        ClientPlayNetworking.registerGlobalReceiver(  
+            PacketIds.RECIPE_SYNC_FULL,  
+            (client, handler, buf, responseSender) -> {  
+
+                // Baca semua packet di network thread  
+                int totalRecipes = buf.readInt();  
+                var packets = new java.util.ArrayList<RecipeSyncPacket>(totalRecipes);  
+                for (int i = 0; i < totalRecipes; i++) {  
+                    packets.add(RecipeSyncPacket.decode(buf));  
+                }  
+
+                // Execute di client/game thread  
+                client.execute(() -> {  
+                    SlimefunRecipeRegistry registry = SlimefunRecipeRegistry.get();  
+                    registry.clear();  
+
+                    for (RecipeSyncPacket pkt : packets) {  
+                        registry.addRecipe(pkt.toRecipeEntry());  
+                    }  
+
+                    LOGGER.info("[BapelMod] Recipe sync complete: {} recipes loaded.",  
+                        registry.totalRecipes());  
+                    ChatFeedback.success("Recipe registry synced: "  
+                        + registry.totalRecipes() + " recipes.");  
+                });  
+            }  
+        );  
+    }  
+
+    /**  
+     * Terima update delta (satu resep tambah/hapus).  
+     *  
+     * Wire format:  
+     *   [byte]  action: 0=ADD, 1=REMOVE  
+     *   RecipeSyncPacket (hanya jika ADD)  
+     *   [String] outputKey (hanya jika REMOVE)  
+     */  
+    private static void registerRecipeSyncDelta() {  
+        ClientPlayNetworking.registerGlobalReceiver(  
+            PacketIds.RECIPE_SYNC_DELTA,  
+            (client, handler, buf, responseSender) -> {  
+
+                byte   action    = buf.readByte();  
+                String outputKey = null;  
+                RecipeSyncPacket packet = null;  
+
+                if (action == 0) {       // ADD  
+                    packet = RecipeSyncPacket.decode(buf);  
+                } else if (action == 1) { // REMOVE  
+                    outputKey = buf.readString();  
+                }  
+
+                final var finalPacket    = packet;  
+                final var finalOutputKey = outputKey;  
+
+                client.execute(() -> {  
+                    SlimefunRecipeRegistry reg = SlimefunRecipeRegistry.get();  
+
+                    if (action == 0 && finalPacket != null) {  
+                        reg.addRecipe(finalPacket.toRecipeEntry());  
+                        LOGGER.debug("Delta ADD: {}", finalPacket.outputKey());  
+
+                    } else if (action == 1 && finalOutputKey != null) {  
+                        reg.removeRecipe(finalOutputKey);  
+                        LOGGER.debug("Delta REMOVE: {}", finalOutputKey);  
+                    }  
+                });  
+            }  
+        );  
+    }  
+
+    /**  
+     * Server konfirmasi bahwa crafting berhasil.  
+     *  
+     * Wire format:  
+     *   [String] itemKey yang selesai di-craft  
+     *   [int]    jumlah output  
+     */  
+    private static void registerCraftConfirm() {  
+        ClientPlayNetworking.registerGlobalReceiver(  
+            PacketIds.CRAFT_CONFIRM,  
+            (client, handler, buf, responseSender) -> {  
+
+                String itemKey = buf.readString();  
+                int    amount  = buf.readInt();  
+
+                client.execute(() -> {  
+                    LOGGER.info("[BapelMod] Server confirmed craft: {} x{}",  
+                        itemKey, amount);  
+                    // Event bus notification (opsional)  
+                    com.example.automation.event.AutomationEventBus.get()  
+                        .publish(  
+                            com.example.automation.event.AutomationEvent.CRAFTING_VERIFIED,  
+                            itemKey  
+                        );  
+                });  
+            }  
+        );  
+    }  
+
+    /**  
+     * Server kirim status mesin (online/offline/busy).  
+     *  
+     * Wire format:  
+     *   [int]  blockX  
+     *   [int]  blockY  
+     *   [int]  blockZ  
+     *   [byte] status: 0=ONLINE, 1=OFFLINE, 2=BUSY  
+     */  
+    private static void registerMachineStatus() {  
+        ClientPlayNetworking.registerGlobalReceiver(  
+            PacketIds.MACHINE_STATUS,  
+            (client, handler, buf, responseSender) -> {  
+
+                int  x      = buf.readInt();  
+                int  y      = buf.readInt();  
+                int  z      = buf.readInt();  
+                byte status = buf.readByte();  
+
+                net.minecraft.util.math.BlockPos pos =  
+                    new net.minecraft.util.math.BlockPos(x, y, z);  
+
+                client.execute(() -> {  
+                    MachineStatusCache.get().update(pos, MachineStatus.fromByte(status));  
+                    LOGGER.debug("Machine status update: {} → {}", pos, status);  
+                });  
+            }  
+        );  
+    }  
+}  
+4️⃣ MachineStatusCache.java — Machine Status Tracker
+java
+package com.example.automation.network;  
+
+import net.minecraft.util.math.BlockPos;  
+import java.util.Map;  
+import java.util.concurrent.ConcurrentHashMap;  
+
+/**  
+ * Cache status mesin yang dikirim server.  
+ * Digunakan oleh FastMachineLocatorImpl untuk filter mesin yang available.  
+ */  
+public final class MachineStatusCache {  
+
+    private static final MachineStatusCache INSTANCE = new MachineStatusCache();  
+    public static MachineStatusCache get() { return INSTANCE; }  
+
+    private final Map<BlockPos, MachineStatus> cache = new ConcurrentHashMap<>();  
+
+    private MachineStatusCache() {}  
+
+    public void update(BlockPos pos, MachineStatus status) {  
+        if (status == MachineStatus.OFFLINE) {  
+            cache.remove(pos);  
+        } else {  
+            cache.put(pos, status);  
+        }  
+    }  
+
+    public MachineStatus getStatus(BlockPos pos) {  
+        return cache.getOrDefault(pos, MachineStatus.ONLINE);  
+    }  
+
+    public boolean isAvailable(BlockPos pos) {  
+        return getStatus(pos) == MachineStatus.ONLINE;  
+    }  
+
+    public void clear() { cache.clear(); }  
+}  
+java
+package com.example.automation.network;  
+
+public enum MachineStatus {  
+    ONLINE,   // siap dipakai  
+    OFFLINE,  // tidak aktif  
+    BUSY;     // sedang dipakai player lain  
+
+    public static MachineStatus fromByte(byte b) {  
+        return switch (b) {  
+            case 1  -> OFFLINE;  
+            case 2  -> BUSY;  
+            default -> ONLINE;  
+        };  
+    }  
+}  
+5️⃣ Mixin: HandledScreenMixin.java
+Intercept slot click di GUI untuk mencegah konflik saat automation berjalan.
+
+java
+package com.example.mixin.client;  
+
+import com.example.ExampleModClient;  
+import net.minecraft.client.gui.screen.ingame.HandledScreen;  
+import net.minecraft.screen.slot.SlotActionType;  
+import org.spongepowered.asm.mixin.Mixin;  
+import org.spongepowered.asm.mixin.injection.At;  
+import org.spongepowered.asm.mixin.injection.Inject;  
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;  
+
+/**  
+ * Blokir input manual dari player saat automation sedang berjalan  
+ * untuk mencegah konflik klik slot.  
+ */  
+@Mixin(HandledScreen.class)  
+public class HandledScreenMixin {  
+
+    @Inject(  
+        method = "onMouseClick(Lnet/minecraft/screen/slot/Slot;IILnet/minecraft/screen/slot/SlotActionType;)V",  
+        at = @At("HEAD"),  
+        cancellable = true  
+    )  
+    private void onMouseClick(  
+        net.minecraft.screen.slot.Slot slot,  
+        int slotNum,  
+        int button,  
+        SlotActionType actionType,  
+        CallbackInfo ci  
+    ) {  
+        // Jika automation sedang berjalan, blokir input manual player  
+        if (ExampleModClient.AUTOMATION != null  
+            && ExampleModClient.AUTOMATION.isRunning()  
+        ) {  
+            ci.cancel(); // blokir klik manual  
+        }  
+    }  
+}  
+6️⃣ Mixin: ClientPlayNetworkHandlerMixin.java
+Intercept saat player join server untuk trigger recipe sync request.
+
+java
+package com.example.mixin.client;  
+
+import com.example.automation.network.AutomationPacketHandler;  
+import com.example.automation.network.MachineStatusCache;  
+import com.example.automation.network.PacketIds;  
+import com.example.automation.recipe.SlimefunRecipeRegistry;  
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;  
+import net.minecraft.client.network.ClientPlayNetworkHandler;  
+import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;  
+import net.minecraft.network.PacketByteBuf;  
+import io.netty.buffer.Unpooled;  
+import org.spongepowered.asm.mixin.Mixin;  
+import org.spongepowered.asm.mixin.injection.At;  
+import org.spongepowered.asm.mixin.injection.Inject;  
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;  
+import org.slf4j.Logger;  
+import org.slf4j.LoggerFactory;  
+
+@Mixin(ClientPlayNetworkHandler.class)  
+public class ClientPlayNetworkHandlerMixin {  
+
+    private static final Logger LOGGER = LoggerFactory.getLogger("BapelMixin");  
+
+    /**  
+     * Saat player join game:  
+     * 1. Clear recipe registry lama  
+     * 2. Clear machine status cache lama  
+     * 3. Request recipe sync dari server  
+     */  
+    @Inject(  
+        method = "onGameJoin",  
+        at = @At("TAIL")  
+    )  
+    private void onGameJoin(GameJoinS2CPacket packet, CallbackInfo ci) {  
+        LOGGER.info("[BapelMod] Player joined, requesting recipe sync...");  
+
+        // Clear stale data  
+        SlimefunRecipeRegistry.get().clear();  
+        MachineStatusCache.get().clear();  
+
+        // Kirim request sync ke server  
+        if (ClientPlayNetworking.canSend(PacketIds.REQUEST_RECIPE_SYNC)) {  
+            PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());  
+            ClientPlayNetworking.send(PacketIds.REQUEST_RECIPE_SYNC, buf);  
+            LOGGER.info("[BapelMod] Recipe sync request sent.");  
+        } else {  
+            LOGGER.warn("[BapelMod] Server tidak support packet sync. " +  
+                "Menggunakan dev recipes.");  
+        }  
+    }  
+}  
+7️⃣ ServerPacketSender.java — Server-Side Sender (Main Source)
+java
+package com.example.network;  
+
+import com.example.automation.network.PacketIds;  
+import com.example.automation.recipe.RecipeEntry;  
+import com.example.automation.recipe.SlimefunRecipeRegistry;  
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;  
+import net.minecraft.network.PacketByteBuf;  
+import net.minecraft.server.network.ServerPlayerEntity;  
+import io.netty.buffer.Unpooled;  
+import org.slf4j.Logger;  
+import org.slf4j.LoggerFactory;  
+
+import java.util.List;  
+
+/**  
+ * Mengirim custom packet dari server ke client.  
+ *  
+ * Dipanggil dari:  
+ *   - ServerPlayConnectionEvents.JOIN (kirim full sync)  
+ *   - Saat resep berubah (kirim delta)  
+ */  
+public final class ServerPacketSender {  
+
+    private static final Logger LOGGER = LoggerFactory.getLogger("ServerPacketSender");  
+
+    private ServerPacketSender() {}  
+
+    // ─────────────────────────────────────────────────────────────  
+
+    /**  
+     * Kirim full recipe registry ke satu player.  
+     * Dipanggil saat player join atau REQUEST_RECIPE_SYNC diterima.  
+     */  
+    public static void sendFullRecipeSync(  
+        ServerPlayerEntity player,  
+        List<RecipeEntry>  recipes  
+    ) {  
+        if (!ServerPlayNetworking.canSend(player, PacketIds.RECIPE_SYNC_FULL)) {  
+            LOGGER.warn("Player {} tidak support recipe sync packet", player.getName());  
+            return;  
+        }  
+
+        PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());  
+        buf.writeInt(recipes.size());  
+
+        for (RecipeEntry entry : recipes) {  
+            RecipeSyncPacket pkt = toPacket(entry);  
+            RecipeSyncPacket.encode(pkt, buf);  
+        }  
+
+        ServerPlayNetworking.send(player, PacketIds.RECIPE_SYNC_FULL, buf);  
+        LOGGER.info("Full recipe sync sent to {}: {} recipes",  
+            player.getName().getString(), recipes.size());  
+    }  
+
+    /**  
+     * Broadcast delta update (satu resep baru) ke semua player online.  
+     */  
+    public static void broadcastRecipeAdd(  
+        net.minecraft.server.MinecraftServer server,  
+        RecipeEntry newRecipe  
+    ) {  
+        PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());  
+        buf.writeByte(0); // ADD  
+        RecipeSyncPacket.encode(toPacket(newRecipe), buf);  
+
+        for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {  
+            if (ServerPlayNetworking.canSend(player, PacketIds.RECIPE_SYNC_DELTA)) {  
+                ServerPlayNetworking.send(player, PacketIds.RECIPE_SYNC_DELTA, buf.copy());  
+            }  
+        }  
+
+        LOGGER.info("Recipe delta ADD broadcast: {}", newRecipe.outputKey());  
+    }  
+
+    /**  
+     * Broadcast delta update (hapus resep) ke semua player online.  
+     */  
+    public static void broadcastRecipeRemove(  
+        net.minecraft.server.MinecraftServer server,  
+        String outputKey  
+    ) {  
+        PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());  
+        buf.writeByte(1); // REMOVE  
+        buf.writeString(outputKey);  
+
+        for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {  
+            if (ServerPlayNetworking.canSend(player, PacketIds.RECIPE_SYNC_DELTA)) {  
+                ServerPlayNetworking.send(player, PacketIds.RECIPE_SYNC_DELTA, buf.copy());  
+            }  
+        }  
+
+        LOGGER.info("Recipe delta REMOVE broadcast: {}", outputKey);  
+    }  
+
+    /**  
+     * Kirim konfirmasi crafting ke player tertentu.  
+     */  
+    public static void sendCraftConfirm(  
+        ServerPlayerEntity player,  
+        String itemKey,  
+        int    amount  
+    ) {  
+        PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());  
+        buf.writeString(itemKey);  
+        buf.writeInt(amount);  
+        ServerPlayNetworking.send(player, PacketIds.CRAFT_CONFIRM, buf);  
+    }  
+
+    // ─────────────────────────────────────────────────────────────  
+
+    private static RecipeSyncPacket toPacket(RecipeEntry entry) {  
+        var ingredients = entry.ingredients().stream()  
+            .map(ing -> new RecipeSyncPacket.IngredientData(  
+                ing.itemKey(), ing.amount(), ing.isOptional()  
+            ))  
+            .toList();  
+
+        return new RecipeSyncPacket(  
+            entry.outputKey(),  
+            entry.outputAmount(),  
+            entry.requiredMachine(),  
+            ingredients  
+        );  
+    }  
+}  
+8️⃣ Testing Suite
+AutomationStateMachineTest.java
+java
+package com.example.automation;  
+
+import com.example.automation.state.AutomationState;  
+import org.junit.jupiter.api.*;  
+import org.mockito.Mock;  
+import org.mockito.MockitoAnnotations;  
+
+import static org.assertj.core.api.Assertions.*;  
+import static org.mockito.Mockito.*;  
+
+@DisplayName("AutomationStateMachine Tests")  
+class AutomationStateMachineTest {  
+
+    @Mock private com.example.automation.infra.NetworkGridLocator  gridLocator;  
+    @Mock private com.example.automation.infra.FastMachineLocator  machineLocator;  
+    @Mock private com.example.automation.infra.SubRecipeResolver   subRecipeResolver;  
+    @Mock private com.example.automation.infra.RecipeLockExecutor  recipeLockExecutor;  
+    @Mock private com.example.automation.infra.InventoryChecker    inventoryChecker;  
+    @Mock private com.example.automation.infra.CameraController    cameraController;  
+    @Mock private com.example.automation.infra.GuiInteractor       guiInteractor;  
+    @Mock private com.example.automation.infra.GridScanner         gridScanner;  
+
+    private AutomationStateMachine stateMachine;  
+    private AutoCloseable          mocks;  
+
+    @BeforeEach  
+    void setUp() {  
+        mocks = MockitoAnnotations.openMocks(this);  
+
+        stateMachine = AutomationStateMachine.builder()  
+            .gridLocator(gridLocator)  
+            .machineLocator(machineLocator)  
+            .subRecipeResolver(subRecipeResolver)  
+            .recipeLockExecutor(recipeLockExecutor)  
+            .inventoryChecker(inventoryChecker)  
+            .cameraController(cameraController)  
+            .guiInteractor(guiInteractor)  
+            .gridScanner(gridScanner)  
+            .build();  
+    }  
+
+    @AfterEach  
+    void tearDown() throws Exception {  
+        mocks.close();  
+    }  
+
+    // ─────────────────────────────────────────────────────────────  
+
+    @Test  
+    @DisplayName("Initial state harus IDLE")  
+    void shouldStartInIdleState() {  
+        assertThat(stateMachine.getCurrentState())  
+            .isEqualTo(AutomationState.IDLE);  
+        assertThat(stateMachine.isRunning()).isFalse();  
+    }  
+
+    @Test  
+    @DisplayName("start() harus pindah ke FINDING_GRID")  
+    void shouldTransitionToFindingGridOnStart() {  
+        CraftingJob job = makeJob("slimefun:COPPER_INGOT", 1);  
+        stateMachine.start(job);  
+
+        assertThat(stateMachine.getCurrentState())  
+            .isEqualTo(AutomationState.FINDING_GRID);  
+        assertThat(stateMachine.isRunning()).isTrue();  
+    }  
+
+    @Test  
+    @DisplayName("cancelChain() harus kembali ke IDLE")  
+    void shouldReturnToIdleOnCancel() {  
+        stateMachine.start(makeJob("slimefun:COPPER_INGOT", 1));  
+        stateMachine.cancelChain();  
+
+        assertThat(stateMachine.getCurrentState())  
+            .isEqualTo(AutomationState.IDLE);  
+        assertThat(stateMachine.isRunning()).isFalse();  
+    }  
+
+    @Test  
+    @DisplayName("start() saat running harus cancel chain lama")  
+    void shouldCancelOldChainBeforeStartingNew() {  
+        CraftingJob job1 = makeJob("slimefun:COPPER_INGOT", 1);  
+        CraftingJob job2 = makeJob("slimefun:IRON_INGOT", 1);  
+
+        stateMachine.start(job1);  
+        assertThat(stateMachine.isRunning()).isTrue();  
+
+        stateMachine.start(job2); // trigger baru saat running  
+        assertThat(stateMachine.isRunning()).isTrue();  
+        assertThat(stateMachine.getCurrentState())  
+            .isEqualTo(AutomationState.FINDING_GRID);  
+    }  
+
+    @Test  
+    @DisplayName("Transisi ilegal harus diabaikan")  
+    void shouldIgnoreIllegalTransitions() {  
+        // IDLE → CRAFTING adalah ilegal  
+        assertThat(AutomationState.CRAFTING.canTransitionFrom(AutomationState.IDLE))  
+            .isFalse();  
+    }  
+
+    @Test  
+    @DisplayName("ERROR selalu bisa dicapai dari state manapun")  
+    void errorShouldBeReachableFromAnyState() {  
+        for (AutomationState state : AutomationState.values()) {  
+            assertThat(AutomationState.ERROR.canTransitionFrom(state)).isTrue();  
+        }  
+    }  
+
+    // ─────────────────────────────────────────────────────────────  
+
+    private CraftingJob makeJob(String key, int amount) {  
+        return new CraftingJob(key, net.minecraft.item.ItemStack.EMPTY, amount, 0);  
+    }  
+}  
+SubRecipeResolverTest.java
+java
+package com.example.automation;  
+
+import com.example.automation.impl.SubRecipeResolverImpl;  
+import com.example.automation.infra.InventoryChecker;  
+import com.example.automation.recipe.*;  
+import net.minecraft.item.ItemStack;  
+import org.junit.jupiter.api.*;  
+import org.mockito.Mock;  
+import org.mockito.MockitoAnnotations;  
+
+import java.util.List;  
+import java.util.Optional;  
+
+import static org.assertj.core.api.Assertions.*;  
+import static org.mockito.Mockito.*;  
+
+@DisplayName("SubRecipeResolver Tests")  
+class SubRecipeResolverTest {  
+
+    @Mock private InventoryChecker inventoryChecker;  
+
+    private SubRecipeResolverImpl resolver;  
+    private AutoCloseable         mocks;  
+
+    @BeforeEach  
+    void setUp() {  
+        mocks    = MockitoAnnotations.openMocks(this);  
+        resolver = new SubRecipeResolverImpl(inventoryChecker);  
+
+        // Seed registry  
+        SlimefunRecipeRegistry reg = SlimefunRecipeRegistry.get();  
+        reg.clear();  
+
+        // COPPER_INGOT butuh COPPER_DUST x4  
+        reg.addRecipe(new RecipeEntry(  
+            "slimefun:COPPER_INGOT",  
+            ItemStack.EMPTY, 1,  
+            List.of(RecipeIngredient.of("slimefun:COPPER_DUST", 4)),  
+            "slimefun:electric_smeltery"  
+        ));  
+
+        // COPPER_DUST butuh raw_copper x1 → output 2  
+        reg.addRecipe(new RecipeEntry(  
+            "slimefun:COPPER_DUST",  
+            ItemStack.EMPTY, 2,  
+            List.of(RecipeIngredient.of("minecraft:raw_copper", 1)),  
+            "slimefun:electric_ore_grinder"  
+        ));  
+    }  
+
+    @AfterEach  
+    void tearDown() throws Exception {  
+        mocks.close();  
+        resolver.clearAllReservations();  
+        SlimefunRecipeRegistry.get().clear();  
+    }  
+
+    // ─────────────────────────────────────────────────────────────  
+
+    @Test  
+    @DisplayName("getMissingAmount: semua ada di inventory → return 0")  
+    void shouldReturnZeroWhenInventoryHasEnough() {  
+        CraftingJob job = new CraftingJob(  
+            "slimefun:COPPER_INGOT", ItemStack.EMPTY, 1, 0  
+        );  
+        when(inventoryChecker.countInInventory(any())).thenReturn(5);  
+
+        assertThat(resolver.getMissingAmount(job)).isEqualTo(0);  
+    }  
+
+    @Test  
+    @DisplayName("getMissingAmount: inventory kosong → return amountNeeded")  
+    void shouldReturnFullAmountWhenInventoryEmpty() {  
+        CraftingJob job = new CraftingJob(  
+            "slimefun:COPPER_INGOT", ItemStack.EMPTY, 3, 0  
+        );  
+        when(inventoryChecker.countInInventory(any())).thenReturn(0);  
+
+        assertThat(resolver.getMissingAmount(job)).isEqualTo(3);  
+    }  
+
+    @Test  
+    @DisplayName("resolveSubJob: bahan kurang harus return sub-job")  
+    void shouldResolveSubJobForMissingIngredient() {  
+        CraftingJob parentJob = new CraftingJob(  
+            "slimefun:COPPER_INGOT", ItemStack.EMPTY, 1, 0  
+        );  
+
+        Optional<CraftingJob> subJob = resolver.resolveSubJob(parentJob, 0);  
+
+        assertThat(subJob).isPresent();  
+        assertThat(subJob.get().getItemKey()).isEqualTo("slimefun:COPPER_DUST");  
+        assertThat(subJob.get().getDepth()).isEqualTo(1);  
+    }  
+
+    @Test  
+    @DisplayName("resolveSubJob: depth >= MAX_DEPTH harus return empty")  
+    void shouldReturnEmptyAtMaxDepth() {  
+        CraftingJob job = new CraftingJob(  
+            "slimefun:COPPER_INGOT", ItemStack.EMPTY, 1, 0  
+        );  
+
+        Optional<CraftingJob> result = resolver.resolveSubJob(job, 8); // MAX_DEPTH  
+
+        assertThat(result).isEmpty();  
+    }  
+
+    @Test  
+    @DisplayName("reservedMaterials harus diperhitungkan dalam getMissingAmount")  
+    void shouldAccountForReservedMaterials() {  
+        CraftingJob job = new CraftingJob(  
+            "slimefun:COPPER_INGOT", ItemStack.EMPTY, 1, 0  
+        );  
+        // Inventory punya 2, tapi 2 sudah di-reserve → efektif 0  
+        when(inventoryChecker.countInInventory(any())).thenReturn(2);  
+        resolver.reserveMaterial("slimefun:COPPER_INGOT", 2);  
+
+        assertThat(resolver.getMissingAmount(job)).isEqualTo(1);  
+    }  
+}  
+CircularRecipeGuardTest.java
+java
+package com.example.automation;  
+
+import com.example.automation.recipe.*;  
+import org.junit.jupiter.api.*;  
+
+import java.util.List;  
+
+import static org.assertj.core.api.Assertions.*;  
+
+@DisplayName("Circular Recipe Guard Tests")  
+class CircularRecipeGuardTest {  
+
+    private AutomationContext ctx;  
+
+    @BeforeEach  
+    void setUp() {  
+        ctx = new AutomationContext();  
+    }  
+
+    // ─────────────────────────────────────────────────────────────  
+
+    @Test  
+    @DisplayName("pushJob kedua kali dengan key sama harus ditolak (circular)")  
+    void shouldRejectCircularRecipe() {  
+        CraftingJob jobA = new CraftingJob(  
+            "slimefun:ITEM_A", net.minecraft.item.ItemStack.EMPTY, 1, 0  
+        );  
+        CraftingJob jobACopy = new CraftingJob(  
+            "slimefun:ITEM_A", net.minecraft.item.ItemStack.EMPTY, 1, 1  
+        );  
+
+        boolean first  = ctx.pushJob(jobA);  
+        boolean second = ctx.pushJob(jobACopy); // circular!  
+
+        assertThat(first).isTrue();  
+        assertThat(second).isFalse(); // harus ditolak  
+    }  
+
+    @Test  
+    @DisplayName("pushJob berbeda key harus diterima")  
+    void shouldAcceptDifferentKeys() {  
+        CraftingJob jobA = new CraftingJob(  
+            "slimefun:ITEM_A", net.minecraft.item.ItemStack.EMPTY, 1, 0  
+        );  
+        CraftingJob jobB = new CraftingJob(  
+            "slimefun:ITEM_B", net.minecraft.item.ItemStack.EMPTY, 1, 1  
+        );  
+
+        assertThat(ctx.pushJob(jobA)).isTrue();  
+        assertThat(ctx.pushJob(jobB)).isTrue();  
+    }  
+
+    @Test  
+    @DisplayName("popJob harus release circular guard untuk key tersebut")  
+    void shouldReleaseGuardOnPop() {  
+        CraftingJob job = new CraftingJob(  
+            "slimefun:ITEM_A", net.minecraft.item.ItemStack.EMPTY, 1, 0  
+        );  
+
+        ctx.pushJob(job);  
+        ctx.popJob(); // release  
+
+        // Sekarang bisa push lagi  
+        CraftingJob jobAgain = new CraftingJob(  
+            "slimefun:ITEM_A", net.minecraft.item.ItemStack.EMPTY, 1, 0  
+        );  
+        assertThat(ctx.pushJob(jobAgain)).isTrue();  
+    }  
+
+    @Test  
+    @DisplayName("stack depth harus dibatasi MAX_DEPTH = 8")  
+    void shouldEnforceMaxDepth() {  
+        for (int i = 0; i < 8; i++) {  
+            CraftingJob job = new CraftingJob(  
+                "slimefun:ITEM_" + i,  
+                net.minecraft.item.ItemStack.EMPTY, 1, i  
+            );  
+            assertThat(ctx.pushJob(job)).isTrue();  
+        }  
+
+        // Push ke-9 harus gagal  
+        CraftingJob overflow = new CraftingJob(  
+            "slimefun:ITEM_OVERFLOW",  
+            net.minecraft.item.ItemStack.EMPTY, 1, 8  
+        );  
+        assertThat(ctx.pushJob(overflow)).isFalse();  
+    }  
+}  
+RecipeRegistryTest.java
+java
+package com.example.automation;  
+
+import com.example.automation.recipe.*;  
+import net.minecraft.item.ItemStack;  
+import org.junit.jupiter.api.*;  
+
+import java.util.List;  
+
+import static org.assertj.core.api.Assertions.*;  
+
+@DisplayName("SlimefunRecipeRegistry Tests")  
+class RecipeRegistryTest {  
+
+    private SlimefunRecipeRegistry registry;  
+
+    @BeforeEach  
+    void setUp() {  
+        registry = SlimefunRecipeRegistry.get();  
+        registry.clear();  
+    }  
+
+    @AfterEach  
+    void tearDown() {  
+        registry.clear();  
+    }  
+
+    // ─────────────────────────────────────────────────────────────  
+
+    @Test  
+    @DisplayName("Registry kosong setelah clear()")  
+    void shouldBeEmptyAfterClear() {  
+        registry.addRecipe(makeRecipe("slimefun:TEST", "slimefun:electric_smeltery"));  
+        registry.clear();  
+
+        assertThat(registry.hasRecipe("slimefun:TEST")).isFalse();  
+        assertThat(registry.totalRecipes()).isEqualTo(0);  
+    }  
+
+    @Test  
+    @DisplayName("addRecipe dan hasRecipe harus konsisten")  
+    void shouldFindRecipeAfterAdd() {  
+        registry.addRecipe(makeRecipe("slimefun:COPPER_INGOT", "slimefun:electric_smeltery"));  
+
+        assertThat(registry.hasRecipe("slimefun:COPPER_INGOT")).isTrue();  
+        assertThat(registry.hasRecipe("slimefun:UNKNOWN")).isFalse();  
+    }  
+
+    @Test  
+    @DisplayName("getRecipesFor harus return semua resep untuk output")  
+    void shouldReturnAllRecipesForOutput() {  
+        registry.addRecipe(makeRecipe("slimefun:ITEM_A", "slimefun:machine_1"));  
+        registry.addRecipe(makeRecipe("slimefun:ITEM_A", "slimefun:machine_2"));  
+
+        assertThat(registry.getRecipesFor("slimefun:ITEM_A")).hasSize(2);  
+    }  
+
+    @Test  
+    @DisplayName("getBestRecipe harus return resep pertama yang terdaftar")  
+    void shouldReturnFirstRegisteredRecipe() {  
+        registry.addRecipe(makeRecipe("slimefun:ITEM_A", "slimefun:machine_1"));  
+        registry.addRecipe(makeRecipe("slimefun:ITEM_A", "slimefun:machine_2"));  
+
+        var best = registry.getBestRecipe("slimefun:ITEM_A");  
+        assertThat(best).isPresent();  
+        assertThat(best.get().requiredMachine()).isEqualTo("slimefun:machine_1");  
+    }  
+
+    @Test  
+    @DisplayName("removeRecipe harus menghapus semua resep untuk outputKey")  
+    void shouldRemoveAllRecipesForKey() {  
+        registry.addRecipe(makeRecipe("slimefun:ITEM_A", "slimefun:machine_1"));  
+        registry.addRecipe(makeRecipe("slimefun:ITEM_A", "slimefun:machine_2"));  
+        registry.removeRecipe("slimefun:ITEM_A");  
+
+        assertThat(registry.hasRecipe("slimefun:ITEM_A")).isFalse();  
+    }  
+
+    // ─────────────────────────────────────────────────────────────  
+
+    private RecipeEntry makeRecipe(String outputKey, String machine) {  
+        return new RecipeEntry(  
+            outputKey, ItemStack.EMPTY, 1,  
+            List.of(RecipeIngredient.of("minecraft:stone", 1)),  
+            machine  
+        );  
+    }  
+}  
+ItemKeyUtilTest.java
+java
+package com.example.util;  
+
+import com.example.automation.util.ItemKeyUtil;  
+import net.minecraft.item.ItemStack;  
+import net.minecraft.item.Items;  
+import net.minecraft.nbt.NbtCompound;  
+import org.junit.jupiter.api.*;  
+
+import static org.assertj.core.api.Assertions.*;  
+
+@DisplayName("ItemKeyUtil Tests")  
+class ItemKeyUtilTest {  
+
+    @Test  
+    @DisplayName("getKey vanilla item harus return registry ID")  
+    void shouldReturnRegistryIdForVanillaItem() {  
+        ItemStack stack = new ItemStack(Items.IRON_INGOT);  
+        String key = ItemKeyUtil.getKey(stack);  
+
+        assertThat(key).isEqualTo("minecraft:iron_ingot");  
+    }  
+
+    @Test  
+    @DisplayName("getKey Slimefun item harus return slimefun:ID")  
+    void shouldReturnSlimefunIdForSlimefunItem() {  
+        ItemStack stack = new ItemStack(Items.PAPER); // dummy carrier  
+        NbtCompound nbt = new NbtCompound();  
+        NbtCompound sfTag = new NbtCompound();  
+        sfTag.putString("slimefun:slimefun_item", "COPPER_DUST");  
+        nbt.put("PublicBukkitValues", sfTag);  
+        stack.setNbt(nbt);  
+
+        assertThat(ItemKeyUtil.getKey(stack)).isEqualTo("slimefun:COPPER_DUST");  
+        assertThat(ItemKeyUtil.isSlimefunItem(stack)).isTrue();  
+    }  
+
+    @Test  
+    @DisplayName("getKey null/empty stack harus return 'air'")  
+    void shouldReturnAirForEmptyStack() {  
+        assertThat(ItemKeyUtil.getKey(null)).isEqualTo("air");  
+        assertThat(ItemKeyUtil.getKey(ItemStack.EMPTY)).isEqualTo("air");  
+    }  
+
+    @Test  
+    @DisplayName("isSameItem harus true untuk dua item dengan key sama")  
+    void shouldReturnTrueForSameKey() {  
+        ItemStack a = new ItemStack(Items.IRON_INGOT);  
+        ItemStack b = new ItemStack(Items.IRON_INGOT);  
+
+        assertThat(ItemKeyUtil.isSameItem(a, b)).isTrue();  
+    }  
+
+    @Test  
+    @DisplayName("isSameItem harus false untuk item berbeda")  
+    void shouldReturnFalseForDifferentItems() {  
+        ItemStack a = new ItemStack(Items.IRON_INGOT);  
+        ItemStack b = new ItemStack(Items.GOLD_INGOT);  
+
+        assertThat(ItemKeyUtil.isSameItem(a, b)).isFalse();  
+    }  
+}  
+9️⃣ build.gradle — Test Dependencies
+groovy
+dependencies {  
+    // ... existing deps ...  
+
+    // ── Testing ───────────────────────────────────────────────────  
+    testImplementation "org.junit.jupiter:junit-jupiter:5.10.0"  
+    testImplementation "org.assertj:assertj-core:3.24.2"  
+    testImplementation "org.mockito:mockito-core:5.4.0"  
+    testImplementation "org.mockito:mockito-junit-jupiter:5.4.0"  
+
+    // Fabric test framework  
+    testImplementation "net.fabricmc:fabric-loader-junit:${project.loader_version}"  
+}  
+
+test {  
+    useJUnitPlatform()  
+    testLogging {  
+        events "passed", "skipped", "failed"  
+        showStandardStreams = true  
+    }  
+}  
+🔧 Update SlimefunRecipeRegistry.java — Tambah removeRecipe()
+java
+// Tambahkan method ini ke SlimefunRecipeRegistry.java  
+
+/**  
+ * Hapus semua resep untuk outputKey tertentu.  
+ * Dipanggil saat delta REMOVE packet diterima dari server.  
+ */  
+public void removeRecipe(String outputKey) {  
+    List<RecipeEntry> removed = recipesByOutput.remove(outputKey);  
+    if (removed != null) {  
+        // Bersihkan dari index mesin juga  
+        recipesByMachine.values().forEach(set -> set.remove(outputKey));  
+        LOGGER.debug("Removed recipe: {}", outputKey);  
+    }  
+}  
+📊 Final Complete Architecture
+scss
+┌─────────────────────────────────────────────────────────────┐  
+│                    ExampleModClient                         │  
+│   onInitializeClient()                                      │  
+│   ├── AutomationConfigLoader.load()                        │  
+│   ├── AutomationPacketHandler.register()  ◄── NEW          │  
+│   ├── AutomationStateMachine.builder().build()             │  
+│   ├── HudRenderCallback ← AutomationHudRenderer            │  
+│   ├── ClientTickEvents ← stateMachine.onTick()             │  
+│   └── KeyBinding → stateMachine.start()                    │  
+└─────────────────────────────────────────────────────────────┘  
+         │                          ▲  
+         │ Custom Packets           │ Packets  
+         ▼                          │  
+┌─────────────────────────────────────────────────────────────┐  
+│                      Network Layer                          │  
+│   PacketIds              RecipeSyncPacket (codec)          │  
+│   AutomationPacketHandler (client receive)                  │  
+│   ServerPacketSender      (server send)                     │  
+│   MachineStatusCache      (client cache)                    │  
+└─────────────────────────────────────────────────────────────┘  
+         │  
+         ▼  
+┌─────────────────────────────────────────────────────────────┐  
+│                  SlimefunRecipeRegistry                     │  
+│   (populated via packet sync dari server)                   │  
+│   addRecipe() / removeRecipe() / clear()                    │  
+│   getRecipesFor() / getBestRecipe() / hasRecipe()           │  
+└─────────────────────────────────────────────────────────────┘  
+         │  
+         ▼  
+┌─────────────────────────────────────────────────────────────┐  
+│              AutomationStateMachine (9 states)              │  
+│   IDLE → FINDING_GRID → GRID_OPEN → SCANNING               │  
+│   → FINDING_MACHINE → MACHINE_OPEN → CRAFTING              │  
+│   → VERIFYING → DONE → IDLE                                 │  
+└─────────────────────────────────────────────────────────────┘  
+✅ Final Complete Checklist
+Kategori	File	Status
+Core Engine	AutomationStateMachine + 9 handlers	✅
+Context & Jobs	AutomationContext, CraftingJob	✅
+Events	AutomationEventBus, AutomationEvent	✅
+Recipe System	SlimefunRecipeRegistry, RecipeEntry, RecipeIngredient	✅
+Implementations	8 impl classes	✅
+Network	PacketIds, RecipeSyncPacket, AutomationPacketHandler	✅
+Server-side	ServerPacketSender	✅
+Machine Cache	MachineStatusCache, MachineStatus	✅
+Mixin	HandledScreenMixin, ClientPlayNetworkHandlerMixin	✅
+Config	AutomationConfig, AutomationConfigLoader	✅
+HUD	AutomationHudRenderer	✅
+Utilities	ItemKeyUtil, TickScheduler, ChatFeedback	✅
+Tests	5 test classes (JUnit 5 + AssertJ + Mockito)	✅
+Assembly	ExampleModClient (complete wiring)	✅
+💡 Sistem ini sekarang complete end-to-end — dari Shift+Enter trigger, recipe sync via packet, chain resolution, grid scanning, machine execution, output verification, hingga HUD overlay dan test coverage. Semua siap untuk di-integrate ke repo kamu1 🚀

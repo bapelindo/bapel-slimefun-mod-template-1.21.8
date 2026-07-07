@@ -1,0 +1,19 @@
+package com.bapel_slimefun_mod.automation.event;
+
+public enum AutomationEvent {
+    CHAIN_STARTED,
+    CHAIN_COMPLETED,
+    CHAIN_FAILED,
+    JOB_PUSHED,
+    JOB_COMPLETED,
+    GRID_FOUND,
+    GRID_NOT_FOUND,
+    GRID_SCAN_COMPLETE,
+    MACHINE_FOUND,
+    MACHINE_NOT_FOUND,
+    CRAFTING_STARTED,
+    CRAFTING_VERIFIED,
+    CRAFTING_TIMEOUT,
+    STATE_CHANGED,
+    TIMEOUT_OCCURRED
+}

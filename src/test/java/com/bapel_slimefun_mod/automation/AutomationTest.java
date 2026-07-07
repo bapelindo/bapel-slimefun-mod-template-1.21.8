@@ -64,13 +64,13 @@ public class AutomationTest {
 
     @Test
     public void testCircularStack() {
-        java.util.Deque<FastMachineAutomationHandler.CraftJob> chain = new java.util.ArrayDeque<>();
-        chain.push(new FastMachineAutomationHandler.CraftJob("Portable Dustbin", "COMPRESSOR", 1));
-        chain.push(new FastMachineAutomationHandler.CraftJob("Copper Wire", "COMPRESSOR", 1));
+        java.util.Deque<com.bapel_slimefun_mod.automation.CraftingJob> chain = new java.util.ArrayDeque<>();
+        chain.push(new com.bapel_slimefun_mod.automation.CraftingJob("slimefun:PORTABLE_DUSTBIN", net.minecraft.world.item.ItemStack.EMPTY, 1, 0));
+        chain.push(new com.bapel_slimefun_mod.automation.CraftingJob("slimefun:COPPER_WIRE", net.minecraft.world.item.ItemStack.EMPTY, 1, 1));
 
         boolean isCircularNormal = false;
-        for (FastMachineAutomationHandler.CraftJob existing : chain) {
-            if (existing.recipeName.equalsIgnoreCase("Silicon")) {
+        for (com.bapel_slimefun_mod.automation.CraftingJob existing : chain) {
+            if (existing.getItemKey().equalsIgnoreCase("slimefun:SILICON")) {
                 isCircularNormal = true;
                 break;
             }
@@ -78,8 +78,8 @@ public class AutomationTest {
         assertFalse(isCircularNormal);
 
         boolean isCircularFake = false;
-        for (FastMachineAutomationHandler.CraftJob existing : chain) {
-            if (existing.recipeName.equalsIgnoreCase("Portable Dustbin")) {
+        for (com.bapel_slimefun_mod.automation.CraftingJob existing : chain) {
+            if (existing.getItemKey().equalsIgnoreCase("slimefun:PORTABLE_DUSTBIN")) {
                 isCircularFake = true;
                 break;
             }

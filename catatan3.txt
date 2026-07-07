@@ -1,0 +1,1166 @@
+🏭 Lanjutan: SubRecipeResolver, RecipeLockExecutor, GridScanner + Config System
+Berdasarkan repo kamu1 yang menggunakan Java 25 + Minecraft 26.1.2 + Fabric, berikut kelanjutan implementasi bagian yang tersisa.
+
+📁 Struktur Lanjutan
+arduino
+src/client/java/com/example/  
+├── automation/  
+│   ├── impl/  
+│   │   ├── SubRecipeResolverImpl.java      ← Sub-job resolution  
+│   │   ├── RecipeLockExecutorImpl.java     ← GUI recipe lock + execute  
+│   │   └── GridScannerImpl.java            ← Pagination + pull  
+│   ├── recipe/  
+│   │   ├── SlimefunRecipeRegistry.java     ← Client-side recipe cache  
+│   │   ├── RecipeEntry.java                ← Data class per recipe  
+│   │   └── RecipeIngredient.java           ← Ingredient model  
+│   ├── config/  
+│   │   ├── AutomationConfig.java           ← Config data class  
+│   │   └── AutomationConfigLoader.java     ← GSON-based loader/saver  
+│   └── util/  
+│       ├── ItemKeyUtil.java                ← NBT-aware item key helper  
+│       ├── TickScheduler.java              ← Tick-delay helper  
+│       └── ChatFeedback.java               ← Player feedback util  
+1️⃣ ItemKeyUtil.java — Fondasi Semua Impl
+Semua impl bergantung pada ini, jadi dibuat dulu.
+
+java
+package com.example.automation.util;  
+
+import net.minecraft.item.ItemStack;  
+import net.minecraft.nbt.NbtCompound;  
+import net.minecraft.registry.Registries;  
+
+/**  
+ * NBT-aware item key utility.  
+ *  
+ * Format key:  
+ *   Slimefun item  → "slimefun:COPPER_DUST"  
+ *   Vanilla item   → "minecraft:iron_ingot"  
+ */  
+public final class ItemKeyUtil {  
+
+    private static final String SF_NBT_ROOT  = "PublicBukkitValues";  
+    private static final String SF_NBT_KEY   = "slimefun:slimefun_item";  
+    private static final String SF_PREFIX    = "slimefun:";  
+
+    private ItemKeyUtil() {}  
+
+    // ─────────────────────────────────────────────────────────────  
+    // Key Extraction  
+    // ─────────────────────────────────────────────────────────────  
+
+    /**  
+     * Ambil key unik item.  
+     * Priority: Slimefun NBT ID → Vanilla registry ID  
+     */  
+    public static String getKey(ItemStack stack) {  
+        if (stack == null || stack.isEmpty()) return "air";  
+
+        String sfId = getSlimefunId(stack);  
+        if (sfId != null && !sfId.isEmpty()) {  
+            return SF_PREFIX + sfId;  
+        }  
+
+        // Fallback ke vanilla registry ID  
+        return Registries.ITEM.getId(stack.getItem()).toString();  
+    }  
+
+    /**  
+     * Ambil Slimefun item ID dari NBT.  
+     * Return null jika bukan Slimefun item.  
+     */  
+    public static String getSlimefunId(ItemStack stack) {  
+        if (stack == null || stack.isEmpty() || !stack.hasNbt()) return null;  
+        NbtCompound nbt = stack.getNbt();  
+        if (nbt == null) return null;  
+
+        NbtCompound sfTag = nbt.getCompound(SF_NBT_ROOT);  
+        if (sfTag.isEmpty()) return null;  
+
+        String id = sfTag.getString(SF_NBT_KEY);  
+        return id.isEmpty() ? null : id;  
+    }  
+
+    /**  
+     * Cek apakah dua ItemStack adalah item yang sama  
+     * (Slimefun ID atau vanilla registry match).  
+     */  
+    public static boolean isSameItem(ItemStack a, ItemStack b) {  
+        if (a == null || b == null) return false;  
+        if (a.isEmpty() && b.isEmpty()) return true;  
+        if (a.isEmpty() || b.isEmpty()) return false;  
+        return getKey(a).equals(getKey(b));  
+    }  
+
+    /**  
+     * Cek apakah item adalah Slimefun item.  
+     */  
+    public static boolean isSlimefunItem(ItemStack stack) {  
+        return getSlimefunId(stack) != null;  
+    }  
+}  
+2️⃣ RecipeIngredient.java + RecipeEntry.java
+java
+package com.example.automation.recipe;  
+
+import com.example.automation.util.ItemKeyUtil;  
+import net.minecraft.item.ItemStack;  
+
+/**  
+ * Satu bahan dalam sebuah resep.  
+ */  
+public record RecipeIngredient(  
+    String  itemKey,       // "slimefun:COPPER_DUST"  
+    int     amount,        // jumlah yang dibutuhkan  
+    boolean isOptional     // opsional atau wajib  
+) {  
+    public static RecipeIngredient of(ItemStack stack, int amount) {  
+        return new RecipeIngredient(ItemKeyUtil.getKey(stack), amount, false);  
+    }  
+
+    public static RecipeIngredient of(String key, int amount) {  
+        return new RecipeIngredient(key, amount, false);  
+    }  
+}  
+java
+package com.example.automation.recipe;  
+
+import net.minecraft.item.ItemStack;  
+import net.minecraft.util.math.BlockPos;  
+import java.util.List;  
+
+/**  
+ * Satu entri resep lengkap — output + bahan + mesin target.  
+ */  
+public record RecipeEntry(  
+    String                  outputKey,       // key item output  
+    ItemStack               outputItem,      // sample output ItemStack  
+    int                     outputAmount,    // jumlah output per craft  
+    List<RecipeIngredient>  ingredients,     // semua bahan  
+    String                  requiredMachine  // ID mesin yang bisa craft ini  
+) {  
+    /**  
+     * Hitung berapa kali harus di-craft untuk memenuhi jumlah target.  
+     */  
+    public int craftCountNeeded(int targetAmount) {  
+        if (outputAmount <= 0) return 0;  
+        return (int) Math.ceil((double) targetAmount / outputAmount);  
+    }  
+
+    /**  
+     * Hitung total bahan yang dibutuhkan untuk N kali craft.  
+     */  
+    public int getTotalIngredientAmount(String ingredientKey, int craftCount) {  
+        return ingredients.stream()  
+            .filter(i -> i.itemKey().equals(ingredientKey))  
+            .mapToInt(i -> i.amount() * craftCount)  
+            .sum();  
+    }  
+}  
+3️⃣ SlimefunRecipeRegistry.java — Client-Side Recipe Cache
+java
+package com.example.automation.recipe;  
+
+import com.example.automation.util.ItemKeyUtil;  
+import net.minecraft.item.ItemStack;  
+import org.slf4j.Logger;  
+import org.slf4j.LoggerFactory;  
+
+import java.util.*;  
+import java.util.concurrent.ConcurrentHashMap;  
+
+/**  
+ * Client-side cache untuk semua resep Slimefun yang diketahui.  
+ *  
+ * Resep dipopulasi dari dua sumber:  
+ *   1. Packet dari server saat join (via Mixin/Custom Packet)  
+ *   2. Manual register via addRecipe() untuk testing  
+ *  
+ * Thread-safe: ConcurrentHashMap untuk concurrent read.  
+ */  
+public final class SlimefunRecipeRegistry {  
+
+    private static final Logger LOGGER = LoggerFactory.getLogger("RecipeRegistry");  
+
+    // Singleton  
+    private static final SlimefunRecipeRegistry INSTANCE = new SlimefunRecipeRegistry();  
+    public static SlimefunRecipeRegistry get() { return INSTANCE; }  
+
+    // outputKey → List<RecipeEntry> (bisa > 1 resep per output)  
+    private final Map<String, List<RecipeEntry>> recipesByOutput = new ConcurrentHashMap<>();  
+
+    // machineId → Set<outputKey> (untuk lookup per mesin)  
+    private final Map<String, Set<String>> recipesByMachine = new ConcurrentHashMap<>();  
+
+    private SlimefunRecipeRegistry() {}  
+
+    // ─────────────────────────────────────────────────────────────  
+    // Registration  
+    // ─────────────────────────────────────────────────────────────  
+
+    public void addRecipe(RecipeEntry entry) {  
+        recipesByOutput  
+            .computeIfAbsent(entry.outputKey(), k -> new ArrayList<>())  
+            .add(entry);  
+
+        recipesByMachine  
+            .computeIfAbsent(entry.requiredMachine(), k -> new HashSet<>())  
+            .add(entry.outputKey());  
+
+        LOGGER.debug("Registered recipe: {} via {}", entry.outputKey(), entry.requiredMachine());  
+    }  
+
+    public void clear() {  
+        recipesByOutput.clear();  
+        recipesByMachine.clear();  
+        LOGGER.info("Recipe registry cleared");  
+    }  
+
+    // ─────────────────────────────────────────────────────────────  
+    // Query  
+    // ─────────────────────────────────────────────────────────────  
+
+    /**  
+     * Cari semua resep untuk output item ini.  
+     */  
+    public List<RecipeEntry> getRecipesFor(ItemStack output) {  
+        String key = ItemKeyUtil.getKey(output);  
+        return recipesByOutput.getOrDefault(key, Collections.emptyList());  
+    }  
+
+    public List<RecipeEntry> getRecipesFor(String outputKey) {  
+        return recipesByOutput.getOrDefault(outputKey, Collections.emptyList());  
+    }  
+
+    /**  
+     * Cek apakah ada resep untuk item ini.  
+     */  
+    public boolean hasRecipe(ItemStack output) {  
+        return !getRecipesFor(output).isEmpty();  
+    }  
+
+    public boolean hasRecipe(String outputKey) {  
+        return !getRecipesFor(outputKey).isEmpty();  
+    }  
+
+    /**  
+     * Cari resep yang bisa dikerjakan mesin tertentu.  
+     */  
+    public Optional<RecipeEntry> getRecipeForMachine(String outputKey, String machineId) {  
+        return getRecipesFor(outputKey).stream()  
+            .filter(r -> r.requiredMachine().equals(machineId))  
+            .findFirst();  
+    }  
+
+    /**  
+     * Ambil resep terbaik (prioritas: mesin tertentu > mesin apapun).  
+     */  
+    public Optional<RecipeEntry> getBestRecipe(String outputKey) {  
+        List<RecipeEntry> recipes = getRecipesFor(outputKey);  
+        if (recipes.isEmpty()) return Optional.empty();  
+        // Ambil yang pertama terdaftar (paling spesifik)  
+        return Optional.of(recipes.getFirst());  
+    }  
+
+    /**  
+     * Semua mesin yang diketahui registry ini.  
+     */  
+    public Set<String> getKnownMachines() {  
+        return Collections.unmodifiableSet(recipesByMachine.keySet());  
+    }  
+
+    public int totalRecipes() {  
+        return recipesByOutput.values().stream().mapToInt(List::size).sum();  
+    }  
+}  
+4️⃣ SubRecipeResolverImpl.java
+java
+package com.example.automation.impl;  
+
+import com.example.automation.CraftingJob;  
+import com.example.automation.infra.SubRecipeResolver;  
+import com.example.automation.infra.InventoryChecker;  
+import com.example.automation.recipe.*;  
+import com.example.automation.util.ItemKeyUtil;  
+import net.minecraft.client.MinecraftClient;  
+import org.slf4j.Logger;  
+import org.slf4j.LoggerFactory;  
+
+import java.util.*;  
+import java.util.concurrent.ConcurrentHashMap;  
+
+public class SubRecipeResolverImpl implements SubRecipeResolver {  
+
+    private static final Logger LOGGER = LoggerFactory.getLogger("SubRecipeResolver");  
+    private static final int    MAX_DEPTH = 8;  
+
+    private final InventoryChecker inventoryChecker;  
+    private final SlimefunRecipeRegistry registry;  
+
+    // Track "reserved" bahan oleh sub-job yang pending  
+    // itemKey → total reserved amount  
+    private final Map<String, Integer> reservedMaterials = new ConcurrentHashMap<>();  
+
+    public SubRecipeResolverImpl(InventoryChecker inventoryChecker) {  
+        this.inventoryChecker = inventoryChecker;  
+        this.registry         = SlimefunRecipeRegistry.get();  
+    }  
+
+    // ─────────────────────────────────────────────────────────────  
+
+    @Override  
+    public int getMissingAmount(CraftingJob job) {  
+        String itemKey  = job.getItemKey();  
+        int    needed   = job.getAmountNeeded();  
+        int    inInv    = inventoryChecker.countInInventory(job.getTargetItem());  
+        int    reserved = getReservedAmount(itemKey);  
+
+        // Bahan yang efektif tersedia = inventory - yang sudah dipesan sub-job lain  
+        int available = Math.max(0, inInv - reserved);  
+        int missing   = Math.max(0, needed - available);  
+
+        LOGGER.debug("Missing check: {} | needed={} inInv={} reserved={} missing={}",  
+            itemKey, needed, inInv, reserved, missing);  
+
+        return missing;  
+    }  
+
+    @Override  
+    public Optional<CraftingJob> resolveSubJob(CraftingJob parentJob, int currentDepth) {  
+        if (currentDepth >= MAX_DEPTH) {  
+            LOGGER.warn("Max depth {} reached, cannot resolve sub-job for: {}",  
+                MAX_DEPTH, parentJob.getItemKey());  
+            return Optional.empty();  
+        }  
+
+        // Temukan bahan yang paling kurang  
+        Optional<RecipeEntry> parentRecipe = registry.getBestRecipe(parentJob.getItemKey());  
+        if (parentRecipe.isEmpty()) return Optional.empty();  
+
+        for (RecipeIngredient ingredient : parentRecipe.get().ingredients()) {  
+            int missing = calculateIngredientMissing(ingredient, parentJob);  
+            if (missing <= 0) continue;  
+
+            // Cek apakah ada resep untuk bahan ini  
+            Optional<RecipeEntry> subRecipe = registry.getBestRecipe(ingredient.itemKey());  
+            if (subRecipe.isEmpty()) continue;  
+
+            // Buat sub-job  
+            RecipeEntry recipe    = subRecipe.get();  
+            int craftCount        = recipe.craftCountNeeded(missing);  
+            int totalOutput       = craftCount * recipe.outputAmount();  
+
+            // Reserve bahan ini agar job lain tidak double-pull  
+            reserveMaterial(ingredient.itemKey(), totalOutput);  
+
+            CraftingJob subJob = new CraftingJob(  
+                ingredient.itemKey(),  
+                recipe.outputItem(),  
+                totalOutput,  
+                currentDepth + 1  
+            );  
+
+            LOGGER.info("Resolved sub-job: {} x{} (depth {})",  
+                ingredient.itemKey(), totalOutput, currentDepth + 1);  
+
+            return Optional.of(subJob);  
+        }  
+
+        return Optional.empty();  
+    }  
+
+    @Override  
+    public int getReservedAmount(String itemKey) {  
+        return reservedMaterials.getOrDefault(itemKey, 0);  
+    }  
+
+    // ─────────────────────────────────────────────────────────────  
+    // Internal  
+    // ─────────────────────────────────────────────────────────────  
+
+    private int calculateIngredientMissing(RecipeIngredient ingredient, CraftingJob parentJob) {  
+        Optional<RecipeEntry> parentRecipe = registry.getBestRecipe(parentJob.getItemKey());  
+        if (parentRecipe.isEmpty()) return 0;  
+
+        int craftCount = parentRecipe.get().craftCountNeeded(parentJob.getAmountNeeded());  
+        int totalNeeded = ingredient.amount() * craftCount;  
+
+        // Hitung dari inventory  
+        MinecraftClient mc = MinecraftClient.getInstance();  
+        if (mc.player == null) return totalNeeded;  
+
+        int inInv = mc.player.getInventory().main.stream()  
+            .filter(s -> ItemKeyUtil.getKey(s).equals(ingredient.itemKey()))  
+            .mapToInt(net.minecraft.item.ItemStack::getCount)  
+            .sum();  
+
+        int reserved = getReservedAmount(ingredient.itemKey());  
+        int available = Math.max(0, inInv - reserved);  
+
+        return Math.max(0, totalNeeded - available);  
+    }  
+
+    private void reserveMaterial(String itemKey, int amount) {  
+        reservedMaterials.merge(itemKey, amount, Integer::sum);  
+    }  
+
+    /**  
+     * Dipanggil saat job selesai untuk release reserved materials.  
+     */  
+    public void releaseReservation(String itemKey, int amount) {  
+        reservedMaterials.compute(itemKey, (k, current) -> {  
+            if (current == null) return null;  
+            int newVal = current - amount;  
+            return newVal <= 0 ? null : newVal;  
+        });  
+    }  
+
+    public void clearAllReservations() {  
+        reservedMaterials.clear();  
+    }  
+}  
+5️⃣ RecipeLockExecutorImpl.java
+java
+package com.example.automation.impl;  
+
+import com.example.automation.infra.RecipeLockExecutor;  
+import com.example.automation.util.ItemKeyUtil;  
+import net.minecraft.client.MinecraftClient;  
+import net.minecraft.client.gui.screen.ingame.HandledScreen;  
+import net.minecraft.item.ItemStack;  
+import net.minecraft.screen.ScreenHandler;  
+import net.minecraft.screen.slot.Slot;  
+import net.minecraft.screen.slot.SlotActionType;  
+import org.slf4j.Logger;  
+import org.slf4j.LoggerFactory;  
+
+public class RecipeLockExecutorImpl implements RecipeLockExecutor {  
+
+    private static final Logger LOGGER = LoggerFactory.getLogger("RecipeLockExecutor");  
+
+    // State internal per eksekusi  
+    private boolean recipeLocked       = false;  
+    private boolean craftingTriggered  = false;  
+    private int     confirmTicksWaited = 0;  
+
+    // Konstanta GUI slot  
+    // ⚠️ Sesuaikan dengan GUI FastMachine kamu  
+    private static final int RECIPE_SLOT_START  = 0;   // slot pertama daftar resep di GUI  
+    private static final int RECIPE_SLOT_END    = 8;   // slot terakhir daftar resep  
+    private static final int CONFIRM_BUTTON_SLOT = 9;  // tombol "Craft" / confirm  
+    private static final int CRAFT_WAIT_TICKS    = 3;  // tunggu N tick setelah klik konfirm  
+
+    // ─────────────────────────────────────────────────────────────  
+
+    @Override  
+    public boolean lockAndExecute(ItemStack targetItem) {  
+        MinecraftClient mc = MinecraftClient.getInstance();  
+        if (!(mc.currentScreen instanceof HandledScreen<?> screen)) {  
+            LOGGER.warn("lockAndExecute called but no HandledScreen is open");  
+            return false;  
+        }  
+
+        ScreenHandler handler = screen.getScreenHandler();  
+
+        // Step 1: Belum lock resep → cari dan klik slot resep yang match  
+        if (!recipeLocked) {  
+            return tryLockRecipe(mc, handler, targetItem);  
+        }  
+
+        // Step 2: Sudah lock, belum trigger → klik tombol konfirmasi  
+        if (!craftingTriggered) {  
+            return tryTriggerCraft(mc, handler);  
+        }  
+
+        // Step 3: Sudah triggered, tunggu beberapa tick  
+        confirmTicksWaited++;  
+        return confirmTicksWaited >= CRAFT_WAIT_TICKS;  
+    }  
+
+    @Override  
+    public boolean isCraftingInProgress() {  
+        return craftingTriggered && confirmTicksWaited < CRAFT_WAIT_TICKS;  
+    }  
+
+    // ─────────────────────────────────────────────────────────────  
+    // Internal Steps  
+    // ─────────────────────────────────────────────────────────────  
+
+    private boolean tryLockRecipe(  
+        MinecraftClient mc,  
+        ScreenHandler   handler,  
+        ItemStack       targetItem  
+    ) {  
+        String targetKey = ItemKeyUtil.getKey(targetItem);  
+
+        // Scan slot resep di GUI untuk item yang match target  
+        for (int i = RECIPE_SLOT_START; i <= RECIPE_SLOT_END; i++) {  
+            if (i >= handler.slots.size()) break;  
+
+            Slot slot = handler.slots.get(i);  
+            if (slot.getStack().isEmpty()) continue;  
+
+            String slotKey = ItemKeyUtil.getKey(slot.getStack());  
+            if (!slotKey.equals(targetKey)) continue;  
+
+            // Found! Klik untuk lock resep ini  
+            mc.interactionManager.clickSlot(  
+                handler.syncId,  
+                i,  
+                0,  
+                SlotActionType.PICKUP,  
+                mc.player  
+            );  
+
+            recipeLocked = true;  
+            LOGGER.info("Recipe locked for: {} at slot {}", targetKey, i);  
+            return false; // belum selesai, perlu tick lagi untuk trigger  
+        }  
+
+        // Tidak ditemukan slot resep yang cocok  
+        LOGGER.warn("No recipe slot found for: {}", targetKey);  
+        reset();  
+        return false;  
+    }  
+
+    private boolean tryTriggerCraft(MinecraftClient mc, ScreenHandler handler) {  
+        if (CONFIRM_BUTTON_SLOT >= handler.slots.size()) {  
+            LOGGER.warn("Confirm button slot {} out of bounds (total: {})",  
+                CONFIRM_BUTTON_SLOT, handler.slots.size());  
+            reset();  
+            return false;  
+        }  
+
+        // Klik tombol konfirmasi craft  
+        mc.interactionManager.clickSlot(  
+            handler.syncId,  
+            CONFIRM_BUTTON_SLOT,  
+            0,  
+            SlotActionType.PICKUP,  
+            mc.player  
+        );  
+
+        craftingTriggered  = true;  
+        confirmTicksWaited = 0;  
+        LOGGER.info("Craft triggered, waiting {} ticks for output...", CRAFT_WAIT_TICKS);  
+        return false; // tunggu CRAFT_WAIT_TICKS tick  
+    }  
+
+    /**  
+     * Reset state internal. Dipanggil setelah VERIFYING selesai  
+     * atau saat error.  
+     */  
+    public void reset() {  
+        recipeLocked       = false;  
+        craftingTriggered  = false;  
+        confirmTicksWaited = 0;  
+    }  
+}  
+6️⃣ GridScannerImpl.java
+java
+package com.example.automation.impl;  
+
+import com.example.automation.CraftingJob;  
+import com.example.automation.infra.GridScanner;  
+import com.example.automation.infra.GuiInteractor;  
+import com.example.automation.recipe.*;  
+import com.example.automation.util.ItemKeyUtil;  
+import net.minecraft.client.MinecraftClient;  
+import net.minecraft.client.gui.screen.ingame.HandledScreen;  
+import net.minecraft.item.ItemStack;  
+import net.minecraft.screen.ScreenHandler;  
+import net.minecraft.screen.slot.Slot;  
+import net.minecraft.screen.slot.SlotActionType;  
+import org.slf4j.Logger;  
+import org.slf4j.LoggerFactory;  
+
+import java.util.*;  
+
+public class GridScannerImpl implements GridScanner {  
+
+    private static final Logger LOGGER = LoggerFactory.getLogger("GridScanner");  
+
+    // Slot layout di GUI Network Grid  
+    // ⚠️ Sesuaikan dengan GUI Network Grid mod kamu  
+    private static final int GRID_CONTENT_START = 0;   // slot pertama item di grid  
+    private static final int GRID_CONTENT_END   = 44;  // slot terakhir item di grid (9×5)  
+    private static final int NEXT_PAGE_SLOT     = 45;  // tombol next page  
+    private static final int PREV_PAGE_SLOT     = 46;  // tombol prev page  
+    private static final int ITEMS_PER_PAGE     = 45;  
+
+    private final GuiInteractor guiInteractor;  
+    private final SlimefunRecipeRegistry registry;  
+
+    // Cache slot index yang sudah di-shift-click agar tidak double-click  
+    private final Set<Integer> clickedSlots = new HashSet<>();  
+
+    public GridScannerImpl(GuiInteractor guiInteractor) {  
+        this.guiInteractor = guiInteractor;  
+        this.registry      = SlimefunRecipeRegistry.get();  
+    }  
+
+    // ─────────────────────────────────────────────────────────────  
+
+    @Override  
+    public int getMissingAmount(CraftingJob job) {  
+        MinecraftClient mc = MinecraftClient.getInstance();  
+        if (mc.player == null) return job.getAmountNeeded();  
+
+        // Hitung dari inventory player  
+        int inInv = mc.player.getInventory().main.stream()  
+            .filter(s -> ItemKeyUtil.getKey(s).equals(job.getItemKey()))  
+            .mapToInt(ItemStack::getCount)  
+            .sum();  
+
+        return Math.max(0, job.getAmountNeeded() - inInv);  
+    }  
+
+    @Override  
+    public boolean shiftClickMaterials(CraftingJob job, int page) {  
+        MinecraftClient mc = MinecraftClient.getInstance();  
+        if (!(mc.currentScreen instanceof HandledScreen<?> screen)) return false;  
+
+        ScreenHandler handler  = screen.getScreenHandler();  
+        boolean        found   = false;  
+
+        // Dapatkan semua bahan yang dibutuhkan job ini  
+        Set<String> neededKeys = getNeededIngredientKeys(job);  
+        if (neededKeys.isEmpty()) return false;  
+
+        // Scan setiap slot di halaman ini  
+        for (int i = GRID_CONTENT_START; i <= GRID_CONTENT_END; i++) {  
+            if (i >= handler.slots.size()) break;  
+
+            Slot      slot      = handler.slots.get(i);  
+            ItemStack slotStack = slot.getStack();  
+            if (slotStack.isEmpty()) continue;  
+
+            String slotKey = ItemKeyUtil.getKey(slotStack);  
+
+            // Apakah slot ini mengandung bahan yang dibutuhkan?  
+            if (!neededKeys.contains(slotKey)) continue;  
+
+            // Cek apakah masih butuh item ini  
+            int stillNeed = calculateStillNeeded(job, slotKey, mc);  
+            if (stillNeed <= 0) continue;  
+
+            // Hindari double-click slot yang sama  
+            int absoluteSlot = page * ITEMS_PER_PAGE + i;  
+            if (clickedSlots.contains(absoluteSlot)) continue;  
+
+            // Shift-click untuk pull ke inventory  
+            mc.interactionManager.clickSlot(  
+                handler.syncId,  
+                i,  
+                0,  
+                SlotActionType.QUICK_MOVE,  
+                mc.player  
+            );  
+
+            clickedSlots.add(absoluteSlot);  
+            found = true;  
+
+            LOGGER.debug("Shift-clicked slot {} for item: {} (need {})",  
+                i, slotKey, stillNeed);  
+        }  
+
+        return found;  
+    }  
+
+    @Override  
+    public void navigateToPage(int page) {  
+        MinecraftClient mc = MinecraftClient.getInstance();  
+        if (!(mc.currentScreen instanceof HandledScreen<?> screen)) return;  
+
+        ScreenHandler handler = screen.getScreenHandler();  
+        if (NEXT_PAGE_SLOT >= handler.slots.size()) return;  
+
+        mc.interactionManager.clickSlot(  
+            handler.syncId,  
+            NEXT_PAGE_SLOT,  
+            0,  
+            SlotActionType.PICKUP,  
+            mc.player  
+        );  
+
+        LOGGER.debug("Navigated to page {}", page);  
+    }  
+
+    @Override  
+    public boolean isLastPage(int page) {  
+        MinecraftClient mc = MinecraftClient.getInstance();  
+        if (!(mc.currentScreen instanceof HandledScreen<?> screen)) return true;  
+
+        ScreenHandler handler = screen.getScreenHandler();  
+        if (NEXT_PAGE_SLOT >= handler.slots.size()) return true;  
+
+        // Tombol next page kosong = ini halaman terakhir  
+        Slot nextPageSlot = handler.slots.get(NEXT_PAGE_SLOT);  
+        return nextPageSlot.getStack().isEmpty();  
+    }  
+
+    /**  
+     * Reset state klik — dipanggil saat pindah job atau restart scan.  
+     */  
+    public void resetClickedSlots() {  
+        clickedSlots.clear();  
+    }  
+
+    // ─────────────────────────────────────────────────────────────  
+    // Internal Helpers  
+    // ─────────────────────────────────────────────────────────────  
+
+    /**  
+     * Dapatkan semua item key bahan yang dibutuhkan job ini.  
+     */  
+    private Set<String> getNeededIngredientKeys(CraftingJob job) {  
+        Optional<RecipeEntry> recipe = registry.getBestRecipe(job.getItemKey());  
+        if (recipe.isEmpty()) return Set.of(job.getItemKey()); // fallback: item itu sendiri  
+
+        Set<String> keys = new HashSet<>();  
+        for (RecipeIngredient ingredient : recipe.get().ingredients()) {  
+            keys.add(ingredient.itemKey());  
+        }  
+        return keys;  
+    }  
+
+    /**  
+     * Hitung berapa item dengan key tertentu yang masih dibutuhkan.  
+     */  
+    private int calculateStillNeeded(CraftingJob job, String itemKey, MinecraftClient mc) {  
+        Optional<RecipeEntry> recipe = registry.getBestRecipe(job.getItemKey());  
+        if (recipe.isEmpty()) return 0;  
+
+        RecipeEntry entry      = recipe.get();  
+        int craftCount         = entry.craftCountNeeded(job.getAmountNeeded());  
+        int totalIngredients   = entry.getTotalIngredientAmount(itemKey, craftCount);  
+
+        // Berapa yang sudah ada di inventory  
+        int inInv = mc.player.getInventory().main.stream()  
+            .filter(s -> ItemKeyUtil.getKey(s).equals(itemKey))  
+            .mapToInt(ItemStack::getCount)  
+            .sum();  
+
+        return Math.max(0, totalIngredients - inInv);  
+    }  
+}  
+7️⃣ AutomationConfig.java + AutomationConfigLoader.java
+AutomationConfig.java
+java
+package com.example.automation.config;  
+
+/**  
+ * Semua nilai konfigurasi automation engine.  
+ * Di-load dari config/bapelmod-automation.json  
+ */  
+public final class AutomationConfig {  
+
+    // ── Radius ────────────────────────────────────────────────────  
+    public int gridSearchRadius    = 6;  
+    public int machineSearchRadius = 6;  
+
+    // ── Timeouts (ms) ─────────────────────────────────────────────  
+    public long guiOpenTimeoutMs    = 3_000L;  
+    public long craftingTimeoutMs   = 10_000L;  
+    public long scanPageTimeoutMs   = 2_000L;  
+
+    // ── Limits ────────────────────────────────────────────────────  
+    public int  maxChainDepth       = 8;  
+    public int  maxGridPages        = 20;  
+
+    // ── Camera ────────────────────────────────────────────────────  
+    public float cameraLookSpeed    = 5.0f;   // derajat per tick  
+    public float cameraLookTolerance= 2.0f;   // derajat toleransi  
+
+    // ── UI ────────────────────────────────────────────────────────  
+    public boolean showHudOverlay   = true;  
+    public int     hudX             = 4;  
+    public int     hudY             = 4;  
+
+    // ── Debug ─────────────────────────────────────────────────────  
+    public boolean debugLogging     = false;  
+
+    // Singleton instance  
+    private static AutomationConfig instance;  
+    public static AutomationConfig get() {  
+        if (instance == null) instance = new AutomationConfig();  
+        return instance;  
+    }  
+    static void setInstance(AutomationConfig cfg) { instance = cfg; }  
+
+    private AutomationConfig() {}  
+}  
+AutomationConfigLoader.java
+java
+package com.example.automation.config;  
+
+import com.google.gson.*;  
+import net.fabricmc.loader.api.FabricLoader;  
+import org.slf4j.Logger;  
+import org.slf4j.LoggerFactory;  
+
+import java.io.*;  
+import java.lang.reflect.Type;  
+import java.nio.file.*;  
+
+/**  
+ * GSON-based config loader/saver.  
+ *  
+ * Penggunaan:  
+ *   AutomationConfigLoader.load();   // di onInitializeClient()  
+ *   AutomationConfigLoader.save();   // kapanpun setelah perubahan  
+ */  
+public final class AutomationConfigLoader {  
+
+    private static final Logger LOGGER   = LoggerFactory.getLogger("AutomationConfig");  
+    private static final String FILENAME = "bapelmod-automation.json";  
+    private static final Gson   GSON     = new GsonBuilder()  
+        .setPrettyPrinting()  
+        .serializeNulls()  
+        .create();  
+
+    private AutomationConfigLoader() {}  
+
+    // ─────────────────────────────────────────────────────────────  
+
+    public static void load() {  
+        Path configPath = getConfigPath();  
+
+        if (!Files.exists(configPath)) {  
+            LOGGER.info("Config not found, creating default: {}", configPath);  
+            save(); // buat file default  
+            return;  
+        }  
+
+        try (Reader reader = Files.newBufferedReader(configPath)) {  
+            AutomationConfig loaded = GSON.fromJson(reader, AutomationConfig.class);  
+            if (loaded != null) {  
+                AutomationConfig.setInstance(loaded);  
+                LOGGER.info("Config loaded from: {}", configPath);  
+            }  
+        } catch (IOException | JsonParseException e) {  
+            LOGGER.error("Failed to load config, using defaults: {}", e.getMessage());  
+        }  
+    }  
+
+    public static void save() {  
+        Path configPath = getConfigPath();  
+
+        try {  
+            Files.createDirectories(configPath.getParent());  
+            try (Writer writer = Files.newBufferedWriter(configPath)) {  
+                GSON.toJson(AutomationConfig.get(), writer);  
+                LOGGER.info("Config saved to: {}", configPath);  
+            }  
+        } catch (IOException e) {  
+            LOGGER.error("Failed to save config: {}", e.getMessage());  
+        }  
+    }  
+
+    private static Path getConfigPath() {  
+        return FabricLoader.getInstance()  
+            .getConfigDir()  
+            .resolve(FILENAME);  
+    }  
+}  
+8️⃣ TickScheduler.java + ChatFeedback.java
+TickScheduler.java
+java
+package com.example.automation.util;  
+
+import java.util.*;  
+
+/**  
+ * Lightweight tick-delay scheduler untuk client thread.  
+ * Tidak blocking — semua delayed task dieksekusi di tick berikutnya.  
+ *  
+ * Penggunaan:  
+ *   TickScheduler.get().runAfter(5, () -> doSomething());  
+ *   // Di ClientTickEvents: TickScheduler.get().tick();  
+ */  
+public final class TickScheduler {  
+
+    private static final TickScheduler INSTANCE = new TickScheduler();  
+    public static TickScheduler get() { return INSTANCE; }  
+
+    private record DelayedTask(int ticksLeft, Runnable action) {}  
+
+    private final List<DelayedTask> tasks = new ArrayList<>();  
+
+    private TickScheduler() {}  
+
+    /**  
+     * Jalankan action setelah N tick.  
+     */  
+    public void runAfter(int ticks, Runnable action) {  
+        tasks.add(new DelayedTask(ticks, action));  
+    }  
+
+    /**  
+     * Dipanggil setiap client tick.  
+     */  
+    public void tick() {  
+        if (tasks.isEmpty()) return;  
+
+        List<DelayedTask> remaining = new ArrayList<>();  
+        for (DelayedTask task : tasks) {  
+            if (task.ticksLeft() <= 0) {  
+                task.action().run();  
+            } else {  
+                remaining.add(new DelayedTask(task.ticksLeft() - 1, task.action()));  
+            }  
+        }  
+
+        tasks.clear();  
+        tasks.addAll(remaining);  
+    }  
+
+    public void cancelAll() {  
+        tasks.clear();  
+    }  
+}  
+ChatFeedback.java
+java
+package com.example.automation.util;  
+
+import net.minecraft.client.MinecraftClient;  
+import net.minecraft.text.Text;  
+
+/**  
+ * Utility untuk mengirim feedback ke pemain via actionbar atau chat.  
+ */  
+public final class ChatFeedback {  
+
+    private ChatFeedback() {}  
+
+    /** Tampilkan di action bar (bawah layar, tidak permanent) */  
+    public static void actionBar(String message) {  
+        MinecraftClient mc = MinecraftClient.getInstance();  
+        if (mc.player == null) return;  
+        mc.player.sendMessage(Text.literal(message), true);  
+    }  
+
+    /** Tampilkan di chat (permanent) */  
+    public static void chat(String message) {  
+        MinecraftClient mc = MinecraftClient.getInstance();  
+        if (mc.player == null) return;  
+        mc.player.sendMessage(Text.literal(message), false);  
+    }  
+
+    // ── Preset ────────────────────────────────────────────────────  
+
+    public static void info(String msg)    { actionBar("§e[BapelMod] " + msg); }  
+    public static void success(String msg) { actionBar("§a[BapelMod] ✓ " + msg); }  
+    public static void warn(String msg)    { actionBar("§6[BapelMod] ⚠ " + msg); }  
+    public static void error(String msg)   { actionBar("§c[BapelMod] ✗ " + msg); }  
+}  
+9️⃣ ExampleModClient.java — Final Complete Assembly
+java
+package com.example;  
+
+import com.example.automation.*;  
+import com.example.automation.config.*;  
+import com.example.automation.hud.AutomationHudRenderer;  
+import com.example.automation.impl.*;  
+import com.example.automation.recipe.*;  
+import com.example.automation.util.*;  
+import net.fabricmc.api.ClientModInitializer;  
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;  
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;  
+import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;  
+import net.minecraft.client.option.KeyBinding;  
+import net.minecraft.item.ItemStack;  
+import org.lwjgl.glfw.GLFW;  
+import org.slf4j.Logger;  
+import org.slf4j.LoggerFactory;  
+
+public class ExampleModClient implements ClientModInitializer {  
+
+    private static final Logger LOGGER = LoggerFactory.getLogger("BapelMod");  
+    private static KeyBinding   triggerKey;  
+
+    // Expose untuk akses global jika diperlukan  
+    public static AutomationStateMachine AUTOMATION;  
+
+    @Override  
+    public void onInitializeClient() {  
+        LOGGER.info("[BapelMod] Booting automation engine...");  
+
+        // ── 1. Load Config ────────────────────────────────────────  
+        AutomationConfigLoader.load();  
+        AutomationConfig cfg = AutomationConfig.get();  
+
+        // ── 2. Wire Dependencies ──────────────────────────────────  
+        InventoryCheckerImpl  inventoryChecker  = new InventoryCheckerImpl();  
+        GuiInteractorImpl     guiInteractor     = new GuiInteractorImpl();  
+        CameraControllerImpl  cameraController  = new CameraControllerImpl();  
+        SubRecipeResolverImpl subRecipeResolver  = new SubRecipeResolverImpl(inventoryChecker);  
+        GridScannerImpl       gridScanner        = new GridScannerImpl(guiInteractor);  
+        RecipeLockExecutorImpl recipeLockExecutor = new RecipeLockExecutorImpl();  
+
+        // ── 3. Build State Machine ────────────────────────────────  
+        AUTOMATION = AutomationStateMachine.builder()  
+            .gridLocator(new NetworkGridLocatorImpl())  
+            .machineLocator(new FastMachineLocatorImpl())  
+            .subRecipeResolver(subRecipeResolver)  
+            .recipeLockExecutor(recipeLockExecutor)  
+            .inventoryChecker(inventoryChecker)  
+            .cameraController(cameraController)  
+            .guiInteractor(guiInteractor)  
+            .gridScanner(gridScanner)  
+            .build();  
+
+        // ── 4. HUD Renderer ───────────────────────────────────────  
+        if (cfg.showHudOverlay) {  
+            AutomationHudRenderer hud =  
+                new AutomationHudRenderer(AUTOMATION, AUTOMATION.getContext());  
+            HudRenderCallback.EVENT.register(hud::render);  
+        }  
+
+        // ── 5. Tick Registration ──────────────────────────────────  
+        ClientTickEvents.END_CLIENT_TICK.register(client -> {  
+            TickScheduler.get().tick();   // delayed tasks  
+            AUTOMATION.onTick();          // state machine  
+        });  
+
+        // ── 6. Key Binding ────────────────────────────────────────  
+        triggerKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(  
+            "key.bapelmod.trigger",  
+            GLFW.GLFW_KEY_ENTER,  
+            "category.bapelmod"  
+        ));  
+
+        ClientTickEvents.END_CLIENT_TICK.register(client -> {  
+            if (!triggerKey.wasPressed()) return;  
+            if (client.currentScreen != null) return;  
+            if (client.player == null) return;  
+            if (!client.options.sneakKey.isPressed()) return;  
+
+            ItemStack target = client.player.getMainHandStack();  
+
+            // Validasi  
+            if (target.isEmpty()) {  
+                ChatFeedback.warn("Hold target item di tangan utama!");  
+                return;  
+            }  
+
+            if (!SlimefunRecipeRegistry.get().hasRecipe(target)) {  
+                ChatFeedback.error("Tidak ada resep untuk: "  
+                    + ItemKeyUtil.getKey(target));  
+                return;  
+            }  
+
+            // Buat dan start job  
+            String      itemKey = ItemKeyUtil.getKey(target);  
+            CraftingJob job     = new CraftingJob(itemKey, target, 1, 0);  
+
+            LOGGER.info("[BapelMod] Chain started for: {}", itemKey);  
+            ChatFeedback.info("Starting chain: " + itemKey);  
+            AUTOMATION.start(job);  
+        });  
+
+        // ── 7. Seed Recipe Registry (Development / Testing) ───────  
+        seedDevRecipes();  
+
+        LOGGER.info("[BapelMod] Ready! Shift+Enter to trigger automation.");  
+    }  
+
+    // ─────────────────────────────────────────────────────────────  
+    // Dev Recipe Seeding  
+    // ─────────────────────────────────────────────────────────────  
+
+    /**  
+     * Seed beberapa resep contoh untuk development.  
+     * Di production, resep diisi dari packet server.  
+     */  
+    private void seedDevRecipes() {  
+        SlimefunRecipeRegistry reg = SlimefunRecipeRegistry.get();  
+
+        // Contoh: COPPER_INGOT butuh COPPER_DUST x4  
+        reg.addRecipe(new RecipeEntry(  
+            "slimefun:COPPER_INGOT",  
+            ItemStack.EMPTY,        // TODO: real ItemStack  
+            1,  
+            List.of(  
+                RecipeIngredient.of("slimefun:COPPER_DUST", 4)  
+            ),  
+            "slimefun:electric_smeltery"  
+        ));  
+
+        // Contoh: COPPER_DUST butuh COPPER_ORE x1  
+        reg.addRecipe(new RecipeEntry(  
+            "slimefun:COPPER_DUST",  
+            ItemStack.EMPTY,  
+            2,  
+            List.of(  
+                RecipeIngredient.of("minecraft:raw_copper", 1)  
+            ),  
+            "slimefun:electric_ore_grinder"  
+        ));  
+
+        LOGGER.info("[BapelMod] Dev recipes seeded: {} total",  
+            reg.totalRecipes());  
+    }  
+}  
+📊 Final Architecture Overview
+scss
+ExampleModClient  
+│  
+├── [Config] AutomationConfigLoader → bapelmod-automation.json  
+│  
+├── [Core] AutomationStateMachine  
+│     ├── AutomationContext       (shared data, thread-safe)  
+│     ├── AutomationEventBus      (pub/sub decoupling)  
+│     └── StateHandlers [9]  
+│           IDLE → FINDING_GRID → GRID_OPEN → SCANNING  
+│           → FINDING_MACHINE → MACHINE_OPEN → CRAFTING  
+│           → VERIFYING → DONE → (loop atau IDLE)  
+│  
+├── [Infra] Implementations  
+│     ├── NetworkGridLocatorImpl  (BlockPos stream + distance sort)  
+│     ├── FastMachineLocatorImpl  (machine ID whitelist + recipe check)  
+│     ├── SubRecipeResolverImpl   (registry lookup + reserved tracking)  
+│     ├── RecipeLockExecutorImpl  (slot scan + click + confirm)  
+│     ├── InventoryCheckerImpl    (NBT-aware count)  
+│     ├── CameraControllerImpl    (smooth yaw/pitch lerp)  
+│     ├── GuiInteractorImpl       (packet-level block interact)  
+│     └── GridScannerImpl         (pagination + targeted shift-click)  
+│  
+├── [Recipe] SlimefunRecipeRegistry  
+│     ├── RecipeEntry             (output + ingredients + machine)  
+│     └── RecipeIngredient        (itemKey + amount)  
+│  
+├── [HUD] AutomationHudRenderer  
+│     └── Live state + job info + error overlay  
+│  
+└── [Util]  
+      ├── ItemKeyUtil    (NBT-aware key, SF ID extraction)  
+      ├── TickScheduler  (non-blocking delayed tasks)  
+      └── ChatFeedback   (actionbar + chat presets)  
+✅ Final Checklist
+Komponen	File	Status
+State Enum + Transition Guard	AutomationState.java	✅
+Shared Context	AutomationContext.java	✅
+Job Data	CraftingJob.java	✅
+Result Sealed	AutomationResult.java	✅
+Event Bus	AutomationEventBus.java	✅
+9 State Handlers	*StateHandler.java	✅
+Core Engine	AutomationStateMachine.java	✅
+8 Interfaces	infra/*.java	✅
+Item Key Util	ItemKeyUtil.java	✅
+Recipe Model	RecipeEntry/Ingredient.java	✅
+Recipe Registry	SlimefunRecipeRegistry.java	✅
+Sub-Recipe Resolver	SubRecipeResolverImpl.java	✅
+Recipe Lock Executor	RecipeLockExecutorImpl.java	✅
+Grid Scanner	GridScannerImpl.java	✅
+Grid Locator	NetworkGridLocatorImpl.java	✅
+Machine Locator	FastMachineLocatorImpl.java	✅
+Camera	CameraControllerImpl.java	✅
+Inventory Checker	InventoryCheckerImpl.java	✅
+GUI Interactor	GuiInteractorImpl.java	✅
+HUD Overlay	AutomationHudRenderer.java	✅
+Config System	AutomationConfig/Loader.java	✅
+Tick Scheduler	TickScheduler.java	✅
+Chat Feedback	ChatFeedback.java	✅
+Final Assembly	ExampleModClient.java	✅
+💡 Next Step yang disarankan: Implementasi Custom Packet Handler untuk sync resep dari server ke SlimefunRecipeRegistry secara otomatis saat player join — mau dilanjutkan? 🚀
