@@ -32,6 +32,23 @@ public abstract class ContainerScreenMixin {
             if (title != null) {
                 String titleString = title.getString();
                 UnifiedAutomationManager.onMachineOpen(titleString);
+                
+                String titleLower = titleString.toLowerCase();
+                if (titleLower.contains("slimefun") || titleLower.contains("guide") || titleLower.contains("panduan")) {
+                    com.bapel_slimefun_mod.mixin.AbstractContainerScreenAccessor accessor = 
+                        (com.bapel_slimefun_mod.mixin.AbstractContainerScreenAccessor) screen;
+                    
+                    int x = accessor.bapel$getLeftPos() + accessor.bapel$getImageWidth() + 5;
+                    int y = accessor.bapel$getTopPos() + 5;
+                    
+                    net.minecraft.client.gui.components.Button scrapeBtn = 
+                        net.minecraft.client.gui.components.Button.builder(
+                            Component.literal("§aAuto Scrape"),
+                            b -> com.bapel_slimefun_mod.automation.recipe.SlimefunGuideScraper.startScraping()
+                        ).bounds(x, y, 90, 20).build();
+                    
+                    ((com.bapel_slimefun_mod.mixin.ScreenWidgetInvoker) screen).bapel$addRenderableWidget(scrapeBtn);
+                }
             }
         } catch (Exception e) {
             BapelSlimefunMod.LOGGER.error("ERROR in onInit mixin", e);

@@ -87,6 +87,10 @@ public final class SlimefunRecipeRegistry {
         return recipesByOutput.values().stream().mapToInt(List::size).sum();  
     }  
 
+    public Set<String> getKnownOutputs() {
+        return Collections.unmodifiableSet(recipesByOutput.keySet());
+    }
+
     public void removeRecipe(String outputKey) {  
         List<RecipeEntry> removed = recipesByOutput.remove(outputKey);  
         if (removed != null) {  

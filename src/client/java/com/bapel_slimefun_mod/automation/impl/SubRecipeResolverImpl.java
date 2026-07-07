@@ -105,7 +105,7 @@ public class SubRecipeResolverImpl implements SubRecipeResolver {
         int totalNeeded = ingredient.amount() * craftCount;
 
         Minecraft mc = Minecraft.getInstance();
-        if (mc.player == null) return totalNeeded;
+        if (mc == null || mc.player == null) return totalNeeded;
 
         int inInv = 0;
         for (int i = 0; i < mc.player.getInventory().getContainerSize(); i++) {

@@ -18,7 +18,7 @@ public final class ModKeybinds {
 
     private ModKeybinds() {}
 
-    private static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(
+    public static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(
         Identifier.fromNamespaceAndPath("bapel-slimefun-mod", "automation")
     );
 

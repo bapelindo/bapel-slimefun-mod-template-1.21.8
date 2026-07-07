@@ -1,32 +1,71 @@
 package com.bapel_slimefun_mod.automation;  
 
 import com.bapel_slimefun_mod.automation.state.AutomationState;  
+import com.bapel_slimefun_mod.automation.infra.*;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.ItemStack;
 import org.junit.jupiter.api.*;  
-import org.mockito.Mock;  
-import org.mockito.MockitoAnnotations;  
 
+import java.util.Optional;
 import static org.assertj.core.api.Assertions.*;  
-import static org.mockito.Mockito.*;  
 
 @DisplayName("AutomationStateMachine Tests")  
 class AutomationStateMachineTest {  
 
-    @Mock private com.bapel_slimefun_mod.automation.infra.NetworkGridLocator  gridLocator;  
-    @Mock private com.bapel_slimefun_mod.automation.infra.FastMachineLocator  machineLocator;  
-    @Mock private com.bapel_slimefun_mod.automation.infra.SubRecipeResolver   subRecipeResolver;  
-    @Mock private com.bapel_slimefun_mod.automation.infra.RecipeLockExecutor  recipeLockExecutor;  
-    @Mock private com.bapel_slimefun_mod.automation.infra.InventoryChecker    inventoryChecker;  
-    @Mock private com.bapel_slimefun_mod.automation.infra.CameraController    cameraController;  
-    @Mock private com.bapel_slimefun_mod.automation.infra.GuiInteractor       guiInteractor;  
-    @Mock private com.bapel_slimefun_mod.automation.infra.GridScanner         gridScanner;  
+    private final NetworkGridLocator gridLocator = new NetworkGridLocator() {
+        @Override public Optional<BlockPos> findNearest(BlockPos origin, int radius) { return Optional.empty(); }
+        @Override public boolean isGridActive(BlockPos pos) { return false; }
+    };
+
+    private final FastMachineLocator machineLocator = new FastMachineLocator() {
+        @Override public Optional<BlockPos> findNearest(BlockPos origin, ItemStack targetItem, int radius) { return Optional.empty(); }
+        @Override public boolean isMachineAvailable(BlockPos pos) { return false; }
+        @Override public boolean supportsRecipe(BlockPos pos, ItemStack targetItem) { return false; }
+    };
+
+    private final SubRecipeResolver subRecipeResolver = new SubRecipeResolver() {
+        @Override public int getMissingAmount(CraftingJob job) { return 0; }
+        @Override public Optional<CraftingJob> resolveSubJob(CraftingJob parentJob, int currentDepth) { return Optional.empty(); }
+        @Override public int getReservedAmount(String itemKey) { return 0; }
+    };
+
+    private final RecipeLockExecutor recipeLockExecutor = new RecipeLockExecutor() {
+        @Override public boolean lockAndExecute(ItemStack targetItem) { return false; }
+        @Override public boolean isCraftingInProgress() { return false; }
+    };
+
+    private final InventoryChecker inventoryChecker = new InventoryChecker() {
+        @Override public int countInInventory(ItemStack item) { return 0; }
+        @Override public boolean hasInventorySpace() { return false; }
+    };
+
+    private final CameraController cameraController = new CameraController() {
+        @Override public void lookAt(BlockPos target) {}
+        @Override public boolean isLookingAt(BlockPos target) { return false; }
+        @Override public void release() {}
+        @Override public boolean isControlled() { return false; }
+    };
+
+    private final GuiInteractor guiInteractor = new GuiInteractor() {
+        @Override public void rightClickBlock(BlockPos pos) {}
+        @Override public void closeCurrentGui() {}
+        @Override public boolean isGridGuiOpen() { return false; }
+        @Override public boolean isMachineGuiOpen() { return false; }
+        @Override public void shiftClickSlot(int slotIndex) {}
+        @Override public int getActiveGuiSlotCount() { return 0; }
+    };
+
+    private final GridScanner gridScanner = new GridScanner() {
+        @Override public int getMissingAmount(CraftingJob job) { return 0; }
+        @Override public boolean shiftClickMaterials(CraftingJob job, int page) { return false; }
+        @Override public void navigateToPage(int page) {}
+        @Override public boolean isLastPage(int page) { return false; }
+    };
 
     private AutomationStateMachine stateMachine;  
-    private AutoCloseable          mocks;  
 
     @BeforeEach  
     void setUp() {  
-        mocks = MockitoAnnotations.openMocks(this);  
-
         stateMachine = AutomationStateMachine.builder()  
             .gridLocator(gridLocator)  
             .machineLocator(machineLocator)  
@@ -37,11 +76,6 @@ class AutomationStateMachineTest {
             .guiInteractor(guiInteractor)  
             .gridScanner(gridScanner)  
             .build();  
-    }  
-
-    @AfterEach  
-    void tearDown() throws Exception {  
-        mocks.close();  
     }  
 
     // ─────────────────────────────────────────────────────────────  
@@ -107,6 +141,6 @@ class AutomationStateMachineTest {
     }  
 
     private CraftingJob makeJob(String key, int amount) {  
-        return new CraftingJob(key, net.minecraft.world.item.ItemStack.EMPTY, amount, 0);  
+        return new CraftingJob(key, ItemStack.EMPTY, amount, 0);  
     }  
 }

@@ -36,7 +36,7 @@ public class BapelSlimefunMod implements ClientModInitializer {
                 "key.bapelmod.trigger",
                 com.mojang.blaze3d.platform.InputConstants.Type.KEYSYM,
                 org.lwjgl.glfw.GLFW.GLFW_KEY_ENTER,
-                net.minecraft.client.KeyMapping.Category.register(net.minecraft.resources.Identifier.fromNamespaceAndPath("bapel-slimefun-mod", "automation"))
+                com.bapel_slimefun_mod.client.ModKeybinds.CATEGORY
             )
         );
         
@@ -61,6 +61,8 @@ public class BapelSlimefunMod implements ClientModInitializer {
             
             // Load automation engine configuration
             com.bapel_slimefun_mod.automation.config.AutomationConfigLoader.load();
+            // Load local learned recipes cache
+            com.bapel_slimefun_mod.automation.recipe.RecipeCacheManager.load();
             // Seed development/testing recipes
             seedRecipes();
             
@@ -90,6 +92,16 @@ public class BapelSlimefunMod implements ClientModInitializer {
             ),
             "slimefun:electric_ore_grinder"
         ));
+        reg.addRecipe(new com.bapel_slimefun_mod.automation.recipe.RecipeEntry(
+            "slimefun:PORTABLE_DUSTBIN",
+            net.minecraft.world.item.ItemStack.EMPTY,
+            1,
+            java.util.List.of(
+                com.bapel_slimefun_mod.automation.recipe.RecipeIngredient.of("minecraft:chest", 1),
+                com.bapel_slimefun_mod.automation.recipe.RecipeIngredient.of("minecraft:iron_ingot", 1)
+            ),
+            "slimefun:enhanced_crafting_table"
+        ));
         LOGGER.info("Dev recipes seeded: {} total", reg.totalRecipes());
     }
     
@@ -100,6 +112,7 @@ public class BapelSlimefunMod implements ClientModInitializer {
                     PerformanceMonitor.trackFrame();
                     com.bapel_slimefun_mod.automation.util.TickScheduler.get().tick();
                     UnifiedAutomationManager.tick();
+                    com.bapel_slimefun_mod.automation.recipe.SlimefunGuideScraper.tick(client);
 
                     if (triggerKey.consumeClick()
                         && client.options.keyShift.isDown()

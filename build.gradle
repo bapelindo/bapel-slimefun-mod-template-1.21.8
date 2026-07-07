@@ -112,4 +112,5 @@ publishing {
 
 test {
 	useJUnitPlatform()
+	systemProperty 'net.bytebuddy.experimental', 'true'
 }
