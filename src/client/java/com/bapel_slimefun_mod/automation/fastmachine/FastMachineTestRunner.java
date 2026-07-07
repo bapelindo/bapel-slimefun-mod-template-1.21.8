@@ -114,12 +114,12 @@ public final class FastMachineTestRunner {
 
     private static boolean testCircularStack(Minecraft mc) {
         try {
-            java.util.Deque<FastMachineAutomationHandler.CraftJob> chain = new java.util.ArrayDeque<>();
-            chain.push(new FastMachineAutomationHandler.CraftJob("Portable Dustbin", "COMPRESSOR", 1));
-            chain.push(new FastMachineAutomationHandler.CraftJob("Copper Wire", "COMPRESSOR", 1));
+            java.util.Deque<ChainOrchestrator.CraftJob> chain = new java.util.ArrayDeque<>();
+            chain.push(new ChainOrchestrator.CraftJob("Portable Dustbin", "COMPRESSOR", 1));
+            chain.push(new ChainOrchestrator.CraftJob("Copper Wire", "COMPRESSOR", 1));
 
             boolean isCircularNormal = false;
-            for (FastMachineAutomationHandler.CraftJob existing : chain) {
+            for (ChainOrchestrator.CraftJob existing : chain) {
                 if (existing.recipeName.equalsIgnoreCase("Silicon")) {
                     isCircularNormal = true;
                     break;
@@ -128,7 +128,7 @@ public final class FastMachineTestRunner {
             assertTest(!isCircularNormal, "Silicon is not circular in chain");
 
             boolean isCircularFake = false;
-            for (FastMachineAutomationHandler.CraftJob existing : chain) {
+            for (ChainOrchestrator.CraftJob existing : chain) {
                 if (existing.recipeName.equalsIgnoreCase("Portable Dustbin")) {
                     isCircularFake = true;
                     break;

@@ -116,7 +116,18 @@ public class UnifiedAutomationManager {
                 lowerTitle.contains("jaringan") || 
                 lowerTitle.contains("grid") || 
                 lowerTitle.contains("terminal")) {
-                com.bapel_slimefun_mod.automation.fastmachine.FastMachineAutomationHandler.onNetworkGridOpen(title);
+                // Let ChainOrchestrator handle if it's waiting for a Grid open.
+                // Also cache position for manual (non-chain) opens via hitResult.
+                boolean chainConsumed = false;
+                Minecraft clientInst = Minecraft.getInstance();
+                if (clientInst.player != null && clientInst.player.containerMenu != null) {
+                    chainConsumed = com.bapel_slimefun_mod.automation.fastmachine.ChainOrchestrator.get()
+                        .onNetworkGridOpened(clientInst.player.containerMenu);
+                }
+                if (!chainConsumed) {
+                    // Manual open — cache via hitResult fallback
+                    com.bapel_slimefun_mod.automation.fastmachine.FastMachineAutomationHandler.onNetworkGridOpenManual();
+                }
                 needsTick = true;
                 return;
             }
@@ -385,10 +396,11 @@ if (currentMachine != null) {
             if (FastMachineAutomationHandler.isActive()) {
                 FastMachineAutomationHandler.onContainerClose();
             }
-            
-            if (com.bapel_slimefun_mod.automation.fastmachine.FastMachineAutomationHandler.isExtractingFromNetwork()) {
-                com.bapel_slimefun_mod.automation.fastmachine.FastMachineAutomationHandler.cancelNetworkExtraction();
-            }
+
+            // FATAL 1 FIX: do NOT abort chain on GUI close.
+            // Closing a GUI is NORMAL during chain navigation (Grid → Machine etc.).
+            // Notify the orchestrator so it can handle EXTRACTING_GRID → CLOSING_GRID transition.
+            com.bapel_slimefun_mod.automation.fastmachine.ChainOrchestrator.get().onGuiClosed();
             
             // ✅ Start auto-click if dispenser is ready
             if (currentMachine != null && currentMachine.isMultiblock()) {
@@ -446,35 +458,20 @@ if (currentMachine != null) {
     public static void tick() {
         PerformanceMonitor.start("UnifiedAuto.tick");
         try {
-            // ── FastMachine tick (highest priority, ignores general automationEnabled flag) ──
-            // NOTE: no early `return` here anymore. FastMachine automation (GUI clicks)
-            // and MultiblockAutoClicker (world block right-clicks) are independent
-            // systems. Returning early used to silently freeze an in-progress
-            // multiblock auto-click sequence the moment any FastMachine GUI was
-            // opened, with no error or message — it just stopped ticking.
+            Minecraft mc = Minecraft.getInstance();
+            if (mc.player != null) {
+                com.bapel_slimefun_mod.automation.fastmachine.ChainOrchestrator.get().tick(mc);
+            }
+
+            // FastMachine GUI tick
             if (FastMachineAutomationHandler.isActive()) {
                 FastMachineAutomationHandler.tick();
             }
 
-            if (com.bapel_slimefun_mod.automation.fastmachine.FastMachineAutomationHandler.isExtractingFromNetwork()) {
-                Minecraft mc = Minecraft.getInstance();
-                if (mc.screen instanceof net.minecraft.client.gui.screens.inventory.AbstractContainerScreen<?> containerScreen) {
-                    Component title = containerScreen.getTitle();
-                    if (title != null) {
-                        String lowerTitle = title.getString().toLowerCase();
-                        if (lowerTitle.contains("network grid") || 
-                            lowerTitle.contains("network terminal") || 
-                            lowerTitle.contains("jaringan") || 
-                            lowerTitle.contains("grid") || 
-                            lowerTitle.contains("terminal")) {
-                            
-                            if (mc.player != null && mc.player.containerMenu != null) {
-                                com.bapel_slimefun_mod.automation.fastmachine.FastMachineAutomationHandler.tickNetworkGrid(mc.player.containerMenu);
-                            }
-                        }
-                    }
-                }
-            }
+            // Network Grid extraction tick — driven by ChainOrchestrator (FATAL 2 FIX).
+            // The old code only ran tickNetworkGrid when mc.screen title matched,
+            // but during the 2-tick rightClick delay mc.screen is null.
+            // ChainOrchestrator.tick() now handles EXTRACTING_GRID phase directly.
             
             // ✅ FAST PATH: Skip if nothing to do
             if (!automationEnabled && !MultiblockAutoClicker.isEnabled()) {

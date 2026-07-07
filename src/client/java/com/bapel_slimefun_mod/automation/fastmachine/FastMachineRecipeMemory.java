@@ -292,20 +292,28 @@ public final class FastMachineRecipeMemory {
         List<BlockPos> list = machinePositions.get(machineId);
         if (list == null || list.isEmpty()) return null;
 
+        // Collect stale positions FIRST, then bulk-remove after iteration.
+        // Modifying a CopyOnWriteArrayList mid-iteration is safe from CME but
+        // yields undefined iteration order once the internal snapshot diverges.
+        List<BlockPos> stale = new java.util.ArrayList<>();
         BlockPos closest = null;
         double closestDist = Double.MAX_VALUE;
+
         for (BlockPos pos : list) {
             if (level != null && level.hasChunkAt(pos) && level.getBlockState(pos).isAir()) {
-                list.remove(pos);
-                savePositions();
-                continue;
+                stale.add(pos);
+                continue;  // skip – this position is now air (machine removed)
             }
-
             double dist = pos.distToCenterSqr(playerPos);
             if (dist < closestDist) {
                 closestDist = dist;
                 closest = pos;
             }
+        }
+
+        if (!stale.isEmpty()) {
+            list.removeAll(stale);
+            savePositions();
         }
         return closest;
     }

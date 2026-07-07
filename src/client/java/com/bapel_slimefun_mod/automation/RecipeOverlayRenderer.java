@@ -909,12 +909,15 @@ public class RecipeOverlayRenderer {
         if (selectedIndex < 0 || selectedIndex >= filteredRecipes.size()) return;
 
         RecipeData selected = filteredRecipes.get(selectedIndex);
+        if (selected.getPrimaryOutput() == null) return;
         String recipeName = selected.getPrimaryOutput().getDisplayName();
-        String sfMachine = selected.getMachineId();
+        String sfMachine  = selected.getMachineId();
 
         hide();
 
-        com.bapel_slimefun_mod.automation.fastmachine.FastMachineAutomationHandler.requestAutoCraft(recipeName, sfMachine, 64);
+        // Route through ChainOrchestrator (the new, correct entry point)
+        com.bapel_slimefun_mod.automation.fastmachine.ChainOrchestrator.get()
+            .start(recipeName, sfMachine, 1);
     }
     
     // Getters
